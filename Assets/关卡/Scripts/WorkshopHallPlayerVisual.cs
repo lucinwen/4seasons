@@ -7,7 +7,6 @@ public sealed class WorkshopHallPlayerVisual : MonoBehaviour
     private const float WalkSoleHeightPixels = 30f;
     public float walkFramesPerSecond = 10f;
     public float runFramesPerSecond = 15f;
-    public float targetWorldHeight = 3.35f;
 
     private Sprite[] frames;
     private SpriteRenderer spriteRenderer;
@@ -16,12 +15,7 @@ public sealed class WorkshopHallPlayerVisual : MonoBehaviour
     private int frameIndex;
     private bool initialized;
 
-    private void Awake()
-    {
-        if (!initialized) Initialize();
-    }
-
-    public void Initialize()
+    public void Initialize(float targetWorldHeight)
     {
         if (initialized) return;
         initialized = true;

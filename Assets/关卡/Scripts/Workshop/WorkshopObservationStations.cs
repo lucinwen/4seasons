@@ -51,7 +51,6 @@ internal sealed class WorkshopObservationStations : MonoBehaviour
         {
             case WorkshopSeason.Spring:
                 Register<SpringPrompt>(WorkshopObservation.QingmingMulberry, 4.18f);
-                Register<SilkwormRackTrigger>(WorkshopObservation.GuyuLeaf, 3.25f);
                 break;
             case WorkshopSeason.Summer:
                 Register<SummerCocoonRackTrigger>(WorkshopObservation.MangzhongCocoon, 3.25f);
@@ -63,7 +62,6 @@ internal sealed class WorkshopObservationStations : MonoBehaviour
                 break;
             case WorkshopSeason.Winter:
                 Register<WinterGrindingClickTarget>(WorkshopObservation.LidongDye, 2.5f);
-                Register<WinterDyeVatClickTarget>(WorkshopObservation.LidongDye, 2.5f);
                 Register<WinterClothCuttingTrigger>(WorkshopObservation.XiaoxueTailoring, 3.05f);
                 break;
         }
@@ -84,8 +82,7 @@ internal sealed class WorkshopObservationStations : MonoBehaviour
                 Observation = observation,
                 Button = marker.AddComponent<FloatingActionButton>()
             };
-            string challenge = WorkshopObservationView.SeasonGameTitle(observation);
-            station.Button.Configure((challenge ?? WorkshopObservationView.StationLabel(observation)) + " · O",
+            station.Button.Configure(EntryLabel(observation),
                 new Vector3(0f, height, 0f),
                 () => Open(station), FloatingActionButton.VisualStyle.PaperTag);
             station.Button.SetOpacity(0.97f);
@@ -139,12 +136,24 @@ internal sealed class WorkshopObservationStations : MonoBehaviour
             nearby.Button.Hide();
         nearby = next;
         if (nearby != null)
+        {
+            nearby.Button.SetText(EntryLabel(nearby.Observation));
             nearby.Button.Show();
+        }
+    }
+
+    private static string EntryLabel(WorkshopObservation observation)
+    {
+        string name = WorkshopObservationView.SeasonGameTitle(observation) ?? WorkshopObservationView.StationLabel(observation);
+        string state = WorkshopObservationView.HasRecord(observation) ? " · 已通关" : "";
+        return name + state + " · O";
     }
 
     private void Open(Station station)
     {
         if (nearby != station || !Available()) return;
+        if (station.Observation == WorkshopObservation.QingmingMulberry
+            && !SpringSummerNpcDialogue.RequireMulberryBriefing()) return;
         WorkshopObservationView.Show(station.Observation);
         ShowStation(null);
     }

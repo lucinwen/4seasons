@@ -27,10 +27,9 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         internal readonly string Title;
         internal readonly string Station;
         internal readonly string ChallengeName;
-        internal readonly string ChallengeGoal;
 
         internal Definition(WorkshopSeason season, string id, string term, string title, string station,
-            string challengeName = null, string challengeGoal = null)
+            string challengeName = null)
         {
             Season = season;
             Id = "observation." + id;
@@ -38,29 +37,20 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
             Title = title;
             Station = station;
             ChallengeName = challengeName;
-            ChallengeGoal = challengeGoal;
         }
     }
 
     private static readonly Definition[] Definitions =
     {
-        new Definition(WorkshopSeason.Spring, "spring.qingming", "清明", "桑园里的新叶", "看桑芽",
-            "辨嫩采叶", "观察芽尖和叶脉，采下两片已经舒展、叶质柔嫩的桑叶。"),
-        new Definition(WorkshopSeason.Spring, "spring.guyu", "谷雨", "雨后的桑叶", "观察桑叶",
-            "晾叶喂蚕", "先看叶面有没有雨珠。挑干爽的叶子，或把湿叶晾干，再送到蚕匾。"),
-        new Definition(WorkshopSeason.Summer, "summer.mangzhong", "芒种", "蔟架上的蚕茧", "看茧况",
-            "分拣蚕茧", "检查三盘蚕茧。每盘找出有破口的一枚，将它放入复查栏。"),
+        new Definition(WorkshopSeason.Spring, "spring.qingming", "清明", "桑园里的新叶", "看桑芽", "拨枝采桑"),
+        new Definition(WorkshopSeason.Spring, "spring.guyu", "谷雨", "雨后的桑叶", "观察桑叶", "擦露配桑"),
+        new Definition(WorkshopSeason.Summer, "summer.mangzhong", "芒种", "蔟架上的蚕茧", "看茧况", "翻茧配批"),
         new Definition(WorkshopSeason.Summer, "summer.dashu.vent", "大暑", "蔟房的通风窗", "暑热观察"),
-        new Definition(WorkshopSeason.Summer, "summer.dashu.reeling", "大暑", "缫丝三步", "缫丝三步",
-            "通风缫丝", "先打开蔟房的窗通风，再依次完成煮茧、找丝头、绕丝轴。"),
-        new Definition(WorkshopSeason.Autumn, "autumn.qiufen", "秋分", "织坊的致谢", "读织坊致谢",
-            "陈设供台", "看清供台位置，把蚕花酒、果篮和糕点分别放入相应的位置。"),
-        new Definition(WorkshopSeason.Autumn, "autumn.hanlu", "寒露", "看经线", "看经线",
-            "理经引纬", "先理齐松垂的经线，让梭子顺利穿过，再送出横向纬线。"),
-        new Definition(WorkshopSeason.Winter, "winter.lidong", "立冬", "染坊里的色样", "看色样",
-            "辨料试色", "先检查哪包染材有水迹，再选干爽的染材，给一小块素绸试色。"),
-        new Definition(WorkshopSeason.Winter, "winter.xiaoxue", "小雪", "从试染到成衣", "看成衣工序",
-            "裁片配样", "辨认前片、后片和袖片的轮廓，将它们配到对应衣样上。")
+        new Definition(WorkshopSeason.Summer, "summer.dashu.reeling", "大暑", "缫丝三步", "缫丝三步", "稳丝续绪"),
+        new Definition(WorkshopSeason.Autumn, "autumn.qiufen", "秋分", "织坊的致谢", "读织坊致谢", "供台见光"),
+        new Definition(WorkshopSeason.Autumn, "autumn.hanlu", "寒露", "看经线", "看经线", "双色走梭"),
+        new Definition(WorkshopSeason.Winter, "winter.lidong", "立冬", "染坊里的色样", "看色样", "两单一缸"),
+        new Definition(WorkshopSeason.Winter, "winter.xiaoxue", "小雪", "从试染到成衣", "看成衣工序", "排料留布")
     };
 
     private static readonly Color[] Accents =
@@ -97,11 +87,14 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     private bool readOnly;
     private bool showSongJin;
     private bool showBatches;
+    private bool earnedRewardThisRun;
     private int stage;
     private int rows;
 
     internal static bool IsOpen => current != null;
     internal static bool BlocksWorldInput => IsOpen || lastClosedFrame == Time.frameCount;
+    internal static WorkshopObservation? ActiveGame => current != null && !current.readOnly &&
+        IsSeasonGame(current.observation) ? current.observation : (WorkshopObservation?)null;
 
     internal static WorkshopSeason Season(WorkshopObservation id) => Definitions[(int)id].Season;
     internal static string RecordTitle(WorkshopObservation id) => Definitions[(int)id].Title;
@@ -158,6 +151,8 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
             return;
         }
 
+        TickGuyuWiping();
+
         if (!Input.GetKeyDown(KeyCode.Tab) || EventSystem.current == null || navigation.Count == 0) return;
         var selected = EventSystem.current.currentSelectedGameObject;
         int index = navigation.FindIndex(button => button.gameObject == selected);
@@ -196,6 +191,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
     private void Render()
     {
+        string previousFocus = FocusPath();
         if (page != null)
         {
             Select(null);
@@ -208,7 +204,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         rows = 0;
         var definition = Definitions[(int)observation];
         Color accent = Accents[(int)definition.Season];
-        page = WorkshopUi.PixelCard(frame, "Observation Panel", new Rect(88, 77, 1744, 926),
+        page = DrawWorkshopPaper(frame, "Observation Panel", new Rect(88, 77, 1744, 926),
             WorkshopUi.Paper, WorkshopUi.Bronze);
 
         WorkshopUi.Label(page, "Season and Solar Term", new Rect(28, 19, 560, 40),
@@ -217,7 +213,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
             ChallengeIsActive ? definition.ChallengeName : definition.Title, 54, WorkshopUi.Ink);
         if (readOnly)
             WorkshopUi.Label(page, "Record Mode", new Rect(1294, 71, 390, 58),
-                "织录 · 已观察", 31, accent, TextAnchor.MiddleRight);
+                IsSeasonGame(observation) ? "已通关 · 残页已收集" : "织录 · 已观察", 31, accent, TextAnchor.MiddleRight);
         else if (ChallengeIsActive)
             DrawChallengeStatus(accent);
         WorkshopUi.Fill(page, "Heading Rule", new Rect(28, 144, 1688, 2), WorkshopUi.Line);
@@ -226,20 +222,44 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
             accent, WorkshopUi.Bronze);
         art = WorkshopUi.Rect(frameBevel, "Observation Illustration", new Rect(6, 6, ArtWidth, ArtHeight));
         WorkshopUi.Fill(art, "Illustration Surface", ArtBounds, InsetPaper);
-        infoPanel = WorkshopUi.PixelCard(page, "Observation Instructions", new Rect(1218, 163, 498, 665),
+        infoPanel = DrawWorkshopPaper(page, "Observation Instructions", new Rect(1218, 163, 498, 665),
             LightSurface, WorkshopUi.Line);
 
-        if (challengePhase == ChallengePhase.Introduction)
-            DrawChallengeIntroduction(definition);
-        else
-            DrawActivity();
+        DrawActivity();
+        if (IsSeasonGame(observation)) DrawChallengeReward();
 
         var exit = WorkshopUi.PixelButton(page, "Return From Observation", new Rect(1473, 848, 243, 58),
             ChallengeIsActive ? "退出小游戏 · Esc" : onClosed == null && !readOnly ? "返回关卡 · Esc" : "返回 · Esc",
             Close, false, 27);
-        Button replay = challengePhase == ChallengePhase.Complete ? DrawChallengeReplay() : null;
+        Button replay = ChallengeIsActive ? DrawChallengeControls() : null;
         RegisterButton(exit);
-        BindNavigation(replay);
+        if (ChallengeIsActive)
+        {
+            // Instruction text and small labels must stay readable at the 720p workbench size.
+            var readingFont = WorkshopArt.ReadingFont;
+            foreach (var label in page.GetComponentsInChildren<Text>(true))
+            {
+                label.font = readingFont;
+                if (label.name == "Observation Title") label.fontStyle = FontStyle.Bold;
+            }
+        }
+        var prior = previousFocus != null ? page.Find(previousFocus) : null;
+        BindNavigation(replay ?? prior?.GetComponent<Button>());
+    }
+
+    private string FocusPath()
+    {
+        if (page == null || EventSystem.current == null) return null;
+        var selected = EventSystem.current.currentSelectedGameObject;
+        if (selected == null || selected.transform == page || !selected.transform.IsChildOf(page)) return null;
+        Transform item = selected.transform;
+        string path = item.name;
+        while (item.parent != page)
+        {
+            item = item.parent;
+            path = item.name + "/" + path;
+        }
+        return path;
     }
 
     private void BindNavigation(Button initial = null)
@@ -257,7 +277,8 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
                 selectOnRight = next
             };
         }
-        Select((initial ?? navigation[0]).gameObject);
+        Button focus = initial != null && initial.IsInteractable() ? initial : navigation.Find(button => button.IsInteractable());
+        Select(focus != null ? focus.gameObject : null);
     }
 
     private void LateUpdate()
@@ -274,7 +295,10 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
     private void Copy(string heading, string body, bool warning = false)
     {
-        WorkshopUi.Label(infoPanel, "Instruction Heading", new Rect(27, 28, 444, 62),
+        var recovery = warning && ChallengeIsActive ? Resources.Load<Sprite>("WorkshopGameArt/RecoverySeal") : null;
+        if (recovery != null)
+            WorkshopUi.Picture(infoPanel, "Recovery Cue", new Rect(420, 20, 47, 53), recovery);
+        WorkshopUi.Label(infoPanel, "Instruction Heading", new Rect(27, 28, recovery == null ? 444 : 384, 62),
             heading, 35, warning ? ErrorInk : Accents[(int)Season(observation)], TextAnchor.UpperLeft);
         var label = WorkshopUi.Label(infoPanel, "Instruction Body", new Rect(27, 102, 444, 195),
             body, 30, WorkshopUi.Ink, TextAnchor.UpperLeft);
@@ -361,13 +385,8 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
     private void Finish()
     {
-        if (readOnly || challengePhase == ChallengePhase.Introduction || challengePhase == ChallengePhase.Complete) return;
+        if (readOnly || ChallengeIsActive) return;
         WorkshopProgress.RecordObservation(Definitions[(int)observation].Id);
-        if (challengePhase == ChallengePhase.Playing)
-        {
-            challengePhase = ChallengePhase.Complete;
-            WorkshopAudioFeedback.Confirm();
-        }
         Step(CompletionStage(observation));
     }
 

@@ -11,15 +11,6 @@ internal sealed partial class WorkshopObservationView
     private bool driedWetLeaf;
     private bool dyeWrong;
 
-    partial void ResetChallengePlayState()
-    {
-        cocoonRound = 0;
-        cocoonWrongSlot = -1;
-        loomWrong = false;
-        driedWetLeaf = false;
-        dyeWrong = false;
-    }
-
     private void DrawActivity()
     {
         if (!readOnly && DrawAdditionalSeasonGame()) return;

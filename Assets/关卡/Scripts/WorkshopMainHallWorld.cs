@@ -13,6 +13,9 @@ public sealed class WorkshopMainHallWorld : MonoBehaviour
     private const float LeftWalkLimit = -12.25f;
     private const float RightWalkLimit = 18.15f;
     private const float CameraLookAhead = 5.5f;
+    private const float PlayerSpriteHeight = 2.08f;
+    private const float PlayerColliderHeight = 1.58f;
+    private const float DestinationMarkerHeight = 0.36f;
     private const float SignPixelsPerUnit = 125f;
     private const float SignCanvasHalfHeight = 5.12f;
     private static readonly Color Gold = new Color32(225, 193, 133, 255);
@@ -44,6 +47,7 @@ public sealed class WorkshopMainHallWorld : MonoBehaviour
     private readonly Dictionary<WorkshopItem, UnityEngine.UI.Image> materialMarks =
         new Dictionary<WorkshopItem, UnityEngine.UI.Image>();
     private readonly WorkshopHallInteractable[] seasonDestinations = new WorkshopHallInteractable[SeasonAccents.Length];
+    private Sprite destinationMarkerArtwork;
     private WorkshopHallInteractable storageDestination;
     private WorkshopHallInteractable wardrobeDestination;
     private WorkshopHallInteractable recommendedDestination;
@@ -189,14 +193,14 @@ public sealed class WorkshopMainHallWorld : MonoBehaviour
 
         var collider = playerGo.AddComponent<CapsuleCollider2D>();
         collider.direction = CapsuleDirection2D.Vertical;
-        collider.size = new Vector2(0.78f, 2.55f);
-        collider.offset = new Vector2(0f, 1.275f);
+        collider.size = new Vector2(0.55f, PlayerColliderHeight);
+        collider.offset = new Vector2(0f, PlayerColliderHeight * 0.5f);
 
         var visual = new GameObject("Visual");
         visual.transform.SetParent(playerGo.transform, false);
         var renderer = visual.AddComponent<SpriteRenderer>();
         var visualAnimator = visual.AddComponent<WorkshopHallPlayerVisual>();
-        visualAnimator.Initialize();
+        visualAnimator.Initialize(PlayerSpriteHeight);
 
         playerController = playerGo.AddComponent<LevelPlayerController>();
         playerController.visualTransform = visual.transform;
@@ -280,6 +284,7 @@ public sealed class WorkshopMainHallWorld : MonoBehaviour
 
     private void BuildInteractions()
     {
+        destinationMarkerArtwork = Resources.Load<Sprite>("WorkshopGameArt/HallDestinationMarker");
         var signs = new GameObject("Hall Wayfinding", typeof(RectTransform), typeof(Canvas));
         signs.transform.SetParent(transform, false);
         signCanvas = signs.GetComponent<RectTransform>();
@@ -353,12 +358,16 @@ public sealed class WorkshopMainHallWorld : MonoBehaviour
         var interactable = anchor.AddComponent<WorkshopHallInteractable>();
         interactable.Configure(label, action, available);
 
-        var marker = new GameObject("Destination Marker", typeof(SpriteRenderer));
-        marker.transform.SetParent(anchor.transform, false);
-        marker.transform.position = new Vector3(x, -1.15f, 0f);
-        var renderer = marker.GetComponent<SpriteRenderer>();
-        renderer.sprite = DestinationDiamond;
-        marker.AddComponent<WorkshopHallMarker>().Initialize(renderer, markerColor, x * 1.37f);
+        if (destinationMarkerArtwork != null)
+        {
+            var marker = new GameObject("Destination Marker", typeof(SpriteRenderer));
+            marker.transform.SetParent(anchor.transform, false);
+            marker.transform.position = new Vector3(x, -1.15f, 0f);
+            marker.transform.localScale = Vector3.one * (DestinationMarkerHeight / destinationMarkerArtwork.bounds.size.y);
+            var renderer = marker.GetComponent<SpriteRenderer>();
+            renderer.sprite = destinationMarkerArtwork;
+            marker.AddComponent<WorkshopHallMarker>().Initialize(renderer, markerColor, x * 1.37f);
+        }
         destinationSigns.Add(interactable, AddDestinationSign(x, destination, available, markerColor));
         return interactable;
     }
@@ -572,36 +581,6 @@ public sealed class WorkshopMainHallWorld : MonoBehaviour
         label.resizeTextMinSize = size - 4;
         label.resizeTextMaxSize = size;
         return label;
-    }
-
-    private static Sprite destinationDiamond;
-    private static Sprite DestinationDiamond
-    {
-        get
-        {
-            if (destinationDiamond != null) return destinationDiamond;
-            const int size = 32;
-            var texture = new Texture2D(size, size, TextureFormat.RGBA32, false)
-            {
-                name = "Main Hall Destination",
-                filterMode = FilterMode.Point,
-                wrapMode = TextureWrapMode.Clamp,
-                hideFlags = HideFlags.HideAndDontSave
-            };
-            var pixels = new Color32[size * size];
-            for (int y = 0; y < size; y++)
-                for (int x = 0; x < size; x++)
-                {
-                    int distance = Mathf.Abs(2 * x - size + 1) + Mathf.Abs(2 * y - size + 1);
-                    byte tone = distance <= 16 ? (byte)255 : (byte)53;
-                    pixels[y * size + x] = new Color32(tone, tone, tone, distance <= 25 ? (byte)255 : (byte)0);
-                }
-            texture.SetPixels32(pixels);
-            texture.Apply(false, true);
-            destinationDiamond = Sprite.Create(texture, new Rect(0, 0, size, size),
-                new Vector2(0.5f, 0.5f), SignPixelsPerUnit);
-            return destinationDiamond;
-        }
     }
 
     private void OnDestroy()

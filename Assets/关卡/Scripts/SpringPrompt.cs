@@ -114,11 +114,11 @@ public class SpringPrompt : MonoBehaviour
     /// </summary>
     private void OnEnterButtonClicked()
     {
-        if (WorkshopQuestGuide.BlocksWorldInput) return;
+        if (WorkshopQuestGuide.BlocksWorldInput || !SpringSummerNpcDialogue.RequireMulberryBriefing()) return;
 
         if (HasPickedBasket)
         {
-            SpringSummerNpcDialogue.BeforeMulberry(LoadMulberryGame);
+            LoadMulberryGame();
         }
         else
         {

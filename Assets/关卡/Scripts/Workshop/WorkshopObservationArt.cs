@@ -7,6 +7,7 @@ internal sealed class WorkshopObservationArt : ScriptableObject
         current != null ? current : (current = Resources.Load<WorkshopObservationArt>("WorkshopObservationArt"));
 
     [SerializeField] private Sprite leaf;
+    [SerializeField] private Sprite mulberryBasket;
     [SerializeField] private Sprite silkwormTray;
     [SerializeField] private Sprite cooker;
     [SerializeField] private Sprite silkReel;
@@ -17,6 +18,7 @@ internal sealed class WorkshopObservationArt : ScriptableObject
     [SerializeField] private Sprite offeringWine;
 
     internal Sprite Leaf => leaf;
+    internal Sprite MulberryBasket => mulberryBasket;
     internal Sprite SilkwormTray => silkwormTray;
     internal Sprite Cooker => cooker;
     internal Sprite SilkReel => silkReel;

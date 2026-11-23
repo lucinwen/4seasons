@@ -19,19 +19,18 @@ internal static class WorkshopDialogueScripts
         new WorkshopDialogueLine("工坊掌事", "春天到了，咱们工坊又要开始忙起来啦。"),
         new WorkshopDialogueLine("工坊掌事", "蚕儿要长得好，第一件事情就是准备好它们的食物和住处。"),
         new WorkshopDialogueLine("玩家", "掌事，我们春天要先做什么呢？"),
-        new WorkshopDialogueLine("工坊掌事", "先去桑园采些好桑叶，再去蚕房找蚕房掌事。"),
-        new WorkshopDialogueLine("工坊掌事", "桑叶是蚕儿的口粮，蚕种则关系到这一季的蚕事。可都马虎不得。"),
+        new WorkshopDialogueLine("工坊掌事", "到了春章先和蚕房师傅打个招呼。他最清楚眼前这批小蚕需要什么。"),
         new WorkshopDialogueLine("工坊掌事", "去吧，蚕房掌事已经在等你了。"),
     };
 
     internal static readonly WorkshopDialogueLine[] SpringMulberryIntro =
     {
         new WorkshopDialogueLine("蚕房师傅", "哎，小织匠，你来得正好！"),
-        new WorkshopDialogueLine("蚕房师傅", "今天咱们得先准备一些新鲜桑叶，给蚕儿们当口粮。"),
-        new WorkshopDialogueLine("玩家", "师傅，桑树上这么多叶子，是不是都能摘呀？"),
-        new WorkshopDialogueLine("蚕房师傅", "可不能随便摘。你看，有些叶子还带着露水，有些已经被虫子咬坏了，还有些太老了。"),
-        new WorkshopDialogueLine("蚕房师傅", "给蚕儿吃的桑叶，要选新鲜、干净、合适的叶子。"),
-        new WorkshopDialogueLine("玩家", "好，我来试试！"),
+        new WorkshopDialogueLine("蚕房师傅", "这批小蚕已经孵出来了，正等着吃新鲜桑叶。帮我理一篮吧。"),
+        new WorkshopDialogueLine("玩家", "师傅，昨晚刚下过雨，有的桑叶上还带着水珠。"),
+        new WorkshopDialogueLine("蚕房师傅", "拿上采桑篮，去桑树边的谷雨蚕架。干爽的叶子直接入篮，湿叶得先把水珠擦掉。"),
+        new WorkshopDialogueLine("蚕房师傅", "看看两只蚕匾各要什么叶。攒够合适的一篮，就在这张台上把它们分给两匾小蚕。"),
+        new WorkshopDialogueLine("玩家", "我去拿采桑篮，这就给它们备饭。"),
     };
 
     internal static readonly WorkshopDialogueLine[] SpringMulberryComplete =
@@ -44,7 +43,7 @@ internal static class WorkshopDialogueScripts
 
     internal static readonly WorkshopDialogueLine[] SpringBathIntro =
     {
-        new WorkshopDialogueLine("蚕房师傅", "桑叶准备好了，接下来就要看看今年的蚕种啦。"),
+        new WorkshopDialogueLine("蚕房师傅", "眼前这批小蚕已经吃上桑叶了。咱们再给下一批备好蚕种。"),
         new WorkshopDialogueLine("蚕房师傅", "谷雨前后，春雨渐多，正是许多地方安排蚕事的重要时节。"),
         new WorkshopDialogueLine("玩家", "师傅，蚕种是什么呀？蚕不是从茧里面出来的吗？"),
         new WorkshopDialogueLine("蚕房掌事", "哈哈，你说的是蚕蛾。蚕蛾交配后会产下蚕卵，这些小小的卵就是蚕种。"),
@@ -285,12 +284,17 @@ internal static class WorkshopDialogueScripts
     // Quest progress and return visits
     internal static readonly WorkshopDialogueLine[] SpringInProgress =
     {
-        new WorkshopDialogueLine("蚕房掌事", "桑叶准备好了吗？别忘了，蚕儿最喜欢新鲜、干净的桑叶。"),
+        new WorkshopDialogueLine("蚕房掌事", "拿上采桑篮，找桑树旁的谷雨蚕架。先看两只蚕匾的叶型需求，干叶可直接入篮，湿叶要先擦去水珠。"),
+    };
+
+    internal static readonly WorkshopDialogueLine[] SpringReadyToFeed =
+    {
+        new WorkshopDialogueLine("蚕房掌事", "上一篮桑叶已经备好。回到谷雨蚕架，选「继续喂上一篮」，就可以拿它去喂小蚕。"),
     };
 
     internal static readonly WorkshopDialogueLine[] SpringDone =
     {
-        new WorkshopDialogueLine("蚕房掌事", "这批桑叶准备得不错！接下来就可以好好照料蚕种了。"),
+        new WorkshopDialogueLine("蚕房掌事", "小蚕已经吃上了。接下来到浴蚕桶边，给下一批备好蚕种。"),
     };
 
     internal static readonly WorkshopDialogueLine[] SummerInProgress =

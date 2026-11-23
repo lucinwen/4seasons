@@ -38,6 +38,10 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
     private UnityEngine.UI.Image avatarImage;
     private UnityEngine.UI.Image cameraImage;
     private UnityEngine.UI.Image detailImage;
+    private UnityEngine.UI.Image poseGuide;
+    private Sprite shoulderGuide;
+    private Sprite raiseGuide;
+    private Sprite waveGuide;
     private RawImage feed;
     private Text outfitName;
     private Text outfitVersion;
@@ -143,6 +147,10 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
         cameraStatus = Label(info, "Mirror Camera Status", new Rect(27f, 278f, 508f, 43f), "", 28, Gold);
         instruction = Label(info, "Mirror Camera Instruction", new Rect(27f, 326f, 508f, 96f),
             "", 25, Mist, TextAnchor.UpperLeft);
+        shoulderGuide = Resources.Load<Sprite>("WorkshopMirrorGuides/MirrorPoseShoulders");
+        raiseGuide = Resources.Load<Sprite>("WorkshopMirrorGuides/MirrorPoseReady");
+        waveGuide = Resources.Load<Sprite>("WorkshopMirrorGuides/MirrorPoseWaveRight");
+        poseGuide = WorkshopUi.Picture(info, "Mirror Pose Guide", new Rect(399f, 319f, 142f, 108f), null);
 
         detailCard = WorkshopUi.PixelCard(info, "Mirror Fabric Card", new Rect(3f, 468f, 556f, 365f), Ink, Brass);
         Label(detailCard, "Mirror Fabric Title", new Rect(24f, 11f, 508f, 45f), "布料特写", 30, Ivory);
@@ -284,7 +292,7 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
             if (now < calibrationEnd || !TryReadFrame()) return;
             tracking.CaptureBackground();
             mode = CameraMode.Tracking;
-            SetStatus("请站到镜头中央", "正对镜头，让双肩进入画面。");
+            SetStatus("请站到镜头中央", "正对镜头，让双肩进入画面。", guide: shoulderGuide);
             return;
         }
 
@@ -350,7 +358,7 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
             stableFrames = 0;
             gesture.Sample(false, 0f, now);
             garmentOrigin.gameObject.SetActive(false);
-            SetStatus("请站到镜头中央", "正对镜头，让双肩进入画面，识别稳定后会恢复衣片。");
+            SetStatus("请站到镜头中央", "正对镜头，让双肩进入画面，识别稳定后会恢复衣片。", guide: shoulderGuide);
             return;
         }
 
@@ -371,11 +379,11 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
         int direction = gesture.Sample(pose.HandRaised, pose.HandOffset, now);
         if (direction != 0) cycle(direction);
         if (gesture.IsReady)
-            SetStatus("手势已就绪", "沿镜中方向挥手。← 上一款，下一款 →");
+            SetStatus("手势已就绪", "沿镜中方向挥手。← 上一款，下一款 →", guide: waveGuide);
         else if (gesture.WaitingForRelease)
             SetStatus("已换一款", "放下手后可继续挥手换款。");
         else
-            SetStatus("已对准肩线", "抬起一只手至肩侧，出现就绪提示后再向左或右挥。");
+            SetStatus("已对准肩线", "抬起一只手至肩侧，出现就绪提示后再向左或右挥。", guide: raiseGuide);
     }
 
     private void ShowCharacter(string title, string hint)
@@ -387,14 +395,20 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
         cameraContent.gameObject.SetActive(false);
         avatar.gameObject.SetActive(true);
         garmentOrigin.gameObject.SetActive(false);
-        SetStatus(title, hint, title == "角色试衣" ? Gold : Rose);
+        SetStatus(title, hint, title == "角色试衣" ? Gold : Rose, shoulderGuide);
     }
 
-    private void SetStatus(string title, string hint, Color? color = null)
+    private void SetStatus(string title, string hint, Color? color = null, Sprite guide = null)
     {
         if (cameraStatus.text != title) cameraStatus.text = title;
         if (instruction.text != hint) instruction.text = hint;
         cameraStatus.color = color ?? Gold;
+        if (poseGuide.sprite != guide)
+        {
+            poseGuide.sprite = guide;
+            poseGuide.enabled = guide != null;
+            instruction.rectTransform.sizeDelta = new Vector2(guide != null ? 356f : 508f, 96f);
+        }
     }
 
     private void StopCamera()

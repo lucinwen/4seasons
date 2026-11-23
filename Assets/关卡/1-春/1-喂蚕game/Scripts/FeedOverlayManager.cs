@@ -336,6 +336,13 @@ public class FeedOverlayManager : MonoBehaviour
         _finishing = true;
         yield return new WaitForSeconds(0.7f);
 
+        bool alreadyFed = WorkshopProgress.Has(WorkshopItem.Silkworm);
+        if (alreadyFed)
+        {
+            SimplePopup.Show("给桑完成", "小蚕又吃饱了。蚕宝宝已收集。", "返回蚕房", CloseFeed);
+            yield break;
+        }
+
         MiniGameCompletionAnimation.PlayThen(MiniGameCompletionId.SilkwormFeeding, () =>
             SimplePopup.ShowItem(
                 WorkshopItem.Silkworm,

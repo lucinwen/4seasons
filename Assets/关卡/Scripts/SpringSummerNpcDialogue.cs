@@ -1,8 +1,10 @@
 using System;
+using Qingming.LevelBackground;
 
 internal static class SpringSummerNpcDialogue
 {
     private const string MulberryIntroStep = "dialogue.spring.mulberryIntro";
+    private const string PreparedLeavesStep = "spring.guyu.prepared";
     private const string BathIntroStep = "dialogue.spring.bathIntro";
     private const string CocoonIntroStep = "dialogue.summer.cocoonIntro";
     private const string BoilingIntroStep = "dialogue.summer.boilingIntro";
@@ -21,9 +23,23 @@ internal static class SpringSummerNpcDialogue
         }
     }
 
-    internal static void BeforeMulberry(Action continueToActivity = null) =>
-        Introduce(WorkshopItem.MulberryLeaf, MulberryIntroStep,
-            WorkshopDialogueScripts.SpringMulberryIntro, continueToActivity);
+    internal static bool HasMulberryBriefing => WorkshopProgress.HasStep(MulberryIntroStep)
+        || WorkshopProgress.Has(WorkshopItem.MulberryLeaf) || WorkshopProgress.Has(WorkshopItem.Silkworm);
+
+    internal static bool HasPreparedLeaves => WorkshopProgress.HasStep(PreparedLeavesStep)
+        || WorkshopProgress.Has(WorkshopItem.Silkworm);
+
+    internal static bool CanWash => WorkshopProgress.Has(WorkshopItem.Silkworm)
+        || WorkshopProgress.Has(WorkshopItem.SilkwormEgg);
+
+    internal static void RecordPreparedLeaves() => WorkshopProgress.MarkStep(PreparedLeavesStep);
+
+    internal static bool RequireMulberryBriefing()
+    {
+        if (HasMulberryBriefing) return true;
+        SimplePopup.Show("先去找蚕房师傅", "请先与春章的蚕房师傅交谈，领到今天的采桑任务。", "知道了", null);
+        return false;
+    }
 
     internal static void BeforeBath(Action continueToActivity = null) =>
         Introduce(WorkshopItem.SilkwormEgg, BathIntroStep,
@@ -43,15 +59,16 @@ internal static class SpringSummerNpcDialogue
 
     private static void TalkSpring()
     {
-        bool hasLeaves = WorkshopProgress.Has(WorkshopItem.MulberryLeaf);
-        if (!hasLeaves && !WorkshopProgress.HasStep(MulberryIntroStep))
-            BeforeMulberry();
-        else if (hasLeaves && !WorkshopProgress.Has(WorkshopItem.SilkwormEgg) &&
-                 !WorkshopProgress.HasStep(BathIntroStep))
+        if (!HasMulberryBriefing)
+            WorkshopDialoguePresenter.PlayOnce(MulberryIntroStep, WorkshopDialogueScripts.SpringMulberryIntro);
+        else if (!HasPreparedLeaves)
+            WorkshopDialoguePresenter.Play(WorkshopDialogueScripts.SpringInProgress);
+        else if (!WorkshopProgress.Has(WorkshopItem.Silkworm))
+            WorkshopDialoguePresenter.Play(WorkshopDialogueScripts.SpringReadyToFeed);
+        else if (!WorkshopProgress.Has(WorkshopItem.SilkwormEgg) && !WorkshopProgress.HasStep(BathIntroStep))
             BeforeBath();
         else
-            WorkshopDialoguePresenter.Play(hasLeaves ? WorkshopDialogueScripts.SpringDone :
-                WorkshopDialogueScripts.SpringInProgress);
+            WorkshopDialoguePresenter.Play(WorkshopDialogueScripts.SpringDone);
     }
 
     private static void TalkSummer()

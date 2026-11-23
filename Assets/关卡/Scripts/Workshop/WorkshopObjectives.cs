@@ -14,7 +14,7 @@ internal static class WorkshopObjectives
         string goal;
         switch (season)
         {
-            case WorkshopSeason.Spring: goal = "采桑、浴蚕后，就可以喂蚕。"; break;
+            case WorkshopSeason.Spring: goal = "先找蚕房师傅，再理桑叶、喂蚕。喂完后给下一批备蚕种。"; break;
             case WorkshopSeason.Summer: goal = "在场景里取盐、择茧和找线轴。"; break;
             case WorkshopSeason.Autumn: goal = "寻找织造工具，并为酬蚕备好贡品。"; break;
             case WorkshopSeason.Winter: goal = "先染布再裁衣，也记得找缝衣针。"; break;
@@ -29,14 +29,14 @@ internal static class WorkshopObjectives
         switch (item)
         {
             case WorkshopItem.MulberryLeaf:
-                return ("采桑", "先拾采桑篮，再到桑园接桑叶。",
-                    "拾取采桑篮，走近桑园点「进入桑园」。左右移动接住落下的桑叶，达标后收下奖励。");
+                return ("理桑叶", "先找蚕房师傅，再带采桑篮去谷雨蚕架。",
+                    "听完师傅的叮嘱，带篮子到桑树旁的谷雨蚕架。干叶直接入篮，湿叶擦去水珠再入篮。");
             case WorkshopItem.SilkwormEgg:
-                return ("浴蚕", "先拾蚕种纸，再把蚕种拖进浴蚕桶。",
-                    "拾取蚕种纸，到浴蚕桶点「开始清洗」。按住待洗的蚕种，把它拖到桶边，完成后收下。");
+                return ("浴蚕", "喂完小蚕后捡蚕种纸，到浴蚕桶漂洗。",
+                    "把蚕种筛放入水面，沿桶口轻晃漂洗，捞起杂质，给下一批备好蚕种。");
             case WorkshopItem.Silkworm:
-                return ("喂蚕", "摘到桑叶并洗好蚕种后，到蚕架喂蚕。",
-                    "取得桑叶和洗好的蚕种，走近蚕架点「前往喂蚕」。把右侧的桑叶逐片拖进蚕匾。");
+                return ("喂蚕", "收好一篮干爽的桑叶，到谷雨蚕架喂蚕。",
+                    "选「拿上桑叶去喂蚕」，把篮里的桑叶逐片拖进蚕匾，给已经孵化的小蚕添桑。");
             case WorkshopItem.Salt:
                 return ("取盐", "点击盐窖，获取盐。",
                     "点击场景中的盐窖，点「获取盐」，再点「收下」。");

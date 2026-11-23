@@ -28,7 +28,9 @@ public sealed class WorkshopStorageView : MonoBehaviour
     private RectTransform frame;
     private RectTransform page;
     private CanvasGroup visibility;
+    private CanvasGroup storageControls;
     private WorkshopSynthesis workbench;
+    private RectTransform collectionsPage;
     private WorkshopSeason season;
     private Action onClose;
     private Action<WorkshopSeason, WorkshopSeason> onContinue;
@@ -69,12 +71,15 @@ public sealed class WorkshopStorageView : MonoBehaviour
         }
 
         page = WorkshopUi.Rect(frame, "Storage Page", new Rect(0, 0, 1920, 1080));
+        storageControls = page.gameObject.AddComponent<CanvasGroup>();
         var artwork = Resources.Load<Sprite>("WorkshopFinish/StorageCraftTable");
         WorkshopUi.Panel(page, "Unified Storage Frame", FrameBounds, artwork ?? WorkshopArt.WorkshopTaskBoard);
         var title = Label(page, "Storage Title", new Rect(704, 139, 440, 69), "储物屋", 48,
             WorkshopUi.Ink, TextAnchor.MiddleCenter);
         title.fontStyle = FontStyle.Bold;
         WorkshopUi.PixelButton(page, "Storage Close", new Rect(1020, 139, 202, 69), "返回工坊", Close, true, 34);
+        WorkshopUi.PixelButton(page, "Open Challenge Collections", new Rect(1240, 139, 224, 69),
+            "节气收藏", ShowCollections, false, 30);
 
         var inventory = DrawInventory(out Rect[] sources);
         Label(page, "Workbench Title", new Rect(961, 302, 217, 48), "合成台", 40, WorkbenchInk);
@@ -95,6 +100,75 @@ public sealed class WorkshopStorageView : MonoBehaviour
 
         if (EventSystem.current != null)
             EventSystem.current.SetSelectedGameObject(null);
+    }
+
+    private void ShowCollections()
+    {
+        if (collectionsPage != null || workbench.Busy) return;
+
+        storageControls.interactable = false;
+        storageControls.blocksRaycasts = false;
+        collectionsPage = WorkshopUi.Rect(frame, "Challenge Collections", new Rect(0, 0, 1920, 1080));
+        WorkshopUi.Button(collectionsPage, "Collections Input Shield", new Rect(0, 0, 1920, 1080),
+            "", null, WorkshopUi.Veil);
+        var board = WorkshopUi.PixelCard(collectionsPage, "Collection Board", new Rect(162, 101, 1596, 878),
+            WorkshopUi.Paper, WorkshopUi.Bronze);
+
+        int count = 0;
+        int total = 0;
+        foreach (WorkshopSeason chapter in Enum.GetValues(typeof(WorkshopSeason)))
+        {
+            foreach (var id in WorkshopObservationView.ObservationsFor(chapter))
+            {
+                if (!WorkshopObservationView.IsSeasonGame(id)) continue;
+
+                var challenge = id;
+                bool earned = WorkshopObservationView.HasRecord(id);
+                if (earned) count++;
+                float x = 55 + total % 4 * 376;
+                float y = 169 + total / 4 * 323;
+                total++;
+                var card = WorkshopUi.PixelCard(board, "Collected Item " + id, new Rect(x, y, 358, 307),
+                    earned ? FilledPocket : EmptyPocket, SeasonAccents[(int)chapter]);
+                string term = WorkshopObservationView.RecordTerm(id);
+                Label(card, "Term", new Rect(8, 10, 342, 47), term + " · " + WorkshopObservationView.SeasonGameTitle(id),
+                    26, WorkshopUi.Green, TextAnchor.MiddleCenter);
+                var best = WorkshopObservationView.BestWork(id, 1) ?? WorkshopObservationView.BestWork(id, 0);
+                var preview = new Rect(109, 61, 140, best != null ? 90 : 112);
+                if (!WorkshopObservationView.DrawWorkSample(card, preview, best?.sample))
+                    WorkshopUi.Picture(card, "Collectible", preview, WorkshopObservationView.RewardIcon(id),
+                        earned ? Color.white : new Color32(74, 89, 58, 97));
+                Label(card, "Item", new Rect(6, best != null ? 149 : 175, 346, 35), WorkshopObservationView.RewardName(id) + (earned ? " ×1" : ""),
+                    26, WorkshopUi.Ink, TextAnchor.MiddleCenter);
+                if (best != null)
+                {
+                    var note = Label(card, "Best Work", new Rect(9, 182, 340, 47), best.description, 20,
+                        WorkshopUi.Green, TextAnchor.MiddleCenter);
+                    note.verticalOverflow = UnityEngine.VerticalWrapMode.Truncate;
+                }
+                var record = WorkshopUi.PixelButton(card, "Read collected page " + id, new Rect(37, 233, 284, 57),
+                    earned ? term + "残页 ×1 · 查看" : "待通关 · 残页未收集", () => WorkshopObservationView.ShowRecord(challenge), earned, 23);
+                record.interactable = earned;
+            }
+        }
+
+        Label(board, "Collection Heading", new Rect(55, 45, 688, 67), $"节气收藏　{count} / {total}", 47, WorkshopUi.Green);
+        if (WorkshopProgress.HasStep("autumn.loom"))
+            Label(board, "Loom Repair Ticket", new Rect(811, 50, 458, 61), "工坊凭证 · 修机工票 ×1", 27,
+                WorkshopUi.Green, TextAnchor.MiddleRight);
+        var back = WorkshopUi.PixelButton(board, "Close Collections", new Rect(1303, 48, 238, 64),
+            "返回背包", CloseCollections, true, 31);
+        if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(back.gameObject);
+    }
+
+    private void CloseCollections()
+    {
+        if (collectionsPage == null) return;
+        collectionsPage.gameObject.SetActive(false);
+        Destroy(collectionsPage.gameObject);
+        collectionsPage = null;
+        storageControls.interactable = true;
+        storageControls.blocksRaycasts = true;
     }
 
     private RectTransform DrawInventory(out Rect[] sources)
@@ -244,8 +318,11 @@ public sealed class WorkshopStorageView : MonoBehaviour
     {
         if (!visibility.interactable || resumedFrame == Time.frameCount) return;
         if (WorkshopKnowledgeView.BlocksWorldInput || WorkshopNarrativeView.IsOpen || WorkshopDialoguePresenter.BlocksWorldInput ||
-            WorkshopCraftRecordView.BlocksWorldInput || WorkshopHeritageBrief.IsOpen || WorkshopChapterGuide.IsOpen) return;
-        if (Input.GetKeyDown(KeyCode.Escape)) Close();
+            WorkshopCraftRecordView.BlocksWorldInput || WorkshopHeritageBrief.IsOpen || WorkshopChapterGuide.IsOpen ||
+            WorkshopObservationView.BlocksWorldInput) return;
+        if (!Input.GetKeyDown(KeyCode.Escape)) return;
+        if (collectionsPage != null) CloseCollections();
+        else Close();
     }
 
     private void Close()

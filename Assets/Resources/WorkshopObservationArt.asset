@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: WorkshopObservationArt
   m_EditorClassIdentifier: 
   leaf: {fileID: 21300000, guid: 3e0a9cc16d09b1e46aeddb30fe22e0a9, type: 3}
+  mulberryBasket: {fileID: 21300000, guid: 3035ba782158ab44e91a474c5a96c442, type: 3}
   silkwormTray: {fileID: 21300000, guid: 9a6f036cd30f5b7478bff93866c01f5b, type: 3}
   cooker: {fileID: 21300000, guid: 1e933bdeb625d694691252d57599c0c2, type: 3}
   silkReel: {fileID: 21300000, guid: 5023b8ad07a69ac4ab13ac894837bfd5, type: 3}

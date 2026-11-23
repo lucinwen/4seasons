@@ -39,7 +39,7 @@ public sealed partial class WorkshopKnowledgeView
                 if (WorkshopObservationView.HasRecord(id)) recorded++;
             }
             Label(card, "Count", new Rect(16, 359, 352, 51),
-                unlocked ? $"小游戏记录 {recorded} / {total}" : "本章尚未开放", 27, WorkshopUi.Ink, TextAnchor.MiddleCenter);
+                unlocked ? $"节气残页 {recorded} / {total}" : "本章尚未开放", 27, WorkshopUi.Ink, TextAnchor.MiddleCenter);
             var read = WorkshopUi.PixelButton(card, "Open season " + chapter, new Rect(63, 426, 258, 58), "查看记录",
                 () => RenderSeasonObservations(chapter), true, 28, Jade);
             read.interactable = unlocked;
@@ -72,7 +72,7 @@ public sealed partial class WorkshopKnowledgeView
             bool game = WorkshopObservationView.IsSeasonGame(id);
             if (!game && !recorded) continue;
             float y = 158 + index * 127f;
-            string status = game ? (recorded ? "已记录 · 节气小游戏" : "节气小游戏 · 前往关卡工位") : "已记录 · 工艺观察";
+            string status = game ? (recorded ? "已通关 · 残页已收集" : "未通关 · 前往关卡工位") : "已记录 · 工艺观察";
             Label(panel, "Record Status " + id, new Rect(835, y, 690, 37), status,
                 24, WorkshopUi.Ink);
             var read = WorkshopUi.PixelButton(panel, "Read " + id, new Rect(828, y + 44, 702, 62),

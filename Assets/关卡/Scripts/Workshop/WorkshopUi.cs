@@ -69,6 +69,18 @@ internal static class WorkshopUi
     internal static RectTransform PixelCard(Transform parent, string name, Rect bounds, Color surface, Color edge)
         => Card(parent, name, bounds, surface, edge);
 
+    internal static RectTransform WorkbenchCard(Transform parent, string name, Rect bounds, Color surface, Color edge)
+    {
+        var card = PixelCard(parent, name, bounds, surface, edge);
+        var paper = Resources.Load<Sprite>("WorkshopGameArt/PaperFrame");
+        if (paper != null)
+        {
+            var layer = Picture(card, "Mulberry Paper", new Rect(0, 0, bounds.width, bounds.height), paper, stretch: true);
+            layer.type = Image.Type.Sliced;
+        }
+        return card;
+    }
+
     internal static UnityEngine.UI.Button PixelButton(Transform parent, string name, Rect bounds,
         string label, Action clicked, bool primary, int size, Color? primaryColor = null)
     {

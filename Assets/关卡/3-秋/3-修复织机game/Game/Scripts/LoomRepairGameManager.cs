@@ -262,6 +262,7 @@ namespace JiangnanDye.LoomRepair
             isCalibrating = false;
             totalProgress = 100f;
             AutumnLevelState.HasLoomRepaired = true;
+            bool firstRepair = !WorkshopProgress.HasStep("autumn.loom");
             WorkshopProgress.MarkStep("autumn.loom");
 
             if (calibrationPanel != null)
@@ -278,7 +279,9 @@ namespace JiangnanDye.LoomRepair
             // 动画结束后再显示完成弹窗；点击“继续”返回秋天场景
             MiniGameCompletionAnimation.PlayThen(MiniGameCompletionId.LoomRepair, () =>
             {
-                SimplePopup.Show("修复完成！", "织机已修复，可以开始织造了。", "继续", CloseGame);
+                SimplePopup.Show("修复完成！", firstRepair
+                    ? "获得修机工票 ×1，已存入储物屋的节气收藏。现在可以开始织造了。"
+                    : "织机已修复，修机工票已收集。现在可以开始织造了。", "继续", CloseGame);
                 OnGameCompleted?.Invoke();
             });
             Debug.Log("[LoomRepairGameManager] 织造完成！");

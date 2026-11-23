@@ -142,10 +142,19 @@ public class PickupItem : MonoBehaviour
         if (inRange && !_picked && _pickupPopup == null &&
             Input.GetMouseButtonDown(0) && !IsPointerOverUI() && IsMouseOverSelf())
         {
-            if (WorkshopStep() == "spring.eggPaper")
+            string step = WorkshopStep();
+            if (step == "spring.basket" && !SpringSummerNpcDialogue.RequireMulberryBriefing()) return;
+            if (step == "spring.eggPaper")
+            {
+                if (!SpringSummerNpcDialogue.CanWash)
+                {
+                    SimplePopup.Show("先去喂蚕", "先收集桑叶并给已经孵化的小蚕添桑，再回来准备下一批蚕种。", "知道了", null);
+                    return;
+                }
                 SpringSummerNpcDialogue.BeforeBath(ShowPickupPopup);
-            else
-                ShowPickupPopup();
+                return;
+            }
+            ShowPickupPopup();
         }
     }
 

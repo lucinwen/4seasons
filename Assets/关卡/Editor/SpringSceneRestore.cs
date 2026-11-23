@@ -321,7 +321,7 @@ public static class SpringSceneRestore
                     break;
 
                 case SpringItemKind.SilkwormRack:
-                    go.AddComponent<SilkwormRackTrigger>();
+                    go.AddComponent<SilkwormRackTrigger>().guyuStation = item.Name == "1-蚕簇架2";
                     break;
 
                 case SpringItemKind.WashingEgg:

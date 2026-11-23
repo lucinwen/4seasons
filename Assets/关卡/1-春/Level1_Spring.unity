@@ -2004,14 +2004,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8116ba28ebb95fd4b8a5cf7e534304f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonText: "\u524D\u5F80\u5582\u8695"
+  guyuStation: 1
   buttonOffset: {x: 0, y: 2.4, z: 0}
   buttonOpacity: 0.9
-  missingLeavesTitle: "\u7F3A\u5C11\u6851\u53F6"
-  missingLeavesMsg: "\u8BF7\u5148\u53BB\u6851\u56ED\u91C7\u6851\uFF0C\u83B7\u5F97\u6851\u53F6\u540E\u518D\u6765\u5582\u8695\u3002"
-  missingEggsTitle: "\u7F3A\u5C11\u8695\u79CD"
-  missingEggsMsg: "\u8BF7\u5148\u5B8C\u6210\u8695\u79CD\u6E05\u6D17\uFF0C\u518D\u6765\u5582\u8695\u3002"
-  targetSceneName: 
 --- !u!1 &1004594350
 GameObject:
   m_ObjectHideFlags: 0
@@ -3060,14 +3055,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8116ba28ebb95fd4b8a5cf7e534304f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonText: "\u524D\u5F80\u5582\u8695"
+  guyuStation: 0
   buttonOffset: {x: 0, y: 2.4, z: 0}
   buttonOpacity: 0.9
-  missingLeavesTitle: "\u7F3A\u5C11\u6851\u53F6"
-  missingLeavesMsg: "\u8BF7\u5148\u53BB\u6851\u56ED\u91C7\u6851\uFF0C\u83B7\u5F97\u6851\u53F6\u540E\u518D\u6765\u5582\u8695\u3002"
-  missingEggsTitle: "\u7F3A\u5C11\u8695\u79CD"
-  missingEggsMsg: "\u8BF7\u5148\u5B8C\u6210\u8695\u79CD\u6E05\u6D17\uFF0C\u518D\u6765\u5582\u8695\u3002"
-  targetSceneName: 
 --- !u!1 &1465070689
 GameObject:
   m_ObjectHideFlags: 0
@@ -4004,14 +3994,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8116ba28ebb95fd4b8a5cf7e534304f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonText: "\u524D\u5F80\u5582\u8695"
+  guyuStation: 0
   buttonOffset: {x: 0, y: 2.4, z: 0}
   buttonOpacity: 0.9
-  missingLeavesTitle: "\u7F3A\u5C11\u6851\u53F6"
-  missingLeavesMsg: "\u8BF7\u5148\u53BB\u6851\u56ED\u91C7\u6851\uFF0C\u83B7\u5F97\u6851\u53F6\u540E\u518D\u6765\u5582\u8695\u3002"
-  missingEggsTitle: "\u7F3A\u5C11\u8695\u79CD"
-  missingEggsMsg: "\u8BF7\u5148\u5B8C\u6210\u8695\u79CD\u6E05\u6D17\uFF0C\u518D\u6765\u5582\u8695\u3002"
-  targetSceneName: 
 --- !u!1 &1925318479
 GameObject:
   m_ObjectHideFlags: 0

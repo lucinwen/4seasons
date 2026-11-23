@@ -34,6 +34,16 @@ public static class WorkshopProgress
     };
 
     [Serializable]
+    internal sealed class ChallengeWork
+    {
+        public string id;
+        public int order;
+        public int score;
+        public string description;
+        public string sample;
+    }
+
+    [Serializable]
     private sealed class SaveData
     {
         public int items;
@@ -46,6 +56,7 @@ public static class WorkshopProgress
         public string garmentId;
         public List<string> steps = new List<string>();
         public List<string> observations = new List<string>();
+        public List<ChallengeWork> challengeWorks = new List<ChallengeWork>();
     }
 
     private static SaveData save;
@@ -66,6 +77,7 @@ public static class WorkshopProgress
             if (save == null) save = new SaveData();
             if (save.steps == null) save.steps = new List<string>();
             if (save.observations == null) save.observations = new List<string>();
+            if (save.challengeWorks == null) save.challengeWorks = new List<ChallengeWork>();
             return save;
         }
     }
@@ -111,11 +123,41 @@ public static class WorkshopProgress
     public static bool HasStep(string id) => State.steps.Contains(id);
     internal static bool HasObservation(string id) => State.observations.Contains(id);
 
-    internal static void RecordObservation(string id)
+    internal static bool RecordObservation(string id)
     {
-        if (State.observations.Contains(id)) return;
+        if (State.observations.Contains(id)) return false;
         State.observations.Add(id);
-        Save();
+        Commit();
+        return true;
+    }
+
+    internal static ChallengeWork BestChallengeWork(string id, int order) =>
+        State.challengeWorks.Find(work => work != null && work.id == id && work.order == order);
+
+    internal static bool RecordChallenge(string id, int order, int score, string description, string sample)
+    {
+        bool first = !HasObservation(id);
+        if (first) State.observations.Add(id);
+
+        var work = BestChallengeWork(id, order);
+        if (work == null)
+        {
+            work = new ChallengeWork { id = id, order = order, score = score, description = description, sample = sample };
+            State.challengeWorks.Add(work);
+        }
+        else if (score > work.score)
+        {
+            work.score = score;
+            work.description = description;
+            work.sample = sample;
+        }
+        else if (!first)
+        {
+            return false;
+        }
+
+        Commit();
+        return first;
     }
     public static string DyedColor => State.dyedColor ?? "";
     public static string GarmentId => State.garmentId ?? "";
