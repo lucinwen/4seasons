@@ -6,17 +6,19 @@ using UnityEngine.SceneManagement;
 public sealed class WorkshopTitle : MonoBehaviour
 {
     public const string SceneName = "FourSeasonsTitle";
+    public const string GameName = "四时织坊";
 
     private const string VolumeKey = "ShiXu.Settings.MasterVolume";
     private const string FullscreenKey = "ShiXu.Settings.Fullscreen";
     private const string CoverResource = "WorkshopFinish/TitleCover";
     private const int PostOfficeButtonIndex = 3;
+    private const int HeritageButtonIndex = 4;
 
     private static readonly Color Jade = new Color32(41, 83, 68, 255);
     private static readonly Color Red = new Color32(156, 78, 66, 255);
     private static readonly Color Gold = new Color32(197, 159, 92, 255);
 
-    private static readonly float[] ButtonTops = { 537f, 629f, 722f, 810f };
+    private static readonly float[] ButtonTops = { 537f, 629f, 722f, 810f, 810f };
     private readonly UnityEngine.UI.Button[] menuButtons = new UnityEngine.UI.Button[ButtonTops.Length];
     private readonly RectTransform[] focusMarks = new RectTransform[ButtonTops.Length];
     private RectTransform frame;
@@ -24,12 +26,14 @@ public sealed class WorkshopTitle : MonoBehaviour
     private CanvasGroup menuGroup;
     private UnityEngine.UI.Button modalReturn;
     private UnityEngine.UI.Selectable[] modalNavigation;
+    private Action modalBack;
     private bool postOfficeOpen;
     private bool leaving;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void ApplySavedSettings()
     {
+        WorkshopLegacyPreferences.Import();
         AudioListener.volume = Mathf.Clamp01(PlayerPrefs.GetFloat(VolumeKey, 1f));
         if (PlayerPrefs.HasKey(FullscreenKey))
             Screen.fullScreen = PlayerPrefs.GetInt(FullscreenKey) != 0;
@@ -47,13 +51,13 @@ public sealed class WorkshopTitle : MonoBehaviour
             var art = WorkshopUi.Rect(frame, "Title Cover Artwork", coverBounds).gameObject.AddComponent<UnityEngine.UI.RawImage>();
             art.texture = cover;
             art.raycastTarget = false;
-            Label(frame, "Title First Line", CoverRect(166f, 219f, 394f, 88f), "时序", 106, Jade);
-            Label(frame, "Title Second Line", CoverRect(166f, 303f, 394f, 98f), "小织匠", 114, Jade);
+            Label(frame, "Title First Line", CoverRect(166f, 222f, 394f, 88f), "四时", 110, Jade);
+            Label(frame, "Title Second Line", CoverRect(166f, 307f, 394f, 98f), "织坊", 123, Jade);
         }
         else
         {
             WorkshopUi.Panel(frame, "Title Frame", coverBounds, WorkshopArt.WorkshopTaskBoard);
-            Label(frame, "Fallback Title", new Rect(172f, 190f, 580f, 145f), "时序小织匠", 74, Jade);
+            Label(frame, "Fallback Title", new Rect(172f, 190f, 580f, 145f), GameName, 94, Jade);
         }
 
         RectTransform menu = WorkshopUi.Rect(frame, "Title Menu", coverBounds);
@@ -64,6 +68,9 @@ public sealed class WorkshopTitle : MonoBehaviour
         menuButtons[2] = AddMenuButton(menu, 2, "Title Settings", "游戏设置", ShowSettings, true, cover != null);
         var postOfficeButton = AddMenuButton(menu, PostOfficeButtonIndex, "Title Send Postcard", "寄明信片", ShowPostOffice, true, cover != null);
         menuButtons[PostOfficeButtonIndex] = postOfficeButton;
+        var heritageButton = AddMenuButton(menu, HeritageButtonIndex, "Title Heritage Sources", "新闻与来源",
+            () => ShowHeritage(false), true, cover != null);
+        menuButtons[HeritageButtonIndex] = heritageButton;
         if (!canContinue && cover != null)
         {
             var tint = WorkshopUi.Fill(menuButtons[1].transform, "Continue Unavailable",
@@ -73,17 +80,18 @@ public sealed class WorkshopTitle : MonoBehaviour
 
         SetNavigation(canContinue
             ? menuButtons
-            : new UnityEngine.UI.Selectable[] { menuButtons[0], menuButtons[2], postOfficeButton });
+            : new UnityEngine.UI.Selectable[] { menuButtons[0], menuButtons[2], postOfficeButton, heritageButton });
         Select(menuButtons[0]);
     }
 
     private UnityEngine.UI.Button AddMenuButton(RectTransform menu, int index, string name, string label,
         Action action, bool enabled, bool hasCoverArt)
     {
-        bool isPostOffice = index == PostOfficeButtonIndex;
-        // The original three interactive targets follow the button art in the cover.
-        var bounds = CoverRect(156f, ButtonTops[index], 325f, isPostOffice ? 60f : 75f);
-        bool useCoverButton = hasCoverArt && !isPostOffice;
+        bool isShortcut = index >= PostOfficeButtonIndex;
+        // Keep the first three targets aligned to the cover's painted buttons.
+        float left = index == HeritageButtonIndex ? 318f : 156f;
+        var bounds = CoverRect(left, ButtonTops[index], isShortcut ? 156f : 325f, isShortcut ? 60f : 75f);
+        bool useCoverButton = hasCoverArt && !isShortcut;
         var button = WorkshopUi.Button(menu, name, bounds, "", action, useCoverButton ? Color.clear : Jade, enabled);
         if (useCoverButton)
         {
@@ -93,7 +101,7 @@ public sealed class WorkshopTitle : MonoBehaviour
             face.pixelsPerUnitMultiplier = 0.20f;
             button.targetGraphic = face;
         }
-        if (isPostOffice)
+        if (isShortcut)
         {
             var trim = WorkshopUi.Fill(button.transform, "Gold Trim", new Rect(4f, 4f, bounds.width - 8f, bounds.height - 8f), Gold);
             WorkshopUi.ApplyPixelShape(trim);
@@ -102,8 +110,8 @@ public sealed class WorkshopTitle : MonoBehaviour
             WorkshopUi.ApplyPixelShape(face);
             button.targetGraphic = face;
         }
-        var labelColor = isPostOffice || (useCoverButton && index > 0) ? Jade : WorkshopUi.Cream;
-        Label(button.transform, "Label", new Rect(0f, 0f, bounds.width, bounds.height), label, isPostOffice ? 34 : 39, labelColor);
+        var labelColor = isShortcut || (useCoverButton && index > 0) ? Jade : WorkshopUi.Cream;
+        Label(button.transform, "Label", new Rect(0f, 0f, bounds.width, bounds.height), label, isShortcut ? 26 : 39, labelColor);
         button.transition = UnityEngine.UI.Selectable.Transition.None;
 
         var mark = WorkshopUi.Rect(button.transform, name + " Focus", new Rect(0f, 0f, bounds.width, bounds.height));
@@ -120,7 +128,8 @@ public sealed class WorkshopTitle : MonoBehaviour
         if (leaving || menuGroup == null) return;
         if (!postOfficeOpen && modal != null && Input.GetKeyDown(KeyCode.Escape))
         {
-            CloseModal();
+            if (modalBack != null) modalBack();
+            else CloseModal();
             return;
         }
 
@@ -147,7 +156,7 @@ public sealed class WorkshopTitle : MonoBehaviour
     {
         if (!WorkshopProgress.HasSavedGame)
         {
-            StartNewJourney();
+            ShowOpening();
             return;
         }
 
@@ -155,7 +164,11 @@ public sealed class WorkshopTitle : MonoBehaviour
         Label(panel, "Restart Message", new Rect(120f, 164f, 740f, 110f),
             "重新开始将清空现有的四季任务、图鉴与成衣进度。", 30, WorkshopUi.Ink);
         var cancel = DialogButton(panel, "Title Cancel Restart", new Rect(130f, 365f, 310f, 72f), "返回封面", CloseModal, Jade);
-        var confirm = DialogButton(panel, "Title Confirm Restart", new Rect(524f, 365f, 310f, 72f), "确认重新开始", StartNewJourney, Red);
+        var confirm = DialogButton(panel, "Title Confirm Restart", new Rect(524f, 365f, 310f, 72f), "确认重新开始", () =>
+        {
+            CloseModal();
+            ShowOpening();
+        }, Red);
         SetModalNavigation(cancel, confirm);
         var cancelNav = cancel.navigation;
         var confirmNav = confirm.navigation;
@@ -163,6 +176,39 @@ public sealed class WorkshopTitle : MonoBehaviour
         confirmNav.selectOnLeft = confirmNav.selectOnRight = cancel;
         cancel.navigation = cancelNav;
         confirm.navigation = confirmNav;
+    }
+
+    private void ShowOpening()
+    {
+        var panel = OpenModal("Title Story Opening", "一根丝，从桑叶开始", menuButtons[0]);
+        var text = WorkshopUi.Label(panel, "Opening Story", new Rect(122f, 168f, 716f, 176f),
+            WorkshopHeritageBrief.OpeningHook, 29, WorkshopUi.Ink, TextAnchor.UpperLeft, WorkshopArt.WorkshopFont);
+        text.horizontalOverflow = HorizontalWrapMode.Wrap;
+        text.lineSpacing = 1.16f;
+
+        var begin = DialogButton(panel, "Title Begin Apprenticeship", new Rect(525f, 365f, 305f, 70f),
+            "踏入织坊", StartNewJourney, Jade);
+        var sources = DialogButton(panel, "Title Opening Sources", new Rect(128f, 365f, 305f, 70f),
+            "新闻与来源", () =>
+            {
+                CloseModal();
+                ShowHeritage(true);
+            }, Red);
+        SetModalNavigation(begin, sources);
+    }
+
+    private void ShowHeritage(bool returnToOpening)
+    {
+        BlockMenu(menuButtons[returnToOpening ? 0 : HeritageButtonIndex]);
+        modal = WorkshopUi.Rect(frame, "Title Heritage", new Rect(0f, 0f, 1920f, 1080f));
+        var shade = WorkshopUi.Fill(modal, "Title Heritage Shade", new Rect(0f, 0f, 1920f, 1080f), new Color32(29, 46, 40, 190));
+        shade.raycastTarget = true;
+        modalBack = () =>
+        {
+            CloseModal();
+            if (returnToOpening) ShowOpening();
+        };
+        SetModalNavigation(WorkshopHeritageBrief.Open(modal, modalBack, returnToOpening));
     }
 
     private void StartNewJourney()
@@ -282,6 +328,7 @@ public sealed class WorkshopTitle : MonoBehaviour
         Destroy(modal.gameObject);
         modal = null;
         modalNavigation = null;
+        modalBack = null;
         postOfficeOpen = false;
         PlayerPrefs.Save();
         menuGroup.interactable = true;
