@@ -4,6 +4,33 @@ using UnityEngine;
 public sealed partial class WorkshopKnowledgeView
 {
     private static readonly Rect SolarDetailBounds = new Rect(195, 74, 1530, 862);
+    private static readonly string[] SolarReviewNotes =
+    {
+        "桐乡桑园 · 看桑枝上的芽是紧合还是已经展开。",
+        "桐乡桑园 · 下过春雨，记一记叶面保持湿润的时间。",
+        "桐乡桑园 · 留心天气回暖时，桑芽和小虫有什么变化。",
+        "桐乡桑园 · 从早到晚，比较桥边和树下的日照。",
+        "桐乡桑园 · 看两片桑叶的叶尖和叶色，再按蚕龄挑叶。",
+        "桐乡蚕房 · 认出雨珠，等叶面干爽后再给桑。",
+        "南浔工坊 · 午后摸一摸阴凉处，感受暑热来临。",
+        "南浔蚕房 · 同地养蚕也可能分批，茧况要逐批看。",
+        "南浔蚕蔟 · 看茧壳有没有破口，需复查的先放一边。",
+        "南浔工坊 · 看日照时间和作坊窗边的光如何变化。",
+        "南浔蚕蔟 · 走到窗边感受空气流动，再留意湿热。",
+        "南浔工坊 · 先通风。煮茧、找丝头、绕丝轴可另回看。",
+        "苏州织造 · 观察早晚光线，感受暑热怎样慢慢退去。",
+        "苏州织造 · 比较窗边午后和傍晚的凉热。",
+        "苏州织造 · 看晨露，留心丝线放在干爽处。",
+        "灵桑阙 · 回看游戏里的酬蚕致谢，想想是谁带来了生丝。",
+        "苏州织造 · 把松垂经线理齐，再看一趟引纬。",
+        "苏州织造 · 天凉后再回看桑园，留意叶色的变化。",
+        "江南染坊 · 检查染材有无水迹，再用小布头试色。",
+        "江南裁衣间 · 回看染布、裁片、成衣，用真正缝好的款式收束记录。",
+        "江南工坊 · 看青瓦、树和河岸如何显出冬日气息。",
+        "江南工坊 · 观察白天变短后，什么时候需要点亮工位。",
+        "江南染坊 · 看存放染材的角落是否干燥。",
+        "江南冬桑园 · 回看清园、修枝和来年备蚕。"
+    };
 
     private readonly struct SolarPrint
     {
@@ -32,6 +59,7 @@ public sealed partial class WorkshopKnowledgeView
         StartPage(goBack);
         CenterArt(page, "Full Size Solar Card", SolarDetailBounds, artwork);
         var printed = SolarPrints[(int)termSeason * 6 + index];
+        UnityEngine.UI.Button back = null;
         foreach (var region in printed)
         {
             bool acknowledgement = region.Text == "知道啦";
@@ -43,9 +71,54 @@ public sealed partial class WorkshopKnowledgeView
                 hitbox.xMax += 40;
                 hitbox.yMin -= 14;
                 hitbox.yMax += 14;
-                WorkshopUi.Button(page, "Close Solar Detail", ScaleSolarRect(SolarDetailBounds, hitbox),
+                back = WorkshopUi.Button(page, "Close Solar Detail", ScaleSolarRect(SolarDetailBounds, hitbox),
                     "", goBack, Color.clear);
+                MarkPrintedButtonFocus(back);
             }
+        }
+        RenderSolarRecordLinks(termSeason, index);
+        WorkshopCraftRecordView.KeepFocusIn(page, back);
+    }
+
+    private void RenderSolarRecordLinks(WorkshopSeason season, int index)
+    {
+        int ordinal = (int)season * 6 + index;
+        var footer = WorkshopUi.PixelCard(page, "Solar Review Notes", new Rect(195, 949, 1530, 76),
+            WorkshopUi.Paper, WorkshopUi.Bronze);
+        Label(footer, "Regional Observation", new Rect(24, 6, 770, 64), SolarReviewNotes[ordinal], 24, WorkshopUi.Ink);
+        WorkshopUi.PixelButton(footer, "Regional Source", new Rect(1288, 13, 218, 50), "地方资料",
+            () => WorkshopHeritageBrief.ShowSeason(season), false, 25);
+
+        var observation = SolarObservation(ordinal);
+        if (!observation.HasValue) return;
+
+        DrawSolarObservationLink(footer, observation.Value, 1056,
+            ordinal == 11 ? "回看通风" : "回看观察");
+        if (ordinal == 11)
+            DrawSolarObservationLink(footer, WorkshopObservation.DashuReeling, 824, "回看缫丝");
+    }
+
+    private static void DrawSolarObservationLink(Transform footer, WorkshopObservation id, float x, string caption)
+    {
+        bool recorded = WorkshopObservationView.HasRecord(id);
+        var button = WorkshopUi.PixelButton(footer, "Open Solar Observation " + id, new Rect(x, 13, 218, 50),
+            recorded ? caption : caption + " · 未记录", () => WorkshopObservationView.ShowRecord(id), true, 23, Jade);
+        button.interactable = recorded;
+    }
+
+    private static WorkshopObservation? SolarObservation(int ordinal)
+    {
+        switch (ordinal)
+        {
+            case 4: return WorkshopObservation.QingmingMulberry;
+            case 5: return WorkshopObservation.GuyuLeaf;
+            case 8: return WorkshopObservation.MangzhongCocoon;
+            case 11: return WorkshopObservation.DashuVentilation;
+            case 15: return WorkshopObservation.QiufenOffering;
+            case 16: return WorkshopObservation.HanluLoom;
+            case 18: return WorkshopObservation.LidongDye;
+            case 19: return WorkshopObservation.XiaoxueTailoring;
+            default: return null;
         }
     }
 

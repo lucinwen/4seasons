@@ -432,15 +432,18 @@ public sealed class WorkshopMainHallWorld : MonoBehaviour
     private bool InputBlocked =>
         modalOpen || WorkshopQuestGuide.IsWorldOverlayActive || WorkshopDialoguePresenter.BlocksWorldInput ||
         WorkshopKnowledgeView.IsOpen || WorkshopStorageView.IsOpen ||
-        WorkshopNarrativeView.IsOpen;
+        WorkshopNarrativeView.IsOpen || WorkshopChapterGuide.IsOpen || WorkshopHeritageBrief.IsOpen ||
+        WorkshopCraftRecordView.BlocksWorldInput;
 
     private void EnterSeason(WorkshopSeason season)
     {
-        WorkshopNarrativeView.PlaySeasonBriefing(season, () =>
+        modalOpen = true;
+        playerController?.SetControlEnabled(false);
+        WorkshopChapterGuide.Show(season, () => WorkshopNarrativeView.PlaySeasonBriefing(season, () =>
         {
             if (player != null) lastPlayerX = player.position.x;
             SceneManager.LoadScene(WorkshopProgress.SceneName(season));
-        });
+        }), ResumeHall);
     }
 
     private void OpenStorage(WorkshopSeason season)

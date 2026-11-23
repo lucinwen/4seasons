@@ -11,12 +11,26 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
     private static readonly float[] SolarRows = { 245, 382, 519, 656 };
 
     private static WorkshopKnowledgeView current;
+    private static int closedFrame = -1;
     private RectTransform frame;
     private RectTransform page;
     private WorkshopSeason season;
     private Action escape;
+    private Action onClose;
+    private WorkshopKnowledgeView previousView;
+    private GameObject previousSelection;
+    private int sortingOrder;
+    private int resumedFrame = -1;
 
     public static bool IsOpen => current != null;
+    internal static bool BlocksWorldInput => IsOpen || closedFrame == Time.frameCount;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStatics()
+    {
+        current = null;
+        closedFrame = -1;
+    }
 
     public static void Show(WorkshopSeason season, bool justReceived = false)
     {
@@ -28,6 +42,20 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
     {
         var view = Open(season);
         view.RenderItems();
+    }
+
+    internal static void ShowTerm(WorkshopSeason season, int index, Action onClose = null)
+    {
+        var art = WorkshopProgress.HasSolarTerms(season) ? WorkshopArt.SolarCard(season, index) : null;
+        if (art == null)
+        {
+            onClose?.Invoke();
+            return;
+        }
+
+        var view = Open(season, WorkshopCraftRecordView.CanvasOrder + 100, preserveExisting: true);
+        view.onClose = onClose;
+        view.RenderSolarDetail(art, season, index, WorkshopArt.SolarNames(season)[index], view.Close);
     }
 
     public static void ShowItem(WorkshopItem item)
@@ -45,19 +73,28 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
         view.RenderDetail(art, view.Close, "关闭");
     }
 
-    private static WorkshopKnowledgeView Open(WorkshopSeason season)
+    private static WorkshopKnowledgeView Open(WorkshopSeason season, int order = 12000, bool preserveExisting = false)
     {
-        if (current != null) current.Close();
-        var frame = WorkshopUi.NewCanvas("Workshop Knowledge", 12000);
+        if (!preserveExisting && current != null) current.Close();
+        var previous = preserveExisting ? current : null;
+        var selection = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
+        var frame = WorkshopUi.NewCanvas("Workshop Knowledge", order);
         WorkshopUi.Block(frame, WorkshopUi.Veil);
         current = frame.gameObject.AddComponent<WorkshopKnowledgeView>();
         current.frame = frame;
         current.season = season;
+        current.sortingOrder = order;
+        current.previousView = previous;
+        current.previousSelection = selection;
         return current;
     }
 
     private void Update()
     {
+        if (current != this || resumedFrame == Time.frameCount || WorkshopObservationView.BlocksWorldInput ||
+            WorkshopDialoguePresenter.BlocksWorldInput ||
+            WorkshopHeritageBrief.IsOpen || WorkshopChapterGuide.IsOpen ||
+            (sortingOrder < WorkshopCraftRecordView.CanvasOrder && WorkshopCraftRecordView.BlocksWorldInput)) return;
         if (Input.GetKeyDown(KeyCode.Escape)) escape?.Invoke();
     }
 
@@ -68,8 +105,14 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
 
     private void Close()
     {
-        if (current == this) current = null;
+        if (current != this) return;
+        closedFrame = Time.frameCount;
+        current = previousView;
+        if (previousView != null) previousView.resumedFrame = Time.frameCount;
         WorkshopUi.CloseCanvas(frame);
+        if (EventSystem.current != null && previousSelection != null && previousSelection.activeInHierarchy)
+            EventSystem.current.SetSelectedGameObject(previousSelection);
+        onClose?.Invoke();
     }
 
     private void StartPage(Action goBack)
@@ -90,11 +133,11 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
         StartPage(Close);
         var journal = WorkshopUi.Panel(page, "Journal Frame", new Rect(76, 17, 1768, 1046),
             WorkshopArt.JournalFrame ?? WorkshopArt.WorkshopTaskBoard).rectTransform;
-        Label(journal, "Title", new Rect(589, 112, 631, 89), "关键道具图鉴", 54,
+        Label(journal, "Title", new Rect(589, 112, 631, 89), "四时织录", 54,
             Jade, TextAnchor.MiddleCenter);
         Label(journal, "Item Hint", new Rect(291, 288, 876, 49),
             "取得关键道具后，点选图鉴卡片阅读。", 25, WorkshopUi.Faded);
-        WorkshopUi.PixelButton(journal, "Close", new Rect(1337, 283, 160, 56),
+        var back = WorkshopUi.PixelButton(journal, "Close", new Rect(1337, 283, 160, 56),
             "返回", Close, false, 28);
 
         for (int i = 0; i < 4; i++)
@@ -106,11 +149,14 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
         }
         WorkshopUi.PixelButton(journal, "Solar Cards", new Rect(1255, 352, 242, 54), "二十四节气",
             () => RenderSolarGallery(RenderItems), true, 28, WorkshopUi.Green);
+        WorkshopUi.PixelButton(journal, "Observation Records", new Rect(988, 352, 243, 54), "四季观察",
+            RenderObservationGallery, true, 28, WorkshopUi.Green);
         WorkshopUi.Fill(journal, "Rule", new Rect(291, 422, 1206, 2), WorkshopUi.Line);
 
         var items = WorkshopProgress.Items(season);
         for (int i = 0; i < items.Length; i++)
             RenderItem(journal, items[i], new Rect(293 + i * 402, 434, 378, 428));
+        WorkshopCraftRecordView.KeepFocusIn(page, back);
     }
 
     private void SelectSeason(WorkshopSeason tab)
@@ -181,10 +227,13 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
         if (ledger == null)
             Label(back.transform, "Solar Back Label", new Rect(0, 0, 260, 82),
                 "返回", 32, Cream, TextAnchor.MiddleCenter);
+        else
+            MarkPrintedButtonFocus(back);
         string guide = justReceived
             ? "已收录" + WorkshopProgress.SeasonName(season) + "季的六张节气卡。点选卡片阅读。"
             : "和四季关卡里的师傅交谈，领取对应的六张节气卡。";
         Label(page, "Solar Guide", new Rect(210, 966, 1500, 54), guide, 29, Cream, TextAnchor.MiddleCenter);
+        WorkshopCraftRecordView.KeepFocusIn(page, back);
     }
 
     private void RenderTerm(WorkshopSeason currentSeason, int index, string name, bool acquired, Action goBack)
@@ -227,6 +276,17 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
         var image = WorkshopUi.Picture(parent, name, rect, art);
         image.rectTransform.pivot = new Vector2(0.5f, 0.5f);
         image.rectTransform.anchoredPosition = new Vector2(rect.center.x, -rect.center.y);
+    }
+
+    private static void MarkPrintedButtonFocus(UnityEngine.UI.Button button)
+    {
+        Rect bounds = ((RectTransform)button.transform).rect;
+        button.targetGraphic = WorkshopUi.Fill(button.transform, "Keyboard Focus Line",
+            new Rect(bounds.width * 0.18f, bounds.height * 0.82f, bounds.width * 0.64f, 4f), WorkshopUi.Bronze);
+        var colors = button.colors;
+        colors.normalColor = Color.clear;
+        colors.highlightedColor = colors.selectedColor = Color.white;
+        button.colors = colors;
     }
 
     private static UnityEngine.UI.Text Label(Transform parent, string name, Rect rect, string text,

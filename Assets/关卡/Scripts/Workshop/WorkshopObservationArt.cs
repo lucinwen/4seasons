@@ -14,6 +14,7 @@ internal sealed class WorkshopObservationArt : ScriptableObject
     [SerializeField] private Sprite shuttle;
     [SerializeField] private Sprite dryDye;
     [SerializeField] private Sprite dyedSwatch;
+    [SerializeField] private Sprite offeringWine;
 
     internal Sprite Leaf => leaf;
     internal Sprite SilkwormTray => silkwormTray;
@@ -23,4 +24,5 @@ internal sealed class WorkshopObservationArt : ScriptableObject
     internal Sprite Shuttle => shuttle;
     internal Sprite DryDye => dryDye;
     internal Sprite DyedSwatch => dyedSwatch;
+    internal Sprite OfferingWine => offeringWine;
 }

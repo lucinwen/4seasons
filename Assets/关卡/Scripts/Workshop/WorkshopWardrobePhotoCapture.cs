@@ -111,12 +111,12 @@ internal static class WorkshopWardrobePhotoCapture
 
     private static string SavePng(byte[] image)
     {
-        string fileName = $"四时工坊_{DateTime.Now:yyyyMMdd_HHmmss_fff}_{Guid.NewGuid():N}.png";
+        string fileName = $"{WorkshopTitle.GameName}_{DateTime.Now:yyyyMMdd_HHmmss_fff}_{Guid.NewGuid():N}.png";
         try
         {
             string pictures = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
             if (!string.IsNullOrWhiteSpace(pictures))
-                return WritePng(Path.Combine(pictures, "四时工坊", AlbumName), fileName, image);
+                return WritePng(Path.Combine(pictures, WorkshopTitle.GameName, AlbumName), fileName, image);
         }
         catch (Exception exception) when (IsFileError(exception))
         {

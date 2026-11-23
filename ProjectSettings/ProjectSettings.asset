@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: Jiangnan Studio
-  productName: "\u6C5F\u5357\u521D\u51AC\xB7\u5929\u7136\u67D3\u6599\u91C7\u96C6"
+  productName: "\u56DB\u65F6\u7EC7\u574A"
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.13725491, g: 0.12156863, b: 0.1254902, a: 1}

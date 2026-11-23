@@ -86,7 +86,8 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
     {
         PlaySeasonReview(WorkshopSeason.Winter, () =>
             WorkshopDialoguePresenter.PlayOnce("dialogue.finale.display", WorkshopDialogueScripts.FinaleBeforeDisplay,
-                () => ShowFinaleRecap(onFinished), WorkshopSeason.Winter));
+                () => WorkshopCraftRecordView.ShowChapterRecord(WorkshopSeason.Winter, () => ShowFinaleRecap(onFinished)),
+                WorkshopSeason.Winter));
     }
 
     private static void ShowFinaleRecap(Action onFinished)
@@ -113,6 +114,7 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
         active.onClose = closed;
         active.group = frame.gameObject.AddComponent<CanvasGroup>();
         active.group.alpha = 0f;
+        active.group.interactable = false;
         WorkshopAudioFeedback.Notice();
         return active;
     }
@@ -189,7 +191,11 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
         var proceed = WorkshopUi.Button(page, "Interlude Continue", new Rect(1028, 786, 292, 58),
             "进入" + WorkshopProgress.SeasonName(next) + "季工坊", () => BeginClose(onEnter),
             Rust, enabled: false, size: 30, font: WorkshopArt.WorkshopFont);
-        stay.navigation = new Navigation { mode = Navigation.Mode.Explicit, selectOnRight = proceed };
+        var review = WorkshopUi.Button(page, "Interlude Chapter Record", new Rect(98, 786, 224, 58),
+            "回看本章成果", () => WorkshopCraftRecordView.ShowChapterRecord(completed), Jade,
+            enabled: WorkshopProgress.IsComplete(completed), size: 28, font: WorkshopArt.WorkshopFont);
+        review.navigation = new Navigation { mode = Navigation.Mode.Explicit, selectOnRight = stay };
+        stay.navigation = new Navigation { mode = Navigation.Mode.Explicit, selectOnRight = proceed, selectOnLeft = review };
         proceed.navigation = new Navigation { mode = Navigation.Mode.Explicit, selectOnLeft = stay };
         proceed.GetComponentInChildren<Text>().verticalOverflow = VerticalWrapMode.Overflow;
         StartCoroutine(AnimateInterlude(fillRail.rectTransform, nextRail.rectTransform, proceed, stay));
@@ -217,6 +223,7 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
         yield return new WaitForSecondsRealtime(0.18f);
         proceed.interactable = true;
         stay.interactable = true;
+        group.interactable = true;
         ready = true;
         if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(proceed.gameObject);
     }
@@ -255,6 +262,11 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
 
         var finish = WorkshopUi.Button(page, "Finale Continue", new Rect(1028, 786, 292, 58),
             "继续", () => BeginClose(onClose), Rust, size: 30, font: WorkshopArt.WorkshopFont);
+        WorkshopUi.Button(page, "Finale Production Record", new Rect(98, 786, 251, 58), "看制作记录",
+            () => WorkshopCraftRecordView.ShowProductionRecord(), Jade, size: 28, font: WorkshopArt.WorkshopFont);
+        WorkshopUi.Button(page, "Finale Winter Record", new Rect(371, 786, 245, 58), "回看冬章成果",
+            () => WorkshopCraftRecordView.ShowChapterRecord(WorkshopSeason.Winter), Jade, size: 28,
+            font: WorkshopArt.WorkshopFont);
         finish.GetComponentInChildren<Text>().verticalOverflow = VerticalWrapMode.Overflow;
         StartCoroutine(Reveal(finish));
     }
@@ -266,6 +278,7 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
         yield return Fade(group, 0f, 1f, 0.32f);
         yield return Fade(contentGroup, 0f, 1f, 0.42f);
         action.interactable = true;
+        group.interactable = true;
         ready = true;
         if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(action.gameObject);
     }
@@ -285,7 +298,8 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
 
     private void Update()
     {
-        if (closing || !ready || !Input.GetKeyDown(KeyCode.Escape)) return;
+        if (closing || !ready || WorkshopCraftRecordView.BlocksWorldInput || WorkshopHeritageBrief.IsOpen ||
+            WorkshopChapterGuide.IsOpen || !Input.GetKeyDown(KeyCode.Escape)) return;
         BeginClose(onClose);
     }
 

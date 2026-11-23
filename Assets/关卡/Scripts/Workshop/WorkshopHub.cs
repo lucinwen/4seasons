@@ -100,7 +100,8 @@ public sealed class WorkshopHub : MonoBehaviour
     {
         bool available = !_leaving && !_finishModalOpen &&
             !WorkshopKnowledgeView.IsOpen && !WorkshopStorageView.IsOpen &&
-            !WorkshopNarrativeView.IsOpen && !WorkshopDialoguePresenter.BlocksWorldInput;
+            !WorkshopNarrativeView.IsOpen && !WorkshopDialoguePresenter.BlocksWorldInput &&
+            !WorkshopChapterGuide.IsOpen && !WorkshopHeritageBrief.IsOpen && !WorkshopCraftRecordView.BlocksWorldInput;
         return available;
     }
 
@@ -519,12 +520,12 @@ public sealed class WorkshopHub : MonoBehaviour
     {
         if (_leaving || !WorkshopProgress.IsUnlocked(_season)) return;
         WorkshopSeason season = _season;
-        WorkshopNarrativeView.PlaySeasonBriefing(season, () =>
+        WorkshopChapterGuide.Show(season, () => WorkshopNarrativeView.PlaySeasonBriefing(season, () =>
         {
             _trackedItem = item;
             _leaving = true;
             SceneManager.LoadScene(WorkshopProgress.SceneName(season));
-        });
+        }), CloseFinishModal);
     }
 
     private void OpenSynthesis()

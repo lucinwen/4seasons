@@ -141,6 +141,10 @@ internal sealed class WorkshopNoticeBoard : MonoBehaviour
         WorkshopUi.Fill(transform, "Header Seam", new Rect(409, 358, 1090, 2), new Color32(115, 84, 54, 100));
         BuildScroll();
 
+        WorkshopUi.Button(transform, "Notice Location Guide", new Rect(409, 868, 176, 40),
+            "地点导览", () => WorkshopChapterGuide.Show(season), Leaf, size: 24, font: NoticeFont);
+        WorkshopUi.Button(transform, "Notice Heritage", new Rect(599, 868, 195, 40),
+            "新闻与来源", () => WorkshopHeritageBrief.Show(), Leaf, size: 24, font: NoticeFont);
         emptyMessage = Label(transform, "Empty Notice Board", new Rect(445, 544, 1030, 104),
             "本季告示已全部取下", 40, Ink, TextAnchor.MiddleCenter);
         scrollHint = Label(transform, "Scroll Hint", new Rect(1095, 868, 369, 26),

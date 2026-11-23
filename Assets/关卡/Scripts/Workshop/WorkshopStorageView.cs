@@ -243,7 +243,8 @@ public sealed class WorkshopStorageView : MonoBehaviour
     private void Update()
     {
         if (!visibility.interactable || resumedFrame == Time.frameCount) return;
-        if (WorkshopKnowledgeView.IsOpen || WorkshopNarrativeView.IsOpen || WorkshopDialoguePresenter.BlocksWorldInput) return;
+        if (WorkshopKnowledgeView.BlocksWorldInput || WorkshopNarrativeView.IsOpen || WorkshopDialoguePresenter.BlocksWorldInput ||
+            WorkshopCraftRecordView.BlocksWorldInput || WorkshopHeritageBrief.IsOpen || WorkshopChapterGuide.IsOpen) return;
         if (Input.GetKeyDown(KeyCode.Escape)) Close();
     }
 

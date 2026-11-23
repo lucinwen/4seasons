@@ -34,6 +34,7 @@ internal sealed class WorkshopSynthesis : MonoBehaviour
     private UnityEngine.UI.Text status;
     private UnityEngine.UI.Text tally;
     private UnityEngine.UI.Image product;
+    private RectTransform chapterResult;
     private Sprite outputTray;
     private Action<WorkshopSeason> advance;
     private Action tailor;
@@ -90,6 +91,9 @@ internal sealed class WorkshopSynthesis : MonoBehaviour
         status = WorkshopStorageView.Label(statusCard, "Synthesis Status", new Rect(9, 1, 338, 37),
             "", 24, ink, TextAnchor.MiddleCenter);
         status.verticalOverflow = VerticalWrapMode.Truncate;
+        chapterResult = WorkshopUi.Rect(table, "Chapter Result", new Rect(1427, 834, 260, 49));
+        WorkshopUi.PixelButton(chapterResult, "Open Chapter Result", new Rect(0, 0, 260, 49),
+            "回看本章成果", () => WorkshopCraftRecordView.ShowChapterRecord(season), false, 25);
         Refresh();
     }
 
@@ -272,6 +276,7 @@ internal sealed class WorkshopSynthesis : MonoBehaviour
         }
 
         product.color = completed || count == items.Length ? Color.white : Preview;
+        chapterResult.gameObject.SetActive(completed && !Busy);
         action.interactable = !Busy && dragging < 0 &&
             (completed ? season != WorkshopSeason.Winter : count == items.Length && WorkshopProgress.CanSubmit(season));
         actionText.text = completed ? (season == WorkshopSeason.Winter ? "已缝制" : "前往" + WorkshopProgress.SeasonName(season + 1) + "季")
@@ -319,7 +324,8 @@ internal sealed class WorkshopSynthesis : MonoBehaviour
             yield return null;
         }
 
-        completed = WorkshopProgress.Submit(season) || WorkshopProgress.IsComplete(season);
+        bool submitted = WorkshopProgress.Submit(season);
+        completed = submitted || WorkshopProgress.IsComplete(season);
         if (completed)
         {
             elapsed = 0f;
@@ -335,6 +341,9 @@ internal sealed class WorkshopSynthesis : MonoBehaviour
         Busy = false;
         Refresh();
         status.text = completed ? "已获得" + WorkshopProgress.ProductName(season) + "。" : "材料状态已变化，请重新查看。";
-        if (completed) WorkshopNarrativeView.PlaySeasonReview(season);
+        if (submitted)
+            WorkshopNarrativeView.PlaySeasonReview(season, () => WorkshopCraftRecordView.ShowChapterRecord(season));
+        else if (completed)
+            WorkshopNarrativeView.PlaySeasonReview(season);
     }
 }

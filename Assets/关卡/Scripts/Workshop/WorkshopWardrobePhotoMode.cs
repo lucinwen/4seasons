@@ -38,7 +38,7 @@ internal sealed class WorkshopWardrobePhotoMode : MonoBehaviour
     private const float PortraitHeight = 588f;
     private const float PortraitWidth = PortraitHeight * 260f / 540f;
     private const string PhotoFormat = "1920 × 1080 PNG";
-    private const string HallBackdropName = "四时工坊";
+    private const string HallBackdropName = WorkshopTitle.GameName;
     private static readonly Rect PhotoBounds = new Rect(0f, 0f, PhotoWidth, PhotoHeight);
     private static readonly Color Night = new Color32(16, 28, 48, 255);
     private static readonly Color Ink = new Color32(28, 46, 68, 255);

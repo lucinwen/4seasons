@@ -30,6 +30,7 @@ public sealed class WorkshopArtData : ScriptableObject
 public static class WorkshopArt
 {
     private static WorkshopArtData data;
+    private static Font readingFont;
     private static WorkshopArtData Data => data != null ? data : (data = Resources.Load<WorkshopArtData>("WorkshopArt"));
 
     private static readonly string[][] Terms =
@@ -42,6 +43,22 @@ public static class WorkshopArt
 
     public static Font PixelFont => Data != null && Data.pixelFont != null ? Data.pixelFont : Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
     public static Font WorkshopFont => PixelFont;
+    internal static Font ReadingFont
+    {
+        get
+        {
+            if (readingFont != null) return readingFont;
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
+            var candidate = Font.CreateDynamicFontFromOSFont(new[] { "Microsoft YaHei", "Microsoft YaHei UI", "SimHei" }, 32);
+            if (candidate != null && candidate.HasCharacter('织'))
+            {
+                candidate.hideFlags = HideFlags.HideAndDontSave;
+                readingFont = candidate;
+            }
+#endif
+            return readingFont != null ? readingFont : (readingFont = WorkshopFont);
+        }
+    }
     public static Sprite WorkshopTaskBoard => Data != null ? Data.workshopTaskBoard : null;
     public static Sprite WorkshopChapterRail => Data != null ? Data.workshopChapterRail : null;
     public static Sprite JournalFrame => Data != null ? Data.journalFrame : null;

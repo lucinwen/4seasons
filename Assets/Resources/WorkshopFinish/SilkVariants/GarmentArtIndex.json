@@ -1,0 +1,1405 @@
+{
+  "coordinates": "All crop rectangles and AR seed anchors are full-resolution original PNG pixels, with x from left and y from top. AR seeds describe drawing landmarks for both variants and need camera verification.",
+  "sharedOverlay": "AR and fitting stage can use the transparent original and silk sprites at the same crop and anchors. The camera garment is the active material version.",
+  "aliases": {
+    "2_01": "1_01",
+    "2_02": "1_02",
+    "2_03": "1_03",
+    "2_04": "1_04",
+    "2_05": "1_05",
+    "2_06": "1_06",
+    "2_07": "1_07",
+    "2_08": "1_08"
+  },
+  "items": [
+    {
+      "id": "1_01",
+      "name": "花纹交领",
+      "category": "红粉",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定1_01.png",
+      "silkResource": "WorkshopFinish/SilkVariants/1_01",
+      "originalDetailResource": "WorkshopFinish/SilkVariants/Details/1_01_Original",
+      "silkDetailResource": "WorkshopFinish/SilkVariants/Details/1_01_Silk",
+      "baseSize": {
+        "width": 375,
+        "height": 416
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 375,
+        "height": 416
+      },
+      "detailCrop": {
+        "x": 57,
+        "y": 26,
+        "width": 254,
+        "height": 172
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          188,
+          14
+        ],
+        "shoulderImageLeft": [
+          121,
+          61
+        ],
+        "shoulderImageRight": [
+          254,
+          61
+        ]
+      },
+      "note": "交领和袖面顺褶柔光",
+      "pixelsChanged": 28695,
+      "peakRgbDelta": 34,
+      "detailPixelsChanged": 16219
+    },
+    {
+      "id": "3_01",
+      "name": "鹤纹长衣",
+      "category": "红粉",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_01.png",
+      "silkResource": "WorkshopFinish/SilkVariants/3_01",
+      "baseSize": {
+        "width": 298,
+        "height": 302
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 298,
+        "height": 302
+      },
+      "detailCrop": {
+        "x": 60,
+        "y": 34,
+        "width": 175,
+        "height": 154
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          153,
+          17
+        ],
+        "shoulderImageLeft": [
+          95,
+          47
+        ],
+        "shoulderImageRight": [
+          209,
+          47
+        ]
+      },
+      "note": "鹤纹长衣袖根与红布纵褶",
+      "pixelsChanged": 13070,
+      "peakRgbDelta": 37,
+      "detailPixelsChanged": 9337
+    },
+    {
+      "id": "3_12",
+      "name": "金纹披风",
+      "category": "红粉",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_12.png",
+      "silkResource": "WorkshopFinish/SilkVariants/3_12",
+      "baseSize": {
+        "width": 309,
+        "height": 309
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 309,
+        "height": 293
+      },
+      "detailCrop": {
+        "x": 151,
+        "y": 67,
+        "width": 107,
+        "height": 129
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          154,
+          16
+        ],
+        "shoulderImageLeft": [
+          83,
+          45
+        ],
+        "shoulderImageRight": [
+          226,
+          45
+        ]
+      },
+      "note": "凤凰纹披风上幅垂褶",
+      "pixelsChanged": 11984,
+      "peakRgbDelta": 38,
+      "detailPixelsChanged": 5816
+    },
+    {
+      "id": "3_16",
+      "name": "梅枝长衣",
+      "category": "红粉",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_16.png",
+      "silkResource": "WorkshopFinish/SilkVariants/3_16",
+      "baseSize": {
+        "width": 306,
+        "height": 306
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 306,
+        "height": 306
+      },
+      "detailCrop": {
+        "x": 41,
+        "y": 66,
+        "width": 218,
+        "height": 156
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          156,
+          18
+        ],
+        "shoulderImageLeft": [
+          86,
+          52
+        ],
+        "shoulderImageRight": [
+          225,
+          52
+        ]
+      },
+      "note": "梅枝长衣内袖与酒紫下褶",
+      "pixelsChanged": 10546,
+      "peakRgbDelta": 34,
+      "detailPixelsChanged": 4838
+    },
+    {
+      "id": "1_06",
+      "name": "粉绫齐胸裙",
+      "category": "红粉",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定1_06.png",
+      "silkResource": "WorkshopFinish/SilkVariants/1_06",
+      "baseSize": {
+        "width": 368,
+        "height": 409
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 368,
+        "height": 409
+      },
+      "detailCrop": {
+        "x": 62,
+        "y": 176,
+        "width": 150,
+        "height": 180
+      },
+      "stage": {
+        "garmentLength": 266,
+        "collarOffset": 9,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          182,
+          46
+        ],
+        "shoulderImageLeft": [
+          109,
+          99
+        ],
+        "shoulderImageRight": [
+          259,
+          99
+        ]
+      },
+      "note": "齐胸裙粉色外裙与肩袖叠层",
+      "pixelsChanged": 37449,
+      "peakRgbDelta": 42,
+      "detailPixelsChanged": 9756
+    },
+    {
+      "id": "3_08",
+      "name": "桃花长衣",
+      "category": "红粉",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_08.png",
+      "silkResource": "WorkshopFinish/SilkVariants/3_08",
+      "baseSize": {
+        "width": 280,
+        "height": 306
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 280,
+        "height": 306
+      },
+      "detailCrop": {
+        "x": 16,
+        "y": 60,
+        "width": 250,
+        "height": 149
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          140,
+          16
+        ],
+        "shoulderImageLeft": [
+          87,
+          47
+        ],
+        "shoulderImageRight": [
+          194,
+          47
+        ]
+      },
+      "note": "桃粉大袖转折与裙褶",
+      "pixelsChanged": 17636,
+      "peakRgbDelta": 40,
+      "detailPixelsChanged": 14646
+    },
+    {
+      "id": "1_05",
+      "name": "菱纹交领",
+      "category": "明黄",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定1_05.png",
+      "silkResource": "WorkshopFinish/SilkVariants/1_05",
+      "baseSize": {
+        "width": 375,
+        "height": 410
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 375,
+        "height": 410
+      },
+      "detailCrop": {
+        "x": 52,
+        "y": 35,
+        "width": 258,
+        "height": 179
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          188,
+          18
+        ],
+        "shoulderImageLeft": [
+          121,
+          64
+        ],
+        "shoulderImageRight": [
+          253,
+          64
+        ]
+      },
+      "note": "金黄基布肩袖与左裙褶",
+      "pixelsChanged": 35071,
+      "peakRgbDelta": 36,
+      "detailPixelsChanged": 23212
+    },
+    {
+      "id": "3_07",
+      "name": "莲纹短襦",
+      "category": "明黄",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_07.png",
+      "silkResource": "WorkshopFinish/SilkVariants/3_07",
+      "originalDetailResource": "WorkshopFinish/SilkVariants/Details/3_07_Original",
+      "silkDetailResource": "WorkshopFinish/SilkVariants/Details/3_07_Silk",
+      "baseSize": {
+        "width": 249,
+        "height": 301
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 249,
+        "height": 301
+      },
+      "detailCrop": {
+        "x": 8,
+        "y": 87,
+        "width": 232,
+        "height": 104
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          124,
+          18
+        ],
+        "shoulderImageLeft": [
+          72,
+          49
+        ],
+        "shoulderImageRight": [
+          178,
+          49
+        ]
+      },
+      "note": "莲纹短襦浅金袖口叠层",
+      "pixelsChanged": 10233,
+      "peakRgbDelta": 34,
+      "detailPixelsChanged": 5447
+    },
+    {
+      "id": "3_10",
+      "name": "霞云交领",
+      "category": "明黄",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_10.png",
+      "silkResource": "WorkshopFinish/SilkVariants/3_10",
+      "baseSize": {
+        "width": 297,
+        "height": 309
+      },
+      "artworkCrop": {
+        "x": 21,
+        "y": 0,
+        "width": 276,
+        "height": 293
+      },
+      "detailCrop": {
+        "x": 56,
+        "y": 31,
+        "width": 211,
+        "height": 157
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          162,
+          19
+        ],
+        "shoulderImageLeft": [
+          110,
+          50
+        ],
+        "shoulderImageRight": [
+          214,
+          50
+        ]
+      },
+      "note": "霞云交领橘布上袖与腰下折",
+      "pixelsChanged": 13606,
+      "peakRgbDelta": 33,
+      "detailPixelsChanged": 11687
+    },
+    {
+      "id": "4_01",
+      "name": "桂枝交领裙",
+      "category": "明黄",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定4_01.png",
+      "silkResource": "WorkshopFinish/SilkVariants/4_01",
+      "baseSize": {
+        "width": 406,
+        "height": 443
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 406,
+        "height": 443
+      },
+      "detailCrop": {
+        "x": 63,
+        "y": 42,
+        "width": 281,
+        "height": 196
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          203,
+          28
+        ],
+        "shoulderImageLeft": [
+          123,
+          74
+        ],
+        "shoulderImageRight": [
+          284,
+          74
+        ]
+      },
+      "note": "桂枝交领袖面与裙侧",
+      "pixelsChanged": 45501,
+      "peakRgbDelta": 40,
+      "detailPixelsChanged": 20902
+    },
+    {
+      "id": "4_02",
+      "name": "金云盘扣袄裙",
+      "category": "明黄",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定4_02.png",
+      "silkResource": "WorkshopFinish/SilkVariants/4_02",
+      "baseSize": {
+        "width": 384,
+        "height": 443
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 384,
+        "height": 443
+      },
+      "detailCrop": {
+        "x": 51,
+        "y": 34,
+        "width": 283,
+        "height": 188
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          192,
+          31
+        ],
+        "shoulderImageLeft": [
+          108,
+          75
+        ],
+        "shoulderImageRight": [
+          276,
+          75
+        ]
+      },
+      "note": "淡金盘扣袄裙两襟与裙褶",
+      "pixelsChanged": 44541,
+      "peakRgbDelta": 35,
+      "detailPixelsChanged": 28887
+    },
+    {
+      "id": "4_03",
+      "name": "杏枝披肩裙",
+      "category": "明黄",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定4_03.png",
+      "silkResource": "WorkshopFinish/SilkVariants/4_03",
+      "baseSize": {
+        "width": 385,
+        "height": 443
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 385,
+        "height": 443
+      },
+      "detailCrop": {
+        "x": 58,
+        "y": 86,
+        "width": 272,
+        "height": 181
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          192,
+          33
+        ],
+        "shoulderImageLeft": [
+          112,
+          82
+        ],
+        "shoulderImageRight": [
+          272,
+          82
+        ]
+      },
+      "note": "杏枝披肩裙上袖与淡金裙褶",
+      "pixelsChanged": 39296,
+      "peakRgbDelta": 33,
+      "detailPixelsChanged": 16088
+    },
+    {
+      "id": "1_03",
+      "name": "花纹交领",
+      "category": "青绿",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定1_03.png",
+      "silkResource": "WorkshopFinish/SilkVariants/1_03",
+      "baseSize": {
+        "width": 374,
+        "height": 416
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 374,
+        "height": 416
+      },
+      "detailCrop": {
+        "x": 49,
+        "y": 39,
+        "width": 277,
+        "height": 179
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          187,
+          21
+        ],
+        "shoulderImageLeft": [
+          118,
+          64
+        ],
+        "shoulderImageRight": [
+          257,
+          64
+        ]
+      },
+      "note": "青绿交领沿斜袖与腰下褶",
+      "pixelsChanged": 32397,
+      "peakRgbDelta": 38,
+      "detailPixelsChanged": 20774
+    },
+    {
+      "id": "3_03",
+      "name": "竹影对襟",
+      "category": "青绿",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_03.png",
+      "silkResource": "WorkshopFinish/SilkVariants/3_03",
+      "originalDetailResource": "WorkshopFinish/SilkVariants/Details/3_03_Original",
+      "silkDetailResource": "WorkshopFinish/SilkVariants/Details/3_03_Silk",
+      "baseSize": {
+        "width": 279,
+        "height": 302
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 279,
+        "height": 302
+      },
+      "detailCrop": {
+        "x": 61,
+        "y": 21,
+        "width": 157,
+        "height": 152
+      },
+      "stage": {
+        "garmentLength": 254,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          140,
+          14
+        ],
+        "shoulderImageLeft": [
+          78,
+          47
+        ],
+        "shoulderImageRight": [
+          201,
+          47
+        ]
+      },
+      "note": "竹影对襟的方向织纹",
+      "pixelsChanged": 18499,
+      "peakRgbDelta": 32,
+      "detailPixelsChanged": 11868
+    },
+    {
+      "id": "3_06",
+      "name": "花枝对襟",
+      "category": "青绿",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_06.png",
+      "silkResource": "WorkshopFinish/SilkVariants/3_06",
+      "baseSize": {
+        "width": 298,
+        "height": 301
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 298,
+        "height": 301
+      },
+      "detailCrop": {
+        "x": 61,
+        "y": 118,
+        "width": 180,
+        "height": 174
+      },
+      "stage": {
+        "garmentLength": 246,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          149,
+          14
+        ],
+        "shoulderImageLeft": [
+          86,
+          43
+        ],
+        "shoulderImageRight": [
+          212,
+          43
+        ]
+      },
+      "note": "橄榄绿上身素布与纵裙褶",
+      "pixelsChanged": 14808,
+      "peakRgbDelta": 31,
+      "detailPixelsChanged": 8707
+    },
+    {
+      "id": "3_13",
+      "name": "竹叶长衣",
+      "category": "青绿",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_13.png",
+      "silkResource": "WorkshopFinish/SilkVariants/3_13",
+      "baseSize": {
+        "width": 297,
+        "height": 308
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 297,
+        "height": 308
+      },
+      "detailCrop": {
+        "x": 7,
+        "y": 107,
+        "width": 276,
+        "height": 165
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          148,
+          20
+        ],
+        "shoulderImageLeft": [
+          88,
+          52
+        ],
+        "shoulderImageRight": [
+          209,
+          52
+        ]
+      },
+      "note": "竹叶长衣奶油袖内折与绿裙",
+      "pixelsChanged": 27638,
+      "peakRgbDelta": 35,
+      "detailPixelsChanged": 23109
+    },
+    {
+      "id": "1_07",
+      "name": "白鹤交领",
+      "category": "青绿",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定1_07.png",
+      "silkResource": "WorkshopFinish/SilkVariants/1_07",
+      "baseSize": {
+        "width": 364,
+        "height": 413
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 364,
+        "height": 413
+      },
+      "detailCrop": {
+        "x": 35,
+        "y": 43,
+        "width": 300,
+        "height": 185
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          182,
+          25
+        ],
+        "shoulderImageLeft": [
+          124,
+          64
+        ],
+        "shoulderImageRight": [
+          242,
+          64
+        ]
+      },
+      "note": "青蓝白鹤交领斜袖转光",
+      "pixelsChanged": 34379,
+      "peakRgbDelta": 37,
+      "detailPixelsChanged": 26502
+    },
+    {
+      "id": "3_11",
+      "name": "青鹤云纹",
+      "category": "青绿",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_11.png",
+      "silkResource": "WorkshopFinish/SilkVariants/3_11",
+      "baseSize": {
+        "width": 304,
+        "height": 309
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 295,
+        "height": 293
+      },
+      "detailCrop": {
+        "x": 23,
+        "y": 32,
+        "width": 260,
+        "height": 171
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          152,
+          16
+        ],
+        "shoulderImageLeft": [
+          89,
+          49
+        ],
+        "shoulderImageRight": [
+          216,
+          49
+        ]
+      },
+      "note": "青鹤衣短袖与米蓝内袖",
+      "pixelsChanged": 10411,
+      "peakRgbDelta": 37,
+      "detailPixelsChanged": 9769
+    },
+    {
+      "id": "1_02",
+      "name": "花纹交领",
+      "category": "霁蓝",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定1_02.png",
+      "silkResource": "WorkshopFinish/SilkVariants/1_02",
+      "baseSize": {
+        "width": 374,
+        "height": 416
+      },
+      "artworkCrop": {
+        "x": 24,
+        "y": 0,
+        "width": 350,
+        "height": 416
+      },
+      "detailCrop": {
+        "x": 53,
+        "y": 33,
+        "width": 296,
+        "height": 183
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          195,
+          18
+        ],
+        "shoulderImageLeft": [
+          125,
+          62
+        ],
+        "shoulderImageRight": [
+          263,
+          62
+        ]
+      },
+      "note": "冰蓝素布袖面原折",
+      "pixelsChanged": 24063,
+      "peakRgbDelta": 34,
+      "detailPixelsChanged": 14667
+    },
+    {
+      "id": "3_02",
+      "name": "云浪纹长衣",
+      "category": "霁蓝",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_02.png",
+      "silkResource": "WorkshopFinish/SilkVariants/3_02",
+      "baseSize": {
+        "width": 296,
+        "height": 302
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 296,
+        "height": 302
+      },
+      "detailCrop": {
+        "x": 58,
+        "y": 58,
+        "width": 189,
+        "height": 183
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          148,
+          19
+        ],
+        "shoulderImageLeft": [
+          86,
+          46
+        ],
+        "shoulderImageRight": [
+          210,
+          46
+        ]
+      },
+      "note": "蓝底云浪纹之间的袖与裙褶",
+      "pixelsChanged": 21862,
+      "peakRgbDelta": 40,
+      "detailPixelsChanged": 15202
+    },
+    {
+      "id": "3_05",
+      "name": "雪花纹长衣",
+      "category": "霁蓝",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_05.png",
+      "silkResource": "WorkshopFinish/SilkVariants/3_05",
+      "baseSize": {
+        "width": 298,
+        "height": 306
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 298,
+        "height": 306
+      },
+      "detailCrop": {
+        "x": 11,
+        "y": 75,
+        "width": 278,
+        "height": 147
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.524
+      },
+      "arInitialAnchors": {
+        "neck": [
+          156,
+          16
+        ],
+        "shoulderImageLeft": [
+          93,
+          49
+        ],
+        "shoulderImageRight": [
+          215,
+          49
+        ]
+      },
+      "note": "雪花长衣宽袖叠层与蓝褶",
+      "pixelsChanged": 17915,
+      "peakRgbDelta": 40,
+      "detailPixelsChanged": 13757
+    },
+    {
+      "id": "3_09",
+      "name": "雪花纹披风",
+      "category": "霁蓝",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_09.png",
+      "silkResource": "WorkshopFinish/SilkVariants/3_09",
+      "originalDetailResource": "WorkshopFinish/SilkVariants/Details/3_09_Original",
+      "silkDetailResource": "WorkshopFinish/SilkVariants/Details/3_09_Silk",
+      "baseSize": {
+        "width": 307,
+        "height": 309
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 307,
+        "height": 290
+      },
+      "detailCrop": {
+        "x": 39,
+        "y": 67,
+        "width": 227,
+        "height": 158
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.524
+      },
+      "arInitialAnchors": {
+        "neck": [
+          161,
+          17
+        ],
+        "shoulderImageLeft": [
+          82,
+          44
+        ],
+        "shoulderImageRight": [
+          240,
+          44
+        ]
+      },
+      "note": "披风大布面蓝灰纵向细光",
+      "pixelsChanged": 19724,
+      "peakRgbDelta": 34,
+      "detailPixelsChanged": 16369
+    },
+    {
+      "id": "1_08",
+      "name": "霜纹披风",
+      "category": "霁蓝",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定1_08.png",
+      "silkResource": "WorkshopFinish/SilkVariants/1_08",
+      "baseSize": {
+        "width": 376,
+        "height": 421
+      },
+      "artworkCrop": {
+        "x": 7,
+        "y": 0,
+        "width": 369,
+        "height": 421
+      },
+      "detailCrop": {
+        "x": 57,
+        "y": 122,
+        "width": 273,
+        "height": 221
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          194,
+          33
+        ],
+        "shoulderImageLeft": [
+          91,
+          72
+        ],
+        "shoulderImageRight": [
+          290,
+          72
+        ]
+      },
+      "note": "霜纹披风内幅、侧布和毛边交界",
+      "pixelsChanged": 23701,
+      "peakRgbDelta": 40,
+      "detailPixelsChanged": 16078
+    },
+    {
+      "id": "3_15",
+      "name": "金龙长衣",
+      "category": "霁蓝",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_15.png",
+      "silkResource": "WorkshopFinish/SilkVariants/3_15",
+      "baseSize": {
+        "width": 301,
+        "height": 302
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 276,
+        "height": 302
+      },
+      "detailCrop": {
+        "x": 43,
+        "y": 58,
+        "width": 206,
+        "height": 176
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          146,
+          18
+        ],
+        "shoulderImageLeft": [
+          81,
+          50
+        ],
+        "shoulderImageRight": [
+          199,
+          50
+        ]
+      },
+      "note": "深蓝金龙衣素布袖根与裙左折",
+      "pixelsChanged": 16328,
+      "peakRgbDelta": 35,
+      "detailPixelsChanged": 12719
+    },
+    {
+      "id": "1_04",
+      "name": "花纹交领",
+      "category": "烟紫",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定1_04.png",
+      "silkResource": "WorkshopFinish/SilkVariants/1_04",
+      "baseSize": {
+        "width": 376,
+        "height": 408
+      },
+      "artworkCrop": {
+        "x": 7,
+        "y": 0,
+        "width": 369,
+        "height": 408
+      },
+      "detailCrop": {
+        "x": 59,
+        "y": 48,
+        "width": 270,
+        "height": 170
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          195,
+          20
+        ],
+        "shoulderImageLeft": [
+          128,
+          63
+        ],
+        "shoulderImageRight": [
+          265,
+          63
+        ]
+      },
+      "note": "烟紫交领左右斜袖柔光",
+      "pixelsChanged": 27974,
+      "peakRgbDelta": 40,
+      "detailPixelsChanged": 18493
+    },
+    {
+      "id": "3_04",
+      "name": "花纹齐胸裙",
+      "category": "烟紫",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_04.png",
+      "silkResource": "WorkshopFinish/SilkVariants/3_04",
+      "baseSize": {
+        "width": 297,
+        "height": 291
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 297,
+        "height": 291
+      },
+      "detailCrop": {
+        "x": 12,
+        "y": 61,
+        "width": 271,
+        "height": 148
+      },
+      "stage": {
+        "garmentLength": 263,
+        "collarOffset": 13,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          148,
+          40
+        ],
+        "shoulderImageLeft": [
+          86,
+          45
+        ],
+        "shoulderImageRight": [
+          210,
+          45
+        ]
+      },
+      "note": "齐胸裙浅紫大袖叠层",
+      "pixelsChanged": 16938,
+      "peakRgbDelta": 35,
+      "detailPixelsChanged": 12677
+    },
+    {
+      "id": "3_14",
+      "name": "莲纹对襟",
+      "category": "烟紫",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_14.png",
+      "silkResource": "WorkshopFinish/SilkVariants/3_14",
+      "baseSize": {
+        "width": 262,
+        "height": 308
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 262,
+        "height": 308
+      },
+      "detailCrop": {
+        "x": 11,
+        "y": 37,
+        "width": 243,
+        "height": 149
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          130,
+          17
+        ],
+        "shoulderImageLeft": [
+          79,
+          47
+        ],
+        "shoulderImageRight": [
+          184,
+          47
+        ]
+      },
+      "note": "淡紫对襟外袖与侧褶",
+      "pixelsChanged": 15447,
+      "peakRgbDelta": 38,
+      "detailPixelsChanged": 11785
+    },
+    {
+      "id": "4_04",
+      "name": "紫藤交领裙",
+      "category": "烟紫",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定4_04.png",
+      "silkResource": "WorkshopFinish/SilkVariants/4_04",
+      "baseSize": {
+        "width": 406,
+        "height": 467
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 406,
+        "height": 467
+      },
+      "detailCrop": {
+        "x": 44,
+        "y": 82,
+        "width": 319,
+        "height": 178
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          203,
+          28
+        ],
+        "shoulderImageLeft": [
+          123,
+          71
+        ],
+        "shoulderImageRight": [
+          283,
+          71
+        ]
+      },
+      "note": "淡紫藤纹裙肩袖与长裙垂褶",
+      "pixelsChanged": 48650,
+      "peakRgbDelta": 38,
+      "detailPixelsChanged": 22263
+    },
+    {
+      "id": "4_05",
+      "name": "金蕊盘扣袄裙",
+      "category": "烟紫",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定4_05.png",
+      "silkResource": "WorkshopFinish/SilkVariants/4_05",
+      "baseSize": {
+        "width": 384,
+        "height": 467
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 384,
+        "height": 467
+      },
+      "detailCrop": {
+        "x": 41,
+        "y": 47,
+        "width": 300,
+        "height": 194
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          192,
+          30
+        ],
+        "shoulderImageLeft": [
+          108,
+          71
+        ],
+        "shoulderImageRight": [
+          277,
+          71
+        ]
+      },
+      "note": "紫棕盘扣衣素布上袖与襟边",
+      "pixelsChanged": 36159,
+      "peakRgbDelta": 40,
+      "detailPixelsChanged": 29138
+    },
+    {
+      "id": "4_06",
+      "name": "紫兰披肩裙",
+      "category": "烟紫",
+      "original": "Assets/Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定4_06.png",
+      "silkResource": "WorkshopFinish/SilkVariants/4_06",
+      "baseSize": {
+        "width": 385,
+        "height": 467
+      },
+      "artworkCrop": {
+        "x": 0,
+        "y": 0,
+        "width": 385,
+        "height": 467
+      },
+      "detailCrop": {
+        "x": 30,
+        "y": 147,
+        "width": 324,
+        "height": 215
+      },
+      "stage": {
+        "garmentLength": 274,
+        "collarOffset": 0,
+        "sourceCenterFactor": 0.5
+      },
+      "arInitialAnchors": {
+        "neck": [
+          192,
+          30
+        ],
+        "shoulderImageLeft": [
+          108,
+          76
+        ],
+        "shoulderImageRight": [
+          279,
+          76
+        ]
+      },
+      "note": "紫兰披肩裙裙边及披面折光",
+      "pixelsChanged": 45527,
+      "peakRgbDelta": 40,
+      "detailPixelsChanged": 29781
+    }
+  ],
+  "detailSources": "Use the same detailCrop from both full-size sprites. The four reference garments also include matching pre-cropped detail sprites."
+}

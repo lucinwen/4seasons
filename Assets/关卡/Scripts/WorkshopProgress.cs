@@ -45,6 +45,7 @@ public static class WorkshopProgress
         public string dyedColor;
         public string garmentId;
         public List<string> steps = new List<string>();
+        public List<string> observations = new List<string>();
     }
 
     private static SaveData save;
@@ -64,6 +65,7 @@ public static class WorkshopProgress
             }
             if (save == null) save = new SaveData();
             if (save.steps == null) save.steps = new List<string>();
+            if (save.observations == null) save.observations = new List<string>();
             return save;
         }
     }
@@ -107,6 +109,14 @@ public static class WorkshopProgress
     public static bool IsUnlocked(WorkshopSeason season) => season == WorkshopSeason.Spring || IsComplete(season - 1);
     public static bool HasSolarTerms(WorkshopSeason season) => (State.solarTerms & (1 << (int)season)) != 0;
     public static bool HasStep(string id) => State.steps.Contains(id);
+    internal static bool HasObservation(string id) => State.observations.Contains(id);
+
+    internal static void RecordObservation(string id)
+    {
+        if (State.observations.Contains(id)) return;
+        State.observations.Add(id);
+        Save();
+    }
     public static string DyedColor => State.dyedColor ?? "";
     public static string GarmentId => State.garmentId ?? "";
 
@@ -234,8 +244,13 @@ public static class WorkshopProgress
 
     private static void Commit()
     {
+        Save();
+        Changed?.Invoke();
+    }
+
+    private static void Save()
+    {
         PlayerPrefs.SetString(SaveKey, JsonUtility.ToJson(State));
         PlayerPrefs.Save();
-        Changed?.Invoke();
     }
 }

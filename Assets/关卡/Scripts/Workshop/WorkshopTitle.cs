@@ -26,7 +26,6 @@ public sealed class WorkshopTitle : MonoBehaviour
     private CanvasGroup menuGroup;
     private UnityEngine.UI.Button modalReturn;
     private UnityEngine.UI.Selectable[] modalNavigation;
-    private Action modalBack;
     private bool postOfficeOpen;
     private bool leaving;
 
@@ -51,8 +50,14 @@ public sealed class WorkshopTitle : MonoBehaviour
             var art = WorkshopUi.Rect(frame, "Title Cover Artwork", coverBounds).gameObject.AddComponent<UnityEngine.UI.RawImage>();
             art.texture = cover;
             art.raycastTarget = false;
-            Label(frame, "Title First Line", CoverRect(166f, 222f, 394f, 88f), "四时", 110, Jade);
-            Label(frame, "Title Second Line", CoverRect(166f, 307f, 394f, 98f), "织坊", 123, Jade);
+            var wordmark = Resources.Load<Sprite>("WorkshopFinish/TitleWordmark");
+            if (wordmark != null)
+                WorkshopUi.Picture(frame, "Title Wordmark", CoverRect(253f, 228f, 212f, 170f), wordmark);
+            else
+            {
+                Label(frame, "Title First Line", CoverRect(166f, 222f, 394f, 88f), "四时", 110, Jade);
+                Label(frame, "Title Second Line", CoverRect(166f, 307f, 394f, 98f), "织坊", 123, Jade);
+            }
         }
         else
         {
@@ -69,7 +74,7 @@ public sealed class WorkshopTitle : MonoBehaviour
         var postOfficeButton = AddMenuButton(menu, PostOfficeButtonIndex, "Title Send Postcard", "寄明信片", ShowPostOffice, true, cover != null);
         menuButtons[PostOfficeButtonIndex] = postOfficeButton;
         var heritageButton = AddMenuButton(menu, HeritageButtonIndex, "Title Heritage Sources", "新闻与来源",
-            () => ShowHeritage(false), true, cover != null);
+            ShowHeritage, true, cover != null);
         menuButtons[HeritageButtonIndex] = heritageButton;
         if (!canContinue && cover != null)
         {
@@ -125,11 +130,10 @@ public sealed class WorkshopTitle : MonoBehaviour
 
     private void Update()
     {
-        if (leaving || menuGroup == null) return;
+        if (leaving || menuGroup == null || WorkshopHeritageBrief.IsOpen) return;
         if (!postOfficeOpen && modal != null && Input.GetKeyDown(KeyCode.Escape))
         {
-            if (modalBack != null) modalBack();
-            else CloseModal();
+            CloseModal();
             return;
         }
 
@@ -180,35 +184,14 @@ public sealed class WorkshopTitle : MonoBehaviour
 
     private void ShowOpening()
     {
-        var panel = OpenModal("Title Story Opening", "一根丝，从桑叶开始", menuButtons[0]);
-        var text = WorkshopUi.Label(panel, "Opening Story", new Rect(122f, 168f, 716f, 176f),
-            WorkshopHeritageBrief.OpeningHook, 29, WorkshopUi.Ink, TextAnchor.UpperLeft, WorkshopArt.WorkshopFont);
-        text.horizontalOverflow = HorizontalWrapMode.Wrap;
-        text.lineSpacing = 1.16f;
-
-        var begin = DialogButton(panel, "Title Begin Apprenticeship", new Rect(525f, 365f, 305f, 70f),
-            "踏入织坊", StartNewJourney, Jade);
-        var sources = DialogButton(panel, "Title Opening Sources", new Rect(128f, 365f, 305f, 70f),
-            "新闻与来源", () =>
-            {
-                CloseModal();
-                ShowHeritage(true);
-            }, Red);
-        SetModalNavigation(begin, sources);
+        BlockMenu(menuButtons[0]);
+        WorkshopHeritageBrief.ShowOpening(StartNewJourney, RestoreTitleMenu);
     }
 
-    private void ShowHeritage(bool returnToOpening)
+    private void ShowHeritage()
     {
-        BlockMenu(menuButtons[returnToOpening ? 0 : HeritageButtonIndex]);
-        modal = WorkshopUi.Rect(frame, "Title Heritage", new Rect(0f, 0f, 1920f, 1080f));
-        var shade = WorkshopUi.Fill(modal, "Title Heritage Shade", new Rect(0f, 0f, 1920f, 1080f), new Color32(29, 46, 40, 190));
-        shade.raycastTarget = true;
-        modalBack = () =>
-        {
-            CloseModal();
-            if (returnToOpening) ShowOpening();
-        };
-        SetModalNavigation(WorkshopHeritageBrief.Open(modal, modalBack, returnToOpening));
+        BlockMenu(menuButtons[HeritageButtonIndex]);
+        WorkshopHeritageBrief.Show(RestoreTitleMenu);
     }
 
     private void StartNewJourney()
@@ -328,12 +311,16 @@ public sealed class WorkshopTitle : MonoBehaviour
         Destroy(modal.gameObject);
         modal = null;
         modalNavigation = null;
-        modalBack = null;
         postOfficeOpen = false;
         PlayerPrefs.Save();
+        RestoreTitleMenu();
+    }
+
+    private void RestoreTitleMenu()
+    {
         menuGroup.interactable = true;
         menuGroup.blocksRaycasts = true;
-        Select(modalReturn);
+        if (modalReturn != null) Select(modalReturn);
         modalReturn = null;
     }
 
@@ -382,14 +369,14 @@ public sealed class WorkshopTitle : MonoBehaviour
     private static UnityEngine.UI.Button DialogButton(Transform parent, string name, Rect bounds, string text,
         Action onClick, Color color)
     {
-        var button = WorkshopUi.Button(parent, name, bounds, text, onClick, color, size: 31, font: WorkshopArt.WorkshopFont);
+        var button = WorkshopUi.Button(parent, name, bounds, text, onClick, color, size: 31, font: WorkshopArt.ReadingFont);
         button.GetComponentInChildren<UnityEngine.UI.Text>().verticalOverflow = VerticalWrapMode.Overflow;
         return button;
     }
 
     private static UnityEngine.UI.Text Label(Transform parent, string name, Rect bounds, string text, int size, Color color)
     {
-        var label = WorkshopUi.Label(parent, name, bounds, text, size, color, TextAnchor.MiddleCenter, WorkshopArt.WorkshopFont);
+        var label = WorkshopUi.Label(parent, name, bounds, text, size, color, TextAnchor.MiddleCenter, WorkshopArt.ReadingFont);
         label.verticalOverflow = VerticalWrapMode.Overflow;
         return label;
     }

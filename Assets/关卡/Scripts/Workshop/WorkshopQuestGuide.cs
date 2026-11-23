@@ -15,7 +15,9 @@ internal sealed class WorkshopQuestGuide : MonoBehaviour
     private static int lastDismissalFrame = -1;
     internal static bool IsOpen => current != null && current.card != null && current.card.gameObject.activeSelf;
     internal static bool BlocksWorldInput => IsOpen || lastDismissalFrame == Time.frameCount ||
-        WorkshopDialoguePresenter.BlocksWorldInput || MiniGameCompletionAnimation.IsPlaying || AutumnOfferingView.BlocksWorldInput;
+        WorkshopDialoguePresenter.BlocksWorldInput || MiniGameCompletionAnimation.IsPlaying ||
+        AutumnOfferingView.BlocksWorldInput || WorkshopObservationView.BlocksWorldInput ||
+        WorkshopCraftRecordView.BlocksWorldInput || WorkshopHeritageBrief.IsOpen;
 
     internal static bool IsWorldOverlayActive
     {
@@ -25,7 +27,9 @@ internal sealed class WorkshopQuestGuide : MonoBehaviour
             return MiniGameCompletionAnimation.IsPlaying || MiniGameOverlay.IsActive || HarvestOverlayManager.IsHarvestActive ||
                 WinterDyeingOverlay.IsActive || WinterGrindingOverlay.IsActive ||
                 (feed != null && feed.IsActive) || WorkshopKnowledgeView.IsOpen ||
-                WorkshopNarrativeView.IsOpen || SimplePopup.IsOpen || WorkshopDialoguePresenter.IsOpen || AutumnOfferingView.IsOpen;
+                WorkshopNarrativeView.IsOpen || SimplePopup.IsOpen || WorkshopDialoguePresenter.IsOpen ||
+                AutumnOfferingView.IsOpen || WorkshopObservationView.IsOpen ||
+                WorkshopCraftRecordView.IsOpen || WorkshopHeritageBrief.IsOpen;
         }
     }
 

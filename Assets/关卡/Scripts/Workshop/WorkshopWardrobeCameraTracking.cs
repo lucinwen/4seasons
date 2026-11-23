@@ -19,23 +19,35 @@ internal sealed class WorkshopWardrobeCameraTracking
     internal struct Pose
     {
         internal Vector2 Neck;
+        internal Vector2 ShoulderMidpoint;
         internal float ShoulderWidth;
         internal float ShoulderSlope;
         internal bool HandRaised;
         internal float HandOffset;
     }
 
-    internal void Sample(Color32[] source, int width, int height, bool verticallyMirrored)
+    internal void Sample(Color32[] source, int width, int height, bool verticallyMirrored, int quarterTurns = 0)
     {
         for (int y = 0; y < Height; y++)
         {
-            int sourceY = (2 * y + 1) * height / (2 * Height);
-            if (!verticallyMirrored) sourceY = height - 1 - sourceY;
-            int row = sourceY * width;
+            float v = (y + 0.5f) / Height;
             for (int x = 0; x < Width; x++)
             {
-                int sourceX = width - 1 - (2 * x + 1) * width / (2 * Width);
-                current[y * Width + x] = source[row + sourceX];
+                float u = (x + 0.5f) / Width;
+                // Undo the display's horizontal mirror and clockwise rotation before sampling.
+                float sourceU;
+                float sourceV;
+                switch (quarterTurns)
+                {
+                    case 1: sourceU = v; sourceV = u; break;
+                    case 2: sourceU = u; sourceV = 1f - v; break;
+                    case 3: sourceU = 1f - v; sourceV = 1f - u; break;
+                    default: sourceU = 1f - u; sourceV = v; break;
+                }
+                int sourceX = (int)(sourceU * width);
+                int sourceY = (int)(sourceV * height);
+                if (!verticallyMirrored) sourceY = height - 1 - sourceY;
+                current[y * Width + x] = source[sourceY * width + sourceX];
             }
         }
     }
@@ -70,9 +82,11 @@ internal sealed class WorkshopWardrobeCameraTracking
 
         // Sample the two sides of the shoulder contour outside the estimated neck.
         int half = Mathf.RoundToInt(width * 0.44f);
-        int shoulderLeft = FirstContour(label, center - half, firstShoulder, lastShoulder);
-        int shoulderRight = FirstContour(label, center + half, firstShoulder, lastShoulder);
+        int firstContour = headTop + Mathf.RoundToInt(height * 0.18f);
+        int shoulderLeft = FirstContour(label, center - half, firstContour, lastShoulder);
+        int shoulderRight = FirstContour(label, center + half, firstContour, lastShoulder);
         float shoulderY = (shoulderLeft + shoulderRight) * 0.5f;
+        pose.ShoulderMidpoint = new Vector2((center + 0.5f) / Width, shoulderY / Height);
         pose.Neck = new Vector2((center + 0.5f) / Width, (shoulderY - height * 0.05f) / Height);
         pose.ShoulderWidth = (float)width / Width;
         pose.ShoulderSlope = (float)(shoulderRight - shoulderLeft) / Height;

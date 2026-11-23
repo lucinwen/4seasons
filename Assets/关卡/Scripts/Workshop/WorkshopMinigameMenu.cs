@@ -84,7 +84,7 @@ internal sealed class WorkshopMinigameMenu : MonoBehaviour
     private void ShowOptions()
     {
         pendingAction = null;
-        MakePanel("小游戏暂停");
+        MakePanel(WorkshopTitle.GameName + " · 暂停");
         var resumeButton = WorkshopUi.PixelButton(panel, "Resume Minigame", new Rect(125, 120, 370, 76),
             "继续游戏", () => CloseMenu(true), true, 32);
         WorkshopUi.PixelButton(panel, "Restart Minigame", new Rect(125, 219, 370, 69),

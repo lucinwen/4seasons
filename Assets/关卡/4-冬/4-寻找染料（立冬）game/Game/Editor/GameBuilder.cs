@@ -1299,7 +1299,7 @@ namespace JiangnanDye.EditorTools
             EditorBuildSettings.scenes = scenes.ToArray();
 
             PlayerSettings.companyName = "Jiangnan Studio";
-            PlayerSettings.productName = "江南初冬·天然染料采集";
+            PlayerSettings.productName = WorkshopTitle.GameName;
             // 编辑器失去焦点时也保持运行，避免测试 / 后台调试时游戏循环停住
             PlayerSettings.runInBackground = true;
         }

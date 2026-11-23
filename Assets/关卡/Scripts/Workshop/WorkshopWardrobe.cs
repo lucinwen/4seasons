@@ -21,6 +21,8 @@ public sealed class WorkshopWardrobe : MonoBehaviour
 
         private Sprite exhibitionArtwork;
         private bool exhibitionLoaded;
+        private Sprite silkArtwork;
+        private bool silkLoaded;
 
         public Style(string id, string name = null, Rect? artworkBounds = null, float collarOffset = 0f,
             float length = 274f, string artworkPath = null, string material = null,
@@ -55,8 +57,20 @@ public sealed class WorkshopWardrobe : MonoBehaviour
             : ExhibitionArtwork ?? WorkshopArt.Garment(SampleId);
 
         public bool UsesSample => ArtworkPath != null && ExhibitionArtwork == null;
+        public WorkshopWardrobeArtIndex.Item ArtIndex => WorkshopWardrobeArtIndex.Find(SampleId ?? Id);
 
-        public Sprite SilkArtwork => Resources.Load<Sprite>("WorkshopFinish/SilkVariants/" + (SampleId ?? Id));
+        public Sprite SilkArtwork
+        {
+            get
+            {
+                if (!silkLoaded && ArtworkPath == null)
+                {
+                    silkArtwork = Resources.Load<Sprite>(ArtIndex?.silkResource ?? ("WorkshopFinish/SilkVariants/" + Id));
+                    silkLoaded = true;
+                }
+                return silkArtwork;
+            }
+        }
 
         public Sprite MaterialDetail => ArtworkPath == null || UsesSample
             ? null
@@ -94,7 +108,8 @@ public sealed class WorkshopWardrobe : MonoBehaviour
         },
         new[]
         {
-            new Style("1_01"), new Style("3_01"), new Style("3_12", artworkBounds: new Rect(0, 0, 309, 293)),
+            new Style("1_01", material: "交领与袖面沿褶线泛起柔光。"),
+            new Style("3_01"), new Style("3_12", artworkBounds: new Rect(0, 0, 309, 293)),
             new Style("3_16"), new Style("1_06", "粉绫齐胸裙", collarOffset: 9f, length: 266f), new Style("3_08", "桃花长衣")
         },
         new[]
@@ -137,6 +152,7 @@ public sealed class WorkshopWardrobe : MonoBehaviour
     private const float StageY = 166f;
     private const float StageScale = 0.916f;
     private static readonly Rect HeroBounds = StageRect(202f, 108f, 260f * 630f / 540f, 630f);
+    private static readonly Rect DetailWindow = new Rect(42f, 142f, 820f, 492f);
 
     private static WorkshopWardrobe active;
     private readonly List<Card> cards = new List<Card>();
@@ -162,6 +178,7 @@ public sealed class WorkshopWardrobe : MonoBehaviour
     private Text detailToggleLabel;
     private UnityEngine.UI.Button arEntry;
     private UnityEngine.UI.Button photoEntry;
+    private UnityEngine.UI.Button productionEntry;
     private WorkshopWardrobePhotoMode photoMode;
     private WorkshopWardrobeMirror mirror;
     private string sewnId;
@@ -169,13 +186,20 @@ public sealed class WorkshopWardrobe : MonoBehaviour
     private int photoBackdrop;
     private Style selected;
     private Sprite originalGarment;
-    private Material silkFinish;
+    private Sprite silkGarment;
     private bool showSilk;
-    private bool hasAuthoredSilk;
     private float outfitPulseUntil;
     private Action onClose;
 
     public static bool IsOpen => active != null;
+
+    private bool CanChangeMaterial => silkGarment != null;
+    private Sprite PreviewGarment => showSilk ? silkGarment : originalGarment;
+    private string MaterialToggleText => showSilk ? "看原版" : "看丝绸版";
+    private string PreviewVersion => selected.ArtworkPath != null
+        ? (selected.UsesSample ? "样衣示意" : "四时丝衣")
+        : (showSilk ? "丝绸版" : "原版");
+    private bool HasMaterialDetail => CanChangeMaterial || selected.MaterialDetail != null;
 
     public static void Show(Action onClose = null)
     {
@@ -188,9 +212,6 @@ public sealed class WorkshopWardrobe : MonoBehaviour
     private void Open(RectTransform layout, Action close)
     {
         this.layout = layout;
-        var silkShader = Resources.Load<Shader>("WorkshopFinish/FittingSilk");
-        if (silkShader != null && silkShader.isSupported)
-            silkFinish = new Material(silkShader);
         frame = WorkshopUi.Rect(layout, "Wardrobe Page", PanoramaBounds);
         onClose = close;
         sewnId = CanonicalId(WorkshopProgress.GarmentId);
@@ -200,6 +221,9 @@ public sealed class WorkshopWardrobe : MonoBehaviour
         DrawFittingArea();
         DrawCatalog();
 
+        if (FindStyle(sewnId, out _, out _))
+            productionEntry = WardrobeButton(frame, "Open Wardrobe Production Record", new Rect(897f, 48f, 240f, 55f),
+                "看制作记录", OpenProductionRecord);
         arEntry = WardrobeButton(frame, "Open Wardrobe Mirror", new Rect(1160f, 48f, 230f, 55f), "AR 镜前试衣", OpenMirror, primary: true);
         arEntry.interactable = selected != null;
         photoEntry = WardrobeButton(frame, "Open Wardrobe Photo", new Rect(1410f, 48f, 211f, 55f), "拍照打卡", OpenPhoto);
@@ -208,21 +232,31 @@ public sealed class WorkshopWardrobe : MonoBehaviour
         if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(back.gameObject);
     }
 
+    private void OpenProductionRecord()
+    {
+        frame.gameObject.SetActive(false);
+        WorkshopCraftRecordView.ShowProductionRecord(() =>
+        {
+            if (this == null || frame == null) return;
+            frame.gameObject.SetActive(true);
+            if (EventSystem.current != null)
+                EventSystem.current.SetSelectedGameObject(productionEntry.gameObject);
+        });
+    }
+
     private void OpenPhoto()
     {
         if (selected == null || photoMode != null) return;
 
         Style outfit = selected;
-        Sprite garment = originalGarment;
-        Material material = PreviewMaterial;
-        photoMode = WorkshopWardrobePhotoMode.Show(layout, outfit.Name, photoBackdrop,
+        Sprite garment = PreviewGarment;
+        photoMode = WorkshopWardrobePhotoMode.Show(layout, outfit.Name + " · " + PreviewVersion, photoBackdrop,
             (parent, bounds) =>
             {
                 WorkshopUi.Picture(parent, "Photo Hero", bounds, Resources.Load<Sprite>("WorkshopFinish/FittingHero"), stretch: true);
                 var clip = Clip(parent, "Photo Fitted Artwork");
                 var artwork = WorkshopUi.Picture(clip, "Photo Worn Garment", new Rect(), null, stretch: true);
                 PlaceFittedGarment(clip, artwork, outfit, garment, bounds);
-                artwork.material = material;
             }, index =>
             {
                 photoMode = null;
@@ -242,29 +276,31 @@ public sealed class WorkshopWardrobe : MonoBehaviour
             mirror = null;
             frame.gameObject.SetActive(true);
             if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(arEntry.gameObject);
-        }, ToggleMaterial);
+        }, ToggleMaterial, OpenPhotoFromMirror);
         RefreshMirror();
         frame.gameObject.SetActive(false);
+    }
+
+    private void OpenPhotoFromMirror()
+    {
+        mirror.Close();
+        OpenPhoto();
     }
 
     private void RefreshMirror()
     {
         if (mirror == null || selected == null) return;
         Style style = selected;
-        Sprite sprite = originalGarment;
-        Material material = PreviewMaterial;
-        mirror.SetOutfit(style.Name, MaterialDescription, style.MaterialDetail,
-            (clip, image, hero) =>
-            {
-                PlaceFittedGarment(clip, image, style, sprite, hero);
-                image.material = material;
-            },
-            (clip, image, neck, length) =>
-            {
-                PlaceAtNeck(clip, image, style, sprite, neck, length);
-                image.material = material;
-            },
-            (clip, image, window) => PlaceMaterial(clip, image, style, sprite, window, material),
+        Sprite sprite = PreviewGarment;
+        bool materialVersion = showSilk;
+        Action<RectTransform, UnityEngine.UI.Image, Rect> drawDetail = null;
+        if (HasMaterialDetail)
+            drawDetail = (clip, image, window) => PlaceMaterial(clip, image, style, sprite, window, materialVersion);
+        mirror.SetOutfit(style.Name, PreviewVersion,
+            HasMaterialDetail ? (style.Material ?? style.ArtIndex?.note) : null,
+            (clip, image, hero) => PlaceFittedGarment(clip, image, style, sprite, hero),
+            (clip, image, shoulderWidth) => PlaceCameraGarment(clip, image, style, sprite, shoulderWidth),
+            drawDetail,
             CanChangeMaterial ? MaterialToggleText : null);
     }
 
@@ -296,7 +332,7 @@ public sealed class WorkshopWardrobe : MonoBehaviour
         materialToggle.transform.parent.gameObject.SetActive(false);
         detailEntry = WardrobeButton(frame, "Open Fabric Detail", new Rect(488f, 229f, 240f, 48f),
             "布料特写", OpenMaterialDetail);
-        detailEntry.interactable = false;
+        detailEntry.transform.parent.gameObject.SetActive(false);
         var hint = WorkshopUi.PixelCard(frame, "Fitting Hint", new Rect(162f, 1003f, 542f, 42f), Night, IndigoEdge);
         Label(hint, "Preview Controls", new Rect(12f, 0f, 518f, 42f),
             "点选衣样、左右滑动或按 ← / → 换衣", 24, Mist, TextAnchor.MiddleCenter);
@@ -327,7 +363,7 @@ public sealed class WorkshopWardrobe : MonoBehaviour
             Label(button.transform, "Dye Category", new Rect(40f, 0f, tabWidth - 47f, 51f), CategoryNames[i], 25, Ivory);
         }
 
-        int initialCategory = Catalog[0][0].ExhibitionArtwork != null ? 0 : 1;
+        int initialCategory = 1;
         if (FindStyle(sewnId, out int savedCategory, out _))
         {
             initialCategory = savedCategory;
@@ -414,15 +450,16 @@ public sealed class WorkshopWardrobe : MonoBehaviour
         if (sprite == null) return;
 
         bool changed = selected != style;
-        PlaceFittedGarment(wornClip, worn, style, sprite, HeroBounds);
         selected = style;
+        originalGarment = sprite;
+        silkGarment = style.SilkArtwork;
+        showSilk = false;
         styleName.text = style.Name;
         if (playCue && changed) outfitPulseUntil = Time.unscaledTime + 0.22f;
-        SetCompare(false);
+        RefreshPreview();
         if (arEntry != null) arEntry.interactable = true;
         if (photoEntry != null) photoEntry.interactable = true;
         RefreshSelection();
-        RefreshMirror(sprite);
         if (playCue && changed) WorkshopAudioFeedback.Fabric();
     }
 
@@ -434,17 +471,67 @@ public sealed class WorkshopWardrobe : MonoBehaviour
         TryOn(cards[(index + direction + cards.Count) % cards.Count].Style, playCue: true);
     }
 
-    private void ToggleCompare()
+    private void ToggleMaterial()
     {
-        if (selected != null) SetCompare(!compare);
+        if (!CanChangeMaterial) return;
+        showSilk = !showSilk;
+        RefreshPreview();
+        WorkshopAudioFeedback.Fabric();
     }
 
-    private void SetCompare(bool value)
+    private void RefreshPreview()
     {
-        compare = value;
-        wornClip.gameObject.SetActive(!value);
-        if (previewCompareLabel != null) previewCompareLabel.text = value ? "查看试穿" : "查看原装";
-        previewStatus.text = value ? "原装对照" : selected.Id == sewnId ? "我的成衣 · 已制成" : "试穿中";
+        PlaceFittedGarment(wornClip, worn, selected, PreviewGarment, HeroBounds);
+        materialToggle.transform.parent.gameObject.SetActive(CanChangeMaterial);
+        materialToggleLabel.text = MaterialToggleText;
+        detailEntry.transform.parent.gameObject.SetActive(HasMaterialDetail);
+        previewStatus.text = selected.Id == sewnId ? PreviewVersion + " · 我的成衣" : PreviewVersion;
+        RefreshMaterialDetail();
+        RefreshMirror();
+    }
+
+    private void OpenMaterialDetail()
+    {
+        if (!HasMaterialDetail || detailPanel != null) return;
+
+        detailPanel = WorkshopUi.Rect(layout, "Wardrobe Material Detail", PanoramaBounds);
+        WorkshopUi.Fill(detailPanel, "Fabric Detail Backdrop", PanoramaBounds, new Color32(16, 28, 48, 225))
+            .raycastTarget = true;
+        var dialog = WorkshopUi.PixelCard(detailPanel, "Fabric Detail Card", new Rect(508f, 172f, 904f, 736f), Night, Brass);
+        Label(dialog, "Fabric Detail Title", new Rect(42f, 26f, 782f, 64f),
+            selected.Name + " · 布料特写", 42, Ivory);
+        detailVersion = Label(dialog, "Fabric Version", new Rect(42f, 94f, 820f, 34f), "", 27, Gold);
+        WorkshopUi.Fill(dialog, "Fabric Detail Surface", DetailWindow, ActiveInk);
+        detailClip = Clip(dialog, "Fabric Detail Crop");
+        detailImage = WorkshopUi.Picture(detailClip, "Fabric Detail Artwork", new Rect(), null, stretch: true);
+        var back = WardrobeButton(dialog, "Close Fabric Detail", new Rect(684f, 656f, 178f, 51f), "返回试衣", CloseMaterialDetail);
+        if (CanChangeMaterial)
+        {
+            var toggle = WardrobeButton(dialog, "Toggle Fabric Detail Material", new Rect(42f, 656f, 226f, 51f),
+                MaterialToggleText, ToggleMaterial, primary: true);
+            detailToggleLabel = toggle.GetComponentInChildren<Text>();
+        }
+        frame.gameObject.SetActive(false);
+        RefreshMaterialDetail();
+        if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(back.gameObject);
+    }
+
+    private void RefreshMaterialDetail()
+    {
+        if (detailPanel == null) return;
+        detailVersion.text = PreviewVersion;
+        if (detailToggleLabel != null) detailToggleLabel.text = MaterialToggleText;
+        PlaceMaterial(detailClip, detailImage, selected, PreviewGarment, DetailWindow, showSilk);
+    }
+
+    private void CloseMaterialDetail()
+    {
+        detailPanel.gameObject.SetActive(false);
+        Destroy(detailPanel.gameObject);
+        detailPanel = null;
+        detailToggleLabel = null;
+        frame.gameObject.SetActive(true);
+        if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(detailEntry.gameObject);
     }
 
     private static void PlaceFittedGarment(RectTransform clip, UnityEngine.UI.Image image, Style style, Sprite sprite, Rect heroBounds)
@@ -465,20 +552,49 @@ public sealed class WorkshopWardrobe : MonoBehaviour
         PlaceArtwork(clip, image, sprite, source, placement);
     }
 
-    private static void PlaceMaterial(RectTransform clip, UnityEngine.UI.Image image, Style style, Sprite sprite, Rect window)
+    private static void PlaceCameraGarment(RectTransform clip, UnityEngine.UI.Image image, Style style,
+        Sprite sprite, float shoulderWidth)
     {
-        var detail = style.MaterialDetail;
-        if (detail != null)
+        Rect source = SourceBounds(style, sprite);
+        var anchors = style.ArtworkPath == null || style.UsesSample ? style.ArtIndex?.arInitialAnchors : null;
+        if (anchors != null && anchors.TryGet(out Vector2 midpoint, out float artworkShoulders))
         {
-            sprite = detail;
+            float scale = shoulderWidth / artworkShoulders;
+            PlaceArtwork(clip, image, sprite, source,
+                new Rect((source.position - midpoint) * scale, source.size * scale));
+            return;
         }
 
-        Rect source = SourceBounds(detail == null ? style : null, sprite);
-        float width = Mathf.Min(source.width * 0.4f, source.height * 0.4f * window.width / window.height);
-        if (detail != null) width = Mathf.Min(source.width, source.height * window.width / window.height);
-        float height = width * window.height / window.width;
-        Vector2 center = source.position + new Vector2(source.width * 0.5f, source.height * 0.42f);
-        PlaceArtwork(clip, image, sprite, new Rect(center - new Vector2(width, height) * 0.5f, new Vector2(width, height)), window);
+        float length = shoulderWidth * 1.95f;
+        PlaceAtNeck(clip, image, style, sprite, new Vector2(0f, -length * 0.14f), length);
+    }
+
+    private static void PlaceMaterial(RectTransform clip, UnityEngine.UI.Image image, Style style, Sprite sprite,
+        Rect window, bool isSilk)
+    {
+        var detail = style.MaterialDetail;
+        if (style.ArtworkPath == null)
+        {
+            var art = style.ArtIndex;
+            string detailResource = isSilk ? art?.silkDetailResource : art?.originalDetailResource;
+            if (!string.IsNullOrEmpty(detailResource))
+                detail = Resources.Load<Sprite>(detailResource);
+            if (detail == null && art != null && art.detailCrop.width > 0f && art.detailCrop.height > 0f)
+            {
+                PlaceInBox(clip, image, sprite, art.detailCrop.Bounds, window);
+                return;
+            }
+        }
+
+        if (detail != null)
+        {
+            PlaceInBox(clip, image, detail, SourceBounds(null, detail), window);
+            return;
+        }
+
+        Rect source = SourceBounds(style, sprite);
+        Vector2 cropSize = source.size * 0.42f;
+        PlaceInBox(clip, image, sprite, new Rect(source.center - cropSize * 0.5f, cropSize), window);
     }
 
     private void RefreshSelection()
@@ -528,7 +644,8 @@ public sealed class WorkshopWardrobe : MonoBehaviour
     }
 
     private static Rect SourceBounds(Style style, Sprite sprite) =>
-        style?.ArtworkBounds ?? new Rect(Vector2.zero, sprite.rect.size);
+        (style != null && style.UsesSample ? style.SampleBounds : style?.ArtworkBounds) ??
+        new Rect(Vector2.zero, sprite.rect.size);
 
     internal static RectTransform Clip(Transform parent, string name)
     {
@@ -592,15 +709,17 @@ public sealed class WorkshopWardrobe : MonoBehaviour
 
     private void Update()
     {
+        if (WorkshopCraftRecordView.BlocksWorldInput) return;
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (mirror != null) mirror.Close();
             else if (photoMode != null) photoMode.Close();
+            else if (detailPanel != null) CloseMaterialDetail();
             else Close();
             return;
         }
 
-        if (photoMode != null || mirror != null) return;
+        if (photoMode != null || mirror != null || detailPanel != null) return;
         if (Input.GetKeyDown(KeyCode.LeftArrow)) CycleStyle(-1);
         if (Input.GetKeyDown(KeyCode.RightArrow)) CycleStyle(1);
         if (outfitPulseUntil > 0f)

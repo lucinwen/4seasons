@@ -191,6 +191,8 @@ public sealed class SeasonalPostOffice : MonoBehaviour
         {
             int season = i;
             fronts[i] = Resources.Load<Texture2D>("PostOffice/" + Seasons[i] + "Front");
+            if (i == (int)WorkshopSeason.Spring)
+                fronts[i] = Resources.Load<Texture2D>("PostOffice/SpringFrontBranded") ?? fronts[i];
             backs[i] = Resources.Load<Texture2D>("PostOffice/" + Seasons[i] + "Back");
             float x = 30 + (i % 2) * 240;
             float y = 96 + (i / 2) * 214;
@@ -570,9 +572,9 @@ public sealed class SeasonalPostOffice : MonoBehaviour
         float scale = artwork.sizeDelta.x / source.width;
         AddFrontLabel(layer, source, FrontSeasonLetterBounds[season], SeasonNames[season],
             FrontSeasonPaper[season], FrontSeasonInk[season], scale);
-        if (season == (int)WorkshopSeason.Spring)
+        if (season == (int)WorkshopSeason.Spring && source.name != "SpringFrontBranded")
         {
-            AddFrontLabel(layer, source, new Rect(397, 611, 230, 36), "四时桑织工坊",
+            AddFrontLabel(layer, source, new Rect(397, 611, 230, 36), WorkshopTitle.GameName,
                 new Color32(250, 242, 210, 255), FrontSeasonInk[season], scale);
         }
         else if (season == (int)WorkshopSeason.Summer)

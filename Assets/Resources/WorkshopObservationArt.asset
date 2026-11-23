@@ -20,3 +20,4 @@ MonoBehaviour:
   shuttle: {fileID: 21300000, guid: 4f58d745d6fc0f0428234cd22644f6d7, type: 3}
   dryDye: {fileID: 21300000, guid: 9940f9532b1ad7c4aa4e486cc8037ac8, type: 3}
   dyedSwatch: {fileID: 21300000, guid: 6a609342bcebebe4fbf658878743ecad, type: 3}
+  offeringWine: {fileID: 21300000, guid: cb6dc19136e4a5846a9d56add028b2a0, type: 3}
