@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/FourSeasonsTitle.unity
+    guid: 014808cc03b5424b8d926818e2030a51
+  - enabled: 1
+    path: Assets/Scenes/FourSeasonsWorkshop.unity
+    guid: 23a05825e5014ab494d41bfe26d288d2
+  - enabled: 1
+    path: "Assets/\u5173\u5361/4-\u51AC/4-\u5BFB\u627E\u67D3\u6599\uFF08\u7ACB\u51AC\uFF09game/Game/Scenes/MainScene.unity"
+    guid: 7c6b26c0fcd5d344e84708e7dc3dc9c3
+  - enabled: 1
+    path: "Assets/\u5173\u5361/1-\u6625/1-\u91C7\u6851game/Game/Scenes/MulberryHarvest.unity"
+    guid: bfc8e2e2fcf676b4bab981184ae46378
+  - enabled: 1
+    path: "Assets/\u5173\u5361/1-\u6625/Level1_Spring.unity"
+    guid: 131e9a8cc04ca6243904b691fa381d63
+  - enabled: 1
+    path: "Assets/\u5173\u5361/2-\u590F/Level2_Summer.unity"
+    guid: 7aa2ec50648147749bdd06d3325724c9
+  - enabled: 1
+    path: "Assets/\u5173\u5361/2-\u590F/2-\u8FF7\u5BAB\uFF08\u5927\u6691\uFF09game/Game/Scenes/Maze_Autumn.unity"
+    guid: 58d7134fa7074644586d4d2f644a165a
+  - enabled: 1
+    path: "Assets/\u5173\u5361/3-\u79CB/Level3_Autumn.unity"
+    guid: 3a58c88ca9ee66e448953fa83d327b07
+  - enabled: 1
+    path: "Assets/\u5173\u5361/3-\u79CB/3-\u4FEE\u590D\u7EC7\u673Agame/Game/Scenes/LoomRepair.unity"
+    guid: 5528f5420f8b1b0468d608aa063bc63d
+  - enabled: 1
+    path: "Assets/\u5173\u5361/3-\u79CB/3-\u7ECF\u7EAC\u63A8\u6F14game/Scenes/EmbroideryScene.unity"
+    guid: ed3c98d9488fda947943ccd90021aa0b
+  - enabled: 1
+    path: "Assets/\u5173\u5361/4-\u51AC/Level4_Winter.unity"
+    guid: 0cc547cbe99a7d843b2bbcaa940c2c17
+  - enabled: 1
+    path: "Assets/\u5173\u5361/4-\u51AC/4-\u88C1\u8863\uFF08\u5C0F\u96EA\uFF09game/Game/Scenes/ClothCutting.unity"
+    guid: 3bee60946f3d2bd478a52363fd112663
+  - enabled: 1
+    path: "Assets/\u5173\u5361/2-\u590F/2-\u5408\u6210\u8695\u8327/Scenes/CocoonMatch.unity"
+    guid: 96eedd03fc03bd2488045264bc4ee223
+  m_configObjects: {}

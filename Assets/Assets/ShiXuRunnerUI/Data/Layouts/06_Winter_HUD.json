@@ -1,0 +1,258 @@
+{
+  "id": "06_Winter_HUD",
+  "title": "冬 · 染绸成衣",
+  "season": "Winter",
+  "referenceResolution": [
+    1920,
+    1080
+  ],
+  "nodes": [
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Winter_Panel_9slice.png",
+      "rect": [
+        36,
+        28,
+        690,
+        112
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "冬 · 染绸成衣",
+      "rect": [
+        68,
+        48,
+        430,
+        46
+      ],
+      "fontSize": 29,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Icons/HeartFull.png",
+      "rect": [
+        70,
+        94,
+        38,
+        38
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Icons/HeartFull.png",
+      "rect": [
+        120,
+        94,
+        38,
+        38
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Icons/HeartFull.png",
+      "rect": [
+        170,
+        94,
+        38,
+        38
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "text",
+      "text": "织录 0 / 6",
+      "rect": [
+        350,
+        93,
+        280,
+        42
+      ],
+      "fontSize": 24,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Winter_Secondary_Normal.png",
+      "rect": [
+        1730,
+        30,
+        148,
+        78
+      ],
+      "preserveAspect": false,
+      "label": "暂停",
+      "target": "16_Pause",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "暂停",
+      "rect": [
+        1740,
+        50,
+        128,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Winter_Panel_9slice.png",
+      "rect": [
+        1385,
+        164,
+        490,
+        180
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "当前任务",
+      "rect": [
+        1420,
+        190,
+        420,
+        48
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "寻材染绸",
+      "rect": [
+        1420,
+        245,
+        420,
+        52
+      ],
+      "fontSize": 29,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "道具 0 / 3",
+      "rect": [
+        1420,
+        298,
+        420,
+        40
+      ],
+      "fontSize": 23,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Widgets/Winter_Slot_Empty.png",
+      "rect": [
+        47,
+        885,
+        98,
+        98
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "image",
+      "asset": "Items/4-染料蓝原料.png",
+      "rect": [
+        55,
+        893,
+        82,
+        82
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Widgets/Winter_Slot_Empty.png",
+      "rect": [
+        155,
+        885,
+        98,
+        98
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "image",
+      "asset": "Items/4-晾晒架子.png",
+      "rect": [
+        163,
+        893,
+        82,
+        82
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Winter_Panel_9slice.png",
+      "rect": [
+        700,
+        824,
+        520,
+        95
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Icons/Interact.png",
+      "rect": [
+        720,
+        840,
+        62,
+        62
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "text",
+      "text": "靠近工艺台后按 E 互动",
+      "rect": [
+        800,
+        850,
+        385,
+        50
+      ],
+      "fontSize": 26,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "A / D 移动     空格 跳跃     E 互动     Tab 织录",
+      "rect": [
+        520,
+        1002,
+        1250,
+        45
+      ],
+      "fontSize": 27,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    }
+  ]
+}

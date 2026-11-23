@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e1dc93a4a64ee448a8b83f1c6aefd2d, type: 3}
+  m_Name: Item_Dye_Purple_Normal
+  m_EditorClassIdentifier: 
+  itemId: DYE_PURPLE_NORMAL
+  dyeColor: 4
+  condition: 0
+  chineseName: "\u7D2B\u8272\u67D3\u6599"
+  stateText: "\u6B63\u5E38"
+  plantName: "\u8D1D\u7D2B"
+  description: "\u6D77\u87BA\u817A\u4F53\u5206\u6CCC\u7269\u7ECF\u6C27\u5316\uFF0C\u53EF\u5236\u6210\u73CD\u8D35\u7684\u7D2B\u8272\u67D3\u6599\u3002"
+  icon: {fileID: 21300000, guid: f98b97990fcd21241acda8594a90b364, type: 3}
+  worldSprite: {fileID: 21300000, guid: f98b97990fcd21241acda8594a90b364, type: 3}

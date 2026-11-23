@@ -1,0 +1,156 @@
+{
+  "id": "07_Quest",
+  "title": "任务详情",
+  "season": "Spring",
+  "referenceResolution": [
+    1920,
+    1080
+  ],
+  "nodes": [
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        350,
+        150,
+        1220,
+        780
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "春日委托 · 备好桑叶",
+      "rect": [
+        430,
+        220,
+        1060,
+        70
+      ],
+      "fontSize": 43,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "找到采桑篮，沿桑园平台寻找新鲜桑叶。\n收集完成后，前往蚕房工艺台。",
+      "rect": [
+        460,
+        350,
+        1020,
+        130
+      ],
+      "fontSize": 33,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "Items/1-采桑篮1.png",
+      "rect": [
+        485,
+        540,
+        140,
+        140
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "image",
+      "asset": "Items/1-桑叶1.png",
+      "rect": [
+        735,
+        540,
+        140,
+        140
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "text",
+      "text": "采桑篮",
+      "rect": [
+        495,
+        690,
+        230,
+        50
+      ],
+      "fontSize": 27,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "新鲜桑叶",
+      "rect": [
+        740,
+        690,
+        300,
+        50
+      ],
+      "fontSize": 27,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Primary_Normal.png",
+      "rect": [
+        1000,
+        790,
+        380,
+        80
+      ],
+      "preserveAspect": false,
+      "label": "接取任务",
+      "target": "03_Spring_HUD",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "接取任务",
+      "rect": [
+        1010,
+        811,
+        360,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Secondary_Normal.png",
+      "rect": [
+        550,
+        790,
+        320,
+        80
+      ],
+      "preserveAspect": false,
+      "label": "返回",
+      "target": "03_Spring_HUD",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "返回",
+      "rect": [
+        560,
+        811,
+        300,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    }
+  ]
+}

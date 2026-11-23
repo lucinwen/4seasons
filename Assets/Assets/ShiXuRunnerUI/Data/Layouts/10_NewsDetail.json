@@ -1,0 +1,92 @@
+{
+  "id": "10_NewsDetail",
+  "title": "新闻来源详情",
+  "season": "Spring",
+  "referenceResolution": [
+    1920,
+    1080
+  ],
+  "nodes": [
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        260,
+        120,
+        1400,
+        840
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "新闻证据",
+      "rect": [
+        345,
+        190,
+        1200,
+        70
+      ],
+      "fontSize": 43,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "这里将展示已核实报道的标题、摘要与原始出处。",
+      "rect": [
+        345,
+        300,
+        1200,
+        100
+      ],
+      "fontSize": 31,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "报道标题\n发布媒体与日期\n原始链接\n本章工序关联",
+      "rect": [
+        345,
+        445,
+        1200,
+        240
+      ],
+      "fontSize": 32,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Primary_Normal.png",
+      "rect": [
+        1090,
+        830,
+        390,
+        76
+      ],
+      "preserveAspect": false,
+      "label": "返回资料墙",
+      "target": "09_News",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "返回资料墙",
+      "rect": [
+        1100,
+        849,
+        370,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    }
+  ]
+}

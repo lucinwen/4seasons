@@ -1,0 +1,40 @@
+{
+  "referenceResolution": [
+    2048,
+    1152
+  ],
+  "pixelsPerUnit": 100,
+  "loopWidthPixels": 8192,
+  "segmentsPerLoop": 4,
+  "segmentWidthPixels": 2048,
+  "order": [
+    "Spring",
+    "Summer",
+    "Autumn",
+    "Winter"
+  ],
+  "layers": [
+    {
+      "suffix": "01_Far",
+      "cameraFactor": 0.12,
+      "sortingOrder": -40
+    },
+    {
+      "suffix": "02_Trees",
+      "cameraFactor": 0.32,
+      "sortingOrder": -30
+    },
+    {
+      "suffix": "03_Workshops",
+      "cameraFactor": 0.6,
+      "sortingOrder": -20
+    },
+    {
+      "suffix": "04_Foreground",
+      "cameraFactor": 1.08,
+      "sortingOrder": 10
+    }
+  ],
+  "groundTopYFromTopPixels": 976,
+  "note": "Independent gameplay collision must be authored in Unity; scenery has no collision."
+}

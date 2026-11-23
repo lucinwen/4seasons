@@ -1,0 +1,23 @@
+# Unity generated files and local editor state
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Ll]ogs/
+[Bb]uild/
+[Bb]uilds/
+UserSettings/
+.vs/
+.codex_backups/
+.codex_media_tmp/
+
+# Exported packages and archives
+*.unitypackage
+*.zip
+*.7z
+*.rar
+
+# Unity/IDE generated files and logs
+*.csproj
+*.sln
+*.log
+*.unitypackage.meta

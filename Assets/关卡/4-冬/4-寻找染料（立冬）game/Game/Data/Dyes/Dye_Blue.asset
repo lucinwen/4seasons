@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00bd3f207a0befd4395e0f94e4053cc8, type: 3}
+  m_Name: Dye_Blue
+  m_EditorClassIdentifier: 
+  color: 3
+  chineseName: "\u84DD\u8272\u67D3\u6599"
+  normalSprite: {fileID: 21300000, guid: 9fc7a3253287feb4a9beee214fca75be, type: 3}
+  damagedSprite: {fileID: 21300000, guid: fab57fff261696442b36e27769f76bb8, type: 3}
+  normalIcon: {fileID: 21300000, guid: 9fc7a3253287feb4a9beee214fca75be, type: 3}
+  damagedIcon: {fileID: 21300000, guid: fab57fff261696442b36e27769f76bb8, type: 3}
+  normalItemData: {fileID: 11400000, guid: 508af0a804fd0184a9793fd9f0c6a5b1, type: 2}
+  damagedItemData: {fileID: 11400000, guid: 47403f6066dcc934a8fe6362177e1bd4, type: 2}

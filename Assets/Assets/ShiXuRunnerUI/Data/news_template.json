@@ -1,0 +1,48 @@
+{
+  "items": [
+    {
+      "id": "spring_news_01",
+      "season": "Spring",
+      "headline": "",
+      "publisher": "",
+      "publishedDate": "",
+      "url": "",
+      "summary": "",
+      "chapterConnection": "",
+      "verified": false
+    },
+    {
+      "id": "summer_news_01",
+      "season": "Summer",
+      "headline": "",
+      "publisher": "",
+      "publishedDate": "",
+      "url": "",
+      "summary": "",
+      "chapterConnection": "",
+      "verified": false
+    },
+    {
+      "id": "autumn_news_01",
+      "season": "Autumn",
+      "headline": "",
+      "publisher": "",
+      "publishedDate": "",
+      "url": "",
+      "summary": "",
+      "chapterConnection": "",
+      "verified": false
+    },
+    {
+      "id": "winter_news_01",
+      "season": "Winter",
+      "headline": "",
+      "publisher": "",
+      "publishedDate": "",
+      "url": "",
+      "summary": "",
+      "chapterConnection": "",
+      "verified": false
+    }
+  ]
+}

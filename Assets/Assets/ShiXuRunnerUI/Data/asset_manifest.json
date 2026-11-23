@@ -1,0 +1,7418 @@
+[
+  {
+    "id": "1-树",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-树.png",
+    "kind": "prop",
+    "width": 1074,
+    "height": 1142,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-树.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-树",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-树.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-树.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-桑叶1",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-桑叶1.png",
+    "kind": "prop",
+    "width": 276,
+    "height": 300,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑叶1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-桑叶1",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-桑叶1.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑叶1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-桑叶2",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-桑叶2.png",
+    "kind": "prop",
+    "width": 258,
+    "height": 248,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑叶2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-桑叶2",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-桑叶2.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑叶2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-桑叶3",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-桑叶3.png",
+    "kind": "prop",
+    "width": 262,
+    "height": 285,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑叶3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-桑叶3",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-桑叶3.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑叶3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-桑叶4",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-桑叶4.png",
+    "kind": "prop",
+    "width": 248,
+    "height": 292,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑叶4.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-桑叶4",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-桑叶4.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑叶4.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-桑叶5",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-桑叶5.png",
+    "kind": "prop",
+    "width": 274,
+    "height": 231,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑叶5.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-桑叶5",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-桑叶5.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑叶5.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-桑叶6",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-桑叶6.png",
+    "kind": "prop",
+    "width": 267,
+    "height": 227,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑叶6.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-桑叶6",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-桑叶6.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑叶6.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-桑叶7",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-桑叶7.png",
+    "kind": "prop",
+    "width": 262,
+    "height": 229,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑叶7.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-桑叶7",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-桑叶7.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑叶7.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-桑树1",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-桑树1.png",
+    "kind": "prop",
+    "width": 344,
+    "height": 370,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑树1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-桑树1",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-桑树1.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑树1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-桑树2",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-桑树2.png",
+    "kind": "prop",
+    "width": 347,
+    "height": 418,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑树2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-桑树2",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-桑树2.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑树2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-桑树3",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-桑树3.png",
+    "kind": "prop",
+    "width": 361,
+    "height": 383,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑树3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-桑树3",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-桑树3.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑树3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-桑树4",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-桑树4.png",
+    "kind": "prop",
+    "width": 335,
+    "height": 396,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑树4.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-桑树4",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-桑树4.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-桑树4.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-浴蚕桶",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-浴蚕桶.png",
+    "kind": "prop",
+    "width": 317,
+    "height": 330,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-浴蚕桶.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-浴蚕桶",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-浴蚕桶.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-浴蚕桶.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-蚕匾+蚕",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-蚕匾+蚕.png",
+    "kind": "prop",
+    "width": 427,
+    "height": 315,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-蚕匾+蚕.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-蚕匾+蚕",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-蚕匾+蚕.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-蚕匾+蚕.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-蚕匾",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-蚕匾.png",
+    "kind": "prop",
+    "width": 437,
+    "height": 315,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-蚕匾.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-蚕匾",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-蚕匾.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-蚕匾.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-蚕匾架",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-蚕匾架.png",
+    "kind": "prop",
+    "width": 404,
+    "height": 349,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-蚕匾架.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-蚕匾架",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-蚕匾架.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-蚕匾架.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-蚕种清洗前",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-蚕种清洗前.png",
+    "kind": "prop",
+    "width": 715,
+    "height": 547,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-蚕种清洗前.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-蚕种清洗前",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-蚕种清洗前.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-蚕种清洗前.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-蚕种清洗后",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-蚕种清洗后.png",
+    "kind": "prop",
+    "width": 727,
+    "height": 561,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-蚕种清洗后.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-蚕种清洗后",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-蚕种清洗后.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-蚕种清洗后.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-蚕种纸1",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-蚕种纸1.png",
+    "kind": "prop",
+    "width": 402,
+    "height": 380,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-蚕种纸1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-蚕种纸1",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-蚕种纸1.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-蚕种纸1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-蚕种纸2",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-蚕种纸2.png",
+    "kind": "prop",
+    "width": 473,
+    "height": 368,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-蚕种纸2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-蚕种纸2",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-蚕种纸2.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-蚕种纸2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-蚕簇架1",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-蚕簇架1.png",
+    "kind": "prop",
+    "width": 283,
+    "height": 479,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-蚕簇架1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-蚕簇架1",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-蚕簇架1.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-蚕簇架1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-蚕簇架2",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-蚕簇架2.png",
+    "kind": "prop",
+    "width": 464,
+    "height": 422,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-蚕簇架2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-蚕簇架2",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-蚕簇架2.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-蚕簇架2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-采桑篮1",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-采桑篮1.png",
+    "kind": "prop",
+    "width": 514,
+    "height": 602,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-采桑篮1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-采桑篮1",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-采桑篮1.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-采桑篮1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-采桑篮2",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-采桑篮2.png",
+    "kind": "prop",
+    "width": 507,
+    "height": 602,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-采桑篮2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-采桑篮2",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-采桑篮2.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-采桑篮2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-采桑篮3",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-采桑篮3.png",
+    "kind": "prop",
+    "width": 508,
+    "height": 602,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-采桑篮3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-采桑篮3",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-采桑篮3.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-采桑篮3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "1-采桑篮4",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/1-采桑篮4.png",
+    "kind": "prop",
+    "width": 540,
+    "height": 613,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-采桑篮4.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "1-采桑篮4",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/1-采桑篮4.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\1-采桑篮4.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "2-卷绕架-纬",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/2-卷绕架-纬.png",
+    "kind": "prop",
+    "width": 1028,
+    "height": 1176,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-卷绕架-纬.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "2-卷绕架-纬",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/2-卷绕架-纬.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-卷绕架-纬.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "2-卷绕架-经",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/2-卷绕架-经.png",
+    "kind": "prop",
+    "width": 956,
+    "height": 1385,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-卷绕架-经.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "2-卷绕架-经",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/2-卷绕架-经.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-卷绕架-经.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "2-木柴",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/2-木柴.png",
+    "kind": "prop",
+    "width": 308,
+    "height": 229,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-木柴.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "2-木柴",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/2-木柴.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-木柴.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "2-树",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/2-树.png",
+    "kind": "prop",
+    "width": 1139,
+    "height": 1146,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-树.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "2-树",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/2-树.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-树.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "2-水源",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/2-水源.png",
+    "kind": "prop",
+    "width": 317,
+    "height": 330,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-水源.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "2-水源",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/2-水源.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-水源.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "2-火柴",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/2-火柴.png",
+    "kind": "prop",
+    "width": 353,
+    "height": 288,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-火柴.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "2-火柴",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/2-火柴.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-火柴.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "2-煮茧锅",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/2-煮茧锅.png",
+    "kind": "prop",
+    "width": 432,
+    "height": 490,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-煮茧锅.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "2-煮茧锅",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/2-煮茧锅.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-煮茧锅.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "2-盐窖",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/2-盐窖.png",
+    "kind": "prop",
+    "width": 385,
+    "height": 488,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-盐窖.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "2-盐窖",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/2-盐窖.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-盐窖.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "2-索绪",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/2-索绪.png",
+    "kind": "prop",
+    "width": 451,
+    "height": 442,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-索绪.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "2-索绪",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/2-索绪.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-索绪.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "2-缫丝车",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/2-缫丝车.png",
+    "kind": "prop",
+    "width": 1259,
+    "height": 965,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-缫丝车.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "2-缫丝车",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/2-缫丝车.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-缫丝车.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "2-蚕茧匾",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/2-蚕茧匾.png",
+    "kind": "prop",
+    "width": 469,
+    "height": 267,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-蚕茧匾.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "2-蚕茧匾",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/2-蚕茧匾.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-蚕茧匾.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "2-蚕茧篓",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/2-蚕茧篓.png",
+    "kind": "prop",
+    "width": 417,
+    "height": 457,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-蚕茧篓.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "2-蚕茧篓",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/2-蚕茧篓.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-蚕茧篓.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "2-蚕茧簇",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/2-蚕茧簇.png",
+    "kind": "prop",
+    "width": 429,
+    "height": 372,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-蚕茧簇.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "2-蚕茧簇",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/2-蚕茧簇.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-蚕茧簇.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "2-蚕茧簇架",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/2-蚕茧簇架.png",
+    "kind": "prop",
+    "width": 484,
+    "height": 442,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-蚕茧簇架.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "2-蚕茧簇架",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/2-蚕茧簇架.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-蚕茧簇架.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "2-酒",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/2-酒.png",
+    "kind": "prop",
+    "width": 443,
+    "height": 449,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-酒.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "2-酒",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/2-酒.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\2-酒.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "3-丝束",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/3-丝束.png",
+    "kind": "prop",
+    "width": 326,
+    "height": 352,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-丝束.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "3-丝束",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/3-丝束.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-丝束.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "3-工具箱",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/3-工具箱.png",
+    "kind": "prop",
+    "width": 1279,
+    "height": 856,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-工具箱.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "3-工具箱",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/3-工具箱.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-工具箱.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "3-拨子",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/3-拨子.png",
+    "kind": "prop",
+    "width": 439,
+    "height": 71,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-拨子.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "3-拨子",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/3-拨子.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-拨子.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "3-放大镜",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/3-放大镜.png",
+    "kind": "prop",
+    "width": 595,
+    "height": 931,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-放大镜.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "3-放大镜",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/3-放大镜.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-放大镜.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "3-树",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/3-树.png",
+    "kind": "prop",
+    "width": 1250,
+    "height": 1173,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-树.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "3-树",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/3-树.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-树.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "3-梭子",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/3-梭子.png",
+    "kind": "prop",
+    "width": 455,
+    "height": 286,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-梭子.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "3-梭子",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/3-梭子.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-梭子.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "3-线轴",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/3-线轴.png",
+    "kind": "prop",
+    "width": 309,
+    "height": 304,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-线轴.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "3-线轴",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/3-线轴.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-线轴.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "3-织好的白布+架子",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/3-织好的白布+架子.png",
+    "kind": "prop",
+    "width": 1329,
+    "height": 921,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-织好的白布+架子.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "3-织好的白布+架子",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/3-织好的白布+架子.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-织好的白布+架子.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "3-织好的白布",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/3-织好的白布.png",
+    "kind": "prop",
+    "width": 1181,
+    "height": 1301,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-织好的白布.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "3-织好的白布",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/3-织好的白布.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-织好的白布.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "3-织好的白布2",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/3-织好的白布2.png",
+    "kind": "prop",
+    "width": 1054,
+    "height": 1024,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-织好的白布2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "3-织好的白布2",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/3-织好的白布2.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-织好的白布2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "3-织机",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/3-织机.png",
+    "kind": "prop",
+    "width": 1447,
+    "height": 949,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-织机.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "3-织机",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/3-织机.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-织机.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "3-综框",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/3-综框.png",
+    "kind": "prop",
+    "width": 1115,
+    "height": 962,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-综框.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "3-综框",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/3-综框.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\3-综框.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-中式像素裁缝工作台（待定）",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-中式像素裁缝工作台（待定）.png",
+    "kind": "prop",
+    "width": 1187,
+    "height": 1072,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-中式像素裁缝工作台（待定）.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-中式像素裁缝工作台（待定）",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-中式像素裁缝工作台（待定）.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-中式像素裁缝工作台（待定）.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-挖掘染料背篓",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-挖掘染料背篓.png",
+    "kind": "prop",
+    "width": 924,
+    "height": 849,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-挖掘染料背篓.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-挖掘染料背篓",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-挖掘染料背篓.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-挖掘染料背篓.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-挖掘染料锄头",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-挖掘染料锄头.png",
+    "kind": "prop",
+    "width": 458,
+    "height": 228,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-挖掘染料锄头.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-挖掘染料锄头",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-挖掘染料锄头.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-挖掘染料锄头.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-提花机",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-提花机.png",
+    "kind": "prop",
+    "width": 1616,
+    "height": 844,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-提花机.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-提花机",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-提花机.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-提花机.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-晾晒架子-微侧",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-晾晒架子-微侧.png",
+    "kind": "prop",
+    "width": 1387,
+    "height": 799,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-晾晒架子-微侧.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-晾晒架子-微侧",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-晾晒架子-微侧.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-晾晒架子-微侧.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-晾晒架子",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-晾晒架子.png",
+    "kind": "prop",
+    "width": 1457,
+    "height": 833,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-晾晒架子.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-晾晒架子",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-晾晒架子.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-晾晒架子.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料空",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料空.png",
+    "kind": "prop",
+    "width": 451,
+    "height": 352,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料空.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料空",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料空.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料空.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料空缸",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料空缸.png",
+    "kind": "prop",
+    "width": 447,
+    "height": 418,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料空缸.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料空缸",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料空缸.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料空缸.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料紫",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料紫.png",
+    "kind": "prop",
+    "width": 453,
+    "height": 356,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料紫.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料紫",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料紫.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料紫.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料紫原料",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料紫原料.png",
+    "kind": "prop",
+    "width": 354,
+    "height": 337,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料紫原料.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料紫原料",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料紫原料.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料紫原料.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料紫原料冻伤",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料紫原料冻伤.png",
+    "kind": "prop",
+    "width": 651,
+    "height": 615,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料紫原料冻伤.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料紫原料冻伤",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料紫原料冻伤.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料紫原料冻伤.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料紫缸",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料紫缸.png",
+    "kind": "prop",
+    "width": 445,
+    "height": 418,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料紫缸.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料紫缸",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料紫缸.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料紫缸.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料红",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料红.png",
+    "kind": "prop",
+    "width": 453,
+    "height": 352,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料红.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料红",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料红.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料红.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料红原料",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料红原料.png",
+    "kind": "prop",
+    "width": 350,
+    "height": 350,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料红原料.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料红原料",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料红原料.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料红原料.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料红原料冻伤",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料红原料冻伤.png",
+    "kind": "prop",
+    "width": 636,
+    "height": 673,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料红原料冻伤.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料红原料冻伤",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料红原料冻伤.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料红原料冻伤.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料红缸",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料红缸.png",
+    "kind": "prop",
+    "width": 449,
+    "height": 410,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料红缸.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料红缸",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料红缸.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料红缸.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料绿",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料绿.png",
+    "kind": "prop",
+    "width": 453,
+    "height": 356,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料绿.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料绿",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料绿.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料绿.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料绿染料",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料绿染料.png",
+    "kind": "prop",
+    "width": 564,
+    "height": 477,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料绿染料.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料绿染料",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料绿染料.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料绿染料.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料绿染料腐蚀",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料绿染料腐蚀.png",
+    "kind": "prop",
+    "width": 751,
+    "height": 676,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料绿染料腐蚀.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料绿染料腐蚀",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料绿染料腐蚀.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料绿染料腐蚀.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料绿缸",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料绿缸.png",
+    "kind": "prop",
+    "width": 449,
+    "height": 418,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料绿缸.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料绿缸",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料绿缸.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料绿缸.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料蓝",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料蓝.png",
+    "kind": "prop",
+    "width": 454,
+    "height": 352,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料蓝.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料蓝",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料蓝.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料蓝.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料蓝原料",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料蓝原料.png",
+    "kind": "prop",
+    "width": 357,
+    "height": 341,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料蓝原料.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料蓝原料",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料蓝原料.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料蓝原料.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料蓝原料冻伤",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料蓝原料冻伤.png",
+    "kind": "prop",
+    "width": 692,
+    "height": 653,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料蓝原料冻伤.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料蓝原料冻伤",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料蓝原料冻伤.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料蓝原料冻伤.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料蓝缸",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料蓝缸.png",
+    "kind": "prop",
+    "width": 444,
+    "height": 410,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料蓝缸.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料蓝缸",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料蓝缸.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料蓝缸.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料黄",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料黄.png",
+    "kind": "prop",
+    "width": 451,
+    "height": 356,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料黄.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料黄",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料黄.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料黄.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料黄原料",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料黄原料.png",
+    "kind": "prop",
+    "width": 352,
+    "height": 357,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料黄原料.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料黄原料",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料黄原料.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料黄原料.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料黄原料腐蚀",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料黄原料腐蚀.png",
+    "kind": "prop",
+    "width": 596,
+    "height": 661,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料黄原料腐蚀.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料黄原料腐蚀",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料黄原料腐蚀.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料黄原料腐蚀.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-染料黄缸",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-染料黄缸.png",
+    "kind": "prop",
+    "width": 447,
+    "height": 410,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料黄缸.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-染料黄缸",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-染料黄缸.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-染料黄缸.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-树",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-树.png",
+    "kind": "prop",
+    "width": 875,
+    "height": 1105,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-树.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-树",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-树.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-树.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-裁衣工具尺",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-裁衣工具尺.png",
+    "kind": "prop",
+    "width": 395,
+    "height": 289,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-裁衣工具尺.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-裁衣工具尺",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-裁衣工具尺.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-裁衣工具尺.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-裁衣工具针",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-裁衣工具针.png",
+    "kind": "prop",
+    "width": 386,
+    "height": 353,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-裁衣工具针.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-裁衣工具针",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-裁衣工具针.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-裁衣工具针.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-障碍云雨1",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-障碍云雨1.png",
+    "kind": "prop",
+    "width": 451,
+    "height": 412,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-障碍云雨1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-障碍云雨1",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-障碍云雨1.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-障碍云雨1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-障碍云雨2",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-障碍云雨2.png",
+    "kind": "prop",
+    "width": 475,
+    "height": 414,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-障碍云雨2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-障碍云雨2",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-障碍云雨2.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-障碍云雨2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-障碍云雨3",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-障碍云雨3.png",
+    "kind": "prop",
+    "width": 477,
+    "height": 434,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-障碍云雨3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-障碍云雨3",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-障碍云雨3.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-障碍云雨3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-障碍岩浆",
+    "path": "Assets/ShiXuRunnerUI/Art/Props/4-障碍岩浆.png",
+    "kind": "prop",
+    "width": 1460,
+    "height": 924,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-障碍岩浆.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-障碍岩浆",
+    "path": "Assets/ShiXuRunnerUI/Art/Items/4-障碍岩浆.png",
+    "kind": "item_icon",
+    "width": 128,
+    "height": 128,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-障碍岩浆.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Building_01",
+    "path": "Assets/ShiXuRunnerUI/Art/Decor/Building_01.png",
+    "kind": "decoration",
+    "width": 493,
+    "height": 398,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\场景装饰元素（待定）\\2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "Building_02",
+    "path": "Assets/ShiXuRunnerUI/Art/Decor/Building_02.png",
+    "kind": "decoration",
+    "width": 510,
+    "height": 471,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\场景装饰元素（待定）\\2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "Building_03",
+    "path": "Assets/ShiXuRunnerUI/Art/Decor/Building_03.png",
+    "kind": "decoration",
+    "width": 464,
+    "height": 391,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\场景装饰元素（待定）\\2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "Building_04",
+    "path": "Assets/ShiXuRunnerUI/Art/Decor/Building_04.png",
+    "kind": "decoration",
+    "width": 496,
+    "height": 444,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\场景装饰元素（待定）\\2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "Building_05",
+    "path": "Assets/ShiXuRunnerUI/Art/Decor/Building_05.png",
+    "kind": "decoration",
+    "width": 504,
+    "height": 447,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\场景装饰元素（待定）\\2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "Building_06",
+    "path": "Assets/ShiXuRunnerUI/Art/Decor/Building_06.png",
+    "kind": "decoration",
+    "width": 506,
+    "height": 415,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\场景装饰元素（待定）\\2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "4-衣服待定1_01",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定1_01.png",
+    "kind": "garment_variant",
+    "width": 375,
+    "height": 416,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定1_02",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定1_02.png",
+    "kind": "garment_variant",
+    "width": 374,
+    "height": 416,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定1_03",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定1_03.png",
+    "kind": "garment_variant",
+    "width": 374,
+    "height": 416,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定1_04",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定1_04.png",
+    "kind": "garment_variant",
+    "width": 376,
+    "height": 408,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定1_05",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定1_05.png",
+    "kind": "garment_variant",
+    "width": 375,
+    "height": 410,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定1_06",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定1_06.png",
+    "kind": "garment_variant",
+    "width": 368,
+    "height": 409,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定1_07",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定1_07.png",
+    "kind": "garment_variant",
+    "width": 364,
+    "height": 413,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定1_08",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定1_08.png",
+    "kind": "garment_variant",
+    "width": 376,
+    "height": 421,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定1.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定2_01",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定2_01.png",
+    "kind": "garment_variant",
+    "width": 375,
+    "height": 416,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定2_02",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定2_02.png",
+    "kind": "garment_variant",
+    "width": 374,
+    "height": 416,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定2_03",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定2_03.png",
+    "kind": "garment_variant",
+    "width": 374,
+    "height": 416,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定2_04",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定2_04.png",
+    "kind": "garment_variant",
+    "width": 376,
+    "height": 408,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定2_05",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定2_05.png",
+    "kind": "garment_variant",
+    "width": 375,
+    "height": 410,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定2_06",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定2_06.png",
+    "kind": "garment_variant",
+    "width": 368,
+    "height": 409,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定2_07",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定2_07.png",
+    "kind": "garment_variant",
+    "width": 364,
+    "height": 413,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定2_08",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定2_08.png",
+    "kind": "garment_variant",
+    "width": 376,
+    "height": 421,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定2.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定3_01",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_01.png",
+    "kind": "garment_variant",
+    "width": 298,
+    "height": 302,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定3_02",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_02.png",
+    "kind": "garment_variant",
+    "width": 296,
+    "height": 302,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定3_03",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_03.png",
+    "kind": "garment_variant",
+    "width": 279,
+    "height": 302,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定3_04",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_04.png",
+    "kind": "garment_variant",
+    "width": 297,
+    "height": 291,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定3_05",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_05.png",
+    "kind": "garment_variant",
+    "width": 298,
+    "height": 306,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定3_06",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_06.png",
+    "kind": "garment_variant",
+    "width": 298,
+    "height": 301,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定3_07",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_07.png",
+    "kind": "garment_variant",
+    "width": 249,
+    "height": 301,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定3_08",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_08.png",
+    "kind": "garment_variant",
+    "width": 280,
+    "height": 306,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定3_09",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_09.png",
+    "kind": "garment_variant",
+    "width": 307,
+    "height": 309,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定3_10",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_10.png",
+    "kind": "garment_variant",
+    "width": 297,
+    "height": 309,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定3_11",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_11.png",
+    "kind": "garment_variant",
+    "width": 304,
+    "height": 309,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定3_12",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_12.png",
+    "kind": "garment_variant",
+    "width": 309,
+    "height": 309,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定3_13",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_13.png",
+    "kind": "garment_variant",
+    "width": 297,
+    "height": 308,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定3_14",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_14.png",
+    "kind": "garment_variant",
+    "width": 262,
+    "height": 308,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定3_15",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_15.png",
+    "kind": "garment_variant",
+    "width": 301,
+    "height": 302,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "4-衣服待定3_16",
+    "path": "Assets/ShiXuRunnerUI/Art/Garments/4-衣服待定3_16.png",
+    "kind": "garment_variant",
+    "width": 306,
+    "height": 306,
+    "source": "C:\\Users\\lenovo\\Downloads\\像素道具与小场景\\4-衣服待定3.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_01_Far_Loop",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Spring/Spring_01_Far_Loop.png",
+    "kind": "background_far",
+    "width": 8192,
+    "height": 1152,
+    "source": "native pixel silhouettes plus seasonal palette",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_02_Trees_Loop",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Spring/Spring_02_Trees_Loop.png",
+    "kind": "background_layer",
+    "width": 8192,
+    "height": 1152,
+    "source": "composed from supplied character-free transparent sprites",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_03_Workshops_Loop",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Spring/Spring_03_Workshops_Loop.png",
+    "kind": "background_layer",
+    "width": 8192,
+    "height": 1152,
+    "source": "composed from supplied character-free transparent sprites",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_04_Foreground_Loop",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Spring/Spring_04_Foreground_Loop.png",
+    "kind": "background_layer",
+    "width": 8192,
+    "height": 1152,
+    "source": "composed from supplied character-free transparent sprites",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Composite_Loop_8192x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Spring/Spring_Composite_Loop_8192x1152.png",
+    "kind": "background_composite",
+    "width": 8192,
+    "height": 1152,
+    "source": "flat horizontally composed sprite panorama",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_00_2048x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Spring/Segments/Spring_00_2048x1152.png",
+    "kind": "background_segment",
+    "width": 2048,
+    "height": 1152,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_01_2048x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Spring/Segments/Spring_01_2048x1152.png",
+    "kind": "background_segment",
+    "width": 2048,
+    "height": 1152,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_02_2048x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Spring/Segments/Spring_02_2048x1152.png",
+    "kind": "background_segment",
+    "width": 2048,
+    "height": 1152,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_03_2048x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Spring/Segments/Spring_03_2048x1152.png",
+    "kind": "background_segment",
+    "width": 2048,
+    "height": 1152,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Long_16384x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Spring/Spring_Long_16384x1152.png",
+    "kind": "background_long",
+    "width": 16384,
+    "height": 1152,
+    "source": "two exact periods; use segmented textures in Unity",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_01_Far_Loop",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Summer/Summer_01_Far_Loop.png",
+    "kind": "background_far",
+    "width": 8192,
+    "height": 1152,
+    "source": "native pixel silhouettes plus seasonal palette",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_02_Trees_Loop",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Summer/Summer_02_Trees_Loop.png",
+    "kind": "background_layer",
+    "width": 8192,
+    "height": 1152,
+    "source": "composed from supplied character-free transparent sprites",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_03_Workshops_Loop",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Summer/Summer_03_Workshops_Loop.png",
+    "kind": "background_layer",
+    "width": 8192,
+    "height": 1152,
+    "source": "composed from supplied character-free transparent sprites",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_04_Foreground_Loop",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Summer/Summer_04_Foreground_Loop.png",
+    "kind": "background_layer",
+    "width": 8192,
+    "height": 1152,
+    "source": "composed from supplied character-free transparent sprites",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Composite_Loop_8192x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Summer/Summer_Composite_Loop_8192x1152.png",
+    "kind": "background_composite",
+    "width": 8192,
+    "height": 1152,
+    "source": "flat horizontally composed sprite panorama",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_00_2048x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Summer/Segments/Summer_00_2048x1152.png",
+    "kind": "background_segment",
+    "width": 2048,
+    "height": 1152,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_01_2048x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Summer/Segments/Summer_01_2048x1152.png",
+    "kind": "background_segment",
+    "width": 2048,
+    "height": 1152,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_02_2048x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Summer/Segments/Summer_02_2048x1152.png",
+    "kind": "background_segment",
+    "width": 2048,
+    "height": 1152,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_03_2048x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Summer/Segments/Summer_03_2048x1152.png",
+    "kind": "background_segment",
+    "width": 2048,
+    "height": 1152,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Long_16384x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Summer/Summer_Long_16384x1152.png",
+    "kind": "background_long",
+    "width": 16384,
+    "height": 1152,
+    "source": "two exact periods; use segmented textures in Unity",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_01_Far_Loop",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Autumn/Autumn_01_Far_Loop.png",
+    "kind": "background_far",
+    "width": 8192,
+    "height": 1152,
+    "source": "native pixel silhouettes plus seasonal palette",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_02_Trees_Loop",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Autumn/Autumn_02_Trees_Loop.png",
+    "kind": "background_layer",
+    "width": 8192,
+    "height": 1152,
+    "source": "composed from supplied character-free transparent sprites",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_03_Workshops_Loop",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Autumn/Autumn_03_Workshops_Loop.png",
+    "kind": "background_layer",
+    "width": 8192,
+    "height": 1152,
+    "source": "composed from supplied character-free transparent sprites",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_04_Foreground_Loop",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Autumn/Autumn_04_Foreground_Loop.png",
+    "kind": "background_layer",
+    "width": 8192,
+    "height": 1152,
+    "source": "composed from supplied character-free transparent sprites",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Composite_Loop_8192x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Autumn/Autumn_Composite_Loop_8192x1152.png",
+    "kind": "background_composite",
+    "width": 8192,
+    "height": 1152,
+    "source": "flat horizontally composed sprite panorama",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_00_2048x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Autumn/Segments/Autumn_00_2048x1152.png",
+    "kind": "background_segment",
+    "width": 2048,
+    "height": 1152,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_01_2048x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Autumn/Segments/Autumn_01_2048x1152.png",
+    "kind": "background_segment",
+    "width": 2048,
+    "height": 1152,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_02_2048x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Autumn/Segments/Autumn_02_2048x1152.png",
+    "kind": "background_segment",
+    "width": 2048,
+    "height": 1152,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_03_2048x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Autumn/Segments/Autumn_03_2048x1152.png",
+    "kind": "background_segment",
+    "width": 2048,
+    "height": 1152,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Long_16384x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Autumn/Autumn_Long_16384x1152.png",
+    "kind": "background_long",
+    "width": 16384,
+    "height": 1152,
+    "source": "two exact periods; use segmented textures in Unity",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_01_Far_Loop",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Winter/Winter_01_Far_Loop.png",
+    "kind": "background_far",
+    "width": 8192,
+    "height": 1152,
+    "source": "native pixel silhouettes plus seasonal palette",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_02_Trees_Loop",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Winter/Winter_02_Trees_Loop.png",
+    "kind": "background_layer",
+    "width": 8192,
+    "height": 1152,
+    "source": "composed from supplied character-free transparent sprites",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_03_Workshops_Loop",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Winter/Winter_03_Workshops_Loop.png",
+    "kind": "background_layer",
+    "width": 8192,
+    "height": 1152,
+    "source": "composed from supplied character-free transparent sprites",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_04_Foreground_Loop",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Winter/Winter_04_Foreground_Loop.png",
+    "kind": "background_layer",
+    "width": 8192,
+    "height": 1152,
+    "source": "composed from supplied character-free transparent sprites",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Composite_Loop_8192x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Winter/Winter_Composite_Loop_8192x1152.png",
+    "kind": "background_composite",
+    "width": 8192,
+    "height": 1152,
+    "source": "flat horizontally composed sprite panorama",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_00_2048x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Winter/Segments/Winter_00_2048x1152.png",
+    "kind": "background_segment",
+    "width": 2048,
+    "height": 1152,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_01_2048x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Winter/Segments/Winter_01_2048x1152.png",
+    "kind": "background_segment",
+    "width": 2048,
+    "height": 1152,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_02_2048x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Winter/Segments/Winter_02_2048x1152.png",
+    "kind": "background_segment",
+    "width": 2048,
+    "height": 1152,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_03_2048x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Winter/Segments/Winter_03_2048x1152.png",
+    "kind": "background_segment",
+    "width": 2048,
+    "height": 1152,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Long_16384x1152",
+    "path": "Assets/ShiXuRunnerUI/Art/Backgrounds/Winter/Winter_Long_16384x1152.png",
+    "kind": "background_long",
+    "width": 16384,
+    "height": 1152,
+    "source": "two exact periods; use segmented textures in Unity",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Badge_9slice",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Frames/Spring_Badge_9slice.png",
+    "kind": "nine_slice",
+    "width": 100,
+    "height": 100,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\NineSlice\\Spring_Badge_9slice.png",
+    "border": [
+      16,
+      16,
+      16,
+      16
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_ButtonPrimary_9slice",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Frames/Spring_ButtonPrimary_9slice.png",
+    "kind": "nine_slice",
+    "width": 240,
+    "height": 66,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\NineSlice\\Spring_ButtonPrimary_9slice.png",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_ButtonSecondary_9slice",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Frames/Spring_ButtonSecondary_9slice.png",
+    "kind": "nine_slice",
+    "width": 240,
+    "height": 66,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\NineSlice\\Spring_ButtonSecondary_9slice.png",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Panel_9slice",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Frames/Spring_Panel_9slice.png",
+    "kind": "nine_slice",
+    "width": 384,
+    "height": 224,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\NineSlice\\Spring_Panel_9slice.png",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Primary_Normal",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Spring_Primary_Normal.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Primary_Hover",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Spring_Primary_Hover.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Primary_Pressed",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Spring_Primary_Pressed.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Primary_Disabled",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Spring_Primary_Disabled.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Secondary_Normal",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Spring_Secondary_Normal.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Secondary_Hover",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Spring_Secondary_Hover.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Secondary_Pressed",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Spring_Secondary_Pressed.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Secondary_Disabled",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Spring_Secondary_Disabled.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_HUDPlate",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Spring_HUDPlate.png",
+    "kind": "widget",
+    "width": 640,
+    "height": 110,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_QuestPlate",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Spring_QuestPlate.png",
+    "kind": "widget",
+    "width": 460,
+    "height": 156,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Dialog",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Spring_Dialog.png",
+    "kind": "widget",
+    "width": 1120,
+    "height": 235,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_ItemSlot",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Spring_ItemSlot.png",
+    "kind": "widget",
+    "width": 112,
+    "height": 112,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Tooltip",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Spring_Tooltip.png",
+    "kind": "widget",
+    "width": 440,
+    "height": 180,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Toast",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Spring_Toast.png",
+    "kind": "widget",
+    "width": 520,
+    "height": 98,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Card",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Spring_Card.png",
+    "kind": "widget",
+    "width": 400,
+    "height": 300,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Slot_Empty",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Spring_Slot_Empty.png",
+    "kind": "inventory_state",
+    "width": 112,
+    "height": 112,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Slot_Selected",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Spring_Slot_Selected.png",
+    "kind": "inventory_state",
+    "width": 112,
+    "height": 112,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Slot_Locked",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Spring_Slot_Locked.png",
+    "kind": "inventory_state",
+    "width": 112,
+    "height": 112,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Track",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Meters/Spring_Track.png",
+    "kind": "progress_meter",
+    "width": 400,
+    "height": 32,
+    "source": "derived",
+    "border": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Fill",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Meters/Spring_Fill.png",
+    "kind": "progress_meter",
+    "width": 400,
+    "height": 32,
+    "source": "derived",
+    "border": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Warning",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Meters/Spring_Warning.png",
+    "kind": "progress_meter",
+    "width": 400,
+    "height": 32,
+    "source": "derived",
+    "border": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Toggle_Off",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Spring_Toggle_Off.png",
+    "kind": "toggle",
+    "width": 100,
+    "height": 48,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Toggle_On",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Spring_Toggle_On.png",
+    "kind": "toggle",
+    "width": 100,
+    "height": 48,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Badge_9slice",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Frames/Summer_Badge_9slice.png",
+    "kind": "nine_slice",
+    "width": 100,
+    "height": 100,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\NineSlice\\Summer_Badge_9slice.png",
+    "border": [
+      16,
+      16,
+      16,
+      16
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_ButtonPrimary_9slice",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Frames/Summer_ButtonPrimary_9slice.png",
+    "kind": "nine_slice",
+    "width": 240,
+    "height": 66,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\NineSlice\\Summer_ButtonPrimary_9slice.png",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_ButtonSecondary_9slice",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Frames/Summer_ButtonSecondary_9slice.png",
+    "kind": "nine_slice",
+    "width": 240,
+    "height": 66,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\NineSlice\\Summer_ButtonSecondary_9slice.png",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Panel_9slice",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Frames/Summer_Panel_9slice.png",
+    "kind": "nine_slice",
+    "width": 384,
+    "height": 224,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\NineSlice\\Summer_Panel_9slice.png",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Primary_Normal",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Summer_Primary_Normal.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Primary_Hover",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Summer_Primary_Hover.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Primary_Pressed",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Summer_Primary_Pressed.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Primary_Disabled",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Summer_Primary_Disabled.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Secondary_Normal",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Summer_Secondary_Normal.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Secondary_Hover",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Summer_Secondary_Hover.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Secondary_Pressed",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Summer_Secondary_Pressed.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Secondary_Disabled",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Summer_Secondary_Disabled.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_HUDPlate",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Summer_HUDPlate.png",
+    "kind": "widget",
+    "width": 640,
+    "height": 110,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_QuestPlate",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Summer_QuestPlate.png",
+    "kind": "widget",
+    "width": 460,
+    "height": 156,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Dialog",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Summer_Dialog.png",
+    "kind": "widget",
+    "width": 1120,
+    "height": 235,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_ItemSlot",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Summer_ItemSlot.png",
+    "kind": "widget",
+    "width": 112,
+    "height": 112,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Tooltip",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Summer_Tooltip.png",
+    "kind": "widget",
+    "width": 440,
+    "height": 180,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Toast",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Summer_Toast.png",
+    "kind": "widget",
+    "width": 520,
+    "height": 98,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Card",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Summer_Card.png",
+    "kind": "widget",
+    "width": 400,
+    "height": 300,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Slot_Empty",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Summer_Slot_Empty.png",
+    "kind": "inventory_state",
+    "width": 112,
+    "height": 112,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Slot_Selected",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Summer_Slot_Selected.png",
+    "kind": "inventory_state",
+    "width": 112,
+    "height": 112,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Slot_Locked",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Summer_Slot_Locked.png",
+    "kind": "inventory_state",
+    "width": 112,
+    "height": 112,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Track",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Meters/Summer_Track.png",
+    "kind": "progress_meter",
+    "width": 400,
+    "height": 32,
+    "source": "derived",
+    "border": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Fill",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Meters/Summer_Fill.png",
+    "kind": "progress_meter",
+    "width": 400,
+    "height": 32,
+    "source": "derived",
+    "border": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Warning",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Meters/Summer_Warning.png",
+    "kind": "progress_meter",
+    "width": 400,
+    "height": 32,
+    "source": "derived",
+    "border": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Toggle_Off",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Summer_Toggle_Off.png",
+    "kind": "toggle",
+    "width": 100,
+    "height": 48,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Summer_Toggle_On",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Summer_Toggle_On.png",
+    "kind": "toggle",
+    "width": 100,
+    "height": 48,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Badge_9slice",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Frames/Autumn_Badge_9slice.png",
+    "kind": "nine_slice",
+    "width": 100,
+    "height": 100,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\NineSlice\\Autumn_Badge_9slice.png",
+    "border": [
+      16,
+      16,
+      16,
+      16
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_ButtonPrimary_9slice",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Frames/Autumn_ButtonPrimary_9slice.png",
+    "kind": "nine_slice",
+    "width": 240,
+    "height": 66,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\NineSlice\\Autumn_ButtonPrimary_9slice.png",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_ButtonSecondary_9slice",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Frames/Autumn_ButtonSecondary_9slice.png",
+    "kind": "nine_slice",
+    "width": 240,
+    "height": 66,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\NineSlice\\Autumn_ButtonSecondary_9slice.png",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Panel_9slice",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Frames/Autumn_Panel_9slice.png",
+    "kind": "nine_slice",
+    "width": 384,
+    "height": 224,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\NineSlice\\Autumn_Panel_9slice.png",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Primary_Normal",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Autumn_Primary_Normal.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Primary_Hover",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Autumn_Primary_Hover.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Primary_Pressed",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Autumn_Primary_Pressed.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Primary_Disabled",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Autumn_Primary_Disabled.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Secondary_Normal",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Autumn_Secondary_Normal.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Secondary_Hover",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Autumn_Secondary_Hover.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Secondary_Pressed",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Autumn_Secondary_Pressed.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Secondary_Disabled",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Autumn_Secondary_Disabled.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_HUDPlate",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Autumn_HUDPlate.png",
+    "kind": "widget",
+    "width": 640,
+    "height": 110,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_QuestPlate",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Autumn_QuestPlate.png",
+    "kind": "widget",
+    "width": 460,
+    "height": 156,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Dialog",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Autumn_Dialog.png",
+    "kind": "widget",
+    "width": 1120,
+    "height": 235,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_ItemSlot",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Autumn_ItemSlot.png",
+    "kind": "widget",
+    "width": 112,
+    "height": 112,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Tooltip",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Autumn_Tooltip.png",
+    "kind": "widget",
+    "width": 440,
+    "height": 180,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Toast",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Autumn_Toast.png",
+    "kind": "widget",
+    "width": 520,
+    "height": 98,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Card",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Autumn_Card.png",
+    "kind": "widget",
+    "width": 400,
+    "height": 300,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Slot_Empty",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Autumn_Slot_Empty.png",
+    "kind": "inventory_state",
+    "width": 112,
+    "height": 112,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Slot_Selected",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Autumn_Slot_Selected.png",
+    "kind": "inventory_state",
+    "width": 112,
+    "height": 112,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Slot_Locked",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Autumn_Slot_Locked.png",
+    "kind": "inventory_state",
+    "width": 112,
+    "height": 112,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Track",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Meters/Autumn_Track.png",
+    "kind": "progress_meter",
+    "width": 400,
+    "height": 32,
+    "source": "derived",
+    "border": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Fill",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Meters/Autumn_Fill.png",
+    "kind": "progress_meter",
+    "width": 400,
+    "height": 32,
+    "source": "derived",
+    "border": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Warning",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Meters/Autumn_Warning.png",
+    "kind": "progress_meter",
+    "width": 400,
+    "height": 32,
+    "source": "derived",
+    "border": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Toggle_Off",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Autumn_Toggle_Off.png",
+    "kind": "toggle",
+    "width": 100,
+    "height": 48,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Autumn_Toggle_On",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Autumn_Toggle_On.png",
+    "kind": "toggle",
+    "width": 100,
+    "height": 48,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Badge_9slice",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Frames/Winter_Badge_9slice.png",
+    "kind": "nine_slice",
+    "width": 100,
+    "height": 100,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\NineSlice\\Winter_Badge_9slice.png",
+    "border": [
+      16,
+      16,
+      16,
+      16
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_ButtonPrimary_9slice",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Frames/Winter_ButtonPrimary_9slice.png",
+    "kind": "nine_slice",
+    "width": 240,
+    "height": 66,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\NineSlice\\Winter_ButtonPrimary_9slice.png",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_ButtonSecondary_9slice",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Frames/Winter_ButtonSecondary_9slice.png",
+    "kind": "nine_slice",
+    "width": 240,
+    "height": 66,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\NineSlice\\Winter_ButtonSecondary_9slice.png",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Panel_9slice",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Frames/Winter_Panel_9slice.png",
+    "kind": "nine_slice",
+    "width": 384,
+    "height": 224,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\NineSlice\\Winter_Panel_9slice.png",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Primary_Normal",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Winter_Primary_Normal.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Primary_Hover",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Winter_Primary_Hover.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Primary_Pressed",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Winter_Primary_Pressed.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Primary_Disabled",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Winter_Primary_Disabled.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Secondary_Normal",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Winter_Secondary_Normal.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Secondary_Hover",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Winter_Secondary_Hover.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Secondary_Pressed",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Winter_Secondary_Pressed.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Secondary_Disabled",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Buttons/Winter_Secondary_Disabled.png",
+    "kind": "button_state",
+    "width": 320,
+    "height": 88,
+    "source": "derived from existing nine-slice",
+    "border": [
+      18,
+      18,
+      18,
+      18
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_HUDPlate",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Winter_HUDPlate.png",
+    "kind": "widget",
+    "width": 640,
+    "height": 110,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_QuestPlate",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Winter_QuestPlate.png",
+    "kind": "widget",
+    "width": 460,
+    "height": 156,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Dialog",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Winter_Dialog.png",
+    "kind": "widget",
+    "width": 1120,
+    "height": 235,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_ItemSlot",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Winter_ItemSlot.png",
+    "kind": "widget",
+    "width": 112,
+    "height": 112,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Tooltip",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Winter_Tooltip.png",
+    "kind": "widget",
+    "width": 440,
+    "height": 180,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Toast",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Winter_Toast.png",
+    "kind": "widget",
+    "width": 520,
+    "height": 98,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Card",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Winter_Card.png",
+    "kind": "widget",
+    "width": 400,
+    "height": 300,
+    "source": "existing nine-slice extended",
+    "border": [
+      24,
+      24,
+      24,
+      24
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Slot_Empty",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Winter_Slot_Empty.png",
+    "kind": "inventory_state",
+    "width": 112,
+    "height": 112,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Slot_Selected",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Winter_Slot_Selected.png",
+    "kind": "inventory_state",
+    "width": 112,
+    "height": 112,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Slot_Locked",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Winter_Slot_Locked.png",
+    "kind": "inventory_state",
+    "width": 112,
+    "height": 112,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Track",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Meters/Winter_Track.png",
+    "kind": "progress_meter",
+    "width": 400,
+    "height": 32,
+    "source": "derived",
+    "border": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Fill",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Meters/Winter_Fill.png",
+    "kind": "progress_meter",
+    "width": 400,
+    "height": 32,
+    "source": "derived",
+    "border": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Warning",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Meters/Winter_Warning.png",
+    "kind": "progress_meter",
+    "width": 400,
+    "height": 32,
+    "source": "derived",
+    "border": [
+      8,
+      8,
+      8,
+      8
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Toggle_Off",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Winter_Toggle_Off.png",
+    "kind": "toggle",
+    "width": 100,
+    "height": 48,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Winter_Toggle_On",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Widgets/Winter_Toggle_On.png",
+    "kind": "toggle",
+    "width": 100,
+    "height": 48,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Left",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/Left.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Right",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/Right.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Jump",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/Jump.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Pause",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/Pause.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Close",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/Close.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Check",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/Check.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Lock",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/Lock.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Book",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/Book.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Bag",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/Bag.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Gear",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/Gear.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "News",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/News.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Home",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/Home.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "HeartFull",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/HeartFull.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "HeartEmpty",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/HeartEmpty.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Checkpoint",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/Checkpoint.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Goal",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/Goal.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Star",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/Star.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Interact",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/Interact.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Sound",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/Sound.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Music",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Icons/Music.png",
+    "kind": "ui_icon",
+    "width": 96,
+    "height": 96,
+    "source": "native geometric symbol",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "Spring_Ground_256",
+    "path": "Assets/ShiXuRunnerUI/Art/Terrain/Spring_Ground_256.png",
+    "kind": "terrain",
+    "width": 256,
+    "height": 192,
+    "source": "native side-view modular tile",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      1
+    ]
+  },
+  {
+    "id": "Spring_Stone_256",
+    "path": "Assets/ShiXuRunnerUI/Art/Terrain/Spring_Stone_256.png",
+    "kind": "terrain",
+    "width": 256,
+    "height": 64,
+    "source": "native side-view modular tile",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      1
+    ]
+  },
+  {
+    "id": "Spring_Wood_256",
+    "path": "Assets/ShiXuRunnerUI/Art/Terrain/Spring_Wood_256.png",
+    "kind": "terrain",
+    "width": 256,
+    "height": 64,
+    "source": "native side-view modular tile",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      1
+    ]
+  },
+  {
+    "id": "Spring_OneWay_256",
+    "path": "Assets/ShiXuRunnerUI/Art/Terrain/Spring_OneWay_256.png",
+    "kind": "terrain",
+    "width": 256,
+    "height": 64,
+    "source": "native side-view modular tile",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      1
+    ]
+  },
+  {
+    "id": "Spring_Checkpoint_Inactive",
+    "path": "Assets/ShiXuRunnerUI/Art/World/Spring_Checkpoint_Inactive.png",
+    "kind": "world_marker",
+    "width": 100,
+    "height": 170,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "Spring_Checkpoint_Active",
+    "path": "Assets/ShiXuRunnerUI/Art/World/Spring_Checkpoint_Active.png",
+    "kind": "world_marker",
+    "width": 100,
+    "height": 170,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "Summer_Ground_256",
+    "path": "Assets/ShiXuRunnerUI/Art/Terrain/Summer_Ground_256.png",
+    "kind": "terrain",
+    "width": 256,
+    "height": 192,
+    "source": "native side-view modular tile",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      1
+    ]
+  },
+  {
+    "id": "Summer_Stone_256",
+    "path": "Assets/ShiXuRunnerUI/Art/Terrain/Summer_Stone_256.png",
+    "kind": "terrain",
+    "width": 256,
+    "height": 64,
+    "source": "native side-view modular tile",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      1
+    ]
+  },
+  {
+    "id": "Summer_Wood_256",
+    "path": "Assets/ShiXuRunnerUI/Art/Terrain/Summer_Wood_256.png",
+    "kind": "terrain",
+    "width": 256,
+    "height": 64,
+    "source": "native side-view modular tile",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      1
+    ]
+  },
+  {
+    "id": "Summer_OneWay_256",
+    "path": "Assets/ShiXuRunnerUI/Art/Terrain/Summer_OneWay_256.png",
+    "kind": "terrain",
+    "width": 256,
+    "height": 64,
+    "source": "native side-view modular tile",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      1
+    ]
+  },
+  {
+    "id": "Summer_Checkpoint_Inactive",
+    "path": "Assets/ShiXuRunnerUI/Art/World/Summer_Checkpoint_Inactive.png",
+    "kind": "world_marker",
+    "width": 100,
+    "height": 170,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "Summer_Checkpoint_Active",
+    "path": "Assets/ShiXuRunnerUI/Art/World/Summer_Checkpoint_Active.png",
+    "kind": "world_marker",
+    "width": 100,
+    "height": 170,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "Autumn_Ground_256",
+    "path": "Assets/ShiXuRunnerUI/Art/Terrain/Autumn_Ground_256.png",
+    "kind": "terrain",
+    "width": 256,
+    "height": 192,
+    "source": "native side-view modular tile",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      1
+    ]
+  },
+  {
+    "id": "Autumn_Stone_256",
+    "path": "Assets/ShiXuRunnerUI/Art/Terrain/Autumn_Stone_256.png",
+    "kind": "terrain",
+    "width": 256,
+    "height": 64,
+    "source": "native side-view modular tile",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      1
+    ]
+  },
+  {
+    "id": "Autumn_Wood_256",
+    "path": "Assets/ShiXuRunnerUI/Art/Terrain/Autumn_Wood_256.png",
+    "kind": "terrain",
+    "width": 256,
+    "height": 64,
+    "source": "native side-view modular tile",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      1
+    ]
+  },
+  {
+    "id": "Autumn_OneWay_256",
+    "path": "Assets/ShiXuRunnerUI/Art/Terrain/Autumn_OneWay_256.png",
+    "kind": "terrain",
+    "width": 256,
+    "height": 64,
+    "source": "native side-view modular tile",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      1
+    ]
+  },
+  {
+    "id": "Autumn_Checkpoint_Inactive",
+    "path": "Assets/ShiXuRunnerUI/Art/World/Autumn_Checkpoint_Inactive.png",
+    "kind": "world_marker",
+    "width": 100,
+    "height": 170,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "Autumn_Checkpoint_Active",
+    "path": "Assets/ShiXuRunnerUI/Art/World/Autumn_Checkpoint_Active.png",
+    "kind": "world_marker",
+    "width": 100,
+    "height": 170,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "Winter_Ground_256",
+    "path": "Assets/ShiXuRunnerUI/Art/Terrain/Winter_Ground_256.png",
+    "kind": "terrain",
+    "width": 256,
+    "height": 192,
+    "source": "native side-view modular tile",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      1
+    ]
+  },
+  {
+    "id": "Winter_Stone_256",
+    "path": "Assets/ShiXuRunnerUI/Art/Terrain/Winter_Stone_256.png",
+    "kind": "terrain",
+    "width": 256,
+    "height": 64,
+    "source": "native side-view modular tile",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      1
+    ]
+  },
+  {
+    "id": "Winter_Wood_256",
+    "path": "Assets/ShiXuRunnerUI/Art/Terrain/Winter_Wood_256.png",
+    "kind": "terrain",
+    "width": 256,
+    "height": 64,
+    "source": "native side-view modular tile",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      1
+    ]
+  },
+  {
+    "id": "Winter_OneWay_256",
+    "path": "Assets/ShiXuRunnerUI/Art/Terrain/Winter_OneWay_256.png",
+    "kind": "terrain",
+    "width": 256,
+    "height": 64,
+    "source": "native side-view modular tile",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      1
+    ]
+  },
+  {
+    "id": "Winter_Checkpoint_Inactive",
+    "path": "Assets/ShiXuRunnerUI/Art/World/Winter_Checkpoint_Inactive.png",
+    "kind": "world_marker",
+    "width": 100,
+    "height": 170,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "Winter_Checkpoint_Active",
+    "path": "Assets/ShiXuRunnerUI/Art/World/Winter_Checkpoint_Active.png",
+    "kind": "world_marker",
+    "width": 100,
+    "height": 170,
+    "source": "derived",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0
+    ]
+  },
+  {
+    "id": "04_News_Blank",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Ornate/04_News_Blank.png",
+    "kind": "ornamental_panel",
+    "width": 1542,
+    "height": 905,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\Panels\\04_News_Blank.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "05_Craft_Autumn_Fillable",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Ornate/05_Craft_Autumn_Fillable.png",
+    "kind": "ornamental_panel",
+    "width": 1563,
+    "height": 903,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\Panels\\05_Craft_Autumn_Fillable.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "07_SolarTerms_Blank",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Ornate/07_SolarTerms_Blank.png",
+    "kind": "ornamental_panel",
+    "width": 1431,
+    "height": 893,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\Panels\\07_SolarTerms_Blank.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "08_ChapterUnlock_Blank",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Ornate/08_ChapterUnlock_Blank.png",
+    "kind": "ornamental_panel",
+    "width": 1542,
+    "height": 905,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\Panels\\08_ChapterUnlock_Blank.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "10_FourSeasons_Journal_Blank",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Ornate/10_FourSeasons_Journal_Blank.png",
+    "kind": "ornamental_panel",
+    "width": 1431,
+    "height": 893,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\Panels\\10_FourSeasons_Journal_Blank.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  },
+  {
+    "id": "11_Card_Universal_Blank",
+    "path": "Assets/ShiXuRunnerUI/Art/UI/Ornate/11_Card_Universal_Blank.png",
+    "kind": "ornamental_panel",
+    "width": 1431,
+    "height": 893,
+    "source": "E:\\xwechat_files\\wxid_mlnckk8vb33s22_b73c\\msg\\file\\2026-11\\时序小织匠_Unity可用透明UI资产_完整拆分包\\时序小织匠_Unity透明UI拆分包\\Assets\\ShiXuSilkUI\\Art\\Panels\\11_Card_Universal_Blank.png",
+    "border": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ]
+  }
+]

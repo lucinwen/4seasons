@@ -1,0 +1,264 @@
+{
+  "id": "12_Journal",
+  "title": "四时桑织录",
+  "season": "Spring",
+  "referenceResolution": [
+    1920,
+    1080
+  ],
+  "nodes": [
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        240,
+        130,
+        1440,
+        820
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "四时桑织录",
+      "rect": [
+        330,
+        200,
+        1260,
+        75
+      ],
+      "fontSize": 48,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        360,
+        350,
+        550,
+        205
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Icons/Bag.png",
+      "rect": [
+        395,
+        395,
+        96,
+        96
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Secondary_Normal.png",
+      "rect": [
+        520,
+        415,
+        345,
+        76
+      ],
+      "preserveAspect": false,
+      "label": "任务与背包",
+      "target": "08_Backpack",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "任务与背包",
+      "rect": [
+        530,
+        434,
+        325,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        1010,
+        350,
+        550,
+        205
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Icons/Book.png",
+      "rect": [
+        1045,
+        395,
+        96,
+        96
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Secondary_Normal.png",
+      "rect": [
+        1170,
+        415,
+        345,
+        76
+      ],
+      "preserveAspect": false,
+      "label": "二十四节气",
+      "target": "11_SolarTerms",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "二十四节气",
+      "rect": [
+        1180,
+        434,
+        325,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        360,
+        595,
+        550,
+        205
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Icons/News.png",
+      "rect": [
+        395,
+        640,
+        96,
+        96
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Secondary_Normal.png",
+      "rect": [
+        520,
+        660,
+        345,
+        76
+      ],
+      "preserveAspect": false,
+      "label": "新闻资料墙",
+      "target": "09_News",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "新闻资料墙",
+      "rect": [
+        530,
+        679,
+        325,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        1010,
+        595,
+        550,
+        205
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Icons/Star.png",
+      "rect": [
+        1045,
+        640,
+        96,
+        96
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Secondary_Normal.png",
+      "rect": [
+        1170,
+        660,
+        345,
+        76
+      ],
+      "preserveAspect": false,
+      "label": "工艺手札",
+      "target": "14_Craft",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "工艺手札",
+      "rect": [
+        1180,
+        679,
+        325,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Primary_Normal.png",
+      "rect": [
+        1180,
+        855,
+        340,
+        72
+      ],
+      "preserveAspect": false,
+      "label": "继续旅程",
+      "target": "03_Spring_HUD",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "继续旅程",
+      "rect": [
+        1190,
+        872,
+        320,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    }
+  ]
+}

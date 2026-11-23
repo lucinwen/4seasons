@@ -1,0 +1,153 @@
+{
+  "id": "17_Settings",
+  "title": "设置与操作",
+  "season": "Spring",
+  "referenceResolution": [
+    1920,
+    1080
+  ],
+  "nodes": [
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        310,
+        120,
+        1300,
+        840
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "设置与操作",
+      "rect": [
+        400,
+        190,
+        1120,
+        80
+      ],
+      "fontSize": 46,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "音乐",
+      "rect": [
+        440,
+        335,
+        600,
+        55
+      ],
+      "fontSize": 32,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Widgets/Spring_Toggle_On.png",
+      "rect": [
+        1310,
+        335,
+        100,
+        48
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "text",
+      "text": "音效",
+      "rect": [
+        440,
+        440,
+        600,
+        55
+      ],
+      "fontSize": 32,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Widgets/Spring_Toggle_On.png",
+      "rect": [
+        1310,
+        440,
+        100,
+        48
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "text",
+      "text": "文字逐字显示",
+      "rect": [
+        440,
+        545,
+        600,
+        55
+      ],
+      "fontSize": 32,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Widgets/Spring_Toggle_On.png",
+      "rect": [
+        1310,
+        545,
+        100,
+        48
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "text",
+      "text": "A / D 或方向键移动   ·   空格跳跃\nE 互动   ·   Tab 打开织录   ·   Esc 暂停",
+      "rect": [
+        440,
+        690,
+        1050,
+        110
+      ],
+      "fontSize": 29,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Primary_Normal.png",
+      "rect": [
+        1080,
+        835,
+        340,
+        76
+      ],
+      "preserveAspect": false,
+      "label": "完成",
+      "target": "16_Pause",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "完成",
+      "rect": [
+        1090,
+        854,
+        320,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    }
+  ]
+}

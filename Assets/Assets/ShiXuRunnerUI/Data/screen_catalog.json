@@ -1,0 +1,162 @@
+[
+  {
+    "id": "01_MainMenu",
+    "title": "主菜单",
+    "season": "Spring"
+  },
+  {
+    "id": "02_ChapterSelect",
+    "title": "四时工坊 · 章节选择",
+    "season": "Spring"
+  },
+  {
+    "id": "03_Spring_HUD",
+    "title": "春 · 桑园浴蚕",
+    "season": "Spring"
+  },
+  {
+    "id": "04_Summer_HUD",
+    "title": "夏 · 暑夏收茧",
+    "season": "Summer"
+  },
+  {
+    "id": "05_Autumn_HUD",
+    "title": "秋 · 缫丝织绸",
+    "season": "Autumn"
+  },
+  {
+    "id": "06_Winter_HUD",
+    "title": "冬 · 染绸成衣",
+    "season": "Winter"
+  },
+  {
+    "id": "07_Quest",
+    "title": "任务详情",
+    "season": "Spring"
+  },
+  {
+    "id": "08_Backpack",
+    "title": "随身背包",
+    "season": "Spring"
+  },
+  {
+    "id": "09_News",
+    "title": "新闻资料墙",
+    "season": "Spring"
+  },
+  {
+    "id": "10_NewsDetail",
+    "title": "新闻来源详情",
+    "season": "Spring"
+  },
+  {
+    "id": "11_SolarTerms",
+    "title": "二十四节气图鉴",
+    "season": "Spring"
+  },
+  {
+    "id": "12_Journal",
+    "title": "四时桑织录",
+    "season": "Spring"
+  },
+  {
+    "id": "13_TermDetail",
+    "title": "节气详情",
+    "season": "Spring"
+  },
+  {
+    "id": "14_Craft",
+    "title": "工艺手札",
+    "season": "Autumn"
+  },
+  {
+    "id": "15_Weave",
+    "title": "织造互动",
+    "season": "Autumn"
+  },
+  {
+    "id": "16_Pause",
+    "title": "休息片刻",
+    "season": "Spring"
+  },
+  {
+    "id": "18_Retry",
+    "title": "从这里再试一次",
+    "season": "Spring"
+  },
+  {
+    "id": "19_Checkpoint",
+    "title": "织录已记下此处",
+    "season": "Spring"
+  },
+  {
+    "id": "20_ChapterComplete",
+    "title": "春章完成",
+    "season": "Spring"
+  },
+  {
+    "id": "21_Confirm",
+    "title": "返回工坊？",
+    "season": "Spring"
+  },
+  {
+    "id": "17_Settings",
+    "title": "设置与操作",
+    "season": "Spring"
+  },
+  {
+    "id": "22_Ending",
+    "title": "四时成衣",
+    "season": "Winter"
+  },
+  {
+    "id": "23_LeafPick",
+    "title": "跳跃采桑",
+    "season": "Spring"
+  },
+  {
+    "id": "24_Bath",
+    "title": "蚕房备育",
+    "season": "Spring"
+  },
+  {
+    "id": "25_Cocoon",
+    "title": "照料与收茧",
+    "season": "Summer"
+  },
+  {
+    "id": "26_Boil",
+    "title": "煮茧与索绪",
+    "season": "Autumn"
+  },
+  {
+    "id": "27_Reel",
+    "title": "缫丝卷绕",
+    "season": "Autumn"
+  },
+  {
+    "id": "28_Wind",
+    "title": "络丝路径",
+    "season": "Autumn"
+  },
+  {
+    "id": "29_Warp",
+    "title": "经纬准备",
+    "season": "Autumn"
+  },
+  {
+    "id": "30_DyeMaterial",
+    "title": "辨认染材",
+    "season": "Winter"
+  },
+  {
+    "id": "31_Dye",
+    "title": "染绸火候",
+    "season": "Winter"
+  },
+  {
+    "id": "32_Tailor",
+    "title": "裁剪与缝制",
+    "season": "Winter"
+  }
+]

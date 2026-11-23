@@ -1,0 +1,234 @@
+{
+  "id": "09_News",
+  "title": "新闻资料墙",
+  "season": "Spring",
+  "referenceResolution": [
+    1920,
+    1080
+  ],
+  "nodes": [
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        230,
+        135,
+        1460,
+        815
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "新闻资料墙",
+      "rect": [
+        315,
+        205,
+        1290,
+        70
+      ],
+      "fontSize": 43,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "跟随四季工序，寻找真实报道中的传承故事。",
+      "rect": [
+        315,
+        295,
+        1250,
+        60
+      ],
+      "fontSize": 30,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        320,
+        400,
+        1280,
+        82
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "桑园与春蚕",
+      "rect": [
+        350,
+        421,
+        760,
+        48
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "资料整理中",
+      "rect": [
+        1260,
+        424,
+        290,
+        45
+      ],
+      "fontSize": 25,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        320,
+        500,
+        1280,
+        82
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "收茧与劳动",
+      "rect": [
+        350,
+        521,
+        760,
+        48
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "资料整理中",
+      "rect": [
+        1260,
+        524,
+        290,
+        45
+      ],
+      "fontSize": 25,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        320,
+        600,
+        1280,
+        82
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "缫丝与织造",
+      "rect": [
+        350,
+        621,
+        760,
+        48
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "资料整理中",
+      "rect": [
+        1260,
+        624,
+        290,
+        45
+      ],
+      "fontSize": 25,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        320,
+        700,
+        1280,
+        82
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "成衣与传承",
+      "rect": [
+        350,
+        721,
+        760,
+        48
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "资料整理中",
+      "rect": [
+        1260,
+        724,
+        290,
+        45
+      ],
+      "fontSize": 25,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Primary_Normal.png",
+      "rect": [
+        1180,
+        845,
+        360,
+        75
+      ],
+      "preserveAspect": false,
+      "label": "返回织录",
+      "target": "12_Journal",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "返回织录",
+      "rect": [
+        1190,
+        863,
+        340,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    }
+  ]
+}

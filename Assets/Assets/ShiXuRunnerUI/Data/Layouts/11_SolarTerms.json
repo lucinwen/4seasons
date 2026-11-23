@@ -1,0 +1,736 @@
+{
+  "id": "11_SolarTerms",
+  "title": "二十四节气图鉴",
+  "season": "Spring",
+  "referenceResolution": [
+    1920,
+    1080
+  ],
+  "nodes": [
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        150,
+        110,
+        1620,
+        865
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "二十四节气 · 随四时发现",
+      "rect": [
+        235,
+        178,
+        1450,
+        72
+      ],
+      "fontSize": 43,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Primary_Normal.png",
+      "rect": [
+        240,
+        315,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "立春",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "立春",
+      "rect": [
+        250,
+        338,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Primary_Normal.png",
+      "rect": [
+        480,
+        315,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "雨水",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "雨水",
+      "rect": [
+        490,
+        338,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Secondary_Normal.png",
+      "rect": [
+        720,
+        315,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "惊蛰",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "惊蛰",
+      "rect": [
+        730,
+        338,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Secondary_Normal.png",
+      "rect": [
+        960,
+        315,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "春分",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "春分",
+      "rect": [
+        970,
+        338,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Secondary_Normal.png",
+      "rect": [
+        1200,
+        315,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "清明",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "清明",
+      "rect": [
+        1210,
+        338,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Secondary_Normal.png",
+      "rect": [
+        1440,
+        315,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "谷雨",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "谷雨",
+      "rect": [
+        1450,
+        338,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Summer_Secondary_Normal.png",
+      "rect": [
+        240,
+        443,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "立夏",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "立夏",
+      "rect": [
+        250,
+        466,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Summer_Secondary_Normal.png",
+      "rect": [
+        480,
+        443,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "小满",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "小满",
+      "rect": [
+        490,
+        466,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Summer_Secondary_Normal.png",
+      "rect": [
+        720,
+        443,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "芒种",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "芒种",
+      "rect": [
+        730,
+        466,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Summer_Secondary_Normal.png",
+      "rect": [
+        960,
+        443,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "夏至",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "夏至",
+      "rect": [
+        970,
+        466,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Summer_Secondary_Normal.png",
+      "rect": [
+        1200,
+        443,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "小暑",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "小暑",
+      "rect": [
+        1210,
+        466,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Summer_Secondary_Normal.png",
+      "rect": [
+        1440,
+        443,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "大暑",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "大暑",
+      "rect": [
+        1450,
+        466,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Autumn_Secondary_Normal.png",
+      "rect": [
+        240,
+        571,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "立秋",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "立秋",
+      "rect": [
+        250,
+        594,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Autumn_Secondary_Normal.png",
+      "rect": [
+        480,
+        571,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "处暑",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "处暑",
+      "rect": [
+        490,
+        594,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Autumn_Secondary_Normal.png",
+      "rect": [
+        720,
+        571,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "白露",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "白露",
+      "rect": [
+        730,
+        594,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Autumn_Secondary_Normal.png",
+      "rect": [
+        960,
+        571,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "秋分",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "秋分",
+      "rect": [
+        970,
+        594,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Autumn_Secondary_Normal.png",
+      "rect": [
+        1200,
+        571,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "寒露",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "寒露",
+      "rect": [
+        1210,
+        594,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Autumn_Secondary_Normal.png",
+      "rect": [
+        1440,
+        571,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "霜降",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "霜降",
+      "rect": [
+        1450,
+        594,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Winter_Secondary_Normal.png",
+      "rect": [
+        240,
+        699,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "立冬",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "立冬",
+      "rect": [
+        250,
+        722,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Winter_Secondary_Normal.png",
+      "rect": [
+        480,
+        699,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "小雪",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "小雪",
+      "rect": [
+        490,
+        722,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Winter_Secondary_Normal.png",
+      "rect": [
+        720,
+        699,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "大雪",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "大雪",
+      "rect": [
+        730,
+        722,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Winter_Secondary_Normal.png",
+      "rect": [
+        960,
+        699,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "冬至",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "冬至",
+      "rect": [
+        970,
+        722,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Winter_Secondary_Normal.png",
+      "rect": [
+        1200,
+        699,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "小寒",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "小寒",
+      "rect": [
+        1210,
+        722,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Winter_Secondary_Normal.png",
+      "rect": [
+        1440,
+        699,
+        205,
+        85
+      ],
+      "preserveAspect": false,
+      "label": "大寒",
+      "target": "13_TermDetail",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "大寒",
+      "rect": [
+        1450,
+        722,
+        185,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Primary_Normal.png",
+      "rect": [
+        1330,
+        870,
+        300,
+        70
+      ],
+      "preserveAspect": false,
+      "label": "返回织录",
+      "target": "12_Journal",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "返回织录",
+      "rect": [
+        1340,
+        886,
+        280,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    }
+  ]
+}

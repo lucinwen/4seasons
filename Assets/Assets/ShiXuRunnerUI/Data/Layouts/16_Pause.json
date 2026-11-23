@@ -1,0 +1,134 @@
+{
+  "id": "16_Pause",
+  "title": "休息片刻",
+  "season": "Spring",
+  "referenceResolution": [
+    1920,
+    1080
+  ],
+  "nodes": [
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        430,
+        170,
+        1060,
+        740
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "休息片刻",
+      "rect": [
+        510,
+        245,
+        900,
+        90
+      ],
+      "fontSize": 46,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "旅程已暂停",
+      "rect": [
+        545,
+        390,
+        830,
+        200
+      ],
+      "fontSize": 32,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Primary_Normal.png",
+      "rect": [
+        715,
+        610,
+        490,
+        74
+      ],
+      "preserveAspect": false,
+      "label": "继续游戏",
+      "target": "03_Spring_HUD",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "继续游戏",
+      "rect": [
+        725,
+        628,
+        470,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Secondary_Normal.png",
+      "rect": [
+        715,
+        698,
+        490,
+        74
+      ],
+      "preserveAspect": false,
+      "label": "设置",
+      "target": "17_Settings",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "设置",
+      "rect": [
+        725,
+        716,
+        470,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Secondary_Normal.png",
+      "rect": [
+        715,
+        786,
+        490,
+        74
+      ],
+      "preserveAspect": false,
+      "label": "返回工坊",
+      "target": "02_ChapterSelect",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "返回工坊",
+      "rect": [
+        725,
+        804,
+        470,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6389efc3fd3a57448200efd4a99be33, type: 3}
+  m_Name: WinterGrindingConfig
+  m_EditorClassIdentifier: 
+  mortar: {fileID: 21300000, guid: be63b6af49ecf774892b53a4f8e89e07, type: 3}
+  rod: {fileID: 21300000, guid: 21a235ea6b951794981833960de6161d, type: 3}
+  redDye: {fileID: 21300000, guid: 6cf70ff3973241a479fbbd70f8ecda69, type: 3}
+  yellowDye: {fileID: 21300000, guid: b868232da936d9c49b459e07fbed27fc, type: 3}
+  greenDye: {fileID: 21300000, guid: 95fc689d8339e844fb527f1117e6cb9d, type: 3}
+  blueDye: {fileID: 21300000, guid: 9ba99515048b63b428139c351e6d1d94, type: 3}
+  purpleDye: {fileID: 21300000, guid: 75661147c849a8048bbd7841f591d76c, type: 3}

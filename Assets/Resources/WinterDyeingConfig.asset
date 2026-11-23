@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c8e7d5d13cdbe44eb81c28353795403, type: 3}
+  m_Name: WinterDyeingConfig
+  m_EditorClassIdentifier: 
+  clearWaterVat: {fileID: 21300000, guid: 121c36254afbd424dabab8e7a9db2834, type: 3}
+  silk: {fileID: 21300000, guid: ffd1bbc02034f144dab7b64614572a57, type: 3}
+  redVat: {fileID: 21300000, guid: c914ae03227682046bb7c54f61230207, type: 3}
+  yellowVat: {fileID: 21300000, guid: 832cd60486c4f7844ba965aca41aa1ea, type: 3}
+  greenVat: {fileID: 21300000, guid: 4ba74e2f2bf1da149bb111544e567708, type: 3}
+  blueVat: {fileID: 21300000, guid: f7b808416b717f0498ea454201d5c4ea, type: 3}
+  purpleVat: {fileID: 21300000, guid: b380f174e1376d841a761ac36172047f, type: 3}
+  redCloth: {fileID: 21300000, guid: 1cc32f60fdaeff446a44e3fb734dfa9d, type: 3}
+  yellowCloth: {fileID: 21300000, guid: 6a609342bcebebe4fbf658878743ecad, type: 3}
+  greenCloth: {fileID: 21300000, guid: cd849accf7a68654c9479430e6c53274, type: 3}
+  blueCloth: {fileID: 21300000, guid: 83e4d170c012c9c488fcc51004c9541d, type: 3}
+  purpleCloth: {fileID: 21300000, guid: 468846386968db647be1fe9963a2c492, type: 3}
+  redTint: {r: 0.86, g: 0.3, b: 0.26, a: 1}
+  yellowTint: {r: 0.95, g: 0.8, b: 0.3, a: 1}
+  greenTint: {r: 0.42, g: 0.68, b: 0.42, a: 1}
+  blueTint: {r: 0.32, g: 0.52, b: 0.8, a: 1}
+  purpleTint: {r: 0.62, g: 0.42, b: 0.72, a: 1}

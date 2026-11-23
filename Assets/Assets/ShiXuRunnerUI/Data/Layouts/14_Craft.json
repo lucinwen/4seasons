@@ -1,0 +1,131 @@
+{
+  "id": "14_Craft",
+  "title": "工艺手札",
+  "season": "Autumn",
+  "referenceResolution": [
+    1920,
+    1080
+  ],
+  "nodes": [
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Autumn_Panel_9slice.png",
+      "rect": [
+        280,
+        130,
+        1360,
+        830
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "织造 · 经纬交错",
+      "rect": [
+        365,
+        205,
+        1190,
+        80
+      ],
+      "fontSize": 46,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "Items/3-织机.png",
+      "rect": [
+        370,
+        350,
+        350,
+        350
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "text",
+      "text": "开口 → 引纬 → 打纬",
+      "rect": [
+        810,
+        390,
+        660,
+        80
+      ],
+      "fontSize": 36,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "根据提示依次完成操作。\n失误后可以重新尝试。",
+      "rect": [
+        810,
+        510,
+        650,
+        140
+      ],
+      "fontSize": 32,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Autumn_Primary_Normal.png",
+      "rect": [
+        1060,
+        825,
+        360,
+        76
+      ],
+      "preserveAspect": false,
+      "label": "开始互动",
+      "target": "15_Weave",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "开始互动",
+      "rect": [
+        1070,
+        844,
+        340,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Autumn_Secondary_Normal.png",
+      "rect": [
+        570,
+        825,
+        340,
+        76
+      ],
+      "preserveAspect": false,
+      "label": "返回织录",
+      "target": "12_Journal",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "返回织录",
+      "rect": [
+        580,
+        844,
+        320,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    }
+  ]
+}

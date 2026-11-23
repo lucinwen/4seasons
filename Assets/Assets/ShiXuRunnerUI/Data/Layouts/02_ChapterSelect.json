@@ -1,0 +1,432 @@
+{
+  "id": "02_ChapterSelect",
+  "title": "四时工坊 · 章节选择",
+  "season": "Spring",
+  "referenceResolution": [
+    1920,
+    1080
+  ],
+  "nodes": [
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        70,
+        48,
+        1780,
+        110
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "四时工坊 · 章节选择",
+      "rect": [
+        110,
+        77,
+        1580,
+        60
+      ],
+      "fontSize": 36,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        90,
+        230,
+        420,
+        600
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "image",
+      "asset": "Backgrounds/Spring/Segments/Spring_00_2048x1152.png",
+      "rect": [
+        114,
+        255,
+        372,
+        210
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "text",
+      "text": "春 · 桑园浴蚕",
+      "rect": [
+        125,
+        500,
+        350,
+        65
+      ],
+      "fontSize": 31,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "备育完成 / 幼蚕",
+      "rect": [
+        125,
+        575,
+        350,
+        50
+      ],
+      "fontSize": 27,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "初始开放",
+      "rect": [
+        125,
+        646,
+        350,
+        50
+      ],
+      "fontSize": 25,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Primary_Normal.png",
+      "rect": [
+        150,
+        735,
+        300,
+        66
+      ],
+      "preserveAspect": false,
+      "label": "进入关卡",
+      "target": "03_Spring_HUD",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "进入关卡",
+      "rect": [
+        160,
+        749,
+        280,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Summer_Panel_9slice.png",
+      "rect": [
+        530,
+        230,
+        420,
+        600
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "image",
+      "asset": "Backgrounds/Summer/Segments/Summer_00_2048x1152.png",
+      "rect": [
+        554,
+        255,
+        372,
+        210
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "text",
+      "text": "夏 · 暑夏收茧",
+      "rect": [
+        565,
+        500,
+        350,
+        65
+      ],
+      "fontSize": 31,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "章节产物 / 蚕茧",
+      "rect": [
+        565,
+        575,
+        350,
+        50
+      ],
+      "fontSize": 27,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "春章完成后开放",
+      "rect": [
+        565,
+        646,
+        350,
+        50
+      ],
+      "fontSize": 25,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Summer_Secondary_Disabled.png",
+      "rect": [
+        590,
+        735,
+        300,
+        66
+      ],
+      "preserveAspect": false,
+      "label": "尚未解锁",
+      "target": "04_Summer_HUD",
+      "interactable": false
+    },
+    {
+      "kind": "text",
+      "text": "尚未解锁",
+      "rect": [
+        600,
+        749,
+        280,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Autumn_Panel_9slice.png",
+      "rect": [
+        970,
+        230,
+        420,
+        600
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "image",
+      "asset": "Backgrounds/Autumn/Segments/Autumn_00_2048x1152.png",
+      "rect": [
+        994,
+        255,
+        372,
+        210
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "text",
+      "text": "秋 · 缫丝织绸",
+      "rect": [
+        1005,
+        500,
+        350,
+        65
+      ],
+      "fontSize": 31,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "章节产物 / 素绸",
+      "rect": [
+        1005,
+        575,
+        350,
+        50
+      ],
+      "fontSize": 27,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "夏章完成后开放",
+      "rect": [
+        1005,
+        646,
+        350,
+        50
+      ],
+      "fontSize": 25,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Autumn_Secondary_Disabled.png",
+      "rect": [
+        1030,
+        735,
+        300,
+        66
+      ],
+      "preserveAspect": false,
+      "label": "尚未解锁",
+      "target": "05_Autumn_HUD",
+      "interactable": false
+    },
+    {
+      "kind": "text",
+      "text": "尚未解锁",
+      "rect": [
+        1040,
+        749,
+        280,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Winter_Panel_9slice.png",
+      "rect": [
+        1410,
+        230,
+        420,
+        600
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "image",
+      "asset": "Backgrounds/Winter/Segments/Winter_00_2048x1152.png",
+      "rect": [
+        1434,
+        255,
+        372,
+        210
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "text",
+      "text": "冬 · 染绸成衣",
+      "rect": [
+        1445,
+        500,
+        350,
+        65
+      ],
+      "fontSize": 31,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "章节产物 / 成衣",
+      "rect": [
+        1445,
+        575,
+        350,
+        50
+      ],
+      "fontSize": 27,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "秋章完成后开放",
+      "rect": [
+        1445,
+        646,
+        350,
+        50
+      ],
+      "fontSize": 25,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Winter_Secondary_Disabled.png",
+      "rect": [
+        1470,
+        735,
+        300,
+        66
+      ],
+      "preserveAspect": false,
+      "label": "尚未解锁",
+      "target": "06_Winter_HUD",
+      "interactable": false
+    },
+    {
+      "kind": "text",
+      "text": "尚未解锁",
+      "rect": [
+        1480,
+        749,
+        280,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Secondary_Normal.png",
+      "rect": [
+        790,
+        895,
+        340,
+        76
+      ],
+      "preserveAspect": false,
+      "label": "返回主厅",
+      "target": "01_MainMenu",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "返回主厅",
+      "rect": [
+        800,
+        914,
+        320,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    }
+  ]
+}

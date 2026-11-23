@@ -1,0 +1,142 @@
+{
+  "id": "25_Cocoon",
+  "title": "照料与收茧",
+  "season": "Summer",
+  "referenceResolution": [
+    1920,
+    1080
+  ],
+  "nodes": [
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Summer_Panel_9slice.png",
+      "rect": [
+        260,
+        120,
+        1400,
+        840
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "照料与收茧",
+      "rect": [
+        350,
+        190,
+        1220,
+        75
+      ],
+      "fontSize": 46,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "Items/2-蚕茧篓.png",
+      "rect": [
+        410,
+        350,
+        350,
+        350
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "text",
+      "text": "观察状态，完成上蔟与收茧",
+      "rect": [
+        900,
+        350,
+        610,
+        125
+      ],
+      "fontSize": 32,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Meters/Summer_Track.png",
+      "rect": [
+        900,
+        530,
+        580,
+        36
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "text",
+      "text": "收茧数量 0 / 3",
+      "rect": [
+        900,
+        610,
+        610,
+        70
+      ],
+      "fontSize": 31,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Summer_Primary_Normal.png",
+      "rect": [
+        1050,
+        825,
+        390,
+        76
+      ],
+      "preserveAspect": false,
+      "label": "返回关卡",
+      "target": "04_Summer_HUD",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "返回关卡",
+      "rect": [
+        1060,
+        844,
+        370,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Summer_Secondary_Normal.png",
+      "rect": [
+        560,
+        825,
+        340,
+        76
+      ],
+      "preserveAspect": false,
+      "label": "重新开始",
+      "target": "25_Cocoon",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "重新开始",
+      "rect": [
+        570,
+        844,
+        320,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    }
+  ]
+}

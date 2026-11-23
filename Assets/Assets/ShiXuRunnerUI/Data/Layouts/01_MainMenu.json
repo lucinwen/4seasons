@@ -1,0 +1,176 @@
+{
+  "id": "01_MainMenu",
+  "title": "主菜单",
+  "season": "Spring",
+  "referenceResolution": [
+    1920,
+    1080
+  ],
+  "nodes": [
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        125,
+        140,
+        770,
+        780
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "时序小织匠",
+      "rect": [
+        200,
+        210,
+        620,
+        115
+      ],
+      "fontSize": 76,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "一件丝衣背后的四季劳动",
+      "rect": [
+        200,
+        330,
+        620,
+        55
+      ],
+      "fontSize": 30,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "桑园出发 · 跃过四时 · 织就一衣",
+      "rect": [
+        200,
+        401,
+        620,
+        60
+      ],
+      "fontSize": 26,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Primary_Normal.png",
+      "rect": [
+        300,
+        505,
+        420,
+        72
+      ],
+      "preserveAspect": false,
+      "label": "开始旅程",
+      "target": "02_ChapterSelect",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "开始旅程",
+      "rect": [
+        310,
+        522,
+        400,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Secondary_Normal.png",
+      "rect": [
+        300,
+        594,
+        420,
+        72
+      ],
+      "preserveAspect": false,
+      "label": "继续游戏",
+      "target": "03_Spring_HUD",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "继续游戏",
+      "rect": [
+        310,
+        611,
+        400,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Secondary_Normal.png",
+      "rect": [
+        300,
+        683,
+        420,
+        72
+      ],
+      "preserveAspect": false,
+      "label": "四时织录",
+      "target": "12_Journal",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "四时织录",
+      "rect": [
+        310,
+        700,
+        400,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Secondary_Normal.png",
+      "rect": [
+        300,
+        772,
+        420,
+        72
+      ],
+      "preserveAspect": false,
+      "label": "设置与帮助",
+      "target": "17_Settings",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "设置与帮助",
+      "rect": [
+        310,
+        789,
+        400,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    }
+  ]
+}

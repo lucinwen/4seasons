@@ -1,0 +1,78 @@
+{
+  "id": "19_Checkpoint",
+  "title": "织录已记下此处",
+  "season": "Spring",
+  "referenceResolution": [
+    1920,
+    1080
+  ],
+  "nodes": [
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        430,
+        170,
+        1060,
+        740
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "织录已记下此处",
+      "rect": [
+        510,
+        245,
+        900,
+        90
+      ],
+      "fontSize": 46,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "text",
+      "text": "已到达新的检查点",
+      "rect": [
+        545,
+        390,
+        830,
+        200
+      ],
+      "fontSize": 32,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Primary_Normal.png",
+      "rect": [
+        715,
+        610,
+        490,
+        74
+      ],
+      "preserveAspect": false,
+      "label": "继续前进",
+      "target": "03_Spring_HUD",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "继续前进",
+      "rect": [
+        725,
+        628,
+        470,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    }
+  ]
+}

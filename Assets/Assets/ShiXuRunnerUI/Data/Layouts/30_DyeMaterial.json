@@ -1,0 +1,142 @@
+{
+  "id": "30_DyeMaterial",
+  "title": "辨认染材",
+  "season": "Winter",
+  "referenceResolution": [
+    1920,
+    1080
+  ],
+  "nodes": [
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Winter_Panel_9slice.png",
+      "rect": [
+        260,
+        120,
+        1400,
+        840
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "辨认染材",
+      "rect": [
+        350,
+        190,
+        1220,
+        75
+      ],
+      "fontSize": 46,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "Items/4-染料蓝原料.png",
+      "rect": [
+        410,
+        350,
+        350,
+        350
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "text",
+      "text": "选取可用染材，避开损坏材料",
+      "rect": [
+        900,
+        350,
+        610,
+        125
+      ],
+      "fontSize": 32,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Meters/Winter_Track.png",
+      "rect": [
+        900,
+        530,
+        580,
+        36
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "text",
+      "text": "可用染材 0 / 3",
+      "rect": [
+        900,
+        610,
+        610,
+        70
+      ],
+      "fontSize": 31,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Winter_Primary_Normal.png",
+      "rect": [
+        1050,
+        825,
+        390,
+        76
+      ],
+      "preserveAspect": false,
+      "label": "返回关卡",
+      "target": "06_Winter_HUD",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "返回关卡",
+      "rect": [
+        1060,
+        844,
+        370,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Winter_Secondary_Normal.png",
+      "rect": [
+        560,
+        825,
+        340,
+        76
+      ],
+      "preserveAspect": false,
+      "label": "重新开始",
+      "target": "30_DyeMaterial",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "重新开始",
+      "rect": [
+        570,
+        844,
+        320,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    }
+  ]
+}

@@ -1,0 +1,424 @@
+{
+  "id": "08_Backpack",
+  "title": "随身背包",
+  "season": "Spring",
+  "referenceResolution": [
+    1920,
+    1080
+  ],
+  "nodes": [
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        240,
+        140,
+        1440,
+        800
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "随身背包",
+      "rect": [
+        315,
+        210,
+        1250,
+        70
+      ],
+      "fontSize": 43,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Widgets/Spring_Slot_Empty.png",
+      "rect": [
+        325,
+        330,
+        154,
+        154
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "image",
+      "asset": "Items/1-采桑篮1.png",
+      "rect": [
+        340,
+        345,
+        124,
+        124
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "text",
+      "text": "采桑篮1",
+      "rect": [
+        310,
+        500,
+        225,
+        60
+      ],
+      "fontSize": 24,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Widgets/Spring_Slot_Empty.png",
+      "rect": [
+        570,
+        330,
+        154,
+        154
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "image",
+      "asset": "Items/1-桑叶1.png",
+      "rect": [
+        585,
+        345,
+        124,
+        124
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "text",
+      "text": "桑叶1",
+      "rect": [
+        555,
+        500,
+        225,
+        60
+      ],
+      "fontSize": 24,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Widgets/Spring_Slot_Empty.png",
+      "rect": [
+        815,
+        330,
+        154,
+        154
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "image",
+      "asset": "Items/1-蚕种纸1.png",
+      "rect": [
+        830,
+        345,
+        124,
+        124
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "text",
+      "text": "蚕种纸1",
+      "rect": [
+        800,
+        500,
+        225,
+        60
+      ],
+      "fontSize": 24,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Widgets/Spring_Slot_Empty.png",
+      "rect": [
+        1060,
+        330,
+        154,
+        154
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "image",
+      "asset": "Items/2-蚕茧篓.png",
+      "rect": [
+        1075,
+        345,
+        124,
+        124
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "text",
+      "text": "蚕茧篓",
+      "rect": [
+        1045,
+        500,
+        225,
+        60
+      ],
+      "fontSize": 24,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Widgets/Spring_Slot_Empty.png",
+      "rect": [
+        1305,
+        330,
+        154,
+        154
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "image",
+      "asset": "Items/3-丝束.png",
+      "rect": [
+        1320,
+        345,
+        124,
+        124
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "text",
+      "text": "丝束",
+      "rect": [
+        1290,
+        500,
+        225,
+        60
+      ],
+      "fontSize": 24,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Widgets/Spring_Slot_Empty.png",
+      "rect": [
+        325,
+        570,
+        154,
+        154
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "image",
+      "asset": "Items/3-梭子.png",
+      "rect": [
+        340,
+        585,
+        124,
+        124
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "text",
+      "text": "梭子",
+      "rect": [
+        310,
+        740,
+        225,
+        60
+      ],
+      "fontSize": 24,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Widgets/Spring_Slot_Empty.png",
+      "rect": [
+        570,
+        570,
+        154,
+        154
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "image",
+      "asset": "Items/3-线轴.png",
+      "rect": [
+        585,
+        585,
+        124,
+        124
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "text",
+      "text": "线轴",
+      "rect": [
+        555,
+        740,
+        225,
+        60
+      ],
+      "fontSize": 24,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Widgets/Spring_Slot_Empty.png",
+      "rect": [
+        815,
+        570,
+        154,
+        154
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "image",
+      "asset": "Items/3-织好的白布.png",
+      "rect": [
+        830,
+        585,
+        124,
+        124
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "text",
+      "text": "织好的白布",
+      "rect": [
+        800,
+        740,
+        225,
+        60
+      ],
+      "fontSize": 24,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Widgets/Spring_Slot_Empty.png",
+      "rect": [
+        1060,
+        570,
+        154,
+        154
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "image",
+      "asset": "Items/4-染料蓝.png",
+      "rect": [
+        1075,
+        585,
+        124,
+        124
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "text",
+      "text": "染料蓝",
+      "rect": [
+        1045,
+        740,
+        225,
+        60
+      ],
+      "fontSize": 24,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Widgets/Spring_Slot_Empty.png",
+      "rect": [
+        1305,
+        570,
+        154,
+        154
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "image",
+      "asset": "Items/4-裁衣工具尺.png",
+      "rect": [
+        1320,
+        585,
+        124,
+        124
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "text",
+      "text": "裁衣工具尺",
+      "rect": [
+        1290,
+        740,
+        225,
+        60
+      ],
+      "fontSize": 24,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Primary_Normal.png",
+      "rect": [
+        1200,
+        835,
+        330,
+        72
+      ],
+      "preserveAspect": false,
+      "label": "返回关卡",
+      "target": "03_Spring_HUD",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "返回关卡",
+      "rect": [
+        1210,
+        852,
+        310,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    }
+  ]
+}

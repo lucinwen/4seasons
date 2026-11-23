@@ -1,0 +1,218 @@
+[
+  {
+    "id": "term_01",
+    "season": "Spring",
+    "name": "立春",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_02",
+    "season": "Spring",
+    "name": "雨水",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_03",
+    "season": "Spring",
+    "name": "惊蛰",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_04",
+    "season": "Spring",
+    "name": "春分",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_05",
+    "season": "Spring",
+    "name": "清明",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_06",
+    "season": "Spring",
+    "name": "谷雨",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_07",
+    "season": "Summer",
+    "name": "立夏",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_08",
+    "season": "Summer",
+    "name": "小满",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_09",
+    "season": "Summer",
+    "name": "芒种",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_10",
+    "season": "Summer",
+    "name": "夏至",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_11",
+    "season": "Summer",
+    "name": "小暑",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_12",
+    "season": "Summer",
+    "name": "大暑",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_13",
+    "season": "Autumn",
+    "name": "立秋",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_14",
+    "season": "Autumn",
+    "name": "处暑",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_15",
+    "season": "Autumn",
+    "name": "白露",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_16",
+    "season": "Autumn",
+    "name": "秋分",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_17",
+    "season": "Autumn",
+    "name": "寒露",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_18",
+    "season": "Autumn",
+    "name": "霜降",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_19",
+    "season": "Winter",
+    "name": "立冬",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_20",
+    "season": "Winter",
+    "name": "小雪",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_21",
+    "season": "Winter",
+    "name": "大雪",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_22",
+    "season": "Winter",
+    "name": "冬至",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_23",
+    "season": "Winter",
+    "name": "小寒",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  },
+  {
+    "id": "term_24",
+    "season": "Winter",
+    "name": "大寒",
+    "unlocked": false,
+    "body": "",
+    "source": "",
+    "status": "awaiting verified educational copy"
+  }
+]

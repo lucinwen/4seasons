@@ -1,0 +1,208 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e54cce36c9a3b8499ce783fbb36adb0, type: 3}
+  m_Name: CocoonMatchLevel
+  m_EditorClassIdentifier: 
+  tileSize: 88
+  seed: 23191146
+  patterns:
+  - label: "\u96EA\u767D\u8695\u8327"
+    sprite: {fileID: 21300000, guid: 3d57f92fe5fdb6e4fac3b6ebae0d28e9, type: 3}
+    harvestMessage: "\u83B7\u5F97\u767D\u8272\u8695\u8327\uFF0C\u5E38\u89C1\u5BB6\u517B\u8695\u8327\uFF0C\u4FBF\u4E8E\u67D3\u8272\u7EC7\u5E03"
+  - label: "\u9E45\u9EC4\u8695\u8327"
+    sprite: {fileID: 21300000, guid: 3f627da3b175e654ba3f7313bf79b874, type: 3}
+    harvestMessage: "\u83B7\u5F97\u7A00\u6709\u91D1\u8272\u8695\u8327~\u5929\u7136\u542B\u91D1\u9EC4\u7D20\uFF0C\u81EA\u5E26\u6291\u83CC\u6548\u679C"
+  - label: "\u6696\u6A58\u8695\u8327"
+    sprite: {fileID: 21300000, guid: f950623d54a15e04d879b91d438f1801, type: 3}
+    harvestMessage: "\u83B7\u5F97\u6A59\u8272\u8695\u8327\uFF0C\u5929\u7136\u5F69\u8695\uFF0C\u8272\u7D20\u591A\u5B58\u4E0E\u5916\u5C42\u4E1D\u80F6\u4E4B\u4E2D"
+  - label: "\u6D45\u7C89\u8695\u8327"
+    sprite: {fileID: 21300000, guid: 50b7eb8898191aa41856b74bbbd17086, type: 3}
+    harvestMessage: "\u83B7\u5F97\u7C89\u8272\u8695\u8327\uFF0C\u542B\u6851\u53F6\u7C7B\u80E1\u841D\u535C\u7D20\uFF0C\u8272\u5F69\u67D4\u548C"
+  - label: "\u9752\u7EFF\u8695\u8327"
+    sprite: {fileID: 21300000, guid: f46d3e484a9332f46a6a8fa341fc8efc, type: 3}
+    harvestMessage: "\u83B7\u5F97\u73CD\u7A00\u9752\u8272\u8695\u8327~\u8272\u7D20\u6DF1\u5165\u4E1D\u7D20\uFF0C\u8010\u716E\u4E0D\u6613\u892A\u8272"
+  - label: "\u6728\u5236\u4E1D\u68B3"
+    sprite: {fileID: 21300000, guid: 08f026f3f926bf347975e50123f73626, type: 3}
+    harvestMessage: "\u83B7\u5F97\u6536\u8327\u68B3\uFF0C\u8F7B\u8F7B\u4F7F\u7528\u907F\u514D\u6233\u7834\u8327\u58F3\uFF01"
+  - label: "\u7ED3\u8327\u79F8\u79C6"
+    sprite: {fileID: 21300000, guid: 5a4989a4e8b5542488d2e5668d99b779, type: 3}
+    harvestMessage: "\u6536\u83B7\u6536\u8327\u679D\u67B6\uFF0C\u8F7B\u53D6\u8695\u8327\uFF0C\u4FDD\u7559\u5B8C\u6574\u8327\u58F3"
+  - label: "\u91C7\u6851\u7BEE"
+    sprite: {fileID: 21300000, guid: d03f52973d8eb994ab2f907c7d569a71, type: 3}
+    harvestMessage: "\u6536\u83B7\u7AF9\u7BD3\uFF0C\u4F20\u7EDF\u91C7\u8327\u5BB9\u5668\uFF0C\u900F\u6C14\u4FDD\u9669~"
+  - label: "\u8695\u533E"
+    sprite: {fileID: 21300000, guid: b3300cd144e81964f87cae028679c11a, type: 3}
+    harvestMessage: "\u6536\u83B7\u8327\u533E\uFF0C\u644A\u5F00\u8695\u8327\u6446\u653E\u4FBF\u4E8E\u98CE\u5E72"
+  placements:
+  - pattern: 6
+    layer: 0
+    position: {x: -322, y: -92}
+  - pattern: 1
+    layer: 0
+    position: {x: -230, y: -92}
+  - pattern: 5
+    layer: 0
+    position: {x: -138, y: -92}
+  - pattern: 6
+    layer: 0
+    position: {x: -46, y: -92}
+  - pattern: 4
+    layer: 0
+    position: {x: 46, y: -92}
+  - pattern: 2
+    layer: 0
+    position: {x: 138, y: -92}
+  - pattern: 3
+    layer: 0
+    position: {x: 230, y: -92}
+  - pattern: 8
+    layer: 0
+    position: {x: 322, y: -92}
+  - pattern: 8
+    layer: 0
+    position: {x: -322, y: 0}
+  - pattern: 1
+    layer: 0
+    position: {x: -230, y: 0}
+  - pattern: 1
+    layer: 0
+    position: {x: -138, y: 0}
+  - pattern: 5
+    layer: 0
+    position: {x: -46, y: 0}
+  - pattern: 4
+    layer: 0
+    position: {x: 46, y: 0}
+  - pattern: 2
+    layer: 0
+    position: {x: 138, y: 0}
+  - pattern: 7
+    layer: 0
+    position: {x: 230, y: 0}
+  - pattern: 4
+    layer: 0
+    position: {x: 322, y: 0}
+  - pattern: 2
+    layer: 0
+    position: {x: -322, y: 92}
+  - pattern: 4
+    layer: 0
+    position: {x: -230, y: 92}
+  - pattern: 0
+    layer: 0
+    position: {x: -138, y: 92}
+  - pattern: 7
+    layer: 0
+    position: {x: -46, y: 92}
+  - pattern: 5
+    layer: 0
+    position: {x: 46, y: 92}
+  - pattern: 0
+    layer: 0
+    position: {x: 138, y: 92}
+  - pattern: 6
+    layer: 0
+    position: {x: 230, y: 92}
+  - pattern: 5
+    layer: 0
+    position: {x: 322, y: 92}
+  - pattern: 7
+    layer: 1
+    position: {x: -276, y: -80}
+  - pattern: 0
+    layer: 1
+    position: {x: -184, y: -80}
+  - pattern: 6
+    layer: 1
+    position: {x: -92, y: -80}
+  - pattern: 3
+    layer: 1
+    position: {x: 92, y: -80}
+  - pattern: 8
+    layer: 1
+    position: {x: 184, y: -80}
+  - pattern: 6
+    layer: 1
+    position: {x: 276, y: -80}
+  - pattern: 7
+    layer: 1
+    position: {x: -276, y: 12}
+  - pattern: 1
+    layer: 1
+    position: {x: -184, y: 12}
+  - pattern: 7
+    layer: 1
+    position: {x: -92, y: 12}
+  - pattern: 0
+    layer: 1
+    position: {x: 92, y: 12}
+  - pattern: 3
+    layer: 1
+    position: {x: 184, y: 12}
+  - pattern: 1
+    layer: 1
+    position: {x: 276, y: 12}
+  - pattern: 4
+    layer: 1
+    position: {x: -276, y: 104}
+  - pattern: 7
+    layer: 1
+    position: {x: -184, y: 104}
+  - pattern: 3
+    layer: 1
+    position: {x: -92, y: 104}
+  - pattern: 1
+    layer: 1
+    position: {x: 92, y: 104}
+  - pattern: 8
+    layer: 1
+    position: {x: 184, y: 104}
+  - pattern: 8
+    layer: 1
+    position: {x: 276, y: 104}
+  - pattern: 3
+    layer: 2
+    position: {x: -184, y: -104}
+  - pattern: 4
+    layer: 2
+    position: {x: -92, y: -104}
+  - pattern: 0
+    layer: 2
+    position: {x: 92, y: -104}
+  - pattern: 5
+    layer: 2
+    position: {x: 184, y: -104}
+  - pattern: 2
+    layer: 2
+    position: {x: -184, y: -12}
+  - pattern: 3
+    layer: 2
+    position: {x: -92, y: -12}
+  - pattern: 0
+    layer: 2
+    position: {x: 92, y: -12}
+  - pattern: 8
+    layer: 2
+    position: {x: 184, y: -12}
+  - pattern: 2
+    layer: 2
+    position: {x: -184, y: 80}
+  - pattern: 5
+    layer: 2
+    position: {x: -92, y: 80}
+  - pattern: 2
+    layer: 2
+    position: {x: 92, y: 80}
+  - pattern: 6
+    layer: 2
+    position: {x: 184, y: 80}
+  solution: 2c000000320000002500000030000000340000001e000000210000002e00000018000000310000002700000014000000290000001f0000002d0000001c0000002300000033000000350000001b0000002b000000000000002a0000000c0000001d00000022000000240000000d0000000f0000002f0000000500000011000000260000001000000004000000060000001a000000280000000e0000000300000008000000200000001600000007000000130000000b000000190000000a000000020000001200000001000000170000001500000009000000

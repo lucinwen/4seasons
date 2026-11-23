@@ -1,0 +1,103 @@
+{
+  "id": "13_TermDetail",
+  "title": "节气详情",
+  "season": "Spring",
+  "referenceResolution": [
+    1920,
+    1080
+  ],
+  "nodes": [
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Spring_Panel_9slice.png",
+      "rect": [
+        400,
+        130,
+        1120,
+        820
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "谷雨 · 春",
+      "rect": [
+        490,
+        205,
+        950,
+        90
+      ],
+      "fontSize": 53,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "Items/1-桑叶1.png",
+      "rect": [
+        525,
+        350,
+        190,
+        190
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "text",
+      "text": "春日物候观察",
+      "rect": [
+        780,
+        365,
+        560,
+        70
+      ],
+      "fontSize": 35,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "在关卡中观察桑叶、雨水和工坊。\n阅读内容与资料来源将在核实后补入。",
+      "rect": [
+        500,
+        595,
+        920,
+        130
+      ],
+      "fontSize": 31,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Spring_Primary_Normal.png",
+      "rect": [
+        920,
+        820,
+        380,
+        78
+      ],
+      "preserveAspect": false,
+      "label": "返回图鉴",
+      "target": "11_SolarTerms",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "返回图鉴",
+      "rect": [
+        930,
+        840,
+        360,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    }
+  ]
+}

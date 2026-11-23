@@ -1,0 +1,77 @@
+{
+  "status": "implementation proposal based on source; facts and task quantities require review",
+  "quests": [
+    {
+      "id": "spring_01",
+      "season": "Spring",
+      "title": "备好采桑篮",
+      "description": "找到采桑篮，沿桑园平台采集新鲜桑叶。",
+      "tool": "1-采桑篮1",
+      "product": "1-桑叶1",
+      "next": "spring_02"
+    },
+    {
+      "id": "spring_02",
+      "season": "Spring",
+      "title": "蚕房备育",
+      "description": "取得蚕种纸，前往浴蚕桶，完成工艺互动。",
+      "tool": "1-蚕种纸1",
+      "product": "1-蚕匾+蚕",
+      "next": "summer_01"
+    },
+    {
+      "id": "summer_01",
+      "season": "Summer",
+      "title": "照料与上蔟",
+      "description": "补充桑叶，观察蚕房状态，为熟蚕准备蚕蔟。",
+      "tool": "1-桑叶1",
+      "product": "2-蚕茧簇架",
+      "next": "summer_02"
+    },
+    {
+      "id": "summer_02",
+      "season": "Summer",
+      "title": "暑夏收茧",
+      "description": "到达收茧棚，收集并提交蚕茧。",
+      "tool": "2-蚕茧篓",
+      "product": "2-蚕茧匾",
+      "next": "autumn_01"
+    },
+    {
+      "id": "autumn_01",
+      "season": "Autumn",
+      "title": "煮茧与缫丝",
+      "description": "收集木柴与水，前往煮茧区，再到缫丝台。",
+      "tool": "2-木柴",
+      "product": "3-丝束",
+      "next": "autumn_02"
+    },
+    {
+      "id": "autumn_02",
+      "season": "Autumn",
+      "title": "络丝与织造",
+      "description": "找到梭子和线轴，完成经纬操作，获得素绸。",
+      "tool": "3-梭子",
+      "product": "3-织好的白布",
+      "next": "winter_01"
+    },
+    {
+      "id": "winter_01",
+      "season": "Winter",
+      "title": "寻材染绸",
+      "description": "辨认可用染材，带回染坊，按提示完成染色。",
+      "tool": "4-染料蓝原料",
+      "product": "4-晾晒架子",
+      "next": "winter_02"
+    },
+    {
+      "id": "winter_02",
+      "season": "Winter",
+      "title": "裁剪与缝制",
+      "description": "收集裁衣工具，拼合衣片，将成衣放上展架。",
+      "tool": "4-裁衣工具尺",
+      "product": "4-裁衣工具针",
+      "next": "ending"
+    }
+  ]
+}

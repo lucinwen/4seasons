@@ -1,0 +1,167 @@
+{
+  "id": "15_Weave",
+  "title": "织造互动",
+  "season": "Autumn",
+  "referenceResolution": [
+    1920,
+    1080
+  ],
+  "nodes": [
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Autumn_Panel_9slice.png",
+      "rect": [
+        240,
+        110,
+        1440,
+        870
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "织造台",
+      "rect": [
+        330,
+        180,
+        1280,
+        70
+      ],
+      "fontSize": 45,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "Items/3-织机.png",
+      "rect": [
+        370,
+        330,
+        390,
+        390
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "text",
+      "text": "当前步骤 · 引纬",
+      "rect": [
+        920,
+        345,
+        520,
+        75
+      ],
+      "fontSize": 37,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "在亮区内按下互动键",
+      "rect": [
+        920,
+        465,
+        570,
+        60
+      ],
+      "fontSize": 31,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Meters/Autumn_Track.png",
+      "rect": [
+        900,
+        575,
+        580,
+        36
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "image",
+      "asset": "UI/Meters/Autumn_Fill.png",
+      "rect": [
+        1080,
+        575,
+        180,
+        36
+      ],
+      "preserveAspect": false
+    },
+    {
+      "kind": "text",
+      "text": "完成进度 2 / 6",
+      "rect": [
+        920,
+        660,
+        570,
+        60
+      ],
+      "fontSize": 30,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Autumn_Secondary_Normal.png",
+      "rect": [
+        575,
+        845,
+        320,
+        76
+      ],
+      "preserveAspect": false,
+      "label": "重试",
+      "target": "15_Weave",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "重试",
+      "rect": [
+        585,
+        864,
+        300,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Autumn_Primary_Normal.png",
+      "rect": [
+        1030,
+        845,
+        360,
+        76
+      ],
+      "preserveAspect": false,
+      "label": "返回手札",
+      "target": "14_Craft",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "返回手札",
+      "rect": [
+        1040,
+        864,
+        340,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    }
+  ]
+}

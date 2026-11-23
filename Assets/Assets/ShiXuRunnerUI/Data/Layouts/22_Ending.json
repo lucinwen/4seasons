@@ -1,0 +1,131 @@
+{
+  "id": "22_Ending",
+  "title": "四时成衣",
+  "season": "Winter",
+  "referenceResolution": [
+    1920,
+    1080
+  ],
+  "nodes": [
+    {
+      "kind": "image",
+      "asset": "UI/Frames/Winter_Panel_9slice.png",
+      "rect": [
+        250,
+        100,
+        1420,
+        880
+      ],
+      "sliced": true
+    },
+    {
+      "kind": "text",
+      "text": "一件丝衣，走过四季",
+      "rect": [
+        340,
+        165,
+        1240,
+        85
+      ],
+      "fontSize": 52,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "image",
+      "asset": "Garments/4-衣服待定1_01.png",
+      "rect": [
+        400,
+        330,
+        300,
+        380
+      ],
+      "preserveAspect": true
+    },
+    {
+      "kind": "text",
+      "text": "桑叶 → 蚕茧 → 生丝 → 素绸 → 成衣",
+      "rect": [
+        820,
+        370,
+        710,
+        150
+      ],
+      "fontSize": 36,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "left"
+    },
+    {
+      "kind": "text",
+      "text": "回望工艺，也看见每一道工序背后的劳动。",
+      "rect": [
+        820,
+        560,
+        690,
+        130
+      ],
+      "fontSize": 31,
+      "color": "#3b302a",
+      "bold": false,
+      "align": "left"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Winter_Primary_Normal.png",
+      "rect": [
+        1020,
+        820,
+        410,
+        78
+      ],
+      "preserveAspect": false,
+      "label": "翻阅四时织录",
+      "target": "12_Journal",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "翻阅四时织录",
+      "rect": [
+        1030,
+        840,
+        390,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#fff1d5",
+      "bold": true,
+      "align": "center"
+    },
+    {
+      "kind": "button",
+      "asset": "UI/Buttons/Winter_Secondary_Normal.png",
+      "rect": [
+        510,
+        820,
+        340,
+        78
+      ],
+      "preserveAspect": false,
+      "label": "返回工坊",
+      "target": "02_ChapterSelect",
+      "interactable": true
+    },
+    {
+      "kind": "text",
+      "text": "返回工坊",
+      "rect": [
+        520,
+        840,
+        320,
+        44
+      ],
+      "fontSize": 28,
+      "color": "#3b302a",
+      "bold": true,
+      "align": "center"
+    }
+  ]
+}
