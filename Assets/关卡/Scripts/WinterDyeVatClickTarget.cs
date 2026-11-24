@@ -13,7 +13,8 @@ public class WinterDyeVatClickTarget : MonoBehaviour
     {
         _collider = GetComponent<Collider2D>();
         WorkshopPickupGlow.Bind(gameObject, () => WorkshopProgress.IsComplete(WorkshopSeason.Autumn) &&
-            WinterLevelState.ProducedDyeColors.Count > 0 && !WorkshopProgress.Has(WorkshopItem.DyedCloth));
+            (WorkshopProgress.SeasonalOrderEnabled || WinterLevelState.ProducedDyeColors.Count > 0) &&
+            !WorkshopProgress.Has(WorkshopItem.DyedCloth));
     }
 
     private void Update()
@@ -44,7 +45,7 @@ public class WinterDyeVatClickTarget : MonoBehaviour
             SimplePopup.Show("缺少素绸", "提交秋季任务后，可把做好的素绸带来染色。", "知道了", null);
             return;
         }
-        if (WinterLevelState.ProducedDyeColors.Count == 0)
+        if (!WorkshopProgress.SeasonalOrderEnabled && WinterLevelState.ProducedDyeColors.Count == 0)
         {
             SimplePopup.Show("染色", "还没有研磨好的染料，先去研磨染料吧。", "知道了", null);
             return;

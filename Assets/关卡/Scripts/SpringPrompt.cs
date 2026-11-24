@@ -1,14 +1,8 @@
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Qingming.LevelBackground;
 
-/// <summary>
-/// 采桑游戏触发点：
-/// - 玩家进入触发范围 → 在触发点上方显示悬浮"进入桑园"按钮（不打断游戏进程）
-/// - 点击按钮：已拾取采桑篮 → 进入采桑游戏；未拾取 → 提示需要采桑篮
-/// 挂载到触发点 GameObject 上，需要同物体有 Collider2D (Is Trigger = true)。
-/// </summary>
+/// <summary>清明采桑工位。鼠标和 O 键使用同一入口。</summary>
 [RequireComponent(typeof(Collider2D))]
 public class SpringPrompt : MonoBehaviour
 {
@@ -50,10 +44,7 @@ public class SpringPrompt : MonoBehaviour
     }
 
     [Header("悬浮按钮")]
-    [Tooltip("按钮文字")]
-    public string buttonText = "进入桑园";
-
-    [Tooltip("按钮相对触发点的偏移（Y 与蚕簇架“前往喂蚕”按钮同高）")]
+    [Tooltip("按钮相对触发点的偏移")]
     public Vector3 buttonOffset = new Vector3(0f, 3.33f, 0f);
 
     [Tooltip("按钮整体不透明度")]
@@ -66,13 +57,14 @@ public class SpringPrompt : MonoBehaviour
 
     [Tooltip("未拾取采桑篮时的提示正文")]
     [TextArea]
-    public string noBasketMessage = "请先拾取采桑篮，再进入桑园完成采桑。";
+    public string noBasketMessage = "先在春章收下采桑篮，再回到桑树前接桑叶。";
 
-    [Header("采桑游戏场景（兜底）")]
-    [Tooltip("覆盖层不可用时的回退场景名")]
+    [Header("备用采桑场景")]
+    [Tooltip("采桑覆盖层不可用时加载此场景")]
     public string gameSceneName = "MulberryHarvest";
 
     private FloatingActionButton _floatBtn;
+    private bool playerNearby;
 
     private void Reset()
     {
@@ -83,47 +75,60 @@ public class SpringPrompt : MonoBehaviour
     private void Awake()
     {
         _floatBtn = gameObject.AddComponent<FloatingActionButton>();
-        _floatBtn.Configure(buttonText, buttonOffset, OnEnterButtonClicked);
+        _floatBtn.Configure(StationLabel(), buttonOffset, OnEnterButtonClicked, FloatingActionButton.VisualStyle.PaperTag);
         _floatBtn.SetOpacity(buttonOpacity);
     }
 
     private void Start()
     {
         var mulberryTree = GameObject.Find("1-桑树1");
-        WorkshopPickupGlow.Bind(mulberryTree, () => HasPickedBasket &&
-            !WorkshopProgress.Has(WorkshopItem.MulberryLeaf), 0.58f);
+        WorkshopPickupGlow.Bind(mulberryTree, () => SpringSummerNpcDialogue.HasMulberryBriefing &&
+            SpringSummerNpcDialogue.HasHarvestBasket && !SpringSummerNpcDialogue.HasHarvestedLeaves, 0.58f);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!IsPlayer(other)) return;
-        if (HarvestOverlayManager.IsHarvestActive) return; // 采桑进行中不弹按钮
-        if (_floatBtn != null) _floatBtn.Show();
+        playerNearby = true;
+        if (HarvestOverlayManager.IsHarvestActive || _floatBtn == null) return;
+        _floatBtn.SetText(StationLabel());
+        _floatBtn.Show();
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
         if (!IsPlayer(other)) return;
+        playerNearby = false;
         if (_floatBtn != null) _floatBtn.Hide();
     }
 
-    /// <summary>
-    /// 点击"进入桑园"按钮：
-    /// - 已拾取采桑篮 → 进入采桑游戏
-    /// - 未拾取 → 提示需要采桑篮
-    /// </summary>
+    private void Update()
+    {
+        if (playerNearby && Input.GetKeyDown(KeyCode.O)) OnEnterButtonClicked();
+    }
+
+    private void OnDisable()
+    {
+        playerNearby = false;
+        if (!HarvestOverlayManager.IsHarvestActive && _floatBtn != null) _floatBtn.Hide();
+    }
+
+    private void OnEnable() => _floatBtn?.SetText(StationLabel());
+
     private void OnEnterButtonClicked()
     {
-        if (WorkshopQuestGuide.BlocksWorldInput || !SpringSummerNpcDialogue.RequireMulberryBriefing()) return;
+        if (WorkshopQuestGuide.BlocksWorldInput || WorkshopQuestGuide.IsWorldOverlayActive ||
+            !SpringSummerNpcDialogue.RequireMulberryBriefing()) return;
 
-        if (HasPickedBasket)
-        {
-            LoadMulberryGame();
-        }
-        else
+        if (!SpringSummerNpcDialogue.HasHarvestBasket)
         {
             SimplePopup.Show(noBasketTitle, noBasketMessage, "知道了", null);
+            return;
         }
+
+        var harvest = HarvestOverlayManager.Instance;
+        if (harvest != null) harvest.ShowHarvest();
+        else SceneManager.LoadScene(gameSceneName);
     }
 
     private static bool IsPlayer(Collider2D other)
@@ -132,17 +137,8 @@ public class SpringPrompt : MonoBehaviour
                other.gameObject.name.Equals("Player", System.StringComparison.OrdinalIgnoreCase);
     }
 
-    private void LoadMulberryGame()
+    private static string StationLabel()
     {
-        Debug.Log("[SpringPrompt] 🌿 以覆盖层方式启动采桑游戏");
-        if (HarvestOverlayManager.Instance != null)
-        {
-            HarvestOverlayManager.Instance.ShowHarvest();
-        }
-        else
-        {
-            Debug.LogWarning("[SpringPrompt] 未找到 HarvestOverlayManager，回退到场景加载");
-            SceneManager.LoadScene(gameSceneName);
-        }
+        return WorkshopObservationView.HasRecord(WorkshopObservation.QingmingMulberry) ? "清明采桑 · 再玩 · O" : "清明采桑 · O";
     }
 }

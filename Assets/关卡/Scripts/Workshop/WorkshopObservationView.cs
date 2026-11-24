@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Qingming.LevelBackground;
 
 internal enum WorkshopObservation
 {
@@ -27,9 +29,12 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         internal readonly string Title;
         internal readonly string Station;
         internal readonly string ChallengeName;
+        internal readonly string SeasonCue;
+        internal readonly string MaterialRoute;
+        internal readonly string FirstMove;
 
         internal Definition(WorkshopSeason season, string id, string term, string title, string station,
-            string challengeName = null)
+            string challengeName = null, string seasonCue = null, string materialRoute = null, string firstMove = null)
         {
             Season = season;
             Id = "observation." + id;
@@ -37,20 +42,38 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
             Title = title;
             Station = station;
             ChallengeName = challengeName;
+            SeasonCue = seasonCue;
+            MaterialRoute = materialRoute;
+            FirstMove = firstMove;
         }
     }
 
     private static readonly Definition[] Definitions =
     {
-        new Definition(WorkshopSeason.Spring, "spring.qingming", "清明", "桑园里的新叶", "看桑芽", "拨枝采桑"),
-        new Definition(WorkshopSeason.Spring, "spring.guyu", "谷雨", "雨后的桑叶", "观察桑叶", "擦露配桑"),
-        new Definition(WorkshopSeason.Summer, "summer.mangzhong", "芒种", "蔟架上的蚕茧", "看茧况", "翻茧配批"),
+        new Definition(WorkshopSeason.Spring, "spring.qingming", "清明", "桑园里的新叶", "清明采桑", "移篮接桑",
+            "清明前后桑树陆续展叶。舒展开、叶面干的嫩叶适合取用。", "清明选桑垄 → 谷雨同垄新采"),
+        new Definition(WorkshopSeason.Spring, "spring.guyu", "谷雨", "雨后的桑叶", "观察桑叶", "擦露配桑",
+            "江南谷雨时节春蚕渐忙。雨后叶湿时，给桑前先去掉叶面水。", "今日鲜叶 → 按蚕龄给桑 → 上蔟结茧",
+            "看新采桑叶的水珠。干叶入篮，湿叶先擦，再按两匾的需要分叶。"),
+        new Definition(WorkshopSeason.Summer, "summer.mangzhong", "芒种", "蔟架上的蚕茧", "看茧况", "翻茧配批",
+            "芒种前后有江南产区收春茧。同批到站的茧也可能有早采、过潮和破损。", "成熟春茧 → 翻验收存 → 夏至缫丝",
+            "先看上蔟记录，再翻检茧壳。合格的交货，问题茧另放。"),
         new Definition(WorkshopSeason.Summer, "summer.dashu.vent", "大暑", "蔟房的通风窗", "暑热观察"),
-        new Definition(WorkshopSeason.Summer, "summer.dashu.reeling", "大暑", "缫丝三步", "缫丝三步", "稳丝续绪"),
-        new Definition(WorkshopSeason.Autumn, "autumn.qiufen", "秋分", "织坊的致谢", "读织坊致谢", "供台见光"),
-        new Definition(WorkshopSeason.Autumn, "autumn.hanlu", "寒露", "看经线", "看经线", "双色走梭"),
-        new Definition(WorkshopSeason.Winter, "winter.lidong", "立冬", "染坊里的色样", "看色样", "两单一缸"),
-        new Definition(WorkshopSeason.Winter, "winter.xiaoxue", "小雪", "从试染到成衣", "看成衣工序", "排料留布")
+        new Definition(WorkshopSeason.Summer, "summer.dashu.reeling", "夏至", "梅雨缫丝", "梅雨缫丝", "稳丝续绪",
+            "夏至前后江南常逢梅雨。刚缫的湿丝在潮处晾不妥，收存前要干丝。", "验过的茧 → 缫成生丝 → 干妥入库",
+            "用收存的茧找丝头，稳住丝轮添绪。绕好后选避雨干丝位。"),
+        new Definition(WorkshopSeason.Autumn, "autumn.qiufen", "秋分", "窗光下的丝样", "借光验丝", "借光验丝",
+            "秋分后白昼渐短。织坊在夜织前，用剩下的窗光检查生丝的粗节和结头。", "夏至生丝 → 对光验丝 → 寒露上机",
+            "把真实丝样放到后排，再切侧窗找光。天暗时点灯补光。"),
+        new Definition(WorkshopSeason.Autumn, "autumn.hanlu", "寒露", "看经线", "看经线", "双色走梭",
+            "寒露晨凉，窗沿可能结露。丝轴沾了露，要整备妥当才能上机。", "验过的丝 → 理经走梭织绸 → 立冬试染",
+            "先取状态合适的丝轴，再看样带抬经线、走梭。"),
+        new Definition(WorkshopSeason.Winter, "winter.lidong", "立冬", "染坊里的色样", "看色样", "两单一缸",
+            "立冬这班收到浙南十一月一批栀子果料。熟果的黄色素更适合这张工单。", "寒露素绸 → 栀黄试色与染布 → 小雪裁衣",
+            "辨认红黄色熟果的签，再给绸样做深浅两份栀黄色。"),
+        new Definition(WorkshopSeason.Winter, "winter.xiaoxue", "小雪", "从试染到成衣", "看成衣工序", "排料留布",
+            "小雪时冷空气更活跃。逢冷雨先避雨晾布，做夹衣还得留里襟料。", "染绸晾干 → 裁面片与里襟 → 主厅缝衣",
+            "先找避雨又通风的晾架。布干后再顺纹摆衣样，给里襟留一块整布。")
     };
 
     private static readonly Color[] Accents =
@@ -85,6 +108,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     private GameObject priorSelection;
     private float priorTimeScale;
     private bool readOnly;
+    private bool showBriefing;
     private bool showSongJin;
     private bool showBatches;
     private bool earnedRewardThisRun;
@@ -110,7 +134,70 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
                 yield return (WorkshopObservation)i;
     }
 
-    internal static void Show(WorkshopObservation id, Action onClosed = null) => Open(id, onClosed, false);
+    internal static void Show(WorkshopObservation id, Action onClosed = null)
+    {
+        if (id == WorkshopObservation.QingmingMulberry || IsOpen) return;
+        if (WorkshopProgress.SeasonalOrderEnabled && IsAtOwnWorkshop(id) && MissingOrderInput(id) is string guide)
+        {
+            SimplePopup.Show("先备齐这道工序", guide, "知道了");
+            return;
+        }
+        Open(id, onClosed, false);
+    }
+
+    internal static WorkshopProgress.ChallengeWork OrderWork(WorkshopObservation id) =>
+        WorkshopProgress.SeasonalOrderWork(Definitions[(int)id].Id);
+
+    internal static bool HasOrderWork(WorkshopObservation id) => OrderWork(id) != null;
+
+    internal static bool HasSeasonOrderDeliveries(WorkshopSeason season)
+    {
+        switch (season)
+        {
+            case WorkshopSeason.Spring: return WorkshopProgress.HasStep("spring.guyu.batchFed");
+            case WorkshopSeason.Summer: return HasOrderWork(WorkshopObservation.MangzhongCocoon) && HasOrderWork(WorkshopObservation.DashuReeling);
+            case WorkshopSeason.Autumn: return HasOrderWork(WorkshopObservation.QiufenOffering) && HasOrderWork(WorkshopObservation.HanluLoom);
+            case WorkshopSeason.Winter: return HasOrderWork(WorkshopObservation.LidongDye) && HasOrderWork(WorkshopObservation.XiaoxueTailoring);
+            default: return true;
+        }
+    }
+
+    private static bool IsAtOwnWorkshop(WorkshopObservation id) =>
+        SceneManager.GetActiveScene().name == WorkshopProgress.SceneName(Season(id));
+
+    private static string MissingOrderInput(WorkshopObservation id)
+    {
+        switch (id)
+        {
+            case WorkshopObservation.DashuReeling when !HasOrderWork(WorkshopObservation.MangzhongCocoon):
+                return "先到蔟架完成芒种验茧，再带合格茧到夏至缫丝台。";
+            case WorkshopObservation.DashuReeling when !SummerItemInteraction.WaterCollected || !SummerItemInteraction.WoodCollected:
+                return "先取水、拾柴，再煮前一站交来的合格茧。";
+            case WorkshopObservation.QiufenOffering when !HasOrderWork(WorkshopObservation.DashuReeling):
+                return "秋分要验夏至入库的生丝，先完成夏章缫丝。";
+            case WorkshopObservation.HanluLoom when !HasOrderWork(WorkshopObservation.QiufenOffering):
+                return "先到秋分窗台验生丝，把验过的丝轴带回织机。";
+            case WorkshopObservation.HanluLoom when !AutumnLevelState.HasLoomRepaired || !AutumnLevelState.HasShuttle:
+                return "先修好织机并取得梭子，再把寒露整理过的丝织成绸。";
+            case WorkshopObservation.LidongDye when !HasOrderWork(WorkshopObservation.HanluLoom) || !WorkshopProgress.Has(WorkshopItem.RawSilkCloth):
+                return "寒露织样和正式整绸都备好后，才能在立冬试色。";
+            case WorkshopObservation.XiaoxueTailoring when !WorkshopProgress.Has(WorkshopItem.DyedCloth):
+                return "先完成立冬试色和正式染整幅，再到小雪裁衣台。";
+            default:
+                return null;
+        }
+    }
+
+    internal static bool RecordQingmingHarvest(int leaves)
+    {
+        const WorkshopObservation harvest = WorkshopObservation.QingmingMulberry;
+        string id = Definitions[(int)harvest].Id;
+        string result = $"{SpringSummerNpcDialogue.HarvestOrchardName} · 试采 {leaves} 片 · 谷雨同垄新采";
+        if (WorkshopProgress.SeasonalOrderEnabled && IsAtOwnWorkshop(harvest))
+            WorkshopProgress.RecordSeasonalOrderWork(id, 0, 100, result, null);
+        return WorkshopProgress.RecordChallenge(id, 0, 100, result, null);
+    }
+
 
     internal static void ShowRecord(WorkshopObservation id, Action onClosed = null)
     {
@@ -133,6 +220,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         current.priorTimeScale = Time.timeScale;
         Time.timeScale = 0f;
         current.PrepareActivity(id);
+        current.showBriefing = !readOnly && IsSeasonGame(id) && !HasRecord(id);
         current.Render();
     }
 
@@ -209,14 +297,20 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
         WorkshopUi.Label(page, "Season and Solar Term", new Rect(28, 19, 560, 40),
             WorkshopProgress.SeasonName(definition.Season) + " · " + definition.Term, 28, accent);
+        if (IsSeasonGame(observation)) DrawSeasonalHandoff(definition, accent);
         WorkshopUi.Label(page, "Observation Title", new Rect(28, 61, 1320, 78),
             ChallengeIsActive ? definition.ChallengeName : definition.Title, 54, WorkshopUi.Ink);
         if (readOnly)
-            WorkshopUi.Label(page, "Record Mode", new Rect(1294, 71, 390, 58),
+            WorkshopUi.Label(page, "Record Mode", new Rect(1294, 68, 412, 39),
                 IsSeasonGame(observation) ? "已通关 · 残页已收集" : "织录 · 已观察", 31, accent, TextAnchor.MiddleRight);
         else if (ChallengeIsActive)
             DrawChallengeStatus(accent);
         WorkshopUi.Fill(page, "Heading Rule", new Rect(28, 144, 1688, 2), WorkshopUi.Line);
+        if (showBriefing)
+        {
+            DrawWorkbenchBriefing(definition, accent);
+            return;
+        }
 
         var frameBevel = WorkshopUi.PixelCard(page, "Illustration Frame", new Rect(28, 163, 1172, 665),
             accent, WorkshopUi.Bronze);
@@ -234,17 +328,62 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         Button replay = ChallengeIsActive ? DrawChallengeControls() : null;
         RegisterButton(exit);
         if (ChallengeIsActive)
-        {
-            // Instruction text and small labels must stay readable at the 720p workbench size.
-            var readingFont = WorkshopArt.ReadingFont;
-            foreach (var label in page.GetComponentsInChildren<Text>(true))
-            {
-                label.font = readingFont;
-                if (label.name == "Observation Title") label.fontStyle = FontStyle.Bold;
-            }
-        }
+            ApplyWorkbenchReadingFont();
         var prior = previousFocus != null ? page.Find(previousFocus) : null;
         BindNavigation(replay ?? prior?.GetComponent<Button>());
+    }
+
+    private void DrawSeasonalHandoff(Definition definition, Color accent)
+    {
+        var terms = WorkshopArt.SolarNames(definition.Season);
+        int position = Array.IndexOf(terms, definition.Term);
+        if (position >= 0)
+            WorkshopUi.Label(page, "Solar Year Position", new Rect(161, 20, 242, 39),
+                $"二十四节气 {((int)definition.Season * terms.Length + position + 1):00}/24", 21, accent);
+        if (!showBriefing)
+            WorkshopUi.Label(page, "Seasonal Work Cue", new Rect(414, 19, 1293, 41), definition.SeasonCue, 23,
+                WorkshopUi.Ink, TextAnchor.MiddleRight, WorkshopArt.ReadingFont);
+        WorkshopUi.Label(page, "Production Handoff", new Rect(621, 111, 1086, 31), definition.MaterialRoute, 22,
+            accent, TextAnchor.MiddleRight, WorkshopArt.ReadingFont);
+    }
+
+    private void DrawWorkbenchBriefing(Definition definition, Color accent)
+    {
+        var bounds = new Rect(28, 163, 1688, 660);
+        var scene = DrawWorkshopPaper(page, "Season Work Briefing", bounds, accent, WorkshopUi.Bronze);
+        string backdrop = observation == WorkshopObservation.XiaoxueTailoring
+            ? "WorkshopGameArt/XiaoxueRainCourtyard"
+            : "WorkshopGuides/" + definition.Season + "_ChapterGuide";
+        var place = Resources.Load<Sprite>(backdrop);
+        WorkshopUi.Picture(scene, "Workshop Region", new Rect(8, 8, 854, 644), place, stretch: true);
+        var card = DrawWorkshopPaper(scene, "Season Work Card", new Rect(878, 26, 782, 602),
+            LightSurface, WorkshopUi.Bronze);
+        var font = WorkshopArt.ReadingFont;
+        WorkshopUi.Label(card, "Season Work Reason Heading", new Rect(42, 40, 689, 54), "为什么是" + definition.Term,
+            39, accent, TextAnchor.MiddleLeft, font);
+        WorkshopUi.Label(card, "Season Work Reason", new Rect(42, 111, 689, 154), definition.SeasonCue,
+            32, WorkshopUi.Ink, TextAnchor.UpperLeft, font);
+        WorkshopUi.Fill(card, "Work Card Rule", new Rect(42, 278, 691, 2), WorkshopUi.Line);
+        WorkshopUi.Label(card, "Season Work First Move", new Rect(42, 308, 689, 142), definition.FirstMove,
+            30, WorkshopUi.Ink, TextAnchor.UpperLeft, font);
+        var begin = WorkshopUi.PixelButton(card, "Start Season Work", new Rect(42, 493, 691, 68),
+            "开工", () => { showBriefing = false; Render(); }, true, 33, accent);
+        var leave = WorkshopUi.PixelButton(page, "Return From Observation", new Rect(1473, 848, 243, 58),
+            "返回 · Esc", Close, false, 27);
+        RegisterButton(begin);
+        RegisterButton(leave);
+        ApplyWorkbenchReadingFont();
+        BindNavigation(begin);
+    }
+
+    private void ApplyWorkbenchReadingFont()
+    {
+        var readingFont = WorkshopArt.ReadingFont;
+        foreach (var label in page.GetComponentsInChildren<Text>(true))
+        {
+            label.font = readingFont;
+            if (label.name == "Observation Title") label.fontStyle = FontStyle.Bold;
+        }
     }
 
     private string FocusPath()

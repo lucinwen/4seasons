@@ -26,19 +26,10 @@ internal static class WorkshopDialogueScripts
     internal static readonly WorkshopDialogueLine[] SpringMulberryIntro =
     {
         new WorkshopDialogueLine("蚕房师傅", "哎，小织匠，你来得正好！"),
-        new WorkshopDialogueLine("蚕房师傅", "这批小蚕已经孵出来了，正等着吃新鲜桑叶。帮我理一篮吧。"),
-        new WorkshopDialogueLine("玩家", "师傅，昨晚刚下过雨，有的桑叶上还带着水珠。"),
-        new WorkshopDialogueLine("蚕房师傅", "拿上采桑篮，去桑树边的谷雨蚕架。干爽的叶子直接入篮，湿叶得先把水珠擦掉。"),
-        new WorkshopDialogueLine("蚕房师傅", "看看两只蚕匾各要什么叶。攒够合适的一篮，就在这张台上把它们分给两匾小蚕。"),
-        new WorkshopDialogueLine("玩家", "我去拿采桑篮，这就给它们备饭。"),
-    };
-
-    internal static readonly WorkshopDialogueLine[] SpringMulberryComplete =
-    {
-        new WorkshopDialogueLine("蚕房掌事", "不错不错！你挑的桑叶看起来很新鲜。"),
-        new WorkshopDialogueLine("玩家", "这些桑叶都可以拿去喂蚕了吗？"),
-        new WorkshopDialogueLine("蚕房掌事", "对，不过采回来还要妥善存放，不能让桑叶变得又干又热。"),
-        new WorkshopDialogueLine("蚕房掌事", "记住，养蚕要细心，桑叶也得按时采、按量喂。"),
+        new WorkshopDialogueLine("蚕房师傅", "清明前后桐乡回暖。向阳的桑芽常先舒展开，背阴处可还挂着露，去看看两垄的叶况。"),
+        new WorkshopDialogueLine("蚕房师傅", "等叶展、露退再采。拿上篮子左右移动，接八片干爽的嫩叶。"),
+        new WorkshopDialogueLine("玩家", "我把今天采的鲜叶带回来，也记下是哪一垄。"),
+        new WorkshopDialogueLine("蚕房师傅", "好。到了谷雨，从同一垄当天再采。春雨打湿的叶面先去水，再按蚕龄分给两匾。"),
     };
 
     internal static readonly WorkshopDialogueLine[] SpringBathIntro =
@@ -284,7 +275,12 @@ internal static class WorkshopDialogueScripts
     // Quest progress and return visits
     internal static readonly WorkshopDialogueLine[] SpringInProgress =
     {
-        new WorkshopDialogueLine("蚕房掌事", "拿上采桑篮，找桑树旁的谷雨蚕架。先看两只蚕匾的叶型需求，干叶可直接入篮，湿叶要先擦去水珠。"),
+        new WorkshopDialogueLine("蚕房掌事", "到桑树前点「清明采桑」，先选叶展、露退的桑垄，再左右移篮接嫩叶。"),
+    };
+
+    internal static readonly WorkshopDialogueLine[] SpringCarryToGuyu =
+    {
+        new WorkshopDialogueLine("蚕房掌事", "到谷雨蚕架领当天新采的桑叶。先擦干湿叶，把嫩叶给幼蚕，适熟叶分给长大一些的蚕。"),
     };
 
     internal static readonly WorkshopDialogueLine[] SpringReadyToFeed =

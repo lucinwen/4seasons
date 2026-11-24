@@ -29,7 +29,8 @@ internal sealed class WorkshopObservationStations : MonoBehaviour
 
     private static void Attach(Scene scene, LoadSceneMode mode)
     {
-        if (mode != LoadSceneMode.Single || !WorkshopProgress.TryGetSeason(scene.name, out var season))
+        if (mode != LoadSceneMode.Single || !WorkshopProgress.TryGetSeason(scene.name, out var season) ||
+            season == WorkshopSeason.Spring)
             return;
 
         foreach (var binding in FindObjectsOfType<WorkshopObservationStations>())
@@ -49,9 +50,6 @@ internal sealed class WorkshopObservationStations : MonoBehaviour
 
         switch (season)
         {
-            case WorkshopSeason.Spring:
-                Register<SpringPrompt>(WorkshopObservation.QingmingMulberry, 4.18f);
-                break;
             case WorkshopSeason.Summer:
                 Register<SummerCocoonRackTrigger>(WorkshopObservation.MangzhongCocoon, 3.25f);
                 Register<SummerCookerTrigger>(WorkshopObservation.DashuReeling, 2.75f);
@@ -62,7 +60,6 @@ internal sealed class WorkshopObservationStations : MonoBehaviour
                 break;
             case WorkshopSeason.Winter:
                 Register<WinterGrindingClickTarget>(WorkshopObservation.LidongDye, 2.5f);
-                Register<WinterClothCuttingTrigger>(WorkshopObservation.XiaoxueTailoring, 3.05f);
                 break;
         }
     }
@@ -92,10 +89,7 @@ internal sealed class WorkshopObservationStations : MonoBehaviour
 
     private bool Available()
     {
-        if (Time.timeScale <= 0f || WorkshopQuestGuide.BlocksWorldInput || WorkshopQuestGuide.IsWorldOverlayActive)
-            return false;
-        return season != WorkshopSeason.Spring ||
-            !SilkwormWashingController.washingStarted || SilkwormWashingController.washingCompleted;
+        return Time.timeScale > 0f && !WorkshopQuestGuide.BlocksWorldInput && !WorkshopQuestGuide.IsWorldOverlayActive;
     }
 
     private void Update()
@@ -146,14 +140,12 @@ internal sealed class WorkshopObservationStations : MonoBehaviour
     {
         string name = WorkshopObservationView.SeasonGameTitle(observation) ?? WorkshopObservationView.StationLabel(observation);
         string state = WorkshopObservationView.HasRecord(observation) ? " · 已通关" : "";
-        return name + state + " · O";
+        return WorkshopObservationView.RecordTerm(observation) + " · " + name + state + " · O";
     }
 
     private void Open(Station station)
     {
         if (nearby != station || !Available()) return;
-        if (station.Observation == WorkshopObservation.QingmingMulberry
-            && !SpringSummerNpcDialogue.RequireMulberryBriefing()) return;
         WorkshopObservationView.Show(station.Observation);
         ShowStation(null);
     }

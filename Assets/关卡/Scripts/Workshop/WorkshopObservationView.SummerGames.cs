@@ -9,6 +9,9 @@ internal sealed partial class WorkshopObservationView
     private const int InspectionBudget = 3;
     private const int CocoonsPerRow = 3;
     private const int InspectionCocoonCount = 9;
+    private const int SpringCocoonReadyFromDay = 6;
+    private const char RoundCocoonInk = '4';
+    private const char LongCocoonInk = '5';
     private static readonly Color SummerJade = new Color32(55, 105, 91, 255);
     private static readonly Color SummerGold = new Color32(253, 217, 139, 255);
     private static readonly Color SummerDark = new Color32(31, 61, 52, 255);
@@ -16,20 +19,23 @@ internal sealed partial class WorkshopObservationView
     private static readonly Color CocoonTilePaper = new Color32(255, 246, 224, 192);
     private static readonly Color SummerWarning = new Color32(154, 74, 56, 255);
 
-    private enum CocoonEvidence { Hidden, Intact, Cracked }
-    private enum CocoonTray { Pending, Delivery, Review }
+    private enum CocoonEvidence { Hidden, Intact, Cracked, Damp, Immature, NeedsReview }
+    private enum CocoonTray { Pending, Delivery, Review, Mount }
 
     private readonly struct CocoonSample
     {
         internal readonly bool Long;
-        internal readonly bool Cracked;
         internal readonly bool Covered;
+        internal readonly int MountDays;
+        private readonly CocoonEvidence shellCondition;
+        internal CocoonEvidence Condition => MountDays < SpringCocoonReadyFromDay ? CocoonEvidence.Immature : shellCondition;
 
-        internal CocoonSample(bool longShape, bool cracked, bool covered)
+        internal CocoonSample(bool longShape, bool covered, CocoonEvidence shellCondition = CocoonEvidence.Intact, int mountDays = 7)
         {
             Long = longShape;
-            Cracked = cracked;
             Covered = covered;
+            MountDays = mountDays;
+            this.shellCondition = shellCondition;
         }
     }
 
@@ -52,13 +58,13 @@ internal sealed partial class WorkshopObservationView
     private static readonly InspectionOrder[] InspectionOrders =
     {
         new InspectionOrder("织坊首单", 3, 2,
-            new CocoonSample(false, false, false), new CocoonSample(true, true, false), new CocoonSample(false, false, true),
-            new CocoonSample(false, true, true), new CocoonSample(true, false, true), new CocoonSample(false, false, false),
-            new CocoonSample(true, true, true), new CocoonSample(false, false, true), new CocoonSample(true, false, true)),
+            new CocoonSample(false, false), new CocoonSample(true, false, CocoonEvidence.Cracked), new CocoonSample(false, true),
+            new CocoonSample(false, true, CocoonEvidence.Damp), new CocoonSample(true, true), new CocoonSample(false, false),
+            new CocoonSample(true, false, mountDays: 3), new CocoonSample(false, true), new CocoonSample(true, true)),
         new InspectionOrder("细丝加单", 2, 4,
-            new CocoonSample(true, false, false), new CocoonSample(false, false, true), new CocoonSample(false, true, true),
-            new CocoonSample(true, false, true), new CocoonSample(false, true, true), new CocoonSample(true, false, false),
-            new CocoonSample(true, false, true), new CocoonSample(false, false, true), new CocoonSample(true, true, true))
+            new CocoonSample(true, false), new CocoonSample(false, true), new CocoonSample(false, true, CocoonEvidence.Cracked),
+            new CocoonSample(true, true), new CocoonSample(false, true, CocoonEvidence.Damp), new CocoonSample(true, false),
+            new CocoonSample(true, true), new CocoonSample(false, true), new CocoonSample(true, false, mountDays: 3))
     };
 
     private readonly bool[] cocoonTurned = new bool[InspectionCocoonCount];
@@ -67,15 +73,17 @@ internal sealed partial class WorkshopObservationView
     private readonly Image[] cocoonTileImages = new Image[InspectionCocoonCount];
     private readonly Text[] cocoonTileLabels = new Text[InspectionCocoonCount];
     private readonly Image[] deliveryCocoons = new Image[6];
-    private readonly Image[] reviewCocoons = new Image[3];
+    private readonly Image[] reviewCocoons = new Image[2];
     private static readonly Rect CocoonDeliveryArea = new Rect(700, 118, 385, 166);
     private static readonly Rect CocoonReviewArea = new Rect(700, 306, 385, 166);
+    private static readonly Rect CocoonMountArea = new Rect(700, 476, 385, 48);
     private int inspectedCocoonCount;
     private int selectedCocoon;
     private Text cocoonSelectedText;
     private Text cocoonNote;
     private Text cocoonDeliveryText;
     private Text cocoonReviewText;
+    private Text cocoonMountText;
     private Text cocoonBudgetText;
     private RectTransform cocoonDragChip;
     private Image cocoonDragSprite;
@@ -92,6 +100,9 @@ internal sealed partial class WorkshopObservationView
     private const float DashuSafeEnd = 0.77f;
     private const float DashuMaxSpliceSpeed = 0.19f;
     private const float DashuGaugeWidth = 716f;
+    private const int FreshSilkMoisture = 3;
+    private enum SilkDryingPlace { None, Shelter, Window }
+    private readonly bool[] dashuSilkJoins = new bool[12];
     private float dashuSpeed;
     private float dashuStrain;
     private float dashuWrapped;
@@ -100,25 +111,29 @@ internal sealed partial class WorkshopObservationView
     private int dashuLead;
     private int dashuSplices;
     private int dashuBreaks;
-    private bool dashuVentOpen;
+    private bool dashuCocoonsPrepared;
     private bool dashuHoldingPointer;
     private bool dashuSlowGear;
     private bool dashuThreadAttached;
+    private bool dashuDrying;
+    private int dashuMoisture;
+    private SilkDryingPlace dashuDryingPlace;
     private float dashuNoticeTime;
     private string dashuNote;
     private Text dashuNoteText;
     private Text dashuWrappedText;
     private Text dashuSupplyText;
-    private Text dashuWindowText;
+    private Button dashuPrepareButton;
+    private Text dashuPrepareLabel;
     private Text dashuGearText;
     private Text dashuSpliceText;
     private Image dashuNeedle;
     private Image dashuStrainBar;
     private Image dashuThread;
-    private Image dashuVentArt;
     private Image dashuWheel;
     private float dashuWheelAngle;
     private float DashuLengthGoal => ChallengeVariant == 0 ? 20f : 24f;
+    private bool DashuRainy => ChallengeVariant == 0;
 
     private void ResetSummerChallenge()
     {
@@ -129,12 +144,14 @@ internal sealed partial class WorkshopObservationView
         dashuSpeed = dashuStrain = dashuWrapped = dashuTension = 0f;
         dashuLead = dashuSplices = dashuBreaks = 0;
         dashuRemaining = DashuLeads[ChallengeVariant][0];
-        dashuVentOpen = dashuHoldingPointer = false;
+        dashuCocoonsPrepared = dashuHoldingPointer = dashuThreadAttached = dashuDrying = false;
         dashuSlowGear = ChallengeVariant == 0;
-        dashuThreadAttached = true;
+        dashuDryingPlace = SilkDryingPlace.None;
+        dashuMoisture = FreshSilkMoisture;
         dashuWheelAngle = 0f;
         dashuNote = null;
         dashuNoticeTime = 0f;
+        Array.Clear(dashuSilkJoins, 0, dashuSilkJoins.Length);
     }
 
     private void ResetInspection()
@@ -186,6 +203,10 @@ internal sealed partial class WorkshopObservationView
             WorkshopUi.Label(tile.transform, "Cocoon Identifier", new Rect(9, 4, 41, 26), (i + 1).ToString(), 18, SummerDark);
             cocoonTileImages[i] = WorkshopUi.Picture(tile.transform, "Sample Sprite", new Rect(17, 12, 126, 80),
                 initialSprite, stretch: ActiveInspection.Samples[i].Long);
+            var sample = ActiveInspection.Samples[i];
+            bool stillOnMount = sample.Condition == CocoonEvidence.Immature;
+            WorkshopUi.Label(tile.transform, "Cocoon Mount Date", new Rect(76, 4, 79, 26),
+                $"蔟龄 {sample.MountDays} 日", 17, stillOnMount ? SummerWarning : SummerDark, TextAnchor.MiddleRight);
             cocoonTileLabels[i] = WorkshopUi.Label(tile.transform, "Cocoon Evidence", new Rect(4, 89, 152, 42), "", 21,
                 SummerDark, TextAnchor.MiddleCenter);
             var gestures = tile.gameObject.AddComponent<EventTrigger>();
@@ -196,10 +217,14 @@ internal sealed partial class WorkshopObservationView
 
         cocoonDeliveryText = DrawInspectionTray(CocoonDeliveryArea, "交货盘", "Cocoon Delivery Tray", CocoonTray.Delivery, deliveryCocoons);
         cocoonReviewText = DrawInspectionTray(CocoonReviewArea, "复查盘", "Cocoon Review Tray", CocoonTray.Review, reviewCocoons);
-        var ship = WorkshopUi.PixelButton(art, "Submit Inspection Order", new Rect(700, 503, 385, 66),
+        var mount = WorkshopUi.PixelButton(art, "Route Cocoon To Mount", CocoonMountArea, "",
+            () => RouteInspection(CocoonTray.Mount), false, 23);
+        cocoonMountText = mount.GetComponentInChildren<Text>();
+        RegisterButton(mount);
+        var ship = WorkshopUi.PixelButton(art, "Submit Inspection Order", new Rect(700, 535, 385, 58),
             "交货验收", SubmitInspectionOrder, true, 31, SummerJade);
         RegisterButton(ship);
-        WorkshopUi.Label(art, "Cocoon Drag Help", new Rect(698, 578, 391, 36), "也可拖茧到右边的盘", 23,
+        WorkshopUi.Label(art, "Cocoon Drag Help", new Rect(698, 593, 391, 35), "也可拖到右侧对应位置", 23,
             WorkshopUi.Cream, TextAnchor.MiddleCenter);
 
         cocoonDragChip = WorkshopUi.Rect(art, "Cocoon In Hand", new Rect(0, 0, 125, 105));
@@ -209,9 +234,9 @@ internal sealed partial class WorkshopObservationView
             WorkshopUi.Cream, TextAnchor.MiddleCenter);
         cocoonDragChip.gameObject.SetActive(false);
 
-        Copy("每排恰有一枚破口", "同排的茧能互证。拖完整茧进交货盘，破口茧进复查盘。");
-        cocoonSelectedText = WorkshopUi.Label(infoPanel, "Selected Cocoon Detail", new Rect(27, 211, 444, 45), "", 24, SummerDark);
-        cocoonNote = WorkshopUi.Label(infoPanel, "Inspection Feedback", new Rect(27, 255, 444, 50), "", 23, ErrorInk);
+        Copy("芒种｜春茧陆续到站", "每排有一枚需要处理。\n足日且完好干爽，才交货。\n未熟留蔟，过潮或破口复查。");
+        cocoonSelectedText = WorkshopUi.Label(infoPanel, "Selected Cocoon Detail", new Rect(27, 235, 444, 40), "", 23, SummerDark);
+        cocoonNote = WorkshopUi.Label(infoPanel, "Inspection Feedback", new Rect(27, 277, 444, 46), "", 21, ErrorInk);
         Act("Turn Over Selected Cocoon", "翻面检查", TurnSelectedCocoon, true);
         Act("Put Selected Cocoon Back", "放回待检盘", () => RouteInspection(CocoonTray.Pending));
         Act("Reset Cocoon Inspection", "重开这一单", () =>
@@ -219,7 +244,9 @@ internal sealed partial class WorkshopObservationView
             ResetInspection();
             RefreshInspection("翻面机会已复原。先看同排线索。");
         });
-        RefreshInspection("可以先处理肉眼能确认的茧。");
+        var supply = WorkshopProgress.IsComplete(WorkshopSeason.Spring)
+            ? "从春蚕养护记录接过来，先看蔟龄。" : "工坊备了春茧，先看上蔟记录。";
+        RefreshInspection(supply);
     }
 
     private Text DrawInspectionTray(Rect bounds, string heading, string name, CocoonTray destination, Image[] slots)
@@ -253,37 +280,88 @@ internal sealed partial class WorkshopObservationView
     private void DrawInspectionResult()
     {
         var result = SummerArtworkPanel("Completed Cocoon Delivery", "CocoonBin", new Rect(239, 115, 682, 386), SummerNeutral);
-        WorkshopUi.Label(result, "Cocoon Order Finished", new Rect(36, 30, 610, 56), "配齐的蚕茧已交货", 42, SummerDark,
+        WorkshopUi.Label(result, "Cocoon Order Finished", new Rect(36, 30, 610, 56), "合格春茧已干存", 42, SummerDark,
             TextAnchor.MiddleCenter);
         Sprite cocoon = Resources.Load<Sprite>("WorkshopObservation/Summer_CocoonIntact");
-        for (int i = 0; i < ActiveInspection.RoundCount + ActiveInspection.LongCount; i++)
+        int position = 0;
+        for (int i = 0; i < cocoonTrays.Length; i++)
         {
-            float width = i < ActiveInspection.RoundCount ? 83f : 67f;
-            WorkshopUi.Picture(result, "Delivered Cocoon " + i, new Rect(53 + i * 96, 121, width, 126), cocoon, stretch: true);
+            if (cocoonTrays[i] != CocoonTray.Delivery) continue;
+            float left = 53 + position++ * 96;
+            float width = ActiveInspection.Samples[i].Long ? 67f : 83f;
+            WorkshopUi.Picture(result, "Delivered Cocoon " + i, new Rect(left, 103, width, 126), cocoon, stretch: true);
+            WorkshopUi.Label(result, "Delivered Cocoon Number " + i, new Rect(left, 227, width, 35),
+                $"{i + 1} 号", 22, SummerDark, TextAnchor.MiddleCenter);
         }
         WorkshopUi.Label(result, "Inspection Result", new Rect(25, 271, 632, 62), InspectionResult(), 28, SummerDark,
             TextAnchor.MiddleCenter);
-        Copy("完整茧入批，破口另查", "同排线索只用于这次工坊抽检。实际分批时以逐枚查见的茧况为准。");
+        Copy("这批好茧交给夏至", "茧足日才能收。合格茧已干存，夏至重新煮茧取丝。未熟茧继续留蔟，问题茧单独复查。");
         Act("Compare Nanxun Batches", "看南浔的两批蚕", ToggleSummerBatches, true);
     }
 
     private string InspectionResult() =>
-        $"交货 {ActiveInspection.RoundCount + ActiveInspection.LongCount} 枚 · 翻面 {inspectedCocoonCount}/{InspectionBudget} 次";
+        $"交货 {ActiveInspection.RoundCount + ActiveInspection.LongCount} 枚 · 留蔟 1 枚 · 翻面 {inspectedCocoonCount}/{InspectionBudget} 次";
+
+    private string CaptureDeliveredCocoons()
+    {
+        var slots = new char[InspectionCocoonCount];
+        for (int i = 0; i < slots.Length; i++)
+        {
+            slots[i] = '0';
+            if (cocoonTrays[i] == CocoonTray.Delivery)
+                slots[i] = ActiveInspection.Samples[i].Long ? LongCocoonInk : RoundCocoonInk;
+        }
+        return new string(slots);
+    }
+
+    private static WorkshopProgress.ChallengeWork WorkshopUpstreamWork(WorkshopObservation previous, int order)
+    {
+        var delivered = OrderWork(previous);
+        if (!string.IsNullOrEmpty(delivered?.sample)) return delivered;
+        var matching = BestWork(previous, order);
+        if (!string.IsNullOrEmpty(matching?.sample)) return matching;
+        var alternate = BestWork(previous, 1 - order);
+        return !string.IsNullOrEmpty(alternate?.sample) ? alternate : matching ?? alternate;
+    }
 
     private CocoonEvidence InspectEvidence(int index)
     {
         var samples = ActiveInspection.Samples;
         if (!samples[index].Covered || cocoonTurned[index])
-            return samples[index].Cracked ? CocoonEvidence.Cracked : CocoonEvidence.Intact;
+            return samples[index].Condition;
 
         int rowStart = index / CocoonsPerRow * CocoonsPerRow;
         int hiddenCount = 0;
         for (int i = rowStart; i < rowStart + CocoonsPerRow; i++)
         {
             if (samples[i].Covered && !cocoonTurned[i]) hiddenCount++;
-            else if (samples[i].Cracked) return CocoonEvidence.Intact;
+            else if (samples[i].Condition != CocoonEvidence.Intact) return CocoonEvidence.Intact;
         }
-        return hiddenCount == 1 ? CocoonEvidence.Cracked : CocoonEvidence.Hidden;
+        return hiddenCount == 1 ? CocoonEvidence.NeedsReview : CocoonEvidence.Hidden;
+    }
+
+    private static string CocoonEvidenceLabel(CocoonEvidence evidence)
+    {
+        switch (evidence)
+        {
+            case CocoonEvidence.Intact: return "完好干爽";
+            case CocoonEvidence.Cracked: return "有破口";
+            case CocoonEvidence.Damp: return "过潮";
+            case CocoonEvidence.Immature: return "未熟";
+            case CocoonEvidence.NeedsReview: return "应复查";
+            default: return "待确认";
+        }
+    }
+
+    private static CocoonTray ExpectedCocoonTray(CocoonEvidence evidence)
+    {
+        switch (evidence)
+        {
+            case CocoonEvidence.Intact: return CocoonTray.Delivery;
+            case CocoonEvidence.Immature: return CocoonTray.Mount;
+            case CocoonEvidence.Hidden: return CocoonTray.Pending;
+            default: return CocoonTray.Review;
+        }
     }
 
     private void RefreshInspection(string feedback)
@@ -293,6 +371,7 @@ internal sealed partial class WorkshopObservationView
         int round = 0;
         int longCount = 0;
         int review = 0;
+        int stayOnMount = 0;
         int unsettled = 0;
         foreach (Image icon in deliveryCocoons) icon.enabled = false;
         foreach (Image icon in reviewCocoons) icon.enabled = false;
@@ -300,14 +379,20 @@ internal sealed partial class WorkshopObservationView
         {
             CocoonSample cocoon = ActiveInspection.Samples[i];
             CocoonEvidence evidence = InspectEvidence(i);
-            string label = evidence == CocoonEvidence.Hidden ? "待确认" : evidence == CocoonEvidence.Cracked ? "破口" : "完整";
             cocoonTileImages[i].sprite = evidence == CocoonEvidence.Cracked ? cracked : intact;
-            cocoonTileImages[i].color = evidence == CocoonEvidence.Hidden ? new Color32(201, 190, 157, 255) : Color.white;
+            switch (evidence)
+            {
+                case CocoonEvidence.Damp: cocoonTileImages[i].color = new Color32(145, 187, 191, 255); break;
+                case CocoonEvidence.Hidden: cocoonTileImages[i].color = new Color32(201, 190, 157, 255); break;
+                case CocoonEvidence.Immature: cocoonTileImages[i].color = new Color32(229, 227, 171, 255); break;
+                default: cocoonTileImages[i].color = Color.white; break;
+            }
             cocoonTileFaces[i].color = selectedCocoon == i ? SummerGold :
                 cocoonTrays[i] == CocoonTray.Delivery ? new Color32(179, 223, 181, 255) :
                 cocoonTrays[i] == CocoonTray.Review ? new Color32(240, 184, 156, 255) : CocoonTilePaper;
             string destination = cocoonTrays[i] == CocoonTray.Delivery ? "交货" :
-                cocoonTrays[i] == CocoonTray.Review ? "复查" : label;
+                cocoonTrays[i] == CocoonTray.Review ? "复查" :
+                cocoonTrays[i] == CocoonTray.Mount ? "留蔟" : CocoonEvidenceLabel(evidence);
             cocoonTileLabels[i].text = $"{(cocoon.Long ? "长茧" : "圆茧")} · {destination}";
             if (cocoonTrays[i] == CocoonTray.Delivery)
             {
@@ -317,17 +402,18 @@ internal sealed partial class WorkshopObservationView
             }
             if (cocoonTrays[i] == CocoonTray.Review)
                 ShowStoredCocoon(reviewCocoons, review++, cocoon, cocoonTileImages[i]);
+            if (cocoonTrays[i] == CocoonTray.Mount) stayOnMount++;
             if (evidence == CocoonEvidence.Hidden) unsettled++;
         }
         cocoonDeliveryText.text = $"圆 {round}/{ActiveInspection.RoundCount}　长 {longCount}/{ActiveInspection.LongCount}";
-        cocoonReviewText.text = $"入盘 {review}/3 枚　待确认 {unsettled} 枚";
+        cocoonReviewText.text = $"入盘 {review}/{reviewCocoons.Length} 枚　待确认 {unsettled} 枚";
+        cocoonMountText.text = $"未熟留蔟 · {stayOnMount}/1 枚";
         cocoonBudgetText.text = $"翻面余 {InspectionBudget - inspectedCocoonCount} 次";
         string selected = "当前未拿茧";
         if (selectedCocoon >= 0)
         {
             CocoonEvidence evidence = InspectEvidence(selectedCocoon);
-            string known = evidence == CocoonEvidence.Hidden ? "背面被遮" :
-                evidence == CocoonEvidence.Cracked ? "有破口" : "完整";
+            string known = evidence == CocoonEvidence.Hidden ? "背面被遮" : CocoonEvidenceLabel(evidence);
             selected = $"选中 {selectedCocoon + 1} 号 · {known}";
         }
         cocoonSelectedText.text = selected;
@@ -374,7 +460,9 @@ internal sealed partial class WorkshopObservationView
         cocoonTurned[selectedCocoon] = true;
         inspectedCocoonCount++;
         WorkshopAudioFeedback.Notice();
-        RefreshInspection(ActiveInspection.Samples[selectedCocoon].Cracked ? "发现破口，同排其余茧完整。" : "翻面完整，接着核对同排。");
+        var condition = ActiveInspection.Samples[selectedCocoon].Condition;
+        RefreshInspection(condition == CocoonEvidence.Intact ? "茧壳完好干爽，再核对同排。"
+            : "发现" + CocoonEvidenceLabel(condition) + "，同排其余茧可交。");
         AnimateSpringSummerSprite(cocoonTileImages[selectedCocoon], new Vector2(4, 11), 0.82f, 0.19f);
     }
 
@@ -396,6 +484,7 @@ internal sealed partial class WorkshopObservationView
         int round = 0;
         int longCount = 0;
         int review = 0;
+        int stayOnMount = 0;
         for (int i = 0; i < InspectionCocoonCount; i++)
         {
             CocoonEvidence evidence = InspectEvidence(i);
@@ -406,25 +495,27 @@ internal sealed partial class WorkshopObservationView
                 RefreshInspection($"{i + 1} 号背面还未确认，先检查或换回。");
                 return;
             }
-            if (cocoonTrays[i] == CocoonTray.Review ? evidence != CocoonEvidence.Cracked : evidence != CocoonEvidence.Intact)
+            if (cocoonTrays[i] != ExpectedCocoonTray(evidence))
             {
                 selectedCocoon = i;
-                RefreshInspection($"{i + 1} 号放错盘，选中后可以直接换盘。");
+                RefreshInspection($"{i + 1} 号放错盘 · {CocoonEvidenceLabel(evidence)}。");
                 return;
             }
             if (cocoonTrays[i] == CocoonTray.Review) review++;
+            else if (cocoonTrays[i] == CocoonTray.Mount) stayOnMount++;
             else if (ActiveInspection.Samples[i].Long) longCount++;
             else round++;
         }
 
-        if (round != ActiveInspection.RoundCount || longCount != ActiveInspection.LongCount || review != 3)
+        if (round != ActiveInspection.RoundCount || longCount != ActiveInspection.LongCount ||
+            review != reviewCocoons.Length || stayOnMount != 1)
         {
-            RefreshInspection("按工单配茧，复查盘收齐三枚破口。");
+            RefreshInspection("配齐交货茧、两枚复查和一枚留蔟。");
             return;
         }
 
         WorkshopAudioFeedback.Collect();
-        FinishChallenge(100 + InspectionBudget - inspectedCocoonCount, InspectionResult());
+        FinishChallenge(100 + InspectionBudget - inspectedCocoonCount, InspectionResult(), CaptureDeliveredCocoons());
     }
 
     private void StartInspectionDrag(int index, PointerEventData pointer)
@@ -456,6 +547,7 @@ internal sealed partial class WorkshopObservationView
         point.y = -point.y;
         if (CocoonDeliveryArea.Contains(point)) RouteInspection(CocoonTray.Delivery);
         else if (CocoonReviewArea.Contains(point)) RouteInspection(CocoonTray.Review);
+        else if (CocoonMountArea.Contains(point)) RouteInspection(CocoonTray.Mount);
     }
 
     private static void SummerPointer(EventTrigger trigger, EventTriggerType eventType, Action<PointerEventData> callback)
@@ -471,9 +563,8 @@ internal sealed partial class WorkshopObservationView
     private void DrawDashuChallenge()
     {
         Layer("Summer_CocoonBench");
-        Sprite ventilation = Resources.Load<Sprite>("WorkshopObservation/Summer_OpenWindow");
-        dashuVentArt = WorkshopUi.Picture(art, "Dashu Open Window", ArtBounds, ventilation, stretch: true);
-        dashuVentArt.enabled = dashuVentOpen;
+        if (!DashuRainy)
+            Art("Xiazhi Open Window", "WorkshopObservation/Summer_OpenWindow", ArtBounds, true);
         WorkshopUi.Fill(art, "Dashu Workbench Shade", ArtBounds, new Color32(29, 35, 25, 86));
         if (GameComplete)
         {
@@ -482,7 +573,13 @@ internal sealed partial class WorkshopObservationView
                 SpringSummerArt("SilkBobbin") ?? Resources.Load<Sprite>("WorkshopFinish/RawSilk"));
             WorkshopUi.Label(finished, "Silk Work Result", new Rect(20, 276, 520, 78), DashuWorkResult(), 33,
                 SummerDark, TextAnchor.MiddleCenter);
-            Copy("丝头续上了，丝束已经绕好", "稳丝时要留意茧况和手上的拉力。换丝头前可以先减速，断线也可在原处重新续上。");
+            Copy("干妥的生丝送去秋分", "干茧经复煮、索绪、添绪和绕轴，最后干丝入库。秋分会拿这一轴验丝。");
+            return;
+        }
+
+        if (dashuDrying)
+        {
+            DrawDashuDrying();
             return;
         }
 
@@ -495,8 +592,8 @@ internal sealed partial class WorkshopObservationView
         dashuThread.rectTransform.pivot = threadPivot;
         dashuThread.rectTransform.anchoredPosition = new Vector2(illustration.x + illustration.width * threadPivot.x,
             -illustration.y - illustration.height * (1f - threadPivot.y));
-        WorkshopUi.Label(workshop, "Dashu Ready Workbench", new Rect(19, 4, 548, 44), "煮过的茧已备好 · 丝头可接入丝轴", 26, SummerDark);
-        dashuSupplyText = WorkshopUi.Label(workshop, "Current Silk Lead", new Rect(546, 4, 464, 44), "", 26, SummerDark,
+        DrawDashuCocoonSupply(workshop);
+        dashuSupplyText = WorkshopUi.Label(workshop, "Current Silk Lead", new Rect(687, 4, 323, 44), "", 26, SummerDark,
             TextAnchor.MiddleRight);
         dashuNoteText = WorkshopUi.Label(workshop, "Dashu Live Status", new Rect(18, 308, 995, 40), "", 26, SummerDark,
             TextAnchor.MiddleCenter);
@@ -517,8 +614,13 @@ internal sealed partial class WorkshopObservationView
         WorkshopUi.Label(gauge, "Dashu Risk Label", new Rect(12, 153, 130, 42), "断丝风险", 22, WorkshopUi.Cream,
             TextAnchor.MiddleRight);
 
-        Copy("控制丝轮，收满一轴", "按住摇轮加速，松手让轮子慢下来。丝头快用完时减速续丝。开窗能减轻闷湿带来的抖动。");
-        var winding = WorkshopUi.PixelButton(infoPanel, "Hold Dashu Reel", new Rect(27, 338, 444, 62),
+        Copy(DashuRainy ? "夏至｜梅雨缫丝" : "夏至｜雨歇缫丝",
+            "先煮茧找丝头。按住摇轮，松手减速续丝。\n绕好的生丝带水，干妥才可入库。");
+        Act("Dashu Prepare Cocoons", "煮茧、找丝头", PrepareDashuCocoons, true);
+        dashuPrepareButton = infoPanel.Find("Dashu Prepare Cocoons").GetComponentInChildren<Button>();
+        dashuPrepareLabel = dashuPrepareButton.GetComponentInChildren<Text>();
+        var windingBounds = new Rect(27, 338 + rows * 73f, 444, 62);
+        var winding = WorkshopUi.PixelButton(infoPanel, "Hold Dashu Reel", windingBounds,
             "按住摇轮 · 空格", null, true, 29, SummerJade);
         RegisterButton(winding);
         var events = winding.gameObject.AddComponent<EventTrigger>();
@@ -533,8 +635,6 @@ internal sealed partial class WorkshopObservationView
 
         Act("Dashu Splice Silk", "", SpliceDashuSilk);
         dashuSpliceText = infoPanel.Find("Dashu Splice Silk").GetComponentInChildren<Text>();
-        Act("Dashu Window Lever", "", ToggleDashuVent);
-        dashuWindowText = infoPanel.Find("Dashu Window Lever").GetComponentInChildren<Text>();
         Act("Dashu Change Gear", "", () =>
         {
             dashuSlowGear = !dashuSlowGear;
@@ -543,6 +643,128 @@ internal sealed partial class WorkshopObservationView
         dashuGearText = infoPanel.Find("Dashu Change Gear").GetComponentInChildren<Text>();
         RefreshDashuWorktop();
         StartCoroutine(RunDashuReel(workshop));
+    }
+
+    private void PrepareDashuCocoons()
+    {
+        if (dashuCocoonsPrepared) return;
+        dashuCocoonsPrepared = dashuThreadAttached = true;
+        WorkshopAudioFeedback.Place();
+        ShowDashuNote("煮软后已找出丝头。按住摇轮，把它绕上轴。", 2.6f);
+        RefreshDashuWorktop();
+    }
+
+    private void DrawDashuDrying()
+    {
+        var desk = WorkshopUi.WorkbenchCard(art, "Xiazhi Drying Board", new Rect(45, 41, 1070, 571),
+            SummerNeutral, SummerGold);
+        string weather = DashuRainy ? "梅雨未停 · 窗沿仍潮" : "雨已歇 · 窗边有风";
+        WorkshopUi.Label(desk, "Xiazhi Drying Weather", new Rect(40, 25, 990, 47), weather, 32,
+            SummerDark, TextAnchor.MiddleCenter);
+        DrawDashuDryingSpot(desk, SilkDryingPlace.Shelter, new Rect(34, 99, 484, 345),
+            "避雨干丝架", "能控湿 · 远离潮窗");
+        DrawDashuDryingSpot(desk, SilkDryingPlace.Window, new Rect(550, 99, 484, 345),
+            "通风窗架", DashuRainy ? "湿风夹雨 · 此处易返潮" : "雨歇有风 · 此处干得快");
+        WorkshopUi.Picture(desk, "Freshly Reeled Silk", new Rect(93, 462, 120, 86), SpringSummerArt("SilkBobbin"));
+        for (int drop = 0; drop < dashuMoisture; drop++)
+            WorkshopUi.Picture(desk, "Silk Moisture Drop " + drop, new Rect(207 + drop * 28, 475, 26, 31),
+                SpringSummerArt("DewBead"));
+        WorkshopUi.Label(desk, "Xiazhi Silk Moisture", new Rect(298, 453, 662, 49),
+            dashuMoisture > 0 ? $"丝轴湿标 {dashuMoisture}/{FreshSilkMoisture}" : "丝轴已干妥，可以入库",
+            28, dashuMoisture > 0 ? SummerWarning : SummerDark);
+        WorkshopUi.Label(desk, "Xiazhi Drying Feedback", new Rect(298, 508, 690, 45),
+            dashuNote ?? "选一处放丝轴，查看湿标变化。", 24, SummerDark);
+
+        Copy("等湿丝干妥再入库", DashuRainy
+            ? "生丝绕好仍带水。梅雨天窗沿潮，放到避雨干丝架，再查看湿标。"
+            : "这回雨歇，窗边通风比避雨架干得快。等湿标清零再入库。");
+        Act("Xiazhi Check Drying", "查看湿标变化", AdvanceDashuDrying, true);
+        Act("Xiazhi Store Silk", "干丝入库", SubmitDashuSilk);
+    }
+
+    private void DrawDashuDryingSpot(Transform desk, SilkDryingPlace place, Rect bounds, string name, string hint)
+    {
+        bool chosen = dashuDryingPlace == place;
+        string spotId = place == SilkDryingPlace.Shelter ? "Shelter" : "Window";
+        var card = WorkshopUi.PixelCard(desk, "Xiazhi " + spotId + " Drying Spot", bounds,
+            chosen ? new Color32(211, 231, 191, 255) : LightSurface, chosen ? SummerJade : WorkshopUi.Bronze);
+        WorkshopUi.Label(card, "Rack Name", new Rect(16, 14, bounds.width - 32, 47), name, 29,
+            SummerDark, TextAnchor.MiddleCenter);
+        WorkshopUi.Picture(card, "Silk Drying Rack", new Rect(30, 61, bounds.width - 60, 176),
+            SpringSummerArt("DyeDryRack"));
+        if (chosen)
+            WorkshopUi.Picture(card, "Placed Silk Bobbin", new Rect(bounds.width * 0.5f - 48, 107, 96, 85),
+                SpringSummerArt("SilkBobbin"));
+        WorkshopUi.Label(card, "Rack Weather", new Rect(18, 230, bounds.width - 36, 40), hint, 23,
+            place == SilkDryingPlace.Window && DashuRainy ? SummerWarning : SummerDark, TextAnchor.MiddleCenter);
+        var choose = WorkshopUi.PixelButton(card, "Xiazhi Choose " + spotId, new Rect(50, 277, bounds.width - 100, 52),
+            chosen ? "丝轴已放此处" : "把丝轴放这里", () => MoveDashuSilk(place), chosen, 24, SummerJade);
+        RegisterButton(choose);
+    }
+
+    private void MoveDashuSilk(SilkDryingPlace place)
+    {
+        if (place == dashuDryingPlace) return;
+        dashuDryingPlace = place;
+        if (place == SilkDryingPlace.Window && DashuRainy)
+        {
+            dashuMoisture = Mathf.Min(FreshSilkMoisture, dashuMoisture + 1);
+            dashuNote = "窗沿返潮，换到避雨干丝架。";
+        }
+        else
+            dashuNote = "丝轴已放好，查看湿标变化。";
+        WorkshopAudioFeedback.Place();
+        Render();
+    }
+
+    private void AdvanceDashuDrying()
+    {
+        if (dashuDryingPlace == SilkDryingPlace.None)
+            dashuNote = "先选一处放丝轴。";
+        else if (dashuDryingPlace == SilkDryingPlace.Window && DashuRainy)
+            dashuNote = "湿标没降。梅雨未停，移到避雨干丝架。";
+        else
+        {
+            int dryingRate = DashuRainy || dashuDryingPlace == SilkDryingPlace.Window ? 2 : 1;
+            dashuMoisture = Mathf.Max(0, dashuMoisture - dryingRate);
+            dashuNote = dashuMoisture == 0 ? "湿标清零，可以把这段生丝入库。" : "湿标降了，再查看一次。";
+        }
+        Render();
+    }
+
+    private void SubmitDashuSilk()
+    {
+        if (dashuMoisture > 0)
+        {
+            dashuNote = "湿丝入库容易粘连，先把湿标降到零。";
+            WorkshopAudioFeedback.Notice();
+            Render();
+            return;
+        }
+        WorkshopAudioFeedback.Collect();
+        FinishChallenge(Mathf.Max(1, 1000 - dashuBreaks * 25 - dashuSplices), DashuWorkResult(), CaptureWoundSilk());
+    }
+
+    private void DrawDashuCocoonSupply(Transform workshop)
+    {
+        string batch = WorkshopUpstreamWork(WorkshopObservation.MangzhongCocoon, ChallengeVariant)?.sample;
+        bool fromInspection = !string.IsNullOrEmpty(batch) && batch.Length == InspectionCocoonCount;
+        WorkshopUi.Label(workshop, "Dashu Ready Workbench", new Rect(19, 4, 350, 44),
+            fromInspection ? "芒种验收批次 · 出库干茧" : "工坊备茧 · 出库干茧", 25, SummerDark);
+        if (!fromInspection) return;
+
+        var cocoon = SpringSprite("WorkshopObservation/Summer_CocoonIntact");
+        int shown = 0;
+        for (int i = 0; i < batch.Length; i++)
+        {
+            bool longShape = batch[i] == LongCocoonInk;
+            if (!longShape && batch[i] != RoundCocoonInk) continue;
+            float left = 358 + 49 * shown++;
+            WorkshopUi.Picture(workshop, "Dashu Received Cocoon " + i, new Rect(left, 4, longShape ? 37 : 28, longShape ? 21 : 28),
+                cocoon, stretch: longShape);
+            WorkshopUi.Label(workshop, "Dashu Cocoon Number " + i, new Rect(left + 19, 21, 23, 23),
+                (i + 1).ToString(), 16, SummerDark, TextAnchor.MiddleCenter);
+        }
     }
 
     private void DrawDashuReelingTools(Rect illustration)
@@ -577,12 +799,12 @@ internal sealed partial class WorkshopObservationView
 
     private IEnumerator RunDashuReel(RectTransform worktop)
     {
-        while (worktop != null && worktop.gameObject.activeInHierarchy && !GameComplete)
+        while (worktop != null && worktop.gameObject.activeInHierarchy && !GameComplete && !dashuDrying)
         {
             bool held = Application.isFocused && (dashuHoldingPointer || Input.GetKey(KeyCode.Space));
             if (!Application.isFocused) dashuHoldingPointer = false;
             AdvanceDashuReel(Mathf.Min(0.05f, Time.unscaledDeltaTime), held);
-            if (GameComplete) yield break;
+            if (GameComplete || dashuDrying) yield break;
             RefreshDashuWorktop();
             yield return null;
         }
@@ -590,7 +812,7 @@ internal sealed partial class WorkshopObservationView
 
     private void AdvanceDashuReel(float delta, bool held)
     {
-        if (GameComplete) return;
+        if (GameComplete || dashuDrying) return;
         if (dashuNoticeTime > 0f) dashuNoticeTime -= delta;
         if (!dashuThreadAttached) return;
 
@@ -598,9 +820,8 @@ internal sealed partial class WorkshopObservationView
         dashuSpeed = Mathf.MoveTowards(dashuSpeed, held ? gearSpeed : 0f, (held ? 0.73f : 1.18f) * delta);
         dashuWheelAngle = Mathf.Repeat(dashuWheelAngle + dashuSpeed * 240f * delta, 360f);
         float irregularity = dashuLead % 2 == 1 ? 0.03f : 0f;
-        float damp = dashuVentOpen ? 0.02f : (ChallengeVariant == 0 ? 0.14f : 0.18f);
         float shortLeadTug = dashuRemaining < DashuReadyToSplice ? 0.08f : 0f;
-        float pull = dashuSpeed * (0.72f + damp + shortLeadTug + irregularity);
+        float pull = dashuSpeed * (0.74f + shortLeadTug + irregularity);
         dashuTension = Mathf.MoveTowards(dashuTension, Mathf.Clamp01(dashuSpeed * 0.16f + pull), 1.45f * delta);
 
         if (dashuTension > DashuSafeEnd)
@@ -620,12 +841,25 @@ internal sealed partial class WorkshopObservationView
         if (dashuWrapped >= DashuLengthGoal && dashuSplices > 0)
         {
             dashuWrapped = DashuLengthGoal;
+            dashuSpeed = 0f;
+            dashuHoldingPointer = false;
+            dashuDrying = true;
+            dashuNote = null;
             WorkshopAudioFeedback.Collect();
-            FinishChallenge(Mathf.Max(1, 1000 - dashuBreaks * 25 - dashuSplices), DashuWorkResult());
+            Render();
             return;
         }
         if (dashuRemaining <= 0.001f)
             BreakDashuSilk("这一股丝用尽了。已经绕好的部分仍在轴上。");
+    }
+
+    private string CaptureWoundSilk()
+    {
+        int width = Mathf.Clamp(Mathf.CeilToInt(dashuWrapped / 2f), 1, dashuSilkJoins.Length);
+        var knots = new char[width];
+        for (int i = 0; i < width; i++) knots[i] = dashuSilkJoins[i] ? '4' : '9';
+        string warp = new string('1', width);
+        return warp + "/" + new string(knots) + "/" + warp;
     }
 
     private void BreakDashuSilk(string note)
@@ -639,6 +873,11 @@ internal sealed partial class WorkshopObservationView
 
     private void SpliceDashuSilk()
     {
+        if (!dashuCocoonsPrepared)
+        {
+            ShowDashuNote("先煮茧、找丝头。", 2.2f);
+            return;
+        }
         if (dashuSpeed > DashuMaxSpliceSpeed)
         {
             ShowDashuNote("先松手，让轮子慢下来，再接备用丝头。", 2.2f);
@@ -652,17 +891,13 @@ internal sealed partial class WorkshopObservationView
 
         dashuLead++;
         dashuSplices++;
+        int join = Mathf.Clamp(Mathf.FloorToInt(dashuWrapped / 2f), 0, dashuSilkJoins.Length - 1);
+        dashuSilkJoins[join] = true;
         var supplies = DashuLeads[ChallengeVariant];
         dashuRemaining = supplies[dashuLead % supplies.Length];
         dashuThreadAttached = true;
         WorkshopAudioFeedback.Place();
         ShowDashuNote("新的丝头接住了。按住可继续绕。", 2.2f);
-    }
-
-    private void ToggleDashuVent()
-    {
-        dashuVentOpen = !dashuVentOpen;
-        ShowDashuNote(dashuVentOpen ? "窗开了，湿气散开，丝线更稳。" : "关窗后气流变弱，拉紧时容易抖。", 2.2f);
     }
 
     private void ShowDashuNote(string note, float duration)
@@ -677,12 +912,13 @@ internal sealed partial class WorkshopObservationView
     {
         dashuWrappedText.text = $"已绕 {dashuWrapped:0.0}/{DashuLengthGoal:0}　断丝 {dashuBreaks} 次　续丝 {dashuSplices} 次";
         dashuSupplyText.text = $"第 {dashuLead + 1} 股　余 {dashuRemaining:0.0}";
-        dashuNoteText.text = dashuNoticeTime > 0f ? dashuNote : !dashuThreadAttached ? "丝已断，选择「接备用丝头」补救。" :
+        dashuNoteText.text = dashuNoticeTime > 0f ? dashuNote : !dashuCocoonsPrepared ? "选「煮茧、找丝头」开始处理干茧。" :
+            !dashuThreadAttached ? "丝已断，选择「接备用丝头」补救。" :
             dashuRemaining <= DashuReadyToSplice ? "余丝快用完了。松手减速，准备接备用丝头。" :
             dashuTension > DashuSafeEnd ? "丝线颤动，松手减速。" :
             dashuSpeed > 0.1f ? "丝轮在转。调整手上的速度，把张力留在中段。" : "按住摇轮开始。慢摇也能绕满。";
-        dashuVentArt.enabled = dashuVentOpen;
-        dashuWindowText.text = dashuVentOpen ? "关窗 · 目前通风" : "开窗 · 目前闷湿";
+        dashuPrepareButton.interactable = !dashuCocoonsPrepared;
+        dashuPrepareLabel.text = dashuCocoonsPrepared ? "茧已煮，丝头已找到" : "煮茧、找丝头";
         dashuGearText.text = dashuSlowGear ? "换快摇 · 目前慢摇" : "换慢摇 · 目前快摇";
         dashuSpliceText.text = dashuThreadAttached ? "续上备用丝头" : "接备用丝头 · 补救";
         var needlePosition = dashuNeedle.rectTransform.anchoredPosition;

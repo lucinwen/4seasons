@@ -83,8 +83,12 @@ public sealed class WorkshopTailor : MonoBehaviour
     private Material fabricMaterial;
     private int piecesPlaced;
     private bool submitting;
+    private bool liningFitted;
     private UnityEngine.UI.Text sewingStatus;
     private UnityEngine.UI.Button sewButton;
+    private UnityEngine.UI.Button liningButton;
+
+    private bool UsesLining => WorkshopProgress.HasStep(WorkshopObservationView.XiaoxueLiningStep);
 
     internal static bool IsOpen => active != null;
 
@@ -220,12 +224,16 @@ public sealed class WorkshopTailor : MonoBehaviour
 
     private void BuildChooser()
     {
-        BuildPanel("缝素堂 · 选衣样", "选择一件衣样，使用已染好的布料缝制。", "返回合成台", Close);
+        BuildPanel(UsesLining ? "小雪 · 夹衣选样" : "缝素堂 · 选衣样",
+            UsesLining ? "小雪转凉，用裁好的外片和里襟配衣样。" : "选择一件衣样，使用已染好的布料缝制。",
+            "返回合成台", Close);
         Sprite winterFrame = WorkshopArt.SeasonPanel(WorkshopSeason.Winter);
         WorkshopUi.Panel(panel, "PreviewPanel", new Rect(866, 377, 454, 363), winterFrame);
         var swatch = WorkshopUi.Fill(panel, "FabricSwatch", new Rect(906, 410, 25, 25), fabricTint);
         WorkshopUi.ApplyPixelShape(swatch);
-        Label(panel, "FabricColor", new Rect(943, 399, 305, 43), DyeColorUtil.ChineseName(dye) + "染布", 27, Accent);
+        string cloth = dye == DyeColor.Yellow && WorkshopObservationView.HasOrderWork(WorkshopObservation.LidongDye)
+            ? "立冬栀黄染绸" : DyeColorUtil.ChineseName(dye) + "染布";
+        Label(panel, "FabricColor", new Rect(943, 399, 305, 43), cloth, 27, Accent);
 
         var previewClip = WorkshopWardrobe.Clip(panel, "Garment Preview Cutout");
         var preview = WorkshopUi.Picture(previewClip, "GarmentPreview", new Rect(), null, stretch: true);
@@ -278,13 +286,20 @@ public sealed class WorkshopTailor : MonoBehaviour
         }
 
         int current = available.IndexOf(selected);
+        if (current < 0 && UsesLining && dye == DyeColor.Yellow)
+            current = available.FindIndex(style => style.Id == "4_02");
         buttons[Mathf.Max(0, current)].onClick.Invoke();
     }
 
     private void BuildSewing()
     {
-        BuildPanel("缝素堂 · 拼合衣片", "把衣片拖到对应的样板上，三片归位后即可缝制。", "重新选款", BuildChooser);
+        bool winterLining = UsesLining;
+        BuildPanel(winterLining ? "小雪 · 拼缝夹衣" : "缝素堂 · 拼合衣片",
+            winterLining ? "冷天要夹衣。先对齐三片面料，再合上裁台特意留下的里襟。" : "把衣片拖到对应的样板上，三片归位后即可缝制。",
+            "重新选款", BuildChooser);
         submitting = false;
+        liningFitted = false;
+        liningButton = null;
         piecesPlaced = 0;
         Sprite winterFrame = WorkshopArt.SeasonPanel(WorkshopSeason.Winter);
         WorkshopUi.Panel(panel, "Tray", new Rect(251, 378, 325, 356), winterFrame);
@@ -312,8 +327,17 @@ public sealed class WorkshopTailor : MonoBehaviour
         sewingStatus = Label(progress.transform, "Progress", new Rect(12, 0, 522, 46),
             "衣片归位 0 / 3", 25, progress.sprite == null ? Accent : WorkshopUi.Cream,
             TextAnchor.MiddleCenter);
-        WorkshopUi.PixelButton(panel, "ResetPieces", new Rect(684, 840, 215, 59),
+        var resetBounds = winterLining ? new Rect(317, 755, 215, 59) : new Rect(684, 840, 215, 59);
+        WorkshopUi.PixelButton(panel, "ResetPieces", resetBounds,
             "重新摆放", BuildSewing, false, 26);
+        if (winterLining)
+        {
+            WorkshopUi.Picture(panel, "Xiaoxue Reserved Lining", new Rect(588, 728, 73, 52),
+                WorkshopArt.CutPiece(0), Color.Lerp(fabricTint, Color.white, .40f));
+            Label(panel, "Xiaoxue Lining Caption", new Rect(672, 736, 469, 43), "里襟 · 小雪排料时所留整布", 22, WorkshopUi.Ink);
+            liningButton = WorkshopUi.Button(panel, "XiaoxueFitLining", new Rect(684, 840, 215, 59),
+                "贴合里襟", FitLining, Accent, enabled: false, size: 25, font: WorkshopArt.WorkshopFont);
+        }
         sewButton = WorkshopUi.Button(panel, "FinishGarment", new Rect(927, 840, 360, 59), "缝制成衣", Finish,
             Accent, enabled: false, size: 30, font: WorkshopArt.WorkshopFont);
 
@@ -346,9 +370,18 @@ public sealed class WorkshopTailor : MonoBehaviour
             piecesPlaced++;
             WorkshopAudioFeedback.Place();
             sewingStatus.text = $"衣片归位 {piecesPlaced} / {PieceNames.Length}";
-            sewButton.interactable = piecesPlaced == PieceNames.Length;
-            if (sewButton.interactable)
+            if (piecesPlaced != PieceNames.Length) return;
+
+            if (liningButton != null)
+            {
+                sewingStatus.text = "外片已对齐 · 合上里襟再缝";
+                liningButton.interactable = true;
+            }
+            else
+            {
+                sewButton.interactable = true;
                 WorkshopDialoguePresenter.PlayOnce("dialogue.winter.piecesFitted", WorkshopDialogueScripts.WinterCuttingComplete);
+            }
         }
         else
         {
@@ -357,9 +390,24 @@ public sealed class WorkshopTailor : MonoBehaviour
         }
     }
 
+    private void FitLining()
+    {
+        if (liningButton == null || piecesPlaced != PieceNames.Length || liningFitted) return;
+
+        liningFitted = true;
+        liningButton.interactable = false;
+        var lining = panel.Find("Xiaoxue Reserved Lining") as RectTransform;
+        if (lining != null) lining.anchoredPosition += new Vector2(209, 38);
+        var caption = panel.Find("Xiaoxue Lining Caption")?.GetComponent<UnityEngine.UI.Text>();
+        if (caption != null) caption.text = "里襟已对齐 · 可缝外缘";
+        sewingStatus.text = "外片和里襟已对齐";
+        sewButton.interactable = true;
+        WorkshopAudioFeedback.Fabric();
+    }
+
     private void Finish()
     {
-        if (submitting || piecesPlaced != PieceNames.Length) return;
+        if (submitting || piecesPlaced != PieceNames.Length || (UsesLining && !liningFitted)) return;
         submitting = true;
         sewButton.interactable = false;
         if (!WorkshopProgress.CompleteWinter(selected.Id))

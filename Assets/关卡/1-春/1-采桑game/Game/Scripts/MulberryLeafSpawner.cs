@@ -9,6 +9,9 @@ namespace Qingming.Harvest
     /// </summary>
     public class MulberryLeafSpawner : MonoBehaviour
     {
+        private const int LeavesPerDamagedLeaf = 5;
+        private const float CatchRadiusPerLeafHeight = 0.14f;
+
         [Header("桑叶素材")]
         public Sprite[] leafSprites;
 
@@ -50,9 +53,17 @@ namespace Qingming.Harvest
         private Coroutine _spawnRoutine;
         private readonly List<FallingMulberryLeaf> _alive = new List<FallingMulberryLeaf>();
         private bool _boundsAutoSet;
+        private Sprite _youngLeafSprite;
+        private Sprite _damagedLeafSprite;
+        private Sprite _wetLeafSprite;
+        private int _spawnCyclePosition;
+        internal bool EarlyShade { get; set; }
 
         private void Awake()
         {
+            _youngLeafSprite = Resources.Load<Sprite>("WorkshopObservation/Spring_QingmingYoungMulberry");
+            _damagedLeafSprite = Resources.Load<Sprite>("WorkshopObservation/Spring_QingmingDamagedMulberry");
+            _wetLeafSprite = Resources.Load<Sprite>("WorkshopObservation/Spring_LeafWet");
             DoAutoDetect();
         }
 
@@ -81,6 +92,7 @@ namespace Qingming.Harvest
         public void StartSpawning()
         {
             if (_spawnRoutine != null) StopCoroutine(_spawnRoutine);
+            _spawnCyclePosition = 0;
             _spawnRoutine = StartCoroutine(SpawnLoop());
         }
 
@@ -117,9 +129,25 @@ namespace Qingming.Harvest
 
         private void SpawnOne()
         {
-            Sprite chosen = leafSprites != null && leafSprites.Length > 0
-                ? leafSprites[Random.Range(0, leafSprites.Length)]
-                : null;
+            _spawnCyclePosition = (_spawnCyclePosition + 1) % LeavesPerDamagedLeaf;
+            MulberryLeafCondition condition = MulberryLeafCondition.Ready;
+            Sprite chosen = _youngLeafSprite;
+            if (_spawnCyclePosition == 0 && _damagedLeafSprite != null)
+            {
+                condition = MulberryLeafCondition.Damaged;
+                chosen = _damagedLeafSprite;
+            }
+            else if (EarlyShade && _spawnCyclePosition == 2 && _wetLeafSprite != null)
+            {
+                condition = MulberryLeafCondition.Dewy;
+                chosen = _wetLeafSprite;
+            }
+            else if (EarlyShade && _spawnCyclePosition == 4)
+            {
+                condition = MulberryLeafCondition.Folded;
+            }
+            if (chosen == null && leafSprites != null && leafSprites.Length > 0)
+                chosen = leafSprites[Random.Range(0, leafSprites.Length)];
 
             Vector3 pos = new Vector3(Random.Range(spawnXMin, spawnXMax), spawnY, 0f);
             UnityEngine.Debug.Log("[Spawner] SpawnOne at " + pos + " sprite=" + (chosen?.name ?? "null"));
@@ -128,14 +156,21 @@ namespace Qingming.Harvest
             if (leafPrefab != null)
             {
                 leaf = Instantiate(leafPrefab, pos, Quaternion.identity);
+                var renderer = leaf.GetComponentInChildren<SpriteRenderer>() ?? leaf.gameObject.AddComponent<SpriteRenderer>();
+                if (chosen != null) renderer.sprite = chosen;
             }
             else
             {
                 leaf = CreateLeafAt(pos, chosen);
             }
 
+            if (condition == MulberryLeafCondition.Folded)
+            {
+                Vector3 scale = leaf.transform.localScale;
+                leaf.transform.localScale = new Vector3(scale.x * 0.45f, scale.y * 0.64f, scale.z);
+            }
             float fallSpeed = Random.Range(fallSpeedMin, fallSpeedMax);
-            leaf.Initialize(fallSpeed, destroyY, swayAmplitude, swayFrequency, spinMaxDegPerSec, this);
+            leaf.Initialize(fallSpeed, destroyY, swayAmplitude, swayFrequency, spinMaxDegPerSec, this, condition);
             UnityEngine.Debug.Log("[Spawner] Leaf created: name=" + leaf.name + " pos=" + leaf.transform.position + " fallSpeed=" + fallSpeed);
 
             _alive.Add(leaf);
@@ -151,11 +186,13 @@ namespace Qingming.Harvest
             sr.sortingOrder = leafSortingOrder;
 
             // 统一桑叶显示尺寸
+            float catchRadius = 0.4f;
             if (sprite != null && targetWorldHeight > 0f)
             {
                 float worldHeight = sprite.rect.height / sprite.pixelsPerUnit;
                 float scale = targetWorldHeight / worldHeight;
                 go.transform.localScale = new Vector3(scale, scale, 1f);
+                catchRadius = CatchRadiusPerLeafHeight * targetWorldHeight / scale;
             }
 
             // 2D 触发器 + Kinematic Rigidbody2D
@@ -166,7 +203,7 @@ namespace Qingming.Harvest
 
             CircleCollider2D col = go.AddComponent<CircleCollider2D>();
             col.isTrigger = true;
-            col.radius = 0.4f;
+            col.radius = catchRadius;
 
             FallingMulberryLeaf leaf = go.AddComponent<FallingMulberryLeaf>();
             return leaf;

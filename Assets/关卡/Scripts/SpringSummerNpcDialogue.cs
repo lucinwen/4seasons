@@ -4,6 +4,11 @@ using Qingming.LevelBackground;
 internal static class SpringSummerNpcDialogue
 {
     private const string MulberryIntroStep = "dialogue.spring.mulberryIntro";
+    private const string HarvestedLeavesStep = "spring.qingming.harvested";
+    private const string SunnyOrchardStep = "spring.qingming.orchard.sunny";
+    private const string ShadedOrchardStep = "spring.qingming.orchard.shaded";
+    internal const string SunnyOrchardName = "向阳桑垄";
+    internal const string ShadedOrchardName = "背阴桑垄";
     private const string PreparedLeavesStep = "spring.guyu.prepared";
     private const string BathIntroStep = "dialogue.spring.bathIntro";
     private const string CocoonIntroStep = "dialogue.summer.cocoonIntro";
@@ -23,14 +28,34 @@ internal static class SpringSummerNpcDialogue
         }
     }
 
-    internal static bool HasMulberryBriefing => WorkshopProgress.HasStep(MulberryIntroStep)
-        || WorkshopProgress.Has(WorkshopItem.MulberryLeaf) || WorkshopProgress.Has(WorkshopItem.Silkworm);
+    internal static bool HasMulberryBriefing => WorkshopProgress.HasStep(MulberryIntroStep) || HasHarvestedLeaves;
+
+    internal static bool HasHarvestBasket => WorkshopProgress.HasStep("spring.basket") || HasHarvestedLeaves;
+
+    internal static bool HasHarvestedLeaves => WorkshopProgress.HasStep(HarvestedLeavesStep)
+        || WorkshopProgress.Has(WorkshopItem.MulberryLeaf) || HasPreparedLeaves
+        || WorkshopObservationView.HasRecord(WorkshopObservation.QingmingMulberry)
+        || WorkshopObservationView.HasRecord(WorkshopObservation.GuyuLeaf)
+        || WorkshopProgress.IsComplete(WorkshopSeason.Spring);
 
     internal static bool HasPreparedLeaves => WorkshopProgress.HasStep(PreparedLeavesStep)
         || WorkshopProgress.Has(WorkshopItem.Silkworm);
 
     internal static bool CanWash => WorkshopProgress.Has(WorkshopItem.Silkworm)
         || WorkshopProgress.Has(WorkshopItem.SilkwormEgg);
+
+    internal static string HarvestOrchardName => WorkshopProgress.HasStep(ShadedOrchardStep) ? ShadedOrchardName
+        : WorkshopProgress.HasStep(SunnyOrchardStep) ? SunnyOrchardName : "桑园";
+
+    internal static void RecordHarvestedLeaves(bool shaded)
+    {
+        if (!WorkshopProgress.HasStep(SunnyOrchardStep) && !WorkshopProgress.HasStep(ShadedOrchardStep) &&
+            !HasPreparedLeaves)
+            WorkshopProgress.MarkStep(shaded ? ShadedOrchardStep : SunnyOrchardStep);
+        WorkshopProgress.MarkStep(HarvestedLeavesStep);
+        WorkshopProgress.Award(WorkshopItem.MulberryLeaf);
+        SpringPrompt.HasMulberryLeaves = true;
+    }
 
     internal static void RecordPreparedLeaves() => WorkshopProgress.MarkStep(PreparedLeavesStep);
 
@@ -61,10 +86,11 @@ internal static class SpringSummerNpcDialogue
     {
         if (!HasMulberryBriefing)
             WorkshopDialoguePresenter.PlayOnce(MulberryIntroStep, WorkshopDialogueScripts.SpringMulberryIntro);
-        else if (!HasPreparedLeaves)
+        else if (!HasHarvestedLeaves)
             WorkshopDialoguePresenter.Play(WorkshopDialogueScripts.SpringInProgress);
         else if (!WorkshopProgress.Has(WorkshopItem.Silkworm))
-            WorkshopDialoguePresenter.Play(WorkshopDialogueScripts.SpringReadyToFeed);
+            WorkshopDialoguePresenter.Play(HasPreparedLeaves && WorkshopObservationView.HasRecord(WorkshopObservation.GuyuLeaf)
+                ? WorkshopDialogueScripts.SpringReadyToFeed : WorkshopDialogueScripts.SpringCarryToGuyu);
         else if (!WorkshopProgress.Has(WorkshopItem.SilkwormEgg) && !WorkshopProgress.HasStep(BathIntroStep))
             BeforeBath();
         else

@@ -10,6 +10,8 @@ using UnityEngine.UI;
 
 internal sealed partial class WorkshopObservationView
 {
+    private const string DryMulberry = "WorkshopObservation/Spring_LeafDry";
+    private static readonly Color SpringLeafPaper = new Color32(239, 227, 187, 245);
     private const int GuyuLeafCount = 8;
     private const int GuyuMealSize = 6;
     private const int GuyuClothCapacity = 5;
@@ -41,20 +43,31 @@ internal sealed partial class WorkshopObservationView
     private int activeGuyuLeaf = -1;
     private int guyuSelectedMealLeaf = -1;
     private bool guyuServing;
+    private bool guyuCarriedQingming;
+        private bool guyuSunnyWeather;
     private string guyuMessage;
     private RectTransform guyuWipeBoard;
     private Text guyuDewStatus;
     private Text guyuClothStatus;
     private Vector2? formerDewPointer;
 
-    private void ResetGuyuOrder()
+    private void ResetGuyuOrder() => ResetGuyuWeather(false);
+
+    private void ResetGuyuWeather(bool sunny)
     {
+        guyuSunnyWeather = sunny;
         guyuBasket.Clear();
         guyuFed.Clear();
+        guyuCarriedQingming = ChallengeVariant == 0 && HasGuyuOrchard;
+        if (guyuCarriedQingming && !WorkshopProgress.Has(WorkshopItem.Silkworm))
+        {
+            guyuBasket.Add(0);
+            guyuBasket.Add(1);
+        }
         Array.Clear(guyuClothCharged, 0, guyuClothCharged.Length);
         for (int leaf = 0; leaf < guyuDew.Length; leaf++)
         {
-            int cost = GuyuDewCosts[ChallengeVariant][leaf];
+            int cost = sunny ? 0 : GuyuDewCosts[ChallengeVariant][leaf];
             guyuDew[leaf] = cost == 0 ? 0 : (1 << (cost + 2)) - 1;
         }
         guyuClothLeft = GuyuClothCapacity;
@@ -68,9 +81,11 @@ internal sealed partial class WorkshopObservationView
 
     private int GuyuTenderTarget => ChallengeVariant == 0 ? 3 : 2;
     private int GuyuMatureTarget => GuyuMealSize - GuyuTenderTarget;
-    private bool IsGuyuTender(int leaf) => GuyuLeafKinds[ChallengeVariant][leaf] == 't';
+    private bool IsGuyuTender(int leaf) => guyuCarriedQingming ? IsQingmingGuyuLeaf(leaf) : GuyuLeafKinds[ChallengeVariant][leaf] == 't';
+    private bool IsQingmingGuyuLeaf(int leaf) => guyuCarriedQingming && (leaf == 0 || leaf == 1 || leaf == 3);
     private bool CanAwardGuyuStory => SceneManager.GetActiveScene().name == WorkshopProgress.SceneName(WorkshopSeason.Spring)
         && SpringSummerNpcDialogue.HasMulberryBriefing;
+    private bool HasGuyuOrchard => CanAwardGuyuStory && WorkshopProgress.HasStep("spring.qingming.harvested");
 
     private void DrawGuyuChallenge()
     {
@@ -97,7 +112,12 @@ internal sealed partial class WorkshopObservationView
         WorkshopUi.Label(art, "Guyu Meal Needs", new Rect(47, 39, 722, 60),
             $"幼蚕匾 · 嫩叶 {tender}/{GuyuTenderTarget}     饲育匾 · 适熟叶 {mature}/{GuyuMatureTarget}", 26,
             WorkshopUi.Ink, TextAnchor.MiddleCenter);
-        Copy("给两匾小蚕备桑叶", "干叶直接拖入篮。\n点开湿叶，移鼠标擦露再入篮。\n点击篮内叶片可以放回。");
+        string orchard = HasGuyuOrchard ? $"{SpringSummerNpcDialogue.HarvestOrchardName}今天新采。" : "桑园今天新采。";
+        Copy(guyuSunnyWeather ? "放晴 · 干叶直接入篮" : "谷雨 · 雨后先去水",
+            guyuSunnyWeather ? $"{orchard}\n叶面已干，按蚕龄配叶。\n两匾份数照旧。"
+            : $"{orchard}\n干叶直接拖入篮，湿叶先擦。\n按两匾蚕龄配叶。");
+        Tag("Guyu Weather", guyuSunnyWeather ? "放晴 · 叶面已干" : "雨刚停 · 叶面有水",
+            new Rect(818, 36, 298, 61), guyuSunnyWeather);
         DrawGuyuCloth();
         DrawGuyuMessage();
         if (tender == GuyuTenderTarget && mature == GuyuMatureTarget)
@@ -107,12 +127,15 @@ internal sealed partial class WorkshopObservationView
         if (ChallengeVariant == 0 && guyuClothLeft < GuyuClothCapacity)
             Act("Guyu Flip Cloth", "翻到干布的另一面", FlipGuyuCloth);
         if (guyuClothSpent > 0 || guyuBasket.Count > 0)
-            Act("Guyu Retry Order", "重新整理这一单", () => { ResetGuyuOrder(); Render(); });
+            Act("Guyu Retry Order", "重新整理这一单", () => { ResetGuyuWeather(guyuSunnyWeather); Render(); });
         if (CanAwardGuyuStory && HasRecord(observation) && SpringSummerNpcDialogue.HasPreparedLeaves &&
             !WorkshopProgress.Has(WorkshopItem.Silkworm))
         {
             Act("Guyu Resume Old Basket", "继续喂上一篮", ResumeOldGuyuBasket);
         }
+        if ((!CanAwardGuyuStory || WorkshopProgress.Has(WorkshopItem.Silkworm)) && guyuBasket.Count == 0 && guyuClothSpent == 0)
+            Act("Guyu Compare Weather", guyuSunnyWeather ? "对照 · 再试雨后" : "对照 · 试试放晴",
+                () => { ResetGuyuWeather(!guyuSunnyWeather); Render(); });
     }
 
     private void DrawGuyuLeaf(int leaf)
@@ -124,6 +147,8 @@ internal sealed partial class WorkshopObservationView
         Rect leafBounds = GuyuLeafSize(leaf, new Rect(tile.x + 15, tile.y + 12, tile.width - 30, 116));
         string title = $"{GuyuLeafLetter(leaf)} · {GuyuLeafName(leaf)}";
         string detail = stored ? "已入篮 · 点此放回" : wet ? $"湿叶 · 用布 {GuyuClothCost(leaf)} 格" : "干叶 · 拖入篮";
+        if (IsQingmingGuyuLeaf(leaf))
+            title = $"{GuyuLeafLetter(leaf)} · 今日鲜嫩叶";
         WorkshopUi.Label(art, "Guyu Leaf Identity " + leaf, new Rect(tile.x, tile.y + 128, tile.width, 32),
             title, 23, WorkshopUi.Ink, TextAnchor.MiddleCenter);
         WorkshopUi.Label(art, "Guyu Leaf State " + leaf, new Rect(tile.x, tile.y + 157, tile.width, 36),
@@ -209,7 +234,8 @@ internal sealed partial class WorkshopObservationView
             GuyuClothLabel(), 23, WorkshopUi.Green);
     }
 
-    private string GuyuClothLabel() => $"干布剩 {guyuClothLeft}/{GuyuClothCapacity} 格 · 本单已用 {guyuClothSpent} 格";
+    private string GuyuClothLabel() => guyuSunnyWeather ? "叶面已干 · 本单无需擦拭"
+        : $"干布剩 {guyuClothLeft}/{GuyuClothCapacity} 格 · 本单已用 {guyuClothSpent} 格";
 
     private void DrawGuyuMessage(float top = 570)
     {
@@ -280,7 +306,7 @@ internal sealed partial class WorkshopObservationView
     private void DrawGuyuMeal()
     {
         if (GameComplete)
-            Copy("两只蚕匾都喂好了", $"这篮桑叶已经喂完。\n嫩叶 {GuyuTenderTarget} 片，适熟叶 {GuyuMatureTarget} 片。\n本单用布 {guyuClothSpent} 格。");
+            Copy("两只蚕匾都喂好了", $"本单用布 {guyuClothSpent} 格。\n小蚕继续长大、上蔟结茧。\n芒种验收成熟的春茧。");
         else
         {
             Copy("把篮里的桑叶喂进蚕匾", "嫩叶拖进左边幼蚕匾，适熟叶拖进右边饲育匾。送错匾会提示，已送进去的叶片继续留在匾里。");
@@ -373,6 +399,8 @@ internal sealed partial class WorkshopObservationView
         guyuMessage = null;
         if (CanAwardGuyuStory)
         {
+            if (!WorkshopProgress.Has(WorkshopItem.Silkworm))
+                WorkshopProgress.MarkStep("spring.guyu.batchFed");
             SpringPrompt.HasMulberryLeaves = true;
             SpringPrompt.HasSilkwormBaby = true;
             WorkshopProgress.Award(WorkshopItem.MulberryLeaf);

@@ -10,24 +10,24 @@ public sealed partial class WorkshopKnowledgeView
         "桐乡桑园 · 下过春雨，记一记叶面保持湿润的时间。",
         "桐乡桑园 · 留心天气回暖时，桑芽和小虫有什么变化。",
         "桐乡桑园 · 从早到晚，比较桥边和树下的日照。",
-        "桐乡桑园 · 用竹扣拨开交叠的枝条，挑展开的嫩叶。",
-        "桐乡蚕房 · 干叶直接入篮，湿叶擦净露水，再按蚕匾配桑。",
+        "清明江南新桑展叶 · 看叶展、等露收，再选垄接桑。",
+        "谷雨江南春蚕渐忙 · 同垄新采，湿叶去水再喂。",
         "南浔工坊 · 午后摸一摸阴凉处，感受暑热来临。",
         "南浔蚕房 · 同地养蚕也可能分批，茧况要逐批看。",
-        "南浔蚕蔟 · 翻面检查存疑的茧，把有破口的另放复查。",
-        "南浔工坊 · 看日照时间和作坊窗边的光如何变化。",
+        "芒种前后有产区收春茧 · 看成熟度、过潮和破损。",
+        "夏至江南常逢梅雨 · 缫好的生丝须干妥才入库。",
         "南浔蚕蔟 · 走到窗边感受空气流动，再留意湿热。",
-        "南浔工坊 · 通风、找丝头，再稳住张力缫丝，及时续绪。",
+        "南浔工坊 · 大暑如遇闷热，观察蔟房怎样通风。",
         "苏州织造 · 观察早晚光线，感受暑热怎样慢慢退去。",
         "苏州织造 · 比较窗边午后和傍晚的凉热。",
         "苏州织造 · 看晨露，留心丝线放在干爽处。",
-        "灵桑阙 · 让供品名牌和丝束都能被来客看见。",
-        "苏州织造 · 看经线抬落，从两侧轮换送出双色梭子。",
+        "秋分后天黑渐早 · 织坊借光验生丝，为夜织备料。",
+        "寒露这班窗沿有冷露 · 先领合适丝轴，再理经走梭。",
         "苏州织造 · 天凉后再回看桑园，留意叶色的变化。",
-        "江南染坊 · 分开受潮染材，用一缸染液试出深浅两块布。",
-        "江南裁衣间 · 排齐前后片和袖片，留出一整块余料。",
+        "立冬这班收到浙南熟栀子 · 试栀黄，再染整幅。",
+        "小雪遇冷雨 · 避雨晾布，给夹衣排面片和里襟。",
         "江南工坊 · 看青瓦、树和河岸如何显出冬日气息。",
-        "江南工坊 · 观察白天变短后，什么时候需要点亮工位。",
+        "冬至贺冬 · 织坊交衣试穿，回看一张工单。",
         "江南染坊 · 看存放染材的角落是否干燥。",
         "江南冬桑园 · 回看清园、修枝和来年备蚕。"
     };
@@ -85,17 +85,22 @@ public sealed partial class WorkshopKnowledgeView
         int ordinal = (int)season * 6 + index;
         var footer = WorkshopUi.PixelCard(page, "Solar Review Notes", new Rect(195, 949, 1530, 76),
             WorkshopUi.Paper, WorkshopUi.Bronze);
-        Label(footer, "Regional Observation", new Rect(24, 6, 770, 64), SolarReviewNotes[ordinal], 24, WorkshopUi.Ink);
+        var observation = SolarObservation(ordinal);
+        Label(footer, "Solar Entry Kind", new Rect(24, 5, 770, 24),
+            observation.HasValue ? "工序体验 · 到对应工位游玩" : "时令观察 · 翻阅节气卡", 19, Jade);
+        Label(footer, "Regional Observation", new Rect(24, 29, 770, 38), SolarReviewNotes[ordinal], 24, WorkshopUi.Ink);
         WorkshopUi.PixelButton(footer, "Regional Source", new Rect(1288, 13, 218, 50), "地方资料",
             () => WorkshopHeritageBrief.ShowSeason(season), false, 25);
 
-        var observation = SolarObservation(ordinal);
+        string source = SolarWorkSource(ordinal);
+        if (source != null)
+            WorkshopUi.PixelButton(footer, "Season Work Source", new Rect(824, 13, 218, 50), "时令依据",
+                () => Application.OpenURL(source), false, 25);
+        if (ordinal == 11)
+            DrawSolarObservationLink(footer, WorkshopObservation.DashuVentilation, 1056, "回看通风");
         if (!observation.HasValue) return;
 
-        DrawSolarObservationLink(footer, observation.Value, 1056,
-            ordinal == 11 ? "回看通风" : "回看观察");
-        if (ordinal == 11)
-            DrawSolarObservationLink(footer, WorkshopObservation.DashuReeling, 824, "回看缫丝");
+        DrawSolarObservationLink(footer, observation.Value, 1056, "回看工序");
     }
 
     private static void DrawSolarObservationLink(Transform footer, WorkshopObservation id, float x, string caption)
@@ -113,11 +118,28 @@ public sealed partial class WorkshopKnowledgeView
             case 4: return WorkshopObservation.QingmingMulberry;
             case 5: return WorkshopObservation.GuyuLeaf;
             case 8: return WorkshopObservation.MangzhongCocoon;
-            case 11: return WorkshopObservation.DashuVentilation;
+            case 9: return WorkshopObservation.DashuReeling;
             case 15: return WorkshopObservation.QiufenOffering;
             case 16: return WorkshopObservation.HanluLoom;
             case 18: return WorkshopObservation.LidongDye;
             case 19: return WorkshopObservation.XiaoxueTailoring;
+            default: return null;
+        }
+    }
+
+    private static string SolarWorkSource(int ordinal)
+    {
+        switch (ordinal)
+        {
+            case 4: return "https://www.chinasilkmuseum.com/cs/info_164.aspx?itemid=31631";
+            case 5: return "https://nyncj.suzhou.gov.cn/nlj/sqdt/202205/a68584817138463ba5f78d0bd8a79f4c.shtml";
+            case 8: return "https://scjgj.taizhou.gov.cn/xwzx/sjdt/art/2024/art_11c21b85989e4c578e0d3367c5eb8f13.html";
+            case 9: return "https://zj.weather.com.cn/tqyw/06/3473847.shtml";
+            case 15: return "https://www.weather.com.cn/life/2024/09/3887298.shtml";
+            case 16: return "https://www.weather.com.cn/neimenggu/sy/tqyw/10/2402929.shtml";
+            case 18: return "https://www.cnipa.gov.cn/attach/0/20250826010509.pdf";
+            case 19: return "https://paper.people.com.cn/rmrbwap/html/2023-11/23/nw.D110000renmrb_20231123_2-15.htm";
+            case 21: return "https://www.shidianguji.com/book/HY6306/chapter/1mb9bu3uvrj0m";
             default: return null;
         }
     }
@@ -130,6 +152,18 @@ public sealed partial class WorkshopKnowledgeView
                 DrawSolarPrint(parent, bounds, region, region.Text, artwork, new Rect(1216, 828, 20, 52));
             else
                 DrawSolarPrint(parent, bounds, region, region.Text);
+        }
+        Label(parent, "Solar Workshop Legend", ScaleSolarRect(bounds, new Rect(859, 212, 470, 31)),
+            "标「工序」的八个节气可在关卡游玩", 20, Jade, TextAnchor.MiddleRight);
+        for (int season = 0; season < SolarRows.Length; season++)
+        {
+            for (int index = 0; index < SolarColumns.Length; index++)
+            {
+                if (!SolarObservation(season * 6 + index).HasValue) continue;
+                var marker = new Rect(SolarColumns[index] + 8, SolarRows[season] + 113, 84, 19);
+                Label(parent, "Solar Workshop Marker", ScaleSolarRect(bounds, marker), "工序", 19,
+                    Jade, TextAnchor.MiddleCenter);
+            }
         }
     }
 
@@ -223,9 +257,9 @@ public sealed partial class WorkshopKnowledgeView
             new SolarPrint(396, 276, 238, 45, "二十四节气", 0xAD3F30, 0xFBEED0, true),
             new SolarPrint(1509, 333, 93, 109, "春", 0xFCE9CC, 0x42563B, true),
             new SolarPrint(219, 356, 597, 48, "清明时节，许多地方气温回升，", 0xFBE5C5, 0x422A1B),
-            new SolarPrint(218, 409, 619, 50, "草木转绿，是观察桑芽的好时候。", 0xFCE5C5, 0x40291A),
+            new SolarPrint(218, 409, 619, 50, "江南蚕乡的桑树长出新叶。", 0xFCE5C5, 0x40291A),
             new SolarPrint(335, 521, 236, 52, "小织匠观察", 0x465B40, 0xFAF1D4, true),
-            new SolarPrint(224, 607, 583, 48, "在桑园寻找健康、柔嫩的叶片。", 0xFCE8CA, 0x402A1B),
+            new SolarPrint(224, 607, 583, 48, "看嫩叶舒展，等露干后采桑。", 0xFCE8CA, 0x402A1B),
             new SolarPrint(700, 745, 249, 71, "知道啦", 0xBF4832, 0xFDF2D6, true),
         },
         new[] // 谷雨
@@ -372,7 +406,7 @@ public sealed partial class WorkshopKnowledgeView
             new SolarPrint(354, 395, 439, 51, "许多地方进入冷季，", 0xFCEBD7, 0x462B1E),
             new SolarPrint(354, 451, 480, 54, "衣物也更加讲究保暖。", 0xFCEBD7, 0x42281C),
             new SolarPrint(421, 544, 213, 52, "小织匠观察", 0xFAD3A9, 0x4F2631, true),
-            new SolarPrint(335, 613, 582, 61, "想想丝绸怎样变成可穿的衣裳。", 0xFCEBD7, 0x442A1E),
+            new SolarPrint(335, 613, 582, 61, "试染素绸，看看晾干后的颜色。", 0xFCEBD7, 0x442A1E),
             new SolarPrint(510, 730, 206, 67, "知道啦", 0xC24B43, 0xFDE9C8, true),
         },
         new[] // 小雪
@@ -382,7 +416,7 @@ public sealed partial class WorkshopKnowledgeView
             new SolarPrint(500, 307, 664, 52, "小雪表示寒冷加重的时节，", 0xFCEAD7, 0x481B23),
             new SolarPrint(469, 365, 715, 55, "并不意味着当天一定会下雪。", 0xFCEBD8, 0x4A1C25),
             new SolarPrint(714, 451, 271, 49, "小织匠观察", 0xFCD8A8, 0x481B27, true),
-            new SolarPrint(515, 519, 641, 48, "看看工坊如何保存染料与布料。", 0xFCEBD9, 0x471B24),
+            new SolarPrint(515, 519, 641, 48, "让前片、后片和袖片顺着布纹排开。", 0xFCEBD9, 0x471B24),
             new SolarPrint(726, 774, 215, 63, "知道啦", 0xC04A44, 0xFCEACF, true),
         },
         new[] // 大雪

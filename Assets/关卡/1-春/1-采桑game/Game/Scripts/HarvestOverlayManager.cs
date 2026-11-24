@@ -350,11 +350,7 @@ public class HarvestOverlayManager : MonoBehaviour
         mgr.basket = basketGo.GetComponent<HarvestBasketController>();
         mgr.spawner = spawner;
         mgr.ui = uiController;
-        WorkshopMinigameMenu.Attach(_overlayRoot.transform, () =>
-        {
-            mgr.ResetGame();
-            mgr.StartGame();
-        }, HideHarvest, () => mgr.CollectedLeaves > 0,
+        WorkshopMinigameMenu.Attach(_overlayRoot.transform, mgr.ResetGame, HideHarvest, () => mgr.CollectedLeaves > 0,
             () => mgr.State != HarvestGameState.Completed);
         Debug.Log($"[HarvestOverlay] 游戏管理器已创建, player={mgr.player != null}, basket={mgr.basket != null}, spawner={mgr.spawner != null}, ui={mgr.ui != null}");
     }

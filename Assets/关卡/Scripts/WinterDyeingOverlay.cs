@@ -48,6 +48,14 @@ public class WinterDyeingOverlay : MonoBehaviour
 
         // 同一时间只保留一个界面，避免研磨界面上残留染色的「关闭」按钮
         WinterGrindingOverlay.Close();
+        if (RequiresSeasonalSwatch)
+        {
+            WorkshopObservationView.Show(WorkshopObservation.LidongDye, () =>
+            {
+                if (!RequiresSeasonalSwatch) Show();
+            });
+            return;
+        }
 
         var config = Resources.Load<WinterDyeingConfig>("WinterDyeingConfig");
         if (config == null || config.clearWaterVat == null || config.silk == null)
@@ -61,6 +69,10 @@ public class WinterDyeingOverlay : MonoBehaviour
         _runner.Build(frame, config);
     }
 
+    private static bool RequiresSeasonalSwatch => WorkshopProgress.SeasonalOrderEnabled &&
+        !WorkshopProgress.Has(WorkshopItem.DyedCloth) &&
+        !WorkshopObservationView.HasOrderWork(WorkshopObservation.LidongDye);
+
     private void Build(RectTransform frame, WinterDyeingConfig config)
     {
         _frame = frame;
@@ -69,7 +81,8 @@ public class WinterDyeingOverlay : MonoBehaviour
         IsActive = true;
         FreezePlayer();
 
-        WinterWorktableUi.Build(_frame, "染色", 186, CloseInternal);
+        bool gardeniaOrder = WorkshopObservationView.HasOrderWork(WorkshopObservation.LidongDye);
+        WinterWorktableUi.Build(_frame, gardeniaOrder ? "立冬 · 染整幅" : "染色", 264, CloseInternal);
 
         CreateDyeList();
         CreateVat();
@@ -79,11 +92,22 @@ public class WinterDyeingOverlay : MonoBehaviour
         _statusText = WorkshopUi.Label(footer, "Worktable Status", new Rect(25, 4, 1470, 71),
             "选择左侧已研磨的染料。", 29, WorkshopUi.Cream);
         CreateConfirmButton(footer);
+        if (gardeniaOrder)
+        {
+            var accepted = WorkshopObservationView.OrderWork(WorkshopObservation.LidongDye);
+            WorkshopObservationView.DrawWorkSample(_frame, new Rect(1418, 302, 214, 82), accepted?.sample);
+            WinterWorktableUi.Nameplate(_frame, "Lidong Accepted Swatch", new Rect(1380, 406, 303, 49),
+                "立冬干样 · 深浅栀黄", 24);
+            SelectColor(DyeColor.Yellow);
+            SetStatus("寒露素绸已备好。立冬干样已验，确认栀黄色，把整幅绸拖进缸。");
+        }
     }
 
     private void CreateDyeList()
     {
-        var colors = new List<DyeColor>(WinterLevelState.ProducedDyeColors);
+        var colors = WorkshopObservationView.HasOrderWork(WorkshopObservation.LidongDye)
+            ? new List<DyeColor> { DyeColor.Yellow }
+            : new List<DyeColor>(WinterLevelState.ProducedDyeColors);
         colors.Sort();
         WinterWorktableUi.Nameplate(_frame, "Dyes Heading", new Rect(274, 477, 226, 41), "已研磨染料", 24);
 
@@ -98,8 +122,10 @@ public class WinterDyeingOverlay : MonoBehaviour
             var bowl = WorkshopUi.Picture(button.transform, "Dye Bowl", new Rect(0, 0, 174, 122), icon);
             bowl.gameObject.AddComponent<Shadow>().effectDistance = new Vector2(4, -5);
             _dyeSelections[color] = WinterWorktableUi.FocusOutline(bowl);
-            WinterWorktableUi.Nameplate(button.transform, "Dye Name", new Rect(34, 124, 106, 34),
-                DyeColorUtil.ChineseName(color), 22);
+            string dyeName = color == DyeColor.Yellow &&
+                WorkshopObservationView.HasOrderWork(WorkshopObservation.LidongDye)
+                ? "栀子黄" : DyeColorUtil.ChineseName(color);
+            WinterWorktableUi.Nameplate(button.transform, "Dye Name", new Rect(34, 124, 106, 34), dyeName, 22);
             button.targetGraphic = bowl;
             var tones = button.colors;
             tones.normalColor = new Color32(240, 226, 206, 255);
@@ -193,7 +219,8 @@ public class WinterDyeingOverlay : MonoBehaviour
 
     public bool TryDyeCloth()
     {
-        if (!CanDragSilk) return false;
+        if (!CanDragSilk || RequiresSeasonalSwatch || WorkshopProgress.Has(WorkshopItem.CutPieces)) return false;
+        if (WorkshopObservationView.HasOrderWork(WorkshopObservation.LidongDye) && _selectedColor != DyeColor.Yellow) return false;
 
         _dyeingComplete = true;
         var color = _selectedColor.Value;

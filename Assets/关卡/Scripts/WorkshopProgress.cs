@@ -27,7 +27,7 @@ public static class WorkshopProgress
     };
     private static readonly WorkshopItem[][] Recipes =
     {
-        new[] { WorkshopItem.MulberryLeaf, WorkshopItem.SilkwormEgg, WorkshopItem.Silkworm },
+        new[] { WorkshopItem.MulberryLeaf, WorkshopItem.Silkworm, WorkshopItem.SilkwormEgg },
         new[] { WorkshopItem.Salt, WorkshopItem.Suoxu, WorkshopItem.Spool },
         new[] { WorkshopItem.Shuttle, WorkshopItem.RawSilkCloth, WorkshopItem.Statue },
         new[] { WorkshopItem.DyedCloth, WorkshopItem.CutPieces, WorkshopItem.Needle }
@@ -54,9 +54,11 @@ public static class WorkshopProgress
         public int groundDyes;
         public string dyedColor;
         public string garmentId;
+        public bool seasonalOrder;
         public List<string> steps = new List<string>();
         public List<string> observations = new List<string>();
         public List<ChallengeWork> challengeWorks = new List<ChallengeWork>();
+        public List<ChallengeWork> orderWorks = new List<ChallengeWork>();
     }
 
     private static SaveData save;
@@ -78,6 +80,7 @@ public static class WorkshopProgress
             if (save.steps == null) save.steps = new List<string>();
             if (save.observations == null) save.observations = new List<string>();
             if (save.challengeWorks == null) save.challengeWorks = new List<ChallengeWork>();
+            if (save.orderWorks == null) save.orderWorks = new List<ChallengeWork>();
             return save;
         }
     }
@@ -97,7 +100,7 @@ public static class WorkshopProgress
     {
         SceneManager.sceneLoaded -= ShowQueuedCard;
         nextSceneCard = null;
-        save = new SaveData();
+        save = new SaveData { seasonalOrder = true };
         WinterLevelState.PendingGrindingPrompt = false;
         WinterLevelState.HasReturnPosition = false;
         Commit();
@@ -134,6 +137,21 @@ public static class WorkshopProgress
     internal static ChallengeWork BestChallengeWork(string id, int order) =>
         State.challengeWorks.Find(work => work != null && work.id == id && work.order == order);
 
+    internal static bool SeasonalOrderEnabled => State.seasonalOrder;
+
+    internal static ChallengeWork SeasonalOrderWork(string id) =>
+        State.orderWorks.Find(work => work != null && work.id == id);
+
+    internal static void RecordSeasonalOrderWork(string id, int order, int score, string description, string sample)
+    {
+        if (SeasonalOrderWork(id) != null) return;
+        State.orderWorks.Add(new ChallengeWork
+        {
+            id = id, order = order, score = score, description = description, sample = sample
+        });
+        Commit();
+    }
+
     internal static bool RecordChallenge(string id, int order, int score, string description, string sample)
     {
         bool first = !HasObservation(id);
@@ -145,7 +163,7 @@ public static class WorkshopProgress
             work = new ChallengeWork { id = id, order = order, score = score, description = description, sample = sample };
             State.challengeWorks.Add(work);
         }
-        else if (score > work.score)
+        else if (score > work.score || (score == work.score && string.IsNullOrEmpty(work.sample) && !string.IsNullOrEmpty(sample)))
         {
             work.score = score;
             work.description = description;
@@ -190,7 +208,8 @@ public static class WorkshopProgress
     public static bool CanSubmit(WorkshopSeason season)
     {
         if (!IsUnlocked(season) || IsComplete(season)) return false;
-        return Array.TrueForAll(Recipes[(int)season], Has);
+        return Array.TrueForAll(Recipes[(int)season], Has) &&
+            (!SeasonalOrderEnabled || WorkshopObservationView.HasSeasonOrderDeliveries(season));
     }
 
     public static bool Submit(WorkshopSeason season)

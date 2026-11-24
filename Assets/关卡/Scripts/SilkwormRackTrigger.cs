@@ -23,8 +23,7 @@ public class SilkwormRackTrigger : MonoBehaviour
         station = gameObject.AddComponent<FloatingActionButton>();
         station.Configure(StationLabel(), buttonOffset, OnRackClicked);
         station.SetOpacity(buttonOpacity);
-        WorkshopPickupGlow.Bind(gameObject, () => SpringSummerNpcDialogue.HasMulberryBriefing
-            && (SpringPrompt.HasPickedBasket || WorkshopProgress.Has(WorkshopItem.MulberryLeaf))
+        WorkshopPickupGlow.Bind(gameObject, () => SpringSummerNpcDialogue.HasHarvestedLeaves
             && !WorkshopProgress.Has(WorkshopItem.Silkworm));
     }
 
@@ -48,11 +47,11 @@ public class SilkwormRackTrigger : MonoBehaviour
 
     private void OnRackClicked()
     {
-        if (station == null || WorkshopQuestGuide.BlocksWorldInput
+        if (station == null || WorkshopQuestGuide.BlocksWorldInput || WorkshopQuestGuide.IsWorldOverlayActive
             || !SpringSummerNpcDialogue.RequireMulberryBriefing()) return;
-        if (!SpringPrompt.HasPickedBasket && !WorkshopProgress.Has(WorkshopItem.MulberryLeaf))
+        if (!SpringSummerNpcDialogue.HasHarvestedLeaves)
         {
-            SimplePopup.Show("需要采桑篮", "请先收下春章发光的采桑篮，再把它带到这里。", "知道了", null);
+            SimplePopup.Show("先到桑园试采", "带篮到桑树前完成清明采桑，记下适合取嫩叶的桑垄。谷雨当天再去同垄采新鲜桑叶。", "知道了", null);
             return;
         }
 

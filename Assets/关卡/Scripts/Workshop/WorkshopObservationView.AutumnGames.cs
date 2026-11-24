@@ -9,9 +9,8 @@ internal sealed partial class WorkshopObservationView
     private const int OfferingColumns = 5;
     private const int OfferingSeatCount = 10;
     private const int SilkOffering = 3;
-    private static readonly string[] ExhibitionNames = { "蚕花酒", "果篮", "糕点", "丝束", "桑叶" };
+    private static readonly string[] ExhibitionNames = { "高酒坛", "果篮", "糕点", "待验丝轴", "桑叶" };
     private static readonly int[] ExhibitionHeights = { 3, 2, 1, 1, 1 };
-    private static readonly string[] ExhibitionInks = { "3", "4", "7", "9", "2" };
     private static readonly int[] ExhibitionOpenFront = { 0b00101, 0b10100 };
     private static readonly int[] ExhibitionRisers = { (1 << 6) | (1 << 8), 1 << 7 };
     private readonly int[] exhibition = new int[OfferingSeatCount];
@@ -19,9 +18,14 @@ internal sealed partial class WorkshopObservationView
     private readonly Image[] exhibitionEdges = new Image[OfferingSeatCount];
     private readonly Text[] exhibitionSeatLabels = new Text[OfferingSeatCount];
     private readonly Text[] exhibitionSupplyLabels = new Text[ExhibitionNames.Length];
+    private readonly Button[] inspectionSegments = new Button[3];
     private Sprite[] exhibitionSprites;
     private int exhibitionHeld = -1;
     private bool exhibitionSide;
+    private bool exhibitionLamp;
+    private bool exhibitionKnotFound;
+    private string exhibitionSilk;
+    private int exhibitionKnot;
     private Image exhibitionGhost;
     private Text exhibitionHeading;
     private Text exhibitionStatus;
@@ -55,8 +59,12 @@ internal sealed partial class WorkshopObservationView
     private int weavingCheckpointSides;
     private int weavingCheckpointHeddles;
     private int weavingCheckpointRuns;
+    private Text weavingGuide;
     private Text weavingStatus;
     private Image movingShuttle;
+    private bool weavingSilkReady;
+    private bool weavingWindowWet;
+    private string weavingPrepHint;
 
     private void ResetAutumnChallenge()
     {
@@ -64,10 +72,17 @@ internal sealed partial class WorkshopObservationView
         {
             case WorkshopObservation.QiufenOffering:
                 ResetExhibition();
-                exhibitionSide = false;
+                exhibitionSide = exhibitionLamp = exhibitionKnotFound = false;
+                string reeled = WorkshopUpstreamWork(WorkshopObservation.DashuReeling, 0)?.sample;
+                var bands = reeled?.Split('/');
+                exhibitionSilk = bands != null && bands.Length == 3 && bands[1].Contains("4") ? reeled : "111/949/111";
+                exhibitionKnot = exhibitionSilk.Split('/')[1].IndexOf('4');
                 break;
             case WorkshopObservation.HanluLoom:
                 wovenCount = emptyRuns = heddles = 0;
+                weavingSilkReady = false;
+                weavingWindowWet = ChallengeVariant == 0;
+                weavingPrepHint = null;
                 shuttlesRight = ChallengeVariant == 0 ? 2 : 1;
                 SaveWeavingCheckpoint();
                 break;
@@ -77,6 +92,7 @@ internal sealed partial class WorkshopObservationView
     private void ResetExhibition()
     {
         for (int i = 0; i < exhibition.Length; i++) exhibition[i] = -1;
+        exhibition[7] = 0;
         exhibitionHeld = -1;
     }
 
@@ -84,8 +100,9 @@ internal sealed partial class WorkshopObservationView
     {
         Texture("Offering Table and Tools", "WorkshopFinish/AutumnOfferingTable", ArtBounds);
         var props = AutumnItemIcons.Load();
+        var silk = SpringSummerArt("SilkBobbin");
         exhibitionSprites = new[] { WorkshopObservationArt.Current?.OfferingWine, props?.banana, props?.cake,
-            Resources.Load<Sprite>("WorkshopFinish/RawSilk"), WorkshopObservationArt.Current?.Leaf };
+            silk ?? Resources.Load<Sprite>("WorkshopFinish/RawSilk"), WorkshopObservationArt.Current?.Leaf };
         var trayArt = GameArtSprite("OfferingTray");
         var riserArt = GameArtSprite("WoodenRiser");
 
@@ -119,38 +136,50 @@ internal sealed partial class WorkshopObservationView
         exhibitionSunbeam = WorkshopUi.Picture(art, "Offering Sunbeam", new Rect(0, 101, 1, 112),
             GameArtSprite("OfferingSunbeam"), stretch: true);
         exhibitionSunbeam.raycastTarget = false;
+        string silkCaption = WorkshopUpstreamWork(WorkshopObservation.DashuReeling, 0) == null
+            ? "工坊存丝 · 对照样" : "夏至干丝已入库 · 本班验丝";
+        DrawAutumnSilkHandoff("Offering Silk Handoff", new Rect(53, 439, 1054, 31), silkCaption,
+            GameComplete ? AcceptedExhibitionSilk() : null);
 
         if (GameComplete)
         {
-            Copy("三牌可见，丝束见光", "供台沿用四时织坊的致谢故事。这里陈列桑叶和丝束，记下采桑、养蚕和缫丝经过的几双手。");
+            Copy("验收完成 · 挂上丝签", "光下看清了接头，这轴丝已登记。收进柜子，寒露开机时从这里领丝。");
             Act("Read Autumn Heritage", "看苏州织造资料", OpenAutumnHeritage, true);
             RefreshExhibition();
             return;
         }
 
+        for (int segment = 0; segment < inspectionSegments.Length; segment++)
+        {
+            int index = segment;
+            inspectionSegments[segment] = WorkshopUi.PixelButton(art, "Silk Inspection Segment " + segment,
+                new Rect(53 + segment * 354, 477, 346, 47), "", () => InspectExhibitionSilk(index), false, 22);
+            RegisterButton(inspectionSegments[segment]);
+        }
+
         for (int item = 0; item < ExhibitionNames.Length; item++)
         {
             int i = item;
-            var bounds = new Rect(53 + item * 212, 478, 205, 142);
+            var bounds = new Rect(53 + item * 212, 532, 205, 100);
             var tray = IllustratedGameCard(art, "Offering Supply " + item, bounds, trayArt, LightSurface);
-            WorkshopUi.Picture(tray, "Supply Item", new Rect(45, 11, 114, 77), exhibitionSprites[item]);
+            WorkshopUi.Picture(tray, "Supply Item", new Rect(47, 5, 110, 59), exhibitionSprites[item]);
             if (trayArt != null)
-                WorkshopUi.Fill(tray, "Caption Paper", new Rect(16, 84, 173, 26), new Color32(251, 234, 196, 218));
-            exhibitionSupplyLabels[item] = WorkshopUi.Label(tray, "Supply Caption", new Rect(8, 78, 189, 37), "", 21,
+                WorkshopUi.Fill(tray, "Caption Paper", new Rect(16, 66, 173, 26), new Color32(251, 234, 196, 218));
+            exhibitionSupplyLabels[item] = WorkshopUi.Label(tray, "Supply Caption", new Rect(8, 61, 189, 36), "", 21,
                 WorkshopUi.Ink, TextAnchor.MiddleCenter);
-            var take = WorkshopUi.Button(tray, "Take", new Rect(1, 1, 203, 140), "", () => PickExhibitionItem(i), Color.clear);
+            var take = WorkshopUi.Button(tray, "Take", new Rect(1, 1, 203, 98), "", () => PickExhibitionItem(i), Color.clear);
             RegisterButton(take);
             BindOfferingDrag(take.gameObject, () => i);
         }
 
         exhibitionGhost = WorkshopUi.Picture(art, "Offering In Hand", new Rect(0, 0, 150, 104), null);
         exhibitionGhost.color = new Color(1f, 1f, 1f, 0.9f);
-        Copy("摆供品，留出视线", "拖供品到桌上。前排高物会遮挡后方名牌。切到侧窗查看丝束，后排高物会挡住照进来的光。");
+        Copy("把生丝轴移到窗边", "秋分后天黑渐早，夜织前趁亮验丝。\n把丝轴放后排，切侧窗看是否被遮。\n看清后三段里点有接头的一段。");
         exhibitionHeading = infoPanel.Find("Instruction Heading").GetComponent<Text>();
-        Act("Submit Offering Display", "请来客看供台", SubmitExhibition, true);
+        Act("Submit Offering Display", "挂验收签", SubmitExhibition, true);
         Act("Offering View Toggle", "切到侧窗", () => { exhibitionSide = !exhibitionSide; RefreshExhibition(); });
         exhibitionTurn = infoPanel.Find("Offering View Toggle").GetComponentInChildren<Button>();
-        Act("Reset Offering Display", "收回供品", () => { ResetExhibition(); RefreshExhibition(); });
+        Act("Offering Inspection Lamp", "点灯补光", LightExhibitionLamp);
         exhibitionStatus = WorkshopUi.Label(infoPanel, "Offering Order Progress", new Rect(26, 563, 448, 88), "", 24,
             WorkshopUi.Green, TextAnchor.UpperLeft);
         RefreshExhibition();
@@ -164,19 +193,11 @@ internal sealed partial class WorkshopObservationView
 
     private bool IsRaisedExhibitionSeat(int seat) => (ExhibitionRisers[ChallengeVariant] & (1 << seat)) != 0;
 
-    private bool OfferingPlaqueVisible(int seat)
-    {
-        if (seat < 0) return false;
-        if (seat < OfferingColumns) return true;
-        int ahead = exhibition[seat - OfferingColumns];
-        return ahead < 0 || ExhibitionHeights[ahead] < (IsRaisedExhibitionSeat(seat) ? 3 : 2);
-    }
-
     private int WindowBlocker(int silkSeat)
     {
         if (silkSeat < OfferingColumns) return -1;
-        int from = ChallengeVariant == 0 ? OfferingColumns : OfferingSeatCount - 1;
-        int direction = ChallengeVariant == 0 ? 1 : -1;
+        int direction = ExhibitionLightDirection;
+        int from = direction > 0 ? OfferingColumns : OfferingSeatCount - 1;
         for (int seat = from; seat != silkSeat; seat += direction)
         {
             int prop = exhibition[seat];
@@ -185,33 +206,29 @@ internal sealed partial class WorkshopObservationView
         return -1;
     }
 
-    private int VisibleOfferingPlaques()
-    {
-        int seen = 0;
-        for (int item = 0; item < SilkOffering; item++)
-            if (OfferingPlaqueVisible(Array.IndexOf(exhibition, item))) seen++;
-        return seen;
-    }
+    private int ExhibitionLightDirection => exhibitionLamp ? -1 : 1;
+
+    private bool ExhibitionCanInspect(int silk, int blocker) =>
+        exhibitionSide && silk >= OfferingColumns && blocker < 0 && (ChallengeVariant == 0 || exhibitionLamp);
 
     private void RefreshExhibition(string message = null)
     {
         int silk = Array.IndexOf(exhibition, SilkOffering);
         int blocker = WindowBlocker(silk);
-        bool lit = silk >= OfferingColumns && blocker < 0;
-        int count = VisibleOfferingPlaques();
-        string window = ChallengeVariant == 0 ? "左窗向右照" : "右窗向左照";
-        exhibitionLight.text = exhibitionSide ? $"侧窗 · {window} · {(lit ? "丝束已见光" : "看丝束与挡光物")}" : "正面 · 后排低位容易被前排的高供品遮挡";
+        bool lit = ExhibitionCanInspect(silk, blocker);
+        string window = exhibitionLamp ? "右侧验丝灯已亮" : ChallengeVariant == 0 ? "白昼 · 左侧窗光" : "傍晚 · 窗光已弱";
+        exhibitionLight.text = exhibitionSide ? $"侧面 · {window} · {(lit ? "可以验丝" : "查看丝轴和光线")}"
+            : $"正面 · {window} · 后排是验丝位";
         ShowExhibitionSunbeam(silk, blocker);
 
         for (int seat = 0; seat < exhibition.Length; seat++)
         {
             int item = exhibition[seat];
             bool raised = IsRaisedExhibitionSeat(seat);
-            bool visible = item < 0 || item >= SilkOffering || OfferingPlaqueVisible(seat);
             var picture = exhibitionObjects[seat];
             picture.sprite = item >= 0 ? exhibitionSprites[item] : null;
             picture.enabled = picture.sprite != null;
-            bool warning = exhibitionSide ? seat == blocker || (seat == silk && !lit) : !visible;
+            bool warning = exhibitionSide && (seat == blocker || (seat == silk && !lit));
             bool featured = seat == silk && exhibitionSide && lit;
             exhibitionEdges[seat].color = warning ? ErrorInk : featured ? new Color32(212, 166, 65, 255) : item >= 0 && item == exhibitionHeld ? FocusInk : WorkshopUi.Line;
             picture.color = warning ? new Color32(155, 130, 115, 210) : Color.white;
@@ -220,7 +237,7 @@ internal sealed partial class WorkshopObservationView
             if (item >= 0)
             {
                 string cue = featured ? "见光" : location;
-                if (warning) cue = !exhibitionSide ? "牌被挡" : seat == blocker ? "挡住窗光" : "未照到";
+                if (warning) cue = seat == blocker ? "挡光" : "未照到";
                 caption = ExhibitionNames[item] + " · " + cue;
             }
             exhibitionSeatLabels[seat].text = caption;
@@ -232,17 +249,25 @@ internal sealed partial class WorkshopObservationView
             bool placed = Array.IndexOf(exhibition, item) >= 0;
             exhibitionSupplyLabels[item].text = ExhibitionNames[item] + (item == exhibitionHeld ? " · 拿起" : placed ? " · 在桌上" : " · 待摆");
         }
-        exhibitionHeading.text = exhibitionHeld >= 0 ? "在摆" + ExhibitionNames[exhibitionHeld] : "摆供品，留出视线";
+        exhibitionHeading.text = exhibitionHeld >= 0 ? "在摆" + ExhibitionNames[exhibitionHeld]
+            : exhibitionKnotFound ? "接头已标好" : lit ? "现在可以看丝了" : "给生丝找一束光";
         exhibitionTurn.transform.Find("Label").GetComponent<Text>().text = exhibitionSide ? "切回正面" : "切到侧窗";
-        exhibitionStatus.text = message ?? $"看得见的供品名牌 {count} / 3\n丝束{(lit ? "已见光" : "需要后排来光")}";
+        for (int i = 0; i < inspectionSegments.Length; i++)
+        {
+            inspectionSegments[i].interactable = lit && !exhibitionKnotFound;
+            inspectionSegments[i].transform.Find("Label").GetComponent<Text>().text = !lit ? $"第 {i + 1} 段 · 未照清"
+                : i == exhibitionKnot % inspectionSegments.Length ? $"第 {i + 1} 段 · ━●━ 接头" : $"第 {i + 1} 段 · ━━━ 匀";
+        }
+        exhibitionStatus.text = message ?? (exhibitionKnotFound ? "已标接头 · 可以验收入库" : lit ? "点选看得见接头的那一段"
+            : ChallengeVariant != 0 && !exhibitionLamp ? "窗暗了，点灯补光" : "让光照到后排丝轴");
     }
 
     private void ShowExhibitionSunbeam(int silk, int blocker)
     {
-        exhibitionSunbeam.enabled = exhibitionSide && exhibitionSunbeam.sprite != null;
+        exhibitionSunbeam.enabled = exhibitionSide && exhibitionSunbeam.sprite != null && (ChallengeVariant == 0 || exhibitionLamp);
         if (!exhibitionSunbeam.enabled) return;
 
-        int direction = ChallengeVariant == 0 ? 1 : -1;
+        int direction = ExhibitionLightDirection;
         float source = direction > 0 ? 52f : 1107f;
         int endSeat = blocker >= 0 ? blocker : silk;
         float end = endSeat >= OfferingColumns
@@ -331,27 +356,49 @@ internal sealed partial class WorkshopObservationView
 
     private void SubmitExhibition()
     {
-        if (Array.IndexOf(exhibition, 4) < 0) { RefreshExhibition("先把桑叶样本摆到桌面上"); return; }
-        if (VisibleOfferingPlaques() < 3) { exhibitionSide = false; RefreshExhibition("正面还有名牌被遮住或没摆上"); return; }
         int silk = Array.IndexOf(exhibition, SilkOffering);
-        if (silk < OfferingColumns || WindowBlocker(silk) >= 0)
+        if (!ExhibitionCanInspect(silk, WindowBlocker(silk)))
         {
             exhibitionSide = true;
-            RefreshExhibition("让后排丝束前的来光路保持畅通");
+            RefreshExhibition("先让光照到后排丝轴");
             return;
         }
-
-        int standsUsed = 0;
-        string pattern = "";
-        for (int i = 0; i < exhibition.Length; i++)
+        if (!exhibitionKnotFound)
         {
-            if (i == OfferingColumns) pattern += "/";
-            var item = exhibition[i];
-            if (item >= 0 && IsRaisedExhibitionSeat(i)) standsUsed++;
-            pattern += item >= 0 ? ExhibitionInks[item] : "0";
+            RefreshExhibition("先在照亮的三段里找到接头");
+            return;
         }
         exhibitionSide = true;
-        FinishChallenge(100 + (2 - standsUsed) * 5, $"供台陈设 · 三牌可见 · 高台 {standsUsed}", pattern);
+        FinishChallenge(100, "窗光验丝 · 已标记接头 · 入柜备织", AcceptedExhibitionSilk());
+    }
+
+    private void LightExhibitionLamp()
+    {
+        exhibitionSide = true;
+        exhibitionLamp = true;
+        RefreshExhibition("右灯已亮，留出通向丝轴的光路");
+    }
+
+    private void InspectExhibitionSilk(int segment)
+    {
+        int silk = Array.IndexOf(exhibition, SilkOffering);
+        if (!ExhibitionCanInspect(silk, WindowBlocker(silk))) return;
+        if (segment != exhibitionKnot % inspectionSegments.Length)
+        {
+            RefreshExhibition("这一段线身均匀，再找有粗结的一段");
+            return;
+        }
+        exhibitionKnotFound = true;
+        WorkshopAudioFeedback.Confirm();
+        RefreshExhibition();
+    }
+
+    private string AcceptedExhibitionSilk()
+    {
+        var bands = exhibitionSilk.Split('/');
+        var middle = bands[1].ToCharArray();
+        middle[exhibitionKnot] = '2';
+        return bands[0] + "/" + new string(middle) + "/" + bands[2];
     }
 
     private void DrawShuttleWorkshop()
@@ -359,6 +406,17 @@ internal sealed partial class WorkshopObservationView
         if (showSongJin) { DrawLoom(); return; }
         Layer("Autumn_LoomCloseup");
         Layer("Autumn_WarpAligned");
+        string inspected = WorkshopUpstreamWork(WorkshopObservation.QiufenOffering, 0)?.sample;
+        bool verified = !string.IsNullOrEmpty(inspected) && inspected.Split('/').Length == 3;
+        string silkSample = verified ? inspected : WorkshopUpstreamWork(WorkshopObservation.DashuReeling, 0)?.sample;
+        string silkCaption = verified ? "秋分验收丝轴 · 接头已登记"
+            : string.IsNullOrEmpty(silkSample) ? "工坊备丝 · 先验干湿" : "夏至生丝 · 先验干湿";
+        DrawAutumnSilkHandoff("Loom Silk Handoff", new Rect(64, 7, 1032, 32), silkCaption, silkSample);
+        if (!weavingSilkReady && !GameComplete)
+        {
+            DrawHanluSilkPreparation();
+            return;
+        }
         var weftArt = GameArtSprite("WeftTile");
         var shuttleArt = GameArtSprite("Shuttle") ?? WorkshopObservationArt.Current?.Shuttle;
         var heddleArt = GameArtSprite("LoomHeddle");
@@ -371,7 +429,7 @@ internal sealed partial class WorkshopObservationView
 
         if (GameComplete)
         {
-            Copy("织完一条双色纹带", "梭子横穿带入纬线，抬起不同的经线就显出不同纹样。织成的纹带可以在储物屋收藏中回看。");
+            Copy("把六梭织样带去立冬染坊", "不同的经线起落织出不同纹样。留下这条纹带作花纹参照，再带同批素绸布头去立冬染缸试色。");
             Act("Look At Song Brocade", "看宋锦显花示意", ToggleSongJin, true);
             PaintWovenRows();
             return;
@@ -405,13 +463,69 @@ internal sealed partial class WorkshopObservationView
             shuttlePictures[i] = shuttleCards[i].transform.parent.Find("Tool")?.GetComponent<Image>();
         }
 
-        Copy("两侧换梭，织六梭", "把抬起的经线排成当前示样，再从箭头起点送所需颜色的梭。梭到达另一侧后，留意下一梭从哪边出发。");
+        Copy("抬经线，再送梭", "");
+        weavingGuide = infoPanel.Find("Instruction Body").GetComponent<Text>();
         Act("Move Red Shuttle", "空送赭梭到另一侧", () => MoveEmptyShuttle(0));
         Act("Move Blue Shuttle", "空送青梭到另一侧", () => MoveEmptyShuttle(1));
         Act("Reset Weaving Segment", "退回这一段开头", RestoreWeavingCheckpoint);
         weavingStatus = WorkshopUi.Label(infoPanel, "Weaving Status", new Rect(27, 565, 444, 90), "", 24,
             WorkshopUi.Green, TextAnchor.UpperLeft);
         UpdateWeaving();
+    }
+
+    private void DrawHanluSilkPreparation()
+    {
+        var tray = GameArtSprite("WoodDesk");
+        var silk = SpringSummerArt("SilkBobbin") ?? Resources.Load<Sprite>("WorkshopFinish/RawSilk");
+        var dew = GameArtSprite("DewBead");
+        for (int i = 0; i < 2; i++)
+        {
+            bool window = i == 0;
+            var seat = IllustratedGameCard(art, "Hanlu Silk Location " + i,
+                new Rect(76 + 510 * i, 188, 480, 305), tray, LightSurface);
+            WorkshopUi.Picture(seat, "Silk Bobbin", new Rect(112, 40, 256, 174), silk);
+            if (window && weavingWindowWet)
+                WorkshopUi.Picture(seat, "Visible Cold Dew", new Rect(315, 56, 62, 79), dew);
+            WorkshopUi.Label(seat, "Silk State", new Rect(19, 225, 444, 66), window ?
+                weavingWindowWet ? "窗沿丝轴 · 沾了冷露" : "窗沿丝轴 · 已可上机"
+                : "柜中丝轴 · 状态合适", 28, WorkshopUi.Ink, TextAnchor.MiddleCenter, WorkshopArt.ReadingFont);
+        }
+
+        Copy("理经前先看丝轴", ChallengeVariant == 0
+            ? "寒露清晨，今晚前要织出样。\n窗沿沾露，先用柜中的丝轴。\n也可以整理窗沿丝再用。"
+            : "这张工单是干爽的午后，两轴都可从秋分验收料里选用。");
+        Act("Hanlu Cabinet Spool", "领柜中丝轴", () => SelectHanluSpool(false), true);
+        Act("Hanlu Window Spool", "领窗边丝轴", () => SelectHanluSpool(true));
+        if (weavingWindowWet)
+            Act("Hanlu Condition Spool", "把湿轴移到整理架", () =>
+            {
+                weavingWindowWet = false;
+                weavingPrepHint = "上架整理后，窗边丝轴也可上机。";
+                Render();
+            });
+        if (!string.IsNullOrEmpty(weavingPrepHint))
+            WorkshopUi.Label(infoPanel, "Hanlu Dew Feedback", new Rect(27, 567, 444, 60),
+                weavingPrepHint, 23, WorkshopUi.Green, TextAnchor.UpperLeft);
+    }
+
+    private void SelectHanluSpool(bool window)
+    {
+        if (window && weavingWindowWet)
+        {
+            weavingPrepHint = "丝轴上还有冷露。可先移至整理架。";
+            Render();
+            return;
+        }
+        weavingSilkReady = true;
+        Render();
+    }
+
+    private void DrawAutumnSilkHandoff(string name, Rect bounds, string caption, string sample)
+    {
+        var strip = WorkshopUi.PixelCard(art, name, bounds, WorkshopUi.Ink, WorkshopUi.Bronze);
+        WorkshopUi.Label(strip, "Silk Handoff Caption", new Rect(15, 0, bounds.width - 168, bounds.height), caption,
+            21, WorkshopUi.Cream, TextAnchor.MiddleLeft);
+        DrawWorkSample(strip, new Rect(bounds.width - 151, 3, 136, bounds.height - 6), sample);
     }
 
     private Text AutumnControl(string name, Rect bounds, Action input, Sprite tool = null)
@@ -444,6 +558,11 @@ internal sealed partial class WorkshopObservationView
     private void UpdateWeaving(string message = null)
     {
         PaintWovenRows();
+        string action = "照示样抬经线，看箭头起点再送梭。";
+        if (wovenCount == 0)
+            action = ChallengeVariant == 0 ? "先点「奇数经线」，再从左送赭梭。"
+                : "先点「奇数经线」和「两侧经线」。\n再从左送青梭。";
+        weavingGuide.text = "寒露清晨转凉，回织坊织前批生丝。\n" + action;
         int threads = WeavingThreadMask(heddles);
         for (int col = 0; col < WeavingColumns; col++)
             liveHeddlePegs[col].color = RaisedWeavingThread(threads, col) ? WorkshopUi.Bronze : InsetPaper;
@@ -535,6 +654,8 @@ internal sealed partial class WorkshopObservationView
                     ribbon += RaisedWeavingThread(wovenPatterns[row], col) ? wovenColors[row] == 0 ? "3" : "5" : "1";
             }
             FinishChallenge(100 + (WeavingMoveBudget - emptyRuns) * 10, $"双色织带 · 六梭完成 · 空送 {emptyRuns} 次", ribbon);
+            if (WorkshopProgress.SeasonalOrderEnabled && IsAtOwnWorkshop(observation))
+                WorkshopProgress.Award(WorkshopItem.RawSilkCloth);
             ShowShuttlePass(shuttle, fromSide, wovenCount - 1);
             return;
         }

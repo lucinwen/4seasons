@@ -80,6 +80,11 @@ public class AutumnLoomTrigger : MonoBehaviour
 
         _floatBtn.Hide();
         _shown = false;
+        if (WorkshopProgress.SeasonalOrderEnabled && !WorkshopObservationView.HasOrderWork(WorkshopObservation.HanluLoom))
+        {
+            WorkshopObservationView.Show(WorkshopObservation.HanluLoom);
+            return;
+        }
         MiniGameOverlay.Show("EmbroideryScene");
     }
 

@@ -232,15 +232,15 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
     {
         BuildBase();
         Label(page, "Finale Kicker", new Rect(98, 58, 650, 40),
-            "终章 · 四时织录", 28, Gold);
+            "冬至 · 贺冬交衣", 28, Gold);
         Label(page, "Finale Time", new Rect(976, 58, 342, 40),
-            "春 · 夏 · 秋 · 冬", 24, Muted, TextAnchor.MiddleRight);
+            "二十四节气 22/24", 24, Muted, TextAnchor.MiddleRight);
         WorkshopUi.Fill(page, "Finale Line", new Rect(98, 112, 1220, 2), new Color32(214, 174, 103, 160));
 
         Label(page, "Finale Title", new Rect(96, 167, 1190, 88),
-            "一件丝衣里的四季劳动", 57, Cream, TextAnchor.MiddleCenter);
+            "一张工单，缝成一件丝衣", 57, Cream, TextAnchor.MiddleCenter);
         Label(page, "Finale Body", new Rect(147, 277, 1090, 220),
-            "从清明的一片嫩叶，到夏日的蚕茧与丝绪；从秋分的经纬，到冬雪前的染色与裁衣，小学徒终于走完了从桑叶到成衣的全部工序。\n\n四时合作社的老师傅把新衣挂上展架。二十四节气的线索、师傅的叮嘱与这一路的劳动，也一同被收进了《四时桑织录》。",
+            "清明选垄，谷雨给桑。芒种验茧，夏至缫丝。秋分借光验丝，寒露理经走梭。立冬试色染绸，小雪晾布排裁后缝衣。\n\n冬至贺冬，师傅把这件新衣挂上展架。打开制作记录，可以顺着这张工单回看每一道工序。",
             30, Cream, TextAnchor.UpperCenter);
 
         for (int i = 0; i < 4; i++)

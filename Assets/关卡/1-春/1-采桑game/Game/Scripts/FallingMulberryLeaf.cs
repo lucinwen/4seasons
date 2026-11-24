@@ -2,6 +2,8 @@ using UnityEngine;
 
 namespace Qingming.Harvest
 {
+    internal enum MulberryLeafCondition { Ready, Damaged, Dewy, Folded }
+
     /// <summary>
     /// 单片桑叶的下落行为：垂直下落 + 正弦左右摆动 + 缓慢旋转 + 可被拾取。
     /// 与玩家/篮子的拾取区（LeafCollector Trigger）接触时触发 OnCollected。
@@ -21,9 +23,17 @@ namespace Qingming.Harvest
         private Vector3 _basePos;
         private bool _collected;
 
+        internal MulberryLeafCondition Condition { get; private set; }
+        internal bool IsSuitableForFeeding => Condition == MulberryLeafCondition.Ready;
+
         /// <summary>供 Spawner 在生成后调用。</summary>
         public void Initialize(float fallSpeed, float destroyY, float swayAmp, float swayFreq,
-            float spinDegPerSec, MulberryLeafSpawner spawner)
+            float spinDegPerSec, MulberryLeafSpawner spawner, bool suitableForFeeding = true)
+            => Initialize(fallSpeed, destroyY, swayAmp, swayFreq, spinDegPerSec, spawner,
+                suitableForFeeding ? MulberryLeafCondition.Ready : MulberryLeafCondition.Damaged);
+
+        internal void Initialize(float fallSpeed, float destroyY, float swayAmp, float swayFreq,
+            float spinDegPerSec, MulberryLeafSpawner spawner, MulberryLeafCondition condition)
         {
             _fallSpeed = fallSpeed;
             _destroyY = destroyY;
@@ -34,6 +44,7 @@ namespace Qingming.Harvest
             _phase = Random.Range(0f, Mathf.PI * 2f);
             _basePos = transform.position;
             _collected = false;
+            Condition = condition;
         }
 
         private int _updateTicks;
@@ -104,8 +115,15 @@ namespace Qingming.Harvest
 
             // 通知 GameManager
             var mgr = MulberryHarvestGameManager.Instance;
-            if (mgr != null) mgr.NotifyLeafCollected();
-            WorkshopAudioFeedback.Collect();
+            if (IsSuitableForFeeding)
+            {
+                if (mgr != null) mgr.NotifyLeafCollected();
+                WorkshopAudioFeedback.Collect();
+            }
+            else if (mgr != null)
+            {
+                mgr.NotifyUnsuitableLeafCollected(Condition);
+            }
 
             // 简单拾取视觉：轻微放大后销毁
             StartCoroutine(PickupAndDestroy());

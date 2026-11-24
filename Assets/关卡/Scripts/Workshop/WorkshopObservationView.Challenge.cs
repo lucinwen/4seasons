@@ -20,7 +20,7 @@ internal sealed partial class WorkshopObservationView
         ("完整蚕茧", "WorkshopObservation/Summer_CocoonIntact"),
         (null, null),
         ("手缫丝束", "WorkshopFinish/RawSilk"),
-        ("蚕花供台纪念签", null),
+        ("生丝验收签", "WorkshopGameArt/SilkBobbin"),
         ("平纹织样", "WorkshopFinish/PlainSilk"),
         ("双染试色布头", "WorkshopObservation/Winter_DyedSwatch"),
         ("节用裁衣纸样", null)
@@ -29,7 +29,6 @@ internal sealed partial class WorkshopObservationView
     internal static string RewardName(WorkshopObservation id) => ChallengeRewards[(int)id].name;
     internal static Sprite RewardIcon(WorkshopObservation id)
     {
-        if (id == WorkshopObservation.QiufenOffering) return WorkshopObservationArt.Current?.OfferingWine;
         if (id == WorkshopObservation.XiaoxueTailoring) return WorkshopArt.CutPiece(0);
         return Resources.Load<Sprite>(ChallengeRewards[(int)id].icon);
     }
@@ -89,7 +88,7 @@ internal sealed partial class WorkshopObservationView
         earnedRewardThisRun = false;
         stampCurrentResult = false;
         if (!readOnly && IsSeasonGame(id))
-            PrepareChallenge(BestWork(id, 0) != null ? 1 : 0);
+            PrepareChallenge((WorkshopProgress.SeasonalOrderEnabled ? HasOrderWork(id) : BestWork(id, 0) != null) ? 1 : 0);
     }
 
     private void PrepareChallenge(int order)
@@ -110,7 +109,7 @@ internal sealed partial class WorkshopObservationView
     private void DrawChallengeStatus(Color accent)
     {
         string pageStatus = HasRecord(observation) ? "残页已收集" : "残页待收集";
-        WorkshopUi.Label(page, GameComplete ? "Challenge Completed" : "Challenge Playing", new Rect(1140, 71, 566, 58),
+        WorkshopUi.Label(page, GameComplete ? "Challenge Completed" : "Challenge Playing", new Rect(1140, 68, 566, 39),
             OrderTitle(ChallengeVariant) + (GameComplete ? "已完成 · " : " · ") + pageStatus, 30, accent, TextAnchor.MiddleRight);
     }
 
@@ -120,12 +119,14 @@ internal sealed partial class WorkshopObservationView
 
         if (readOnly)
         {
-            var first = BestWork(observation, 0);
+            var delivery = OrderWork(observation);
+            var first = delivery ?? BestWork(observation, 0);
             var extra = BestWork(observation, 1);
             if (first != null || extra != null)
             {
-                DrawArchivedOrder(0, first);
-                DrawArchivedOrder(1, extra);
+                DrawArchivedOrder(0, first, delivery != null ? "主线工单" : null);
+                if (extra != null || observation != WorkshopObservation.QingmingMulberry)
+                    DrawArchivedOrder(1, extra);
                 return;
             }
         }
@@ -190,13 +191,13 @@ internal sealed partial class WorkshopObservationView
         }
     }
 
-    private void DrawArchivedOrder(int order, WorkshopProgress.ChallengeWork work)
+    private void DrawArchivedOrder(int order, WorkshopProgress.ChallengeWork work, string caption = null)
     {
         var card = OrderReceipt("Archived Order " + order, new Rect(28 + order * 591, 848, 581, 60));
         if (!DrawWorkSample(card, new Rect(11, 6, 48, 48), work?.sample) && work != null)
             WorkshopUi.Picture(card, "Work Icon", new Rect(11, 6, 48, 48), RewardIcon(observation));
         WorkshopUi.Label(card, "Archived Work", new Rect(69, 4, 503, 51),
-            OrderTitle(order) + " · " + (work == null ? "待完成" : work.description), 21, WorkshopUi.Green);
+            (caption ?? OrderTitle(order)) + " · " + (work == null ? "待完成" : work.description), 21, WorkshopUi.Green);
     }
 
     private Button DrawChallengeControls()
@@ -234,6 +235,8 @@ internal sealed partial class WorkshopObservationView
         stampCurrentResult = true;
         earnedRewardThisRun = WorkshopProgress.RecordChallenge(Definitions[(int)observation].Id,
             ChallengeVariant, score, result, sample);
+        if (WorkshopProgress.SeasonalOrderEnabled && IsAtOwnWorkshop(observation))
+            WorkshopProgress.RecordSeasonalOrderWork(Definitions[(int)observation].Id, ChallengeVariant, score, result, sample);
         WorkshopAudioFeedback.Confirm();
         Step(CompletionStage(observation));
     }

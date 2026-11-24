@@ -2,11 +2,7 @@ using UnityEngine;
 using Qingming.LevelBackground;
 
 /// <summary>
-/// 冬天关卡「裁衣台」触发点：玩家靠近时显示悬浮按钮「开始裁衣」。
-/// 前置条件：已完成染色并选好衣服颜色，即已拥有染好颜色的布匹。
-/// - 已拥有布匹 → 进入裁衣小游戏（ClothCutting）
-/// - 未拥有布匹 → 提示先完成染色并选颜色
-/// 按钮与其它场景共用 FloatingActionButton，尺寸/字体一致。
+/// 冬季裁衣台。先晾干立冬染布，再为小雪夹衣排料和裁片。
 /// </summary>
 public class WinterClothCuttingTrigger : MonoBehaviour
 {
@@ -15,7 +11,6 @@ public class WinterClothCuttingTrigger : MonoBehaviour
     public float triggerDistance = 3.5f;
 
     [Header("悬浮按钮")]
-    public string buttonText = "开始裁衣";
     public Vector3 buttonOffset = new Vector3(0f, 2.2f, 0f);
     [Range(0f, 1f)]
     public float buttonOpacity = 0.9f;
@@ -25,9 +20,6 @@ public class WinterClothCuttingTrigger : MonoBehaviour
     [TextArea]
     public string noClothMessage = "请先完成染色，并选好自己喜欢的衣服颜色。";
 
-    [Header("裁衣小游戏场景名")]
-    public string clothCuttingSceneName = "ClothCutting";
-
     private FloatingActionButton _floatBtn;
     private Transform _player;
     private bool _shown;
@@ -35,7 +27,7 @@ public class WinterClothCuttingTrigger : MonoBehaviour
     private void Awake()
     {
         _floatBtn = gameObject.AddComponent<FloatingActionButton>();
-        _floatBtn.Configure(buttonText, buttonOffset, OnStartCuttingClicked);
+        _floatBtn.Configure("小雪 · 晾布裁衣", buttonOffset, OnStartCuttingClicked);
         _floatBtn.SetOpacity(buttonOpacity);
         WorkshopPickupGlow.Bind(gameObject, () => WinterLevelState.HasDyedCloth &&
             !WorkshopProgress.Has(WorkshopItem.CutPieces));
@@ -50,8 +42,7 @@ public class WinterClothCuttingTrigger : MonoBehaviour
             _player = go.transform;
         }
 
-        // 小游戏叠加层打开期间不显示场景悬浮按钮
-        if (MiniGameOverlay.IsActive)
+        if (WorkshopQuestGuide.BlocksWorldInput || WorkshopQuestGuide.IsWorldOverlayActive)
         {
             if (_shown)
             {
@@ -65,13 +56,17 @@ public class WinterClothCuttingTrigger : MonoBehaviour
         if (inRange == _shown) return;
 
         _shown = inRange;
-        if (inRange) _floatBtn.Show();
+        if (inRange)
+        {
+            _floatBtn.SetText(WorkshopProgress.Has(WorkshopItem.CutPieces) ? "小雪裁衣 · 再玩" : "小雪 · 晾布裁衣");
+            _floatBtn.Show();
+        }
         else _floatBtn.Hide();
     }
 
     private void OnStartCuttingClicked()
     {
-        if (!WinterLevelState.HasDyedCloth)
+        if (!WorkshopProgress.Has(WorkshopItem.DyedCloth))
         {
             SimplePopup.Show(noClothTitle, noClothMessage, "知道了", null);
             return;
@@ -79,10 +74,11 @@ public class WinterClothCuttingTrigger : MonoBehaviour
 
         _floatBtn.Hide();
         _shown = false;
-        Debug.Log("[WinterClothCuttingTrigger] 已拥有染好颜色的布匹，叠加打开裁衣小游戏 " + clothCuttingSceneName);
-        if (WorkshopProgress.Has(WorkshopItem.CutPieces)) MiniGameOverlay.Show(clothCuttingSceneName);
-        else WinterNpcDialogue.IntroduceTailoring(() => MiniGameOverlay.Show(clothCuttingSceneName));
+        if (WorkshopProgress.Has(WorkshopItem.CutPieces)) OpenXiaoxue();
+        else WinterNpcDialogue.IntroduceTailoring(OpenXiaoxue);
     }
+
+    private static void OpenXiaoxue() => WorkshopObservationView.Show(WorkshopObservation.XiaoxueTailoring);
 
     private void OnDestroy()
     {

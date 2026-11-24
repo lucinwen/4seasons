@@ -32,33 +32,15 @@ internal sealed partial class WorkshopObservationView
     private void DrawQingming()
     {
         Art("Mulberry Garden", "WorkshopGuides/Spring_ChapterGuide", ArtBounds, true);
-        var young = At(0.29f, 0.63f, 0.27f, 0.43f);
-        var mature = At(0.71f, 0.63f, 0.27f, 0.43f);
+        var young = At(0.29f, 0.59f, 0.27f, 0.43f);
+        var damaged = At(0.71f, 0.59f, 0.27f, 0.43f);
         WorkshopUi.PixelCard(art, "Young Leaf Sample Paper", young, LightSurface, WorkshopUi.Bronze);
-        WorkshopUi.PixelCard(art, "Mature Leaf Sample Paper", mature, LightSurface, WorkshopUi.Bronze);
+        WorkshopUi.PixelCard(art, "Damaged Leaf Sample Paper", damaged, LightSurface, WorkshopUi.Bronze);
         Prop("Spring_QingmingYoungMulberry", young);
-        Prop("Spring_QingmingMatureMulberry", mature);
-        if (stage > 0)
-        {
-            Tag("Young Leaf Finding", "嫩梢已展开的叶片", At(0.29f, 0.88f, 0.29f, 0.08f));
-            Tag("Mature Leaf Finding", "成熟叶脉更粗", At(0.71f, 0.88f, 0.26f, 0.08f), stage == 1);
-        }
-
-        if (stage == 2)
-        {
-            Copy("先看蚕龄，再选叶", "这片嫩梢上的叶子已经展开，叶面柔嫩，适合这批小蚕。长大后的蚕会用不同成熟度的桑叶。");
-            Restart();
-            return;
-        }
-
-        Copy(stage == 1 ? "再看看芽尖和叶脉" : "哪片适合这批小蚕？",
-            stage == 1
-                ? "右边叶片已长大，叶脉较粗。找一片已经展开、叶面柔嫩的桑叶，不需要掐掉芽尖。"
-                : "左、右都是桑叶。观察芽尖、叶面和叶脉，选一片已经展开、叶质柔嫩的给小蚕。", stage == 1);
-        Hotspot("Choose Young Leaf", young, Finish);
-        Hotspot("Choose Mature Leaf", mature, () => Step(1));
-        Act("Select Young Leaf", "选左边的叶片", Finish, true);
-        Act("Select Mature Leaf", "选右边的叶片", () => Step(1));
+        Prop("Spring_QingmingDamagedMulberry", damaged);
+        Tag("Young Leaf Finding", "嫩叶收进篮", At(0.29f, 0.84f, 0.26f, 0.08f));
+        Tag("Damaged Leaf Finding", "黄褐破叶跳过", At(0.71f, 0.84f, 0.26f, 0.08f));
+        Copy("清明记桑垄，谷雨采鲜叶", "清明前后，桑树展开新叶。选叶已舒展、露已退的桑垄移篮接叶。谷雨从同一垄新采，湿叶去水后给桑。");
     }
 
     private void DrawGuyu()
@@ -295,20 +277,12 @@ internal sealed partial class WorkshopObservationView
     private void DrawQiufen()
     {
         Texture("Offering Table and Tools", "WorkshopFinish/AutumnOfferingTable", ArtBounds);
-        Art("Raw Silk From Summer", "WorkshopFinish/RawSilk", At(0.85f, 0.79f, 0.12f, 0.22f));
-        Tag("Previous Season Material", "上一章 · 生丝", At(0.84f, 0.92f, 0.19f, 0.073f));
-        if (stage == 2)
-        {
-            Copy("记下织坊的致谢", "这段织坊故事回顾采桑、养蚕和缫丝一路的劳动。供台和原有酬蚕任务照常，秋分观察已可在四时织录复看。");
-            if (!WorkshopHeritageBrief.IsOpen)
-                Act("Read Autumn Heritage", "看苏州织造资料", OpenAutumnHeritage, true);
-            Restart();
-            return;
-        }
-
-        Copy("读供台旁的说明", "织布前，学徒在供台边回想上一章收下的生丝，也向照料桑蚕、煮茧缫丝的人致谢。画面是织坊故事。");
-        Hotspot("Read Thanks At Table", At(0.5f, 0.5f, 0.73f, 0.64f), Finish);
-        Act("Read Offering Note", "读完并记入织录", Finish, true);
+        var panel = WorkshopUi.PixelCard(art, "Accepted Silk Card", new Rect(184, 381, 792, 142),
+            LightSurface, WorkshopUi.Bronze);
+        var work = WorkshopUpstreamWork(WorkshopObservation.QiufenOffering, 0);
+        DrawWorkSample(panel, new Rect(24, 13, 744, 115), work?.sample);
+        Copy("秋分借光验丝", "白昼渐短，织坊在夜织前借光查接头。验过的生丝收进柜子，留给寒露理经走梭。");
+        Act("Read Autumn Heritage", "看苏州织造资料", OpenAutumnHeritage, true);
     }
 
     private void DrawLoom()

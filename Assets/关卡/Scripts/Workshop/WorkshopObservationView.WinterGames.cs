@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using JiangnanDye;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -11,17 +12,17 @@ internal sealed partial class WorkshopObservationView
         internal readonly string[] Names;
         internal readonly Vector2Int[] Ranges;
         internal readonly Color Ink;
-        internal readonly int WetBag;
+        internal readonly int RipeBatch;
         internal readonly int Water;
         internal readonly int Concentrate;
         internal readonly bool InOrder;
 
-        internal DyeRun(string[] names, Vector2Int[] ranges, Color ink, int wetBag, int water, int concentrate, bool inOrder)
+        internal DyeRun(string[] names, Vector2Int[] ranges, Color ink, int ripeBatch, int water, int concentrate, bool inOrder)
         {
             Names = names;
             Ranges = ranges;
             Ink = ink;
-            WetBag = wetBag;
+            RipeBatch = ripeBatch;
             Water = water;
             Concentrate = concentrate;
             InOrder = inOrder;
@@ -30,10 +31,10 @@ internal sealed partial class WorkshopObservationView
 
     private static readonly DyeRun[] WinterDyeRuns =
     {
-        new DyeRun(new[] { "深靛", "雾蓝" }, new[] { new Vector2Int(4, 5), new Vector2Int(1, 2) },
-            new Color32(49, 76, 125, 255), 1, 2, 1, false),
-        new DyeRun(new[] { "浅茶", "深赭" }, new[] { new Vector2Int(1, 2), new Vector2Int(5, 6) },
-            new Color32(116, 56, 48, 255), 2, 1, 1, true)
+        new DyeRun(new[] { "深栀黄", "浅栀黄" }, new[] { new Vector2Int(4, 5), new Vector2Int(1, 2) },
+            new Color32(194, 127, 38, 255), 1, 2, 1, false),
+        new DyeRun(new[] { "浅栀黄", "蜜栀黄" }, new[] { new Vector2Int(1, 2), new Vector2Int(5, 6) },
+            new Color32(170, 108, 37, 255), 2, 1, 1, true)
     };
     private const int StartingVatDepth = 5;
     private const int MaxVatDepth = 6;
@@ -46,6 +47,8 @@ internal sealed partial class WorkshopObservationView
     private readonly Image[] winterDyeOrderCloth = new Image[2];
     private readonly Button[] winterDyeOrderButtons = new Button[2];
     private bool winterDyeSorted;
+    private bool winterDyeGround;
+    private int winterDyeRejectedBatch;
     private int winterDyeOrder;
     private int winterVatDepth;
     private int winterDyeWaterLeft;
@@ -78,6 +81,8 @@ internal sealed partial class WorkshopObservationView
                 Array.Clear(winterDyeDepth, 0, winterDyeDepth.Length);
                 Array.Clear(winterDyeAccepted, 0, winterDyeAccepted.Length);
                 winterDyeSorted = false;
+                winterDyeGround = false;
+                winterDyeRejectedBatch = -1;
                 winterDyeOrder = winterDyeVatChanges = winterDyeReplacements = winterDyeRenewals = 0;
                 winterDyeWarning = false;
                 winterDyeFeedback = null;
@@ -112,43 +117,91 @@ internal sealed partial class WorkshopObservationView
             return;
         }
 
+        if (!winterDyeGround)
+        {
+            DrawWinterGardeniaGrinding();
+            return;
+        }
+
         DrawWinterDyeDesk();
     }
 
     private void DrawWinterDyeBags()
     {
         var trayArt = GameArtSprite("OfferingTray");
+        int ripeBatch = CurrentDyeRun.RipeBatch;
         for (int i = 0; i < 3; i++)
         {
             int bag = i;
+            bool ripe = i == ripeBatch;
+            bool bruised = i == (ripeBatch + 1) % 3;
+            string source = ripe ? "新到批 · 红黄熟果" : bruised ? "分检批 · 裂果潮包" : "早采批 · 青绿果";
             Rect bounds = new Rect(75 + i * 350, 146, 310, 332);
             IllustratedGameCard(art, "Dye Sorting Tray " + i, bounds, trayArt, WinterWorktop);
-            Prop(i == CurrentDyeRun.WetBag ? "Winter_DyeSampleDamp" : "Winter_DyeSampleDry",
-                new Rect(bounds.x + 27, bounds.y + 24, 256, 210));
-            WinterControl(art, "Lidong Bag " + i, new Rect(bounds.x + 32, bounds.y + 247, 246, 59),
-                $"分查 {i + 1} 号染袋", () => CheckWinterDyeBag(bag));
+            WorkshopUi.Picture(art, "Gardenia Batch " + i, new Rect(bounds.x + 46, bounds.y + 20, 218, 170),
+                GameArtSprite(ripe ? "GardeniaRipe" : bruised ? "GardeniaDamaged" : "GardeniaGreen"));
+            Tag("Lidong Batch Tag " + i, source, new Rect(bounds.x + 18, bounds.y + 185, 274, 45), bruised);
+            WinterControl(art, "Lidong Bag " + i, new Rect(bounds.x + 32, bounds.y + 249, 246, 59),
+                $"抽验 {i + 1} 号果料", () => CheckWinterDyeBag(bag));
         }
 
-        Copy(winterDyeWarning ? "这包外布还干爽" : "挑出受潮的染袋",
-            "先看袋面水印，再调同一缸染液，做深浅两块小样。", winterDyeWarning);
+        Copy(winterDyeWarning ? "这批果料先留复查" : "立冬 · 认栀果成熟度",
+            winterDyeWarning ? winterDyeFeedback :
+            "浙南十一月的栀子批次到了。熟果呈红黄色，早采青果染色浅。挑合适的一包，再拿寒露绸样试染。", winterDyeWarning);
+        if (winterDyeRejectedBatch >= 0)
+        {
+            bool damaged = winterDyeRejectedBatch == (ripeBatch + 1) % 3;
+            DrawWinterSwatch(infoPanel, "Rejected Gardenia Test", new Rect(28, 354, 187, 96), damaged ? 3 : 1);
+            WorkshopUi.Label(infoPanel, "Rejected Gardenia Result", new Rect(228, 354, 249, 96),
+                damaged ? "裂果潮包\n样色不匀，留待复查" : "青果抽样\n色浅，够不上工单", 22, ErrorInk);
+        }
+        DrawWinterLoomSample();
     }
 
     private void CheckWinterDyeBag(int index)
     {
         if (GameComplete || winterDyeSorted) return;
 
-        if (index == CurrentDyeRun.WetBag)
+        if (index == CurrentDyeRun.RipeBatch)
         {
             winterDyeSorted = true;
             winterDyeWarning = false;
-            winterDyeFeedback = CurrentDyeRun.InOrder ? "先交浅样。留好原液，深样随后。" : "两单共用这一缸。先试一块布。";
+            winterDyeFeedback = CurrentDyeRun.InOrder
+                ? "红黄熟果已取料。先交浅栀黄，留好原液。"
+                : "红黄熟果已取料。深浅栀黄共用这一缸。";
             WorkshopAudioFeedback.Place();
         }
         else
         {
             winterDyeWarning = true;
+            winterDyeRejectedBatch = index;
+            winterDyeFeedback = index == (CurrentDyeRun.RipeBatch + 1) % 3
+                ? "这一包有裂果和水迹。换新批，找红黄熟果。"
+                : "早采青果的试样偏浅。换成红黄熟果再试。";
             WorkshopAudioFeedback.Notice();
         }
+        Render();
+    }
+
+    private void DrawWinterGardeniaGrinding()
+    {
+        var tools = Resources.Load<WinterGrindingConfig>("WinterGrindingConfig");
+        IllustratedGameCard(art, "Lidong Grinding Table", new Rect(181, 77, 798, 475), GameArtSprite("WoodDesk"), WinterWorktop);
+        WorkshopUi.Picture(art, "Lidong Gardenia Mortar", new Rect(329, 118, 423, 316), tools?.mortar);
+        WorkshopUi.Picture(art, "Lidong Gardenia Rod", new Rect(643, 104, 194, 213), tools?.rod);
+        WorkshopUi.Picture(art, "Ripe Gardenia for Grinding", new Rect(487, 189, 134, 121),
+            GameArtSprite("GardeniaRipe"));
+        WinterControl(art, "Lidong Grind", new Rect(432, 468, 296, 58), "研细熟栀果", GrindWinterGardenia, true, 26);
+        Copy("红黄熟果 · 先研料",
+            "这批果料已经干燥。把熟果研细，做一缸深浅试色。先用寒露留下的布头，验好成色再动整匹。");
+        DrawWinterLoomSample();
+    }
+
+    private void GrindWinterGardenia()
+    {
+        if (!winterDyeSorted || winterDyeGround || GameComplete) return;
+        winterDyeGround = true;
+        WorkshopAudioFeedback.DyeIngredient();
         Render();
     }
 
@@ -171,7 +224,7 @@ internal sealed partial class WorkshopObservationView
         winterDyeVatTarget = WorkshopUi.Rect(desk, "Lidong Vat Drop", new Rect(326, 77, 384, 216));
         Rect vatArt = new Rect(64, 0, 257, 216);
         WorkshopUi.Picture(winterDyeVatTarget, "Water Vat", vatArt, winterDyeSprites?.clearWaterVat);
-        Sprite vat = ChallengeVariant == 0 ? winterDyeSprites?.blueVat : winterDyeSprites?.redVat;
+        Sprite vat = winterDyeSprites?.yellowVat;
         winterDyeLiquid = vat == null
             ? WorkshopUi.Fill(winterDyeVatTarget, "Vat Liquid", new Rect(65, 28, 254, 158), WinterVatRim)
             : WorkshopUi.Picture(winterDyeVatTarget, "Vat Liquid", vatArt, vat);
@@ -211,9 +264,21 @@ internal sealed partial class WorkshopObservationView
         winterDyeDrop = DrawWinterSwatch(art, "Lidong Dragged Swatch", new Rect(0, 0, 110, 83), 0);
         winterDyeDrop.gameObject.SetActive(false);
 
-        Copy("两块布共用一缸染液", "拖布头入缸短蘸，也可以点「短蘸」。选「晾看」和订单样比较。浅了能再蘸，过深可只换这块。");
+        Copy("熟栀果 · 同缸试深浅",
+            "拖寒露的绸样入缸，也可以点「短蘸」。选「晾看」和订单样比较。浅了能再蘸，过深可只换这块。");
         Act("Lidong Refill Vat", "换一缸并保留已交小样", RenewWinterVat);
+        DrawWinterLoomSample();
         RefreshWinterDye();
+    }
+
+    private void DrawWinterLoomSample()
+    {
+        var work = OrderWork(WorkshopObservation.HanluLoom)
+            ?? BestWork(WorkshopObservation.HanluLoom, ChallengeVariant)
+            ?? BestWork(WorkshopObservation.HanluLoom, 1 - ChallengeVariant);
+        if (!DrawWorkSample(infoPanel, new Rect(27, 512, 168, 86), work?.sample)) return;
+        WorkshopUi.Label(infoPanel, "Earlier Loom Sample", new Rect(214, 512, 250, 86),
+            "从寒露织好的布留样\n试色通过再染整幅", 23, WorkshopUi.Ink);
     }
 
     private void DrawWinterDyeOrder(RectTransform shelf, int index)
@@ -251,7 +316,7 @@ internal sealed partial class WorkshopObservationView
             WorkshopUi.Label(sample, "Dry Swatch Name", label,
                 CurrentDyeRun.Names[i] + " · 已验", 33, WorkshopUi.Green, TextAnchor.MiddleCenter);
         }
-        Copy("深浅两块都染成了", $"调缸 {winterDyeVatChanges} 次，换布 {winterDyeReplacements} 片，换缸 {winterDyeRenewals} 次。小样试出合适的色泽后，才能安排正式染布。");
+        Copy("深浅两块布样已验", "试色小样会留给小雪排料参考。选好色后，还要用染缸给整匹素绸染色，再送到裁衣台。");
     }
 
     private Image DrawWinterSwatch(RectTransform parent, string name, Rect bounds, int depth)
@@ -298,7 +363,7 @@ internal sealed partial class WorkshopObservationView
 
     private void DipWinterDye()
     {
-        if (GameComplete || !winterDyeSorted) return;
+        if (GameComplete || !winterDyeGround) return;
 
         int lastDepth = winterDyeDepth[winterDyeOrder];
         int colored = Mathf.Min(winterVatDepth, lastDepth + DyeDipAmount(winterVatDepth));
@@ -315,7 +380,7 @@ internal sealed partial class WorkshopObservationView
 
     private void HangWinterDye()
     {
-        if (GameComplete || !winterDyeSorted) return;
+        if (GameComplete || !winterDyeGround) return;
 
         var range = CurrentDyeRun.Ranges[winterDyeOrder];
         int depth = winterDyeDepth[winterDyeOrder];
@@ -334,9 +399,11 @@ internal sealed partial class WorkshopObservationView
         if (winterDyeAccepted[0] && winterDyeAccepted[1])
         {
             int score = Mathf.Max(1, 100 - 5 * winterDyeVatChanges - 9 * winterDyeReplacements - 18 * winterDyeRenewals);
-            string palette = ChallengeVariant == 0 ? "1955588" : "1974433";
+            const string palette = "1994444";
             string swatches = new string(palette[winterDyeDepth[0]], 3) + "0" + new string(palette[winterDyeDepth[1]], 3);
-            FinishChallenge(score, $"双色齐 · 调缸 {winterDyeVatChanges} 次 · 换布 {winterDyeReplacements} 片", $"{swatches}/{swatches}/{swatches}");
+            FinishChallenge(score, $"栀黄深浅齐 · 调缸 {winterDyeVatChanges} 次 · 换布 {winterDyeReplacements} 片", $"{swatches}/{swatches}/{swatches}");
+            if (HasOrderWork(WorkshopObservation.LidongDye))
+                WinterLevelState.MarkDyeProduced(DyeColor.Yellow);
             return;
         }
 

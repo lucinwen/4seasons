@@ -1,5 +1,4 @@
 using System.Collections;
-using Qingming.LevelBackground;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -33,11 +32,14 @@ namespace Qingming.Harvest
 
         /// <summary>游戏当前状态。</summary>
         public HarvestGameState State { get; private set; } = HarvestGameState.WaitingToStart;
+        internal bool ShadedRow { get; private set; }
+        internal bool ShadeDewCleared { get; private set; }
 
         /// <summary>通关后触发一次，供主游戏订阅。</summary>
         public event System.Action OnHarvestCompleted;
 
         private bool _completionFired;
+        private bool _earnedPage;
 
         private void Awake()
         {
@@ -78,6 +80,13 @@ namespace Qingming.Harvest
             UpdateUI();
         }
 
+        private void Update()
+        {
+            if (!HarvestOverlayManager.IsHarvestActive && State != HarvestGameState.Completed &&
+                Input.GetKeyDown(KeyCode.Escape))
+                ReturnToSpring();
+        }
+
         /// <summary>开始按钮点击后调用，正式进入游玩状态。</summary>
         public void StartGame()
         {
@@ -86,7 +95,11 @@ namespace Qingming.Harvest
             State = HarvestGameState.Playing;
 
             if (player != null) player.SetControlEnabled(true);
-            if (spawner != null) spawner.StartSpawning();
+            if (spawner != null)
+            {
+                spawner.EarlyShade = ShadedRow && !ShadeDewCleared;
+                spawner.StartSpawning();
+            }
             if (ui != null) ui.HideIntro();
             Debug.Log("[HarvestGameManager] 游戏已开始！");
         }
@@ -110,16 +123,53 @@ namespace Qingming.Harvest
             }
         }
 
+        internal void SelectRow(bool shaded)
+        {
+            if (State != HarvestGameState.WaitingToStart) return;
+            ShadedRow = shaded;
+            if (ui != null) ui.UpdateOrchardChoices();
+        }
+
+        internal void WaitForDew()
+        {
+            if (State == HarvestGameState.Completed || !ShadedRow || ShadeDewCleared) return;
+            ShadeDewCleared = true;
+            if (State == HarvestGameState.Playing && spawner != null)
+            {
+                spawner.EarlyShade = false;
+                spawner.StopSpawning();
+                spawner.ClearAllLeaves();
+                spawner.StartSpawning();
+            }
+            if (ui != null)
+            {
+                ui.UpdateOrchardChoices();
+                if (State == HarvestGameState.Playing)
+                    ui.ShowHarvestNotice("露已收 · 接展开的嫩叶", CollectedLeaves, targetLeaves);
+            }
+        }
+
+        internal void NotifyUnsuitableLeafCollected(MulberryLeafCondition condition)
+        {
+            if (State == HarvestGameState.Playing && ui != null)
+            {
+                string notice = condition == MulberryLeafCondition.Dewy ? "挂露，等干再采"
+                    : condition == MulberryLeafCondition.Folded ? "芽还没展开" : "破叶跳过";
+                ui.ShowHarvestNotice(notice, CollectedLeaves, targetLeaves);
+            }
+        }
+
         private void CompleteGame()
         {
             State = HarvestGameState.Completed;
 
-            // 标记全局状态：已获得桑叶（供后续喂蚕等环节判断）
-            SpringPrompt.HasMulberryLeaves = true;
+            SpringSummerNpcDialogue.RecordHarvestedLeaves(ShadedRow);
+            _earnedPage = WorkshopObservationView.RecordQingmingHarvest(targetLeaves);
 
             if (spawner != null) spawner.StopSpawning();
             if (player != null) player.SetControlEnabled(false);
             if (basket != null) basket.UpdateBasketSprite(targetLeaves);
+            if (ui != null) ui.UpdateOrchardChoices();
             UpdateUI();
 
             // 清理残留桑叶
@@ -131,7 +181,11 @@ namespace Qingming.Harvest
                 OnHarvestCompleted?.Invoke();
             }
 
-            MiniGameCompletionAnimation.PlayThen(MiniGameCompletionId.MulberryHarvest, ExitGame);
+            MiniGameCompletionAnimation.PlayThen(MiniGameCompletionId.MulberryHarvest, () =>
+            {
+                if (ui != null) ui.ShowComplete(targetLeaves, _earnedPage);
+                else ExitGame();
+            });
         }
 
         private bool _returning;
@@ -139,22 +193,13 @@ namespace Qingming.Harvest
         /// <summary>从采桑结算返回春季场景。</summary>
         public void ExitGame()
         {
-            if (_returning || State != HarvestGameState.Completed) return;
-            _returning = true;
-            if (WorkshopProgress.Has(WorkshopItem.MulberryLeaf))
-                ShowHarvestReward();
-            else
-                WorkshopDialoguePresenter.Play(WorkshopDialogueScripts.SpringMulberryComplete, ShowHarvestReward);
-        }
-
-        private void ShowHarvestReward()
-        {
-            SimplePopup.ShowItem(WorkshopItem.MulberryLeaf, "新鲜桑叶已经收进篮子。", ReturnToSpring);
+            if (State == HarvestGameState.Completed) ReturnToSpring();
         }
 
         private void ReturnToSpring()
         {
-            WorkshopProgress.Award(WorkshopItem.MulberryLeaf);
+            if (_returning) return;
+            _returning = true;
 
             // 覆盖层模式：隐藏采桑覆盖层，恢复原场景
             if (HarvestOverlayManager.Instance != null && HarvestOverlayManager.IsHarvestActive)
@@ -176,7 +221,10 @@ namespace Qingming.Harvest
             CollectedLeaves = 0;
             State = HarvestGameState.WaitingToStart;
             _completionFired = false;
+            _earnedPage = false;
             _returning = false;
+            ShadedRow = false;
+            ShadeDewCleared = false;
 
             if (spawner != null)
             {

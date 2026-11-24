@@ -226,6 +226,23 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
         else WorkshopUi.PixelCard(frame, "Production Board", bounds, WorkshopUi.Paper, WorkshopUi.Bronze);
         var content = WorkshopUi.Rect(frame, "Production Journey", bounds);
         Label(content, "Title", new Rect(595, 131, 482, 68), "制作记录", 47);
+        var terms = new[]
+        {
+            WorkshopObservation.QingmingMulberry, WorkshopObservation.GuyuLeaf,
+            WorkshopObservation.MangzhongCocoon, WorkshopObservation.DashuReeling,
+            WorkshopObservation.QiufenOffering, WorkshopObservation.HanluLoom,
+            WorkshopObservation.LidongDye, WorkshopObservation.XiaoxueTailoring
+        };
+        for (int i = 0; i < terms.Length; i++)
+        {
+            var term = terms[i];
+            bool recorded = WorkshopObservationView.HasRecord(term);
+            var view = WorkshopUi.PixelButton(content, "Order Term " + term,
+                new Rect(401 + i % 4 * 218, 211 + i / 4 * 54, 207, 47),
+                WorkshopObservationView.RecordTerm(term) + (recorded ? " · 回看" : " · 待录"),
+                () => OpenChild(done => WorkshopObservationView.ShowRecord(term, done)), recorded, 22);
+            view.interactable = recorded;
+        }
         Label(content, "Journey", new Rect(429, 329, 811, 55), "从一片桑叶到一件成衣", 30);
 
         string garmentId = WorkshopProgress.GarmentId;

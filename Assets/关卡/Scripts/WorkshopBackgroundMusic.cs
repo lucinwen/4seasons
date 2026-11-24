@@ -134,7 +134,6 @@ internal sealed class WorkshopBackgroundMusic : MonoBehaviour
     {
         switch (WorkshopObservationView.ActiveGame)
         {
-            case WorkshopObservation.QingmingMulberry: return "Qingming";
             case WorkshopObservation.GuyuLeaf: return "Guyu";
             case WorkshopObservation.MangzhongCocoon: return "Mangzhong";
             case WorkshopObservation.DashuReeling: return "Dashu";
@@ -145,7 +144,7 @@ internal sealed class WorkshopBackgroundMusic : MonoBehaviour
         }
 
         if (SpringSilkwormWashOverlay.IsOpen) return "Wash";
-        if (HarvestOverlayManager.IsHarvestActive) return "Harvest";
+        if (HarvestOverlayManager.IsHarvestActive) return "Qingming";
         if (FeedOverlayManager.Instance != null && FeedOverlayManager.Instance.IsActive) return "Feed";
         if (AutumnOfferingView.IsOpen) return "Offering";
         if (WinterGrindingOverlay.IsActive) return "Grinding";
@@ -163,7 +162,7 @@ internal sealed class WorkshopBackgroundMusic : MonoBehaviour
             if (!scene.isLoaded) continue;
             switch (scene.name)
             {
-                case "MulberryHarvest": return "Harvest";
+                case "MulberryHarvest": return "Qingming";
                 case "CocoonMatch": return "CocoonMatch";
                 case "Maze_Autumn": return "Maze";
                 case "LoomRepair": return "LoomRepair";

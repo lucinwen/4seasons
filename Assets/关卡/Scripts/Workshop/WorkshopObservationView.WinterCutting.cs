@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using JiangnanDye;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
@@ -62,13 +64,25 @@ internal sealed partial class WorkshopObservationView
     private int winterCutSelected;
     private int winterCutTurn;
     private int winterCutStains;
+    private bool winterCutOrderCloth;
+    private bool winterCutColdRain;
+    private int winterCutMoisture;
     private RectInt winterCutRemnant;
+    private Color winterCutClothBase;
+    private string winterCutDyeSample;
+    private string winterCutDyedColor;
+    private string[] winterCutWeaveRows;
     private bool winterCutHasStainArt;
     private bool winterCutWarning;
     private string winterCutFeedback;
     private Vector2Int? winterCutHover;
 
-    private bool PreservesWinterGrain(int piece) => ChallengeVariant == 1 && piece < 2;
+    internal const string XiaoxueLiningStep = "winter.xiaoxue.lining";
+
+    private static bool CanCutOrderCloth => SceneManager.GetActiveScene().name == WorkshopProgress.SceneName(WorkshopSeason.Winter) &&
+        WorkshopProgress.Has(WorkshopItem.DyedCloth) && !WorkshopProgress.Has(WorkshopItem.CutPieces);
+
+    private bool PreservesWinterGrain(int piece) => (winterCutOrderCloth || ChallengeVariant == 1) && piece < 2;
     private int WinterRemnantLongSide => ChallengeVariant == 1 ? 3 : 2;
 
     private void ResetWinterCutting()
@@ -80,16 +94,60 @@ internal sealed partial class WorkshopObservationView
         winterCutSelected = winterCutTurn = winterCutStains = 0;
         winterCutHover = null;
         winterCutWarning = false;
-        winterCutFeedback = "选一张衣样，移到布上试摆。";
+        winterCutOrderCloth = CanCutOrderCloth;
+        winterCutColdRain = winterCutOrderCloth || ChallengeVariant == 0;
+        winterCutMoisture = winterCutColdRain ? 2 : 1;
+        winterCutFeedback = "染绸还有潮气。先选一处晾架。";
+        LoadWinterCutMaterial();
         var board = WinterClothBoards[ChallengeVariant];
         for (int y = 0; y < WinterClothRows; y++)
             for (int x = 0; x < WinterClothColumns; x++)
                 if (board[y][x] == '#') winterCutStains |= WinterCutBit(x, y);
     }
 
+    private void LoadWinterCutMaterial()
+    {
+        winterCutClothBase = UndyedLinen;
+        winterCutDyedColor = null;
+        winterCutWeaveRows = OrderWork(WorkshopObservation.HanluLoom)?.sample?.Split('/');
+        var work = OrderWork(WorkshopObservation.LidongDye)
+            ?? BestWork(WorkshopObservation.LidongDye, ChallengeVariant)
+            ?? BestWork(WorkshopObservation.LidongDye, 1 - ChallengeVariant);
+        winterCutDyeSample = work?.sample;
+
+        if (WorkshopProgress.Has(WorkshopItem.DyedCloth))
+        {
+            string savedColor = WorkshopProgress.DyedColor;
+            foreach (DyeColor color in DyeColorUtil.AllColors)
+            {
+                string name = DyeColorUtil.ChineseName(color);
+                if (savedColor != name && savedColor != name + "布") continue;
+                var config = Resources.Load<WinterDyeingConfig>("WinterDyeingConfig");
+                var tint = config != null ? config.GetClothTint(color) : DyeColorUtil.Tint(color);
+                winterCutClothBase = Color.Lerp(UndyedLinen, tint, .4f);
+                winterCutDyedColor = name;
+                return;
+            }
+        }
+
+        // Each dye order occupies three columns, with one uncolored column between them.
+        if (string.IsNullOrEmpty(winterCutDyeSample) || winterCutDyeSample.Length < 7 || winterCutDyeSample[3] != '0') return;
+        var ranges = WinterDyeRuns[work.order].Ranges;
+        int shallowColumn = ranges[0].x <= ranges[1].x ? 0 : 4;
+        int swatch = winterCutDyeSample[shallowColumn] - '0';
+        if (swatch > 0 && swatch < SampleColors.Length)
+            winterCutClothBase = Color.Lerp(UndyedLinen, SampleColors[swatch], .4f);
+    }
+
     private void DrawWinterCutting()
     {
-        Art("Winter Cutting Table", "WorkshopGuides/Winter_ChapterGuide", ArtBounds, true);
+        Art("Winter Cutting Table", "WorkshopGameArt/XiaoxueRainCourtyard", ArtBounds, true);
+        if (winterCutMoisture > 0)
+        {
+            DrawWinterDryingRacks();
+            return;
+        }
+
         var worktopArt = GameArtSprite("WoodDesk");
         IllustratedGameCard(art, "Xiaoxue Plan Board", new Rect(38, 36, 1084, 580), worktopArt, WinterWorktop);
         if (worktopArt != null)
@@ -109,19 +167,98 @@ internal sealed partial class WorkshopObservationView
             WorkshopUi.Green, TextAnchor.MiddleCenter);
 
         if (GameComplete)
-            Copy("三片裁齐，整块料留下了", "余下的整块布能用来做里衬或修补。按衣样错开落料，可以给下一道工序留出更整齐的布。");
+        {
+            string next = WorkshopProgress.Has(WorkshopItem.CutPieces)
+                ? "前片、后片、袖片和里襟已备好。带上缝衣针，在主厅缝成小雪夹衣。"
+                : "排样已记录。等有正式染布后，将整幅布带回小雪裁衣台。";
+            Copy("三片裁齐，留出余布", next);
+        }
         else
         {
-            string goal = $"摆齐前片、后片和袖片，再留至少 2×{WinterRemnantLongSide} 的整块净布。";
-            if (ChallengeVariant == 1) goal += "前后片要顺纹，只能掉头。";
-            Copy("先排料，再下剪", goal + " 随时可以挪已摆的衣样，或撤回上一步。");
+            string goal = $"摆齐前片、后片和袖片，给里襟留至少 2×{WinterRemnantLongSide} 的整块净布。";
+            if (PreservesWinterGrain(0)) goal += "前后片须顺着绸面的经纹，只能掉头。";
+            Copy("小雪备衣 · 先排料", "先点一张衣样，再点布面摆下。" + goal + "衣样可以重摆。");
             Act("Xiaoxue Snip", "确认下剪", CutWinterCloth, true);
             var shears = GameArtSprite("TailorShears");
             if (shears != null)
                 WorkshopUi.Picture(infoPanel.Find("Xiaoxue Snip"), "Tailor Shears", new Rect(21, 7, 76, 47), shears);
             Act("Xiaoxue Undo", "撤回上一步", UndoWinterCut);
         }
+        DrawWinterCutMaterial();
         RefreshWinterCutting();
+    }
+
+    private void DrawWinterDryingRacks()
+    {
+        Sprite rackArt = GameArtSprite("DyeDryRack");
+        Sprite cloth = GameArtSprite("CuttingCloth");
+        string[] names = { "临院透风", "背雨 · 闷角", "背雨 · 通风" };
+        string[] conditions = { winterCutColdRain ? "雨能打进来" : "天晴 · 有风", "屋檐遮雨，空气滞留", "远离雨脚，有过风" };
+        for (int i = 0; i < names.Length; i++)
+        {
+            int rack = i;
+            var slot = new Rect(47 + i * 360, 178, 347, 325);
+            IllustratedGameCard(art, "Xiaoxue Drying Station " + i, slot, GameArtSprite("WoodDesk"), WinterWorktop);
+            WorkshopUi.Picture(art, "Xiaoxue Rack " + i, new Rect(slot.x + 30, slot.y + 31, 285, 144), rackArt);
+            GameArtSurface(art, "Xiaoxue Damp Cloth " + i, new Rect(slot.x + 106, slot.y + 85, 134, 93),
+                cloth, Color.Lerp(winterCutClothBase, new Color32(128, 147, 154, 255), winterCutMoisture * .21f));
+            Tag("Xiaoxue Rack Conditions " + i, conditions[i], new Rect(slot.x + 12, slot.y + 185, 323, 43),
+                i == 0 && winterCutColdRain);
+            WinterControl(art, "Xiaoxue Rack Choice " + i, new Rect(slot.x + 29, slot.y + 248, 288, 51),
+                names[i], () => TryDryWinterCloth(rack));
+        }
+
+        Copy(winterCutColdRain ? "小雪 · 冷雨晾布" : "小雪 · 晴间晾布",
+            (winterCutColdRain
+                ? "这单赶上小雪冷雨。露天会再淋湿，找一处避雨又通风的架子。"
+                : "这单小雪时刚放晴，院边架也能晾。挑空气流动的位置。") +
+            $"\n\n潮气还剩 {winterCutMoisture} 格。\n{winterCutFeedback}", winterCutWarning);
+        DrawWinterCutMaterial();
+    }
+
+    private void TryDryWinterCloth(int rack)
+    {
+        if (winterCutMoisture == 0 || rack < 0 || rack > 2) return;
+        if (rack == 0 && winterCutColdRain)
+        {
+            winterCutMoisture = Mathf.Min(3, winterCutMoisture + 1);
+            winterCutFeedback = "临院又被雨点打湿，换个架位。";
+            winterCutWarning = true;
+            WorkshopAudioFeedback.Notice();
+        }
+        else
+        {
+            winterCutMoisture = Mathf.Max(0, winterCutMoisture - (rack == 1 ? 1 : 2));
+            winterCutFeedback = winterCutMoisture == 0 ? "布已干平，可以按经纹排料。"
+                : rack == 1 ? "闷角干得慢，可以等一轮或移到通风架。" : "潮气散掉不少。再晾一轮。";
+            winterCutWarning = false;
+            WorkshopAudioFeedback.Fabric();
+        }
+        Render();
+    }
+
+    private void DrawWinterCutMaterial()
+    {
+        var preview = new Rect(27, 510, 168, 86);
+        string description;
+        if (winterCutDyedColor != null)
+        {
+            GameArtSurface(infoPanel, "Dyed Cloth Reference", preview, GameArtSprite("CuttingCloth"), winterCutClothBase);
+            description = winterCutDyedColor + "染布\n" + (winterCutMoisture > 0 ? "先把整幅晾干" : "顺经纹排料");
+            if (winterCutWeaveRows != null && DrawWorkSample(infoPanel, new Rect(34, 517, 154, 71), string.Join("/", winterCutWeaveRows)))
+                description = winterCutDyedColor + "染布 · 寒露布纹\n" + (winterCutMoisture > 0 ? "先把整幅晾干" : "经向 ↑ 顺纹排料");
+        }
+        else if (DrawWorkSample(infoPanel, preview, winterCutDyeSample))
+        {
+            description = "立冬布样 · 排料参考\n按浅色样预览布面";
+        }
+        else
+        {
+            GameArtSurface(infoPanel, "Plain Cloth Reference", preview, GameArtSprite("CuttingCloth"), UndyedLinen);
+            description = "小雪渐冷，织坊备冬衣\n先用素绸练习排样";
+        }
+        WorkshopUi.Label(infoPanel, "Cloth Reference Caption", new Rect(214, 510, 250, 86),
+            description, 23, WorkshopUi.Ink);
     }
 
     private void DrawWinterCutShelf()
@@ -172,7 +309,7 @@ internal sealed partial class WorkshopObservationView
                 var cell = new Vector2Int(x, y);
                 Rect bounds = new Rect(WinterClothOrigin.x + x * WinterClothTile, WinterClothOrigin.y + y * WinterClothTile,
                     WinterClothTile - 2, WinterClothTile - 2);
-                var surface = GameArtSurface(art, "Cloth Cell " + index, bounds, clothArt, UndyedLinen);
+                var surface = GameArtSurface(art, "Cloth Cell " + index, bounds, clothArt, WinterCutWeaveTint(x, y));
                 winterCutSurface[index] = surface;
                 if ((winterCutStains & WinterCutBit(x, y)) != 0)
                 {
@@ -193,6 +330,14 @@ internal sealed partial class WorkshopObservationView
                 BindWinterEvent(events, EventTriggerType.Deselect, _ => SetWinterPreview(null));
             }
         }
+    }
+
+    private Color WinterCutWeaveTint(int x, int y)
+    {
+        if (winterCutWeaveRows == null || winterCutWeaveRows.Length == 0) return winterCutClothBase;
+        string row = winterCutWeaveRows[y % winterCutWeaveRows.Length];
+        if (row.Length == 0 || row[x % row.Length] <= '1') return winterCutClothBase;
+        return Color.Lerp(winterCutClothBase, WorkshopUi.Clay, .14f);
     }
 
     private void SelectWinterPattern(int piece)
@@ -269,7 +414,7 @@ internal sealed partial class WorkshopObservationView
 
     private void CutWinterCloth()
     {
-        if (GameComplete) return;
+        if (GameComplete || winterCutMoisture > 0) return;
         if (WinterCutPlacedCount() != WinterPatternNames.Length)
         {
             SetWinterCutMessage("先摆齐前片、后片和袖片，再下剪。", WorkshopAudioFeedback.Notice, true);
@@ -287,7 +432,12 @@ internal sealed partial class WorkshopObservationView
         winterCutWarning = false;
         winterCutHover = null;
         WorkshopAudioFeedback.Snip();
-        FinishChallenge(usable.width * usable.height, $"三片齐 · 完整余料 {usable.width}×{usable.height}", WinterCutSample(usable));
+        if (CanCutOrderCloth)
+        {
+            WorkshopProgress.MarkStep(XiaoxueLiningStep);
+            WorkshopProgress.Award(WorkshopItem.CutPieces);
+        }
+        FinishChallenge(usable.width * usable.height, $"三片齐 · 里襟留料 {usable.width}×{usable.height}", WinterCutSample(usable));
     }
 
     private void SetWinterCutMessage(string message, Action sound, bool warning = false)
@@ -309,8 +459,8 @@ internal sealed partial class WorkshopObservationView
             {
                 int bit = WinterCutBit(x, y);
                 int piece = WinterPieceAt(bit);
-                Color color = UndyedLinen;
-                if ((bit & winterCutStains) != 0) color = winterCutHasStainArt ? UndyedLinen : WinterStainColor;
+                Color color = WinterCutWeaveTint(x, y);
+                if ((bit & winterCutStains) != 0 && !winterCutHasStainArt) color = WinterStainColor;
                 else if (piece >= 0) color = WinterPatternColors[piece];
                 else if (winterCutRemnant.Contains(new Vector2Int(x, y))) color = WinterRemnantColor;
                 winterCutSurface[y * WinterClothColumns + x].color = color;
