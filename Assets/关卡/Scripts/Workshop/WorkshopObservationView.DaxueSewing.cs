@@ -12,12 +12,25 @@ internal sealed partial class WorkshopObservationView
     private static readonly Color SewingSeamInk = new Color32(50, 91, 78, 255);
     private static readonly Color SewingThread = new Color32(255, 232, 169, 255);
     private static readonly Color SewingOffset = new Color32(221, 191, 154, 255);
+    private static readonly Color TurnedLiningTint = new Color32(151, 175, 190, 255);
     private const float SewingNeedleEyeRadius = 31f;
     private static readonly string[] SewingAlignmentNames = { "移到左位", "移到中位", "移到右位" };
     private static readonly string[] SewingSeamNames = { "肩缝 · 直边", "袖根 · 弯边", "里侧缝 · 转角" };
     private static readonly string[] SewingOpeningNames = { "袖口", "里布侧缝", "里布下摆" };
     private static readonly string[] SewingTurnNames = { "衣身", "里襟", "袖子" };
     private static readonly int[][] SewingTurnOrders = { new[] { 2, 1, 0 }, new[] { 1, 2, 0 }, new[] { 0, 1, 2 } };
+    private static readonly Rect SewingTurnCoat = new Rect(342, 100, 383, 441);
+    private static readonly Rect SewingCoatTexture = new Rect(0, 0, 1, 1);
+    private static readonly Vector2 TurningOpeningEdge = new Vector2(-.58f, 1f).normalized;
+    private const float TurningOpeningIncrement = 22f;
+    private static readonly Vector2[] SewingOpeningPositions =
+    {
+        new Vector2(683, 312), new Vector2(627, 381), new Vector2(535, 511)
+    };
+    private static readonly Vector2[] SewingOpeningAngles =
+    {
+        new Vector2(1, -.35f), new Vector2(1, -.24f), new Vector2(1, -.62f)
+    };
     private static readonly Vector2[][] SewingRoutes =
     {
         new[] { new Vector2(169, 291), new Vector2(302, 291), new Vector2(435, 291), new Vector2(568, 291),
@@ -85,7 +98,7 @@ internal sealed partial class WorkshopObservationView
         DrawSewingRibbon();
         if (GameComplete || readOnly)
         {
-            DrawSewingGarment(false);
+            DrawFinishedSewingGarment();
             Copy("夹衣缝好了", "表布已经翻正，衬里藏在里面。冬至还要让客人合襟、抬臂，检查能不能穿着活动。");
             return;
         }
@@ -435,10 +448,10 @@ internal sealed partial class WorkshopObservationView
         DrawSewingKnot(sewingPlacedStitches, to);
     }
 
-    private static void DrawSewingKnot(Transform parent, Vector2 spot)
+    private static void DrawSewingKnot(Transform parent, Vector2 spot, Color? color = null)
     {
         const float size = 17;
-        var mark = WorkshopUi.Fill(parent, "Realized Needle Stitch", new Rect(spot.x - size / 2f, spot.y - size / 2f, size, size), SewingThread);
+        var mark = WorkshopUi.Fill(parent, "Realized Needle Stitch", new Rect(spot.x - size / 2f, spot.y - size / 2f, size, size), color ?? SewingThread);
         WorkshopUi.ApplyPixelShape(mark);
     }
 
@@ -507,169 +520,234 @@ internal sealed partial class WorkshopObservationView
 
     private void DrawSewingOpeningChoice()
     {
-        int[] widths = { 1, 2, 3 };
-        int needed = SewingOpeningNeed + 1;
-        for (int i = 0; i < widths.Length; i++)
+        DrawTurningCoat();
+        for (int i = 0; i < SewingOpeningPositions.Length; i++)
         {
             int index = i;
-            var card = WorkshopUi.WorkbenchCard(art, "Opening Option " + i, new Rect(66 + i * 365, 128, 301, 393),
-                LightSurface, WorkshopUi.Bronze);
-            WorkshopUi.Picture(card, "Layered Cloth", new Rect(33, 28, 235, 152), WorkshopArt.CutPiece(i == 0 ? 2 : 0), SewingLining);
-            for (int dot = 0; dot < widths[i]; dot++)
-                WorkshopUi.Fill(card, "Open Space", new Rect(75 + dot * 55, 176, 45, 22), SewingSeamInk);
-            WorkshopUi.Label(card, "Opening Width", new Rect(18, 217, 265, 49), $"开口宽 {widths[i]} 格", 28,
-                SewingSeamInk, TextAnchor.MiddleCenter);
-            SewingButton(card, "Daxue Opening " + i, new Rect(20, 293, 263, 70), "留" + SewingOpeningNames[i],
-                () => SelectDaxueOpening(index), false);
+            Vector2 at = SewingOpeningPositions[i];
+            DrawTurningMouth(at, i, false);
+            var hit = WorkshopUi.Button(art, "Daxue Opening " + i, new Rect(at.x - 36, at.y - 31, 127, 62), "",
+                () => SelectDaxueOpening(index), Color.clear);
+            RegisterButton(hit);
+            var pin = WorkshopUi.PixelCard(art, "Opening Length " + i,
+                new Rect(at.x + 38, at.y - 16, 53, 33), LightSurface, WorkshopUi.Bronze);
+            WorkshopUi.Label(pin, "Length", new Rect(0, 0, 53, 33), (i + 1).ToString(), 23, SewingSeamInk,
+                TextAnchor.MiddleCenter);
+            Act("Daxue Opening Alternative " + i, SewingOpeningNames[i] + " · " + (i + 1) + " 格",
+                () => SelectDaxueOpening(index));
         }
-        Copy("留一个翻口", $"这件衣身至少要过 {needed} 格宽的口。口小了翻不出来，口大了要多补几针。");
+        var gauge = WorkshopUi.WorkbenchCard(art, "Fold Width Sample", new Rect(46, 195, 242, 209),
+            LightSurface, WorkshopUi.Bronze);
+        WorkshopUi.Label(gauge, "Fold Sample Caption", new Rect(12, 18, 218, 43), "衣身折起后", 27, SewingSeamInk,
+            TextAnchor.MiddleCenter);
+        int needed = SewingOpeningNeed + 1;
+        float width = 31f * needed;
+        GameArtSurface(gauge, "Folded Fabric Thickness", new Rect(121f - width * .5f, 77, width, 51),
+            GameArtSprite("CuttingCloth"), sewingCloth);
+        for (int i = 0; i < needed; i++)
+        {
+            float x = 121f - width * .5f + (i + .5f) * 31f;
+            DrawCueStroke(gauge, new Vector2(x - 9f, 147), new Vector2(x + 9f, 147), 5f, SewingSeamInk);
+        }
+        Copy("在衣边留翻口", $"衣身需要{needed}格宽。口小会卡住，口大要多补针。");
     }
 
     private void SelectDaxueOpening(int index)
     {
-        if (sewingPhase != SewingPhase.Opening || GameComplete || readOnly) return;
+        if (sewingPhase != SewingPhase.Opening || GameComplete || readOnly || index < 0 || index >= SewingOpeningPositions.Length) return;
         sewingOpening = index;
         sewingPhase = SewingPhase.Turn;
         sewingTurned = 0;
         WorkshopAudioFeedback.Place();
-        ShowSewingFeedback("翻口留在" + SewingOpeningNames[index] + "，试着把露出的布角拉出来。");
+        ShowSewingFeedback("翻口留在" + SewingOpeningNames[index] + "，抓住露出的布角。");
     }
+
+    private bool DaxueFoldCanPass => sewingTurned == 0 || sewingOpening >= SewingOpeningNeed;
 
     private void DrawSewingTurnBoard()
     {
-        DrawSewingGarment(true);
-        var dock = WorkshopUi.WorkbenchCard(art, "Daxue Turn Opening", new Rect(61, 315, 643, 235),
-            LightSurface, WorkshopUi.Bronze);
-        int next = SewingTurnOrders[sewingOpening][sewingTurned];
-        var origin = new Vector2(61f, 315f);
-        var destination = new Vector2(840f, 242f);
-        WorkshopUi.Label(dock, "Opening Name", new Rect(15, 8, 606, 46), SewingOpeningNames[sewingOpening] + "翻口", 28, SewingSeamInk);
-        for (int depth = 0; depth < SewingTurnNames.Length; depth++)
-        {
-            int part = SewingTurnOrders[sewingOpening][depth];
-            Rect bounds = new Rect(18 + depth * 207, 76 + depth * 8, 193, 132 - depth * 8);
-            if (depth < sewingTurned)
-            {
-                WorkshopUi.Label(dock, "Turned Section " + part, bounds, SewingTurnNames[part] + "已翻", 24, SewingSeamInk, TextAnchor.MiddleCenter);
-                continue;
-            }
-            var handle = SewingButton(dock, "Daxue Turn Cloth " + part, bounds, SewingTurnNames[part], () => TurnDaxueCloth(part),
-                part == next && ChallengeVariant == 0);
-            var picture = WorkshopUi.Picture(handle.transform, "Exposed Cloth Fold", new Rect(48, 4, 94, 78),
-                WorkshopArt.CutPiece(part == 2 ? 2 : part), SewingLining);
-            handle.transform.Find("Label").GetComponent<RectTransform>().anchoredPosition = new Vector2(6, -45);
-            BindSewingTurnDrag(handle, picture.sprite, part);
-            if (part != next || ChallengeVariant != 0 || sewingTurned > 0 || sewingWarning) continue;
-            ShowGesture(art, origin + bounds.center, destination, WorkGesture.Drag);
-        }
-        if (sewingWarning && sewingOpening < SewingOpeningNeed)
-        {
-            var jam = WorkshopUi.PixelCard(art, "Turn Jam", new Rect(336, 213, 302, 66), new Color32(252, 224, 204, 255), ErrorInk);
-            WorkshopUi.Label(jam, "Too Narrow", new Rect(12, 1, 278, 64), "翻口太窄 · 卡住了", 27, ErrorInk, TextAnchor.MiddleCenter);
-        }
-        Copy("把夹衣翻到正面", "抓住露出来的布角向右拉，也可以点它。卡住就松开，核对翻口和布边。", sewingWarning);
-        if (sewingOpening < SewingOpeningNeed)
-            Act("Daxue Reopen", "改留更宽的翻口", ReopenDaxueSewing, true);
-    }
+        Vector2 origin = SewingOpeningPositions[sewingOpening];
+        Vector2 direction = SewingOpeningAngles[sewingOpening].normalized;
+        const float pullLength = 184f;
+        Vector2 destination = origin + direction * pullLength;
+        int part = SewingTurnOrders[sewingOpening][sewingTurned];
+        bool stuck = sewingWarning && !DaxueFoldCanPass;
+        DrawTurningCoat();
+        var faceMask = WorkshopUi.Rect(art, "Coat Surface Emerging", SewingTurnCoat);
+        var faceVisibility = faceMask.gameObject.AddComponent<CanvasGroup>();
+        faceVisibility.blocksRaycasts = false;
+        faceMask.gameObject.AddComponent<RectMask2D>();
+        DrawWorkbenchSpriteCrop(faceMask, "Outer Fabric", new Rect(Vector2.zero, SewingTurnCoat.size),
+            WorkshopArt.Garment("4_02"), SewingCoatTexture, Color.white);
+        PaintTurningFace(faceMask, faceVisibility, sewingTurned / (float)SewingTurnNames.Length);
+        DrawTurningMouth(origin, sewingOpening, stuck);
+        var fold = WorkshopUi.Picture(art, "Fabric at the Opening", new Rect(), WorkshopArt.CutPiece(part), sewingCloth);
+        PlaceDaxueFold(fold.rectTransform, origin, direction, 0f);
+        var target = WorkshopUi.Rect(art, "Daxue Turn Destination", SewingTouchArea(destination, 46, 45));
+        if (!stuck) VisualStep(target, SewingThread);
+        var grip = WorkshopUi.Button(art, "Daxue Turn Cloth " + part, SewingTouchArea(origin + direction * 27f, 49, 46),
+            "", TurnDaxueCloth, Color.clear);
+        RegisterButton(grip);
+        preferredAction = grip;
+        VisualStep((RectTransform)grip.transform, stuck ? ErrorInk : SewingThread);
+        var gesture = !stuck && (ChallengeVariant == 0 || sewingTurned == 0)
+            ? ShowGesture(art, origin + direction * 27f, destination, WorkGesture.Drag).GetComponent<CanvasGroup>() : null;
 
-    private void BindSewingTurnDrag(Button handle, Sprite sprite, int part)
-    {
-        var events = handle.gameObject.AddComponent<EventTrigger>();
-        Image moving = null;
-        Vector2 start = Vector2.zero;
+        var events = grip.gameObject.AddComponent<EventTrigger>();
         BindWinterEvent(events, EventTriggerType.BeginDrag, input =>
         {
-            start = SewingLocal(art, (PointerEventData)input);
-            moving = WorkshopUi.Picture(art, "Pulled Cloth", new Rect(start.x - 55, start.y - 48, 110, 96), sprite, sewingCloth);
+            var pointer = (PointerEventData)input;
+            if (pointer.button != PointerEventData.InputButton.Left) return;
+            pointer.eligibleForClick = false;
+            if (gesture != null) gesture.alpha = 0f;
         });
         BindWinterEvent(events, EventTriggerType.Drag, input =>
         {
-            if (moving == null) return;
-            Vector2 point = SewingLocal(art, (PointerEventData)input);
-            moving.rectTransform.anchoredPosition = new Vector2(point.x - 55, -point.y + 48);
+            if (((PointerEventData)input).button != PointerEventData.InputButton.Left) return;
+            float pull = DaxuePullDistance((PointerEventData)input, direction);
+            if (!DaxueFoldCanPass)
+                pull = Mathf.Min(pull, 27f + Mathf.Max(0f, pull - 27f) * .1f);
+            float fraction = Mathf.Clamp01(pull / (pullLength - 27f));
+            PlaceDaxueFold(fold.rectTransform, origin, direction, fraction);
+            PaintTurningFace(faceMask, faceVisibility, (sewingTurned + fraction * .88f) / SewingTurnNames.Length);
         });
         BindWinterEvent(events, EventTriggerType.EndDrag, input =>
         {
-            if (moving != null) Destroy(moving.gameObject);
-            Vector2 to = SewingLocal(art, (PointerEventData)input);
-            if (to.x - start.x >= 70f) TurnDaxueCloth(part);
+            if (((PointerEventData)input).button != PointerEventData.InputButton.Left) return;
+            if (DaxuePullDistance((PointerEventData)input, direction) >= (DaxueFoldCanPass ? 116f : 65f))
+            {
+                TurnDaxueCloth();
+                return;
+            }
+            PlaceDaxueFold(fold.rectTransform, origin, direction, 0f);
+            PaintTurningFace(faceMask, faceVisibility, sewingTurned / (float)SewingTurnNames.Length);
+            if (gesture != null) gesture.alpha = 1f;
         });
+
+        for (int i = 0; i < SewingTurnNames.Length; i++)
+            DrawSewingKnot(art, new Vector2(902 + i * 33, 502), i < sewingTurned ? SewingThread : WorkshopUi.Faded);
+        WorkshopUi.Label(art, "Turning Progress", new Rect(790, 522, 291, 46), $"已翻正 {sewingTurned} / {SewingTurnNames.Length}", 24,
+            WorkshopUi.Cream, TextAnchor.MiddleCenter);
+        Copy("把夹衣翻到正面", stuck ? "布角卡在翻口，拆开这一小段，把口留宽些。" : "拉住露出的布角，也可以点一下。", stuck);
+        if (!stuck) Act("Daxue Pull Exposed Fold", "拉出" + SewingTurnNames[part], TurnDaxueCloth);
+        if (!stuck) return;
+        var reopen = SewingButton(art, "Daxue Reopen", new Rect(destination.x - 26, destination.y + 36, 206, 62),
+            "拆开翻口", ReopenDaxueSewing, true);
+        preferredAction = reopen;
+        VisualStep((RectTransform)reopen.transform, SewingThread);
+        Act("Daxue Reopen Alternative", "拆开翻口", ReopenDaxueSewing);
     }
 
-    private void TurnDaxueCloth(int part)
+    private float DaxuePullDistance(PointerEventData pointer, Vector2 direction)
+    {
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(art, pointer.pressPosition, pointer.pressEventCamera, out var local);
+        var start = new Vector2(local.x - art.rect.xMin, art.rect.yMax - local.y);
+        return Mathf.Max(0, Vector2.Dot(SewingLocal(art, pointer) - start, direction));
+    }
+
+    private static void PlaceDaxueFold(RectTransform rect, Vector2 origin, Vector2 direction, float fraction)
+    {
+        Vector2 size = Vector2.Lerp(new Vector2(96, 62), new Vector2(165, 133), fraction);
+        Vector2 at = origin + direction * Mathf.Lerp(25f, 184f, fraction);
+        rect.sizeDelta = size;
+        rect.anchoredPosition = new Vector2(at.x - size.x * .5f, -at.y + size.y * .5f);
+        rect.localEulerAngles = new Vector3(0f, 0f, Mathf.Lerp(15f, -7f, fraction));
+    }
+
+    private void TurnDaxueCloth()
     {
         if (sewingPhase != SewingPhase.Turn || GameComplete || readOnly) return;
-        if (sewingOpening < SewingOpeningNeed)
+        if (!DaxueFoldCanPass)
         {
-            ShowSewingFeedback("衣身卡在翻口里。拆这一小段，换个宽些的口。", true);
+            if (!sewingWarning)
+                ShowSewingFeedback("衣身卡在翻口。拆开这一小段，换个宽些的口。", true);
             return;
         }
-        int next = SewingTurnOrders[sewingOpening][sewingTurned];
-        if (part != next)
-        {
-            ShowSewingFeedback("这块还被里面压着。先拉离翻口最近的" + SewingTurnNames[next] + "。", true);
-            return;
-        }
-
+        int part = SewingTurnOrders[sewingOpening][sewingTurned];
         sewingTurned++;
         if (sewingTurned == SewingTurnNames.Length) sewingPhase = SewingPhase.Close;
         sewingAnimate = true;
         WorkshopAudioFeedback.Collect();
-        ShowSewingFeedback(sewingPhase == SewingPhase.Close ? "表层翻出来了，现在补好翻口。" : SewingTurnNames[part] + "翻到正面了。");
+        ShowSewingFeedback(sewingPhase == SewingPhase.Close ? "夹衣翻正了，沿衣边收好翻口。" : SewingTurnNames[part] + "翻到正面了。");
     }
 
     private void ReopenDaxueSewing()
     {
-        if (sewingPhase != SewingPhase.Turn || sewingTurned > 0 || GameComplete || readOnly) return;
+        if (sewingPhase != SewingPhase.Turn || GameComplete || readOnly) return;
         sewingPhase = SewingPhase.Opening;
         sewingOpening = -1;
+        sewingTurned = 0;
         WorkshopAudioFeedback.Fabric();
-        ShowSewingFeedback("里布的翻口拆开了，别的缝没有松。");
+        ShowSewingFeedback("翻口拆开了，可以在更宽的位置留口。");
     }
 
-    private void DrawSewingGarment(bool turning)
+    private void DrawTurningCoat(bool turned = false)
     {
-        Rect rect = turning ? new Rect(697, 94, 399, 453) : new Rect(355, 85, 444, 468);
-        var garment = WorkshopUi.WorkbenchCard(art, "Daxue Garment", rect, LightSurface, WorkshopUi.Bronze);
-        bool front = !turning || sewingTurned == SewingTurnNames.Length;
-        if (front)
+        Color tint = turned ? Color.white : TurnedLiningTint;
+        DrawWorkbenchSpriteCrop(art, "Coat on the Table", SewingTurnCoat, WorkshopArt.Garment("4_02"), SewingCoatTexture, tint);
+    }
+
+    private static void PaintTurningFace(RectTransform mask, CanvasGroup visibility, float fraction)
+    {
+        visibility.alpha = fraction > .001f ? 1f : 0f;
+        mask.sizeDelta = new Vector2(SewingTurnCoat.width, SewingTurnCoat.height * fraction);
+    }
+
+    private void DrawTurningMouth(Vector2 at, int opening, bool tight)
+    {
+        Vector2 edge = TurningOpeningEdge;
+        float length = TurningOpeningIncrement * (opening + 1);
+        var start = at - edge * length * .5f;
+        var end = at + edge * length * .5f;
+        DrawCueStroke(art, start, end, 19f, tight ? ErrorInk : SewingSeamInk);
+        Color stitch = tight ? new Color32(246, 173, 146, 255) : SewingThread;
+        for (int i = 0; i <= opening; i++)
         {
-            var sprite = WorkshopArt.Garment("4_02");
-            var picture = WorkshopUi.Picture(garment, "Garment Right Side", new Rect(34, 21, rect.width - 68, rect.height - 75), sprite);
-            if (sewingAnimate) AnimateSpringSummerSprite(picture, new Vector2(25, -20), .87f, .31f, 24f);
+            Vector2 middle = start + edge * ((i + .5f) * TurningOpeningIncrement);
+            DrawCueStroke(art, middle - edge * 6.5f, middle + edge * 6.5f, 6f, stitch);
         }
-        else
-        {
-            for (int i = 0; i < SewingTurnNames.Length; i++)
-            {
-                Color color = Array.IndexOf(SewingTurnOrders[sewingOpening], i) < sewingTurned ? sewingCloth : SewingLining;
-                var part = WorkshopUi.Picture(garment, "Turning Piece " + i, new Rect(40 + (i % 2) * 116, 39 + i * 91, 224, 155),
-                    WorkshopArt.CutPiece(i == 2 ? 2 : i), color);
-                if (sewingAnimate && sewingTurned > 0 && SewingTurnOrders[sewingOpening][sewingTurned - 1] == i)
-                    AnimateSpringSummerSprite(part, new Vector2(105, -39), .76f, .31f, 24f);
-            }
-        }
-        string caption = GameComplete || readOnly ? "表里已合 · 可去试衣" : !front ? $"已翻正 {sewingTurned} / 3" : "正面朝外";
-        WorkshopUi.Label(garment, "Garment State", new Rect(14, rect.height - 55, rect.width - 28, 47), caption,
-            28, SewingSeamInk, TextAnchor.MiddleCenter);
+        DrawSewingKnot(art, start);
+        DrawSewingKnot(art, end);
+    }
+
+    private static Rect SewingTouchArea(Vector2 at, float x, float y) => new Rect(at.x - x, at.y - y, x * 2f, y * 2f);
+
+    private void DrawFinishedSewingGarment()
+    {
+        DrawTurningCoat(true);
+        WorkshopUi.Label(art, "Garment State", new Rect(363, 552, 340, 47), "表里已合 · 可去试衣", 29,
+            WorkshopUi.Cream, TextAnchor.MiddleCenter);
     }
 
     private void DrawSewingCloseBoard()
     {
-        DrawSewingGarment(false);
+        DrawTurningCoat(true);
         int need = sewingOpening;
-        var card = WorkshopUi.PixelCard(art, "Closing the Turning Opening", new Rect(815, 184, 295, 294),
-            LightSurface, WorkshopUi.Bronze);
-        WorkshopUi.Label(card, "Closing Progress", new Rect(13, 17, 269, 70), $"翻口收针 {sewingClosed} / {need}", 29,
-            SewingSeamInk, TextAnchor.MiddleCenter);
+        Vector2 at = SewingOpeningPositions[sewingOpening];
+        Vector2 edge = TurningOpeningEdge;
+        DrawTurningMouth(at, sewingOpening, false);
         for (int i = 0; i < need; i++)
         {
-            Color ink = sewingClosed > i ? SewingSeamInk : WorkshopUi.Bronze;
-            DrawCueStroke(card, new Vector2(79 + i * 68, 119), new Vector2(115 + i * 68, 119), 8, ink);
+            Vector2 spot = at + edge * (i - (need - 1) * .5f) * 40f;
+            if (i < sewingClosed)
+            {
+                DrawCueStroke(art, spot - new Vector2(12f, 7f), spot + new Vector2(12f, 7f), 7f, SewingThread);
+                continue;
+            }
+            DrawSewingKnot(art, spot, i == sewingClosed ? SewingThread : WorkshopUi.Faded);
+            if (i != sewingClosed) continue;
+            var close = WorkshopUi.Button(art, "Daxue Close Stitch", SewingTouchArea(spot, 37, 31), "",
+                CloseDaxueOpening, Color.clear);
+            RegisterButton(close);
+            preferredAction = close;
+            VisualStep((RectTransform)close.transform, SewingThread);
+            if (sewingClosed == 0)
+                ShowGesture(art, spot, spot, WorkGesture.Tap);
         }
-        var close = SewingButton(card, "Daxue Close Stitch", new Rect(21, 188, 253, 70), "补一针收口", CloseDaxueOpening, true);
-        VisualStep((RectTransform)close.transform);
-        Copy("翻面后收口", "把翻口边折进里面，再补针。先前留的口越长，要收的针越多。");
+        WorkshopUi.Label(art, "Closing Progress", new Rect(385, 549, 340, 52), $"翻口收针 {sewingClosed} / {need}", 29,
+            WorkshopUi.Cream, TextAnchor.MiddleCenter);
+        Copy("翻面后收口", "沿衣边补针，把翻口合上。");
+        Act("Daxue Close from Rail", "补一针收口", CloseDaxueOpening);
     }
 
     private void CloseDaxueOpening()

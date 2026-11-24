@@ -83,14 +83,16 @@ internal sealed partial class WorkshopObservationView
             DrawCueStroke(art, new Vector2(x, start.y), new Vector2(x + 7, start.y), 3f, WorkshopUi.Cream);
 
         DrawSizingTape(start.x + 29f);
-        var target = WorkshopUi.Button(art, "Xiaoxue Tape Target", new Rect(end.x - 31, end.y - 37, 62, 74),
+        var target = WorkshopUi.Button(art, "Xiaoxue Tape Target", new Rect(end.x - 37, end.y - 39, 74, 78),
             "", () => TryFinishWinterSizing(end), Color.clear);
-        WorkshopUi.Fill(target.transform, "Reading Notch", new Rect(28, 13, 6, 49), WorkshopUi.Green);
+        DrawCueStroke(target.transform, new Vector2(36, 18), new Vector2(36, 60), 5f, WorkshopUi.Green);
+        DrawCueStroke(target.transform, new Vector2(24, 18), new Vector2(36, 18), 4f, WorkshopUi.Cream);
+        DrawCueStroke(target.transform, new Vector2(24, 60), new Vector2(36, 60), 4f, WorkshopUi.Cream);
         RegisterButton(target);
         winterSizingGoalCue = VisualStep((RectTransform)target.transform, SizingTapeColor);
         winterSizingGoalCue.gameObject.SetActive(winterSizingGrabbed);
 
-        var grip = WorkshopUi.Button(art, "Xiaoxue Tape Grip", new Rect(start.x - 27, start.y - 34, 69, 68),
+        var grip = WorkshopUi.Button(art, "Xiaoxue Tape Grip", new Rect(start.x - 12, start.y - 38, 78, 76),
             "", GrabWinterSizingTape, Color.clear);
         RegisterButton(grip);
         winterSizingGripCue = VisualStep((RectTransform)grip.transform, SizingTapeColor);
@@ -115,7 +117,7 @@ internal sealed partial class WorkshopObservationView
         WorkshopUi.Picture(miniature, "Finished Jacket Preview", new Rect(142, 69, 184, 140), WorkshopArt.Garment("4_02"));
         winterSizingStatus = WorkshopUi.Label(art, "Xiaoxue Tape Feedback", new Rect(558, 449, 493, 89),
             winterSizingGrabbed ? "松手落在右边刻度" : "从金色尺头开始", 26, WorkshopUi.Ink, TextAnchor.MiddleCenter);
-        if (!winterSizingGrabbed) winterSizingCue = ShowGesture(art, start + new Vector2(12, 3), end, WorkGesture.Drag);
+        if (!winterSizingGrabbed) winterSizingCue = ShowGesture(art, start + new Vector2(30, 1), end, WorkGesture.Drag);
         preferredAction = winterSizingGrabbed ? target : grip;
     }
 
@@ -127,9 +129,9 @@ internal sealed partial class WorkshopObservationView
         for (int i = 0; i < winterSizingTickMarks.Length; i++)
             winterSizingTickMarks[i] = WorkshopUi.Fill(art, "Tape Tick " + i,
                 new Rect(start.x + 8f + i * 11f, start.y - 10f, 3f, i % 3 == 0 ? 11f : 6f), WorkshopUi.Clay);
-        winterSizingTapeTip = WorkshopUi.PixelCard(art, "Xiaoxue Golden Tape End", new Rect(endX - 16f, start.y - 20f, 32f, 40f),
+        winterSizingTapeTip = WorkshopUi.PixelCard(art, "Xiaoxue Golden Tape End", new Rect(endX - 21f, start.y - 21f, 42f, 42f),
             SizingTapeColor, WorkshopUi.Ink);
-        WorkshopUi.Fill(winterSizingTapeTip, "Raised Copper Grip", new Rect(12, 8, 7, 23), WorkshopUi.Clay);
+        WorkshopUi.Fill(winterSizingTapeTip, "Raised Copper Grip", new Rect(15, 9, 12, 24), WorkshopUi.Clay);
         PaintWinterSizingTape(endX);
     }
 
@@ -138,10 +140,10 @@ internal sealed partial class WorkshopObservationView
         Vector2 start = SizingTapeStart;
         float length = Mathf.Clamp(endX - start.x, 24f, SizingTapeEnd.x - start.x + 45f);
         winterSizingTapeBody.rectTransform.sizeDelta = new Vector2(length, 24f);
-        winterSizingTapeTip.anchoredPosition = new Vector2(start.x + length - 16f, 20f - start.y);
+        winterSizingTapeTip.anchoredPosition = new Vector2(start.x + length - 21f, 21f - start.y);
         for (int i = 0; i < winterSizingTickMarks.Length; i++)
             winterSizingTickMarks[i].gameObject.SetActive(9f + i * 11f < length);
-        bool near = Mathf.Abs(start.x + length - SizingTapeEnd.x) < 29f;
+        bool near = Mathf.Abs(start.x + length - SizingTapeEnd.x) <= 38f;
         winterSizingTapeBody.color = near ? new Color32(169, 208, 145, 255) : SizingTapeColor;
     }
 
@@ -176,12 +178,13 @@ internal sealed partial class WorkshopObservationView
         if (!winterSizingGrabbed)
         {
             winterSizingStatus.text = "先抓住金色尺头";
+            winterSizingGripCue.gameObject.SetActive(true);
             WorkshopAudioFeedback.Notice();
             return;
         }
 
         Vector2 target = SizingTapeEnd;
-        if (Mathf.Abs(point.x - target.x) > 29f)
+        if (Mathf.Abs(point.x - target.x) > 38f || Mathf.Abs(point.y - target.y) > 44f)
         {
             winterSizingStatus.text = "让尺头碰到右侧刻度，变绿就能松手";
             winterSizingStatus.color = ErrorInk;
@@ -299,7 +302,7 @@ internal sealed partial class WorkshopObservationView
         var bounds = new Rect(SizingTryOnCoat.x + crop.x * SizingTryOnCoat.width + origin.x,
             SizingTryOnCoat.y + crop.y * SizingTryOnCoat.height + origin.y,
             crop.width * SizingTryOnCoat.width, crop.height * SizingTryOnCoat.height);
-        DrawDongzhiSpriteCrop(parent, name, bounds, garment, crop, Color.white);
+        DrawWorkbenchSpriteCrop(parent, name, bounds, garment, crop, Color.white);
     }
 
     private void MoveWinterSizingPatternGhost(int size, PointerEventData pointer, Image ghost)
