@@ -25,9 +25,9 @@ public sealed partial class WorkshopKnowledgeView
         "寒露这班窗沿有冷露 · 先领合适丝轴，再理经走梭。",
         "苏州织造 · 天凉后再回看桑园，留意叶色的变化。",
         "立冬这班收到浙南熟栀子 · 试栀黄，再染整幅。",
-        "小雪遇冷雨 · 避雨晾布，给夹衣排面片和里襟。",
-        "江南工坊 · 看青瓦、树和河岸如何显出冬日气息。",
-        "冬至贺冬 · 织坊交衣试穿，回看一张工单。",
+        "小雪遇冷雨 · 避雨晾布，量过身再排夹衣的面片和里襟。",
+        "大雪降温 · 主厅合缝表里，留一段口把夹衣翻正。",
+        "冬至贺冬 · 合襟抬臂都顺利，才把新衣交给客人。",
         "江南染坊 · 看存放染材的角落是否干燥。",
         "江南冬桑园 · 回看清园、修枝和来年备蚕。"
     };
@@ -106,9 +106,11 @@ public sealed partial class WorkshopKnowledgeView
     private static void DrawSolarObservationLink(Transform footer, WorkshopObservation id, float x, string caption)
     {
         bool recorded = WorkshopObservationView.HasRecord(id);
+        bool practice = WorkshopObservationView.CanPracticeGarmentWorkshop(id);
         var button = WorkshopUi.PixelButton(footer, "Open Solar Observation " + id, new Rect(x, 13, 218, 50),
-            recorded ? caption : caption + " · 未记录", () => WorkshopObservationView.ShowRecord(id), true, 23, Jade);
-        button.interactable = recorded;
+            recorded ? caption : practice ? "试玩工序" : "工序待记录",
+            () => WorkshopObservationView.OpenRecordOrGarmentPractice(id), true, 23, Jade);
+        button.interactable = recorded || practice;
     }
 
     private static WorkshopObservation? SolarObservation(int ordinal)
@@ -123,6 +125,8 @@ public sealed partial class WorkshopKnowledgeView
             case 16: return WorkshopObservation.HanluLoom;
             case 18: return WorkshopObservation.LidongDye;
             case 19: return WorkshopObservation.XiaoxueTailoring;
+            case 20: return WorkshopObservation.DaxueSewing;
+            case 21: return WorkshopObservation.DongzhiFitting;
             default: return null;
         }
     }
@@ -139,6 +143,7 @@ public sealed partial class WorkshopKnowledgeView
             case 16: return "https://www.weather.com.cn/neimenggu/sy/tqyw/10/2402929.shtml";
             case 18: return "https://www.cnipa.gov.cn/attach/0/20250826010509.pdf";
             case 19: return "https://paper.people.com.cn/rmrbwap/html/2023-11/23/nw.D110000renmrb_20231123_2-15.htm";
+            case 20: return "https://www.cma.gov.cn/ztbd/2023zt/jq/xz/202312/P020231207364754893893.pdf";
             case 21: return "https://www.shidianguji.com/book/HY6306/chapter/1mb9bu3uvrj0m";
             default: return null;
         }
@@ -154,7 +159,7 @@ public sealed partial class WorkshopKnowledgeView
                 DrawSolarPrint(parent, bounds, region, region.Text);
         }
         Label(parent, "Solar Workshop Legend", ScaleSolarRect(bounds, new Rect(859, 212, 470, 31)),
-            "标「工序」的八个节气可在关卡游玩", 20, Jade, TextAnchor.MiddleRight);
+            "标「工序」的十个节气可在工坊游玩", 20, Jade, TextAnchor.MiddleRight);
         for (int season = 0; season < SolarRows.Length; season++)
         {
             for (int index = 0; index < SolarColumns.Length; index++)

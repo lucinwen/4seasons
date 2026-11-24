@@ -54,6 +54,15 @@ public static class WorkshopProgress
         public int groundDyes;
         public string dyedColor;
         public string garmentId;
+        public int garmentSize;
+        public string garmentCutSample;
+        public int garmentLiningAllowance;
+        public bool garmentSewn;
+        public int garmentSleeveAllowance;
+        public int garmentTurningOpening;
+        public bool garmentFitted;
+        public int garmentAlterations;
+        public int garmentClaspStyle;
         public bool seasonalOrder;
         public List<string> steps = new List<string>();
         public List<string> observations = new List<string>();
@@ -179,6 +188,44 @@ public static class WorkshopProgress
     }
     public static string DyedColor => State.dyedColor ?? "";
     public static string GarmentId => State.garmentId ?? "";
+    internal const string SeasonalGarmentId = "4_02";
+    internal static int GarmentSize => Mathf.Clamp(State.garmentSize, 0, 2);
+    internal static string GarmentCutSample => !string.IsNullOrEmpty(State.garmentCutSample)
+        ? State.garmentCutSample : SeasonalOrderWork("observation.winter.xiaoxue")?.sample;
+    internal static int GarmentLiningAllowance => Mathf.Clamp(State.garmentLiningAllowance, 1, 2);
+    internal static bool GarmentSewn => State.garmentSewn;
+    internal static int GarmentSleeveAllowance => Mathf.Clamp(State.garmentSleeveAllowance, 0, 2);
+    internal static int GarmentTurningOpening => State.garmentTurningOpening;
+    internal static bool GarmentFitted => State.garmentFitted;
+    internal static int GarmentAlterations => State.garmentAlterations;
+    internal static int GarmentClaspStyle => State.garmentClaspStyle;
+
+    internal static void SaveGarmentCut(int size, string sample, int liningAllowance)
+    {
+        if (!SeasonalOrderEnabled || Has(WorkshopItem.CutPieces) || size < 1 || size > 2 || string.IsNullOrEmpty(sample)) return;
+        State.garmentSize = size;
+        State.garmentCutSample = sample;
+        State.garmentLiningAllowance = Mathf.Clamp(liningAllowance, 1, 2);
+        Commit();
+    }
+
+    internal static void SaveGarmentSewing(int sleeveAllowance, int turningOpening)
+    {
+        if (!SeasonalOrderEnabled || !Has(WorkshopItem.CutPieces) || State.garmentSewn) return;
+        State.garmentSleeveAllowance = Mathf.Clamp(sleeveAllowance, 0, 2);
+        State.garmentTurningOpening = turningOpening;
+        State.garmentSewn = true;
+        Commit();
+    }
+
+    internal static void SaveGarmentFitting(int alterations, int claspStyle)
+    {
+        if (!SeasonalOrderEnabled || !State.garmentSewn || State.garmentFitted) return;
+        State.garmentAlterations = Mathf.Max(0, alterations);
+        State.garmentClaspStyle = Mathf.Max(0, claspStyle);
+        State.garmentFitted = true;
+        Commit();
+    }
 
     public static bool Award(WorkshopItem item)
     {
@@ -225,6 +272,8 @@ public static class WorkshopProgress
     public static bool CompleteWinter(string garmentId)
     {
         if (!CanSubmit(WorkshopSeason.Winter) || !WorkshopTailor.IsGarmentAvailable(garmentId, DyedColor)) return false;
+        if (SeasonalOrderEnabled && (garmentId != SeasonalGarmentId || !GarmentSewn || !GarmentFitted ||
+            !WorkshopObservationView.HasGarmentWorkshopDeliveries())) return false;
 
         State.garmentId = garmentId;
         State.chapters |= 1 << (int)WorkshopSeason.Winter;

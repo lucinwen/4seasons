@@ -103,10 +103,10 @@ internal static class WorkshopQuests
                 () => OrderReady(WorkshopObservation.LidongDye), HasGroundDye),
             Item(WorkshopItem.DyedCloth, "染布", "到染缸给整幅素绸上色", "用验过的色样染整幅素绸。",
                 () => HasGroundDye() && OrderReady(WorkshopObservation.LidongDye)),
-            Item(WorkshopItem.CutPieces, "小雪裁衣", "带染布去裁衣台", "晾干后顺纹排面片，为里襟留一块整布，再下剪。",
+            Item(WorkshopItem.CutPieces, "小雪量体裁衣", "带染布去裁衣台", "晾干后量体选纸样，顺纹排面片，为里襟留一块整布。",
                 () => Has(WorkshopItem.DyedCloth)),
             Item(WorkshopItem.Needle, "拾缝衣针", "找发光的缝衣针", "在冬季场景找到缝衣针，点击并收下。"),
-            Handoff(WorkshopSeason.Winter, "缝制成衣", "带染布、衣片和缝衣针返回工坊，选款并缝制成衣。")
+            Handoff(WorkshopSeason.Winter, "缝制成衣", "带染布、衣片和缝衣针返回主厅。大雪合缝翻衣，冬至试身交衣。")
         }
     };
 

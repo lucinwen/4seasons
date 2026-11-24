@@ -26,7 +26,34 @@ internal sealed partial class WorkshopObservationView
             case WorkshopObservation.HanluLoom: DrawLoom(); break;
             case WorkshopObservation.LidongDye: DrawDye(); break;
             case WorkshopObservation.XiaoxueTailoring: DrawXiaoxue(); break;
+            case WorkshopObservation.DaxueSewing:
+            case WorkshopObservation.DongzhiFitting:
+                DrawGarmentArchive();
+                break;
         }
+    }
+
+    private void DrawGarmentArchive()
+    {
+        bool sewing = observation == WorkshopObservation.DaxueSewing;
+        Layer("Winter_DyeSampleDesk");
+        Art("Archived Garment Workshop", sewing ? "WorkshopGameArt/DaxueSewingTable" : "WorkshopGameArt/DongzhiFittingRoom", ArtBounds, true);
+        var frame = WorkshopUi.WorkbenchCard(art, "Garment Folio", new Rect(177, 53, 806, 544), LightSurface, WorkshopUi.Bronze);
+        WorkshopUi.Picture(frame, "Finished Silk Garment", new Rect(50, 45, 374, 452),
+            WorkshopArt.Garment(WorkshopProgress.SeasonalGarmentId));
+        var work = OrderWork(observation) ?? BestWork(observation, 1) ?? BestWork(observation, 0);
+        WorkshopUi.Label(frame, "Garment Result", new Rect(420, 156, 330, 116), work?.description ?? "主厅成衣工位", 29, WorkshopUi.Green);
+        DrawWorkSample(frame, new Rect(444, 282, 264, 175), work?.sample);
+        Copy(sewing ? "夹衣缝样" : "冬至验衣签", sewing
+            ? "小雪裁片和工坊素里绢合好，留口翻正，补针后送去试衣。"
+            : "看叠穿后的袖根余量和衣襟。合襟、抬臂都顺利，才交成衣。");
+        if (!HasRecord(observation)) return;
+        Act("Replay Garment Workbench", "玩挑战单", () =>
+        {
+            readOnly = false;
+            PrepareChallenge(1);
+            Render();
+        }, true);
     }
 
     private void DrawQingming()

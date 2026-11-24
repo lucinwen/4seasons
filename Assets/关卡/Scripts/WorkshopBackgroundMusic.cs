@@ -141,6 +141,8 @@ internal sealed class WorkshopBackgroundMusic : MonoBehaviour
             case WorkshopObservation.HanluLoom: return "Hanlu";
             case WorkshopObservation.LidongDye: return "Lidong";
             case WorkshopObservation.XiaoxueTailoring: return "Xiaoxue";
+            case WorkshopObservation.DaxueSewing: return "Tailoring";
+            case WorkshopObservation.DongzhiFitting: return "Winter";
         }
 
         if (SpringSilkwormWashOverlay.IsOpen) return "Wash";

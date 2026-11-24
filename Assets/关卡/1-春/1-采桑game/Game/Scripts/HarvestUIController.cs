@@ -31,6 +31,15 @@ namespace Qingming.Harvest
         private Image shadedRowLeaf;
         private Sprite readyLeaf;
         private Sprite dewyLeaf;
+        private RectTransform playingGuide;
+        private RectTransform guideBasket;
+        private RectTransform guideLeaf;
+        private Image[] leftKeyFaces;
+        private Image[] rightKeyFaces;
+        private float guideOpenedAt;
+        private bool movedBasket;
+
+        private static readonly Vector2 GuideBasketCenter = new Vector2(352f, -8f);
 
         private void Start()
         {
@@ -110,13 +119,84 @@ namespace Qingming.Harvest
             waitForDew = WorkshopUi.Button(body, "Wait For Dew", new Rect(285, 426, 290, 60),
                 "等露退、等叶舒展", orchard.WaitForDew, MinigameUiPresentation.Linen, size: 25);
             PlaceIntroControl(startButton?.GetComponent<RectTransform>(), new Vector2(286, 75), new Vector2(0, -236));
+            if (startButton != null)
+            {
+                var play = WorkshopUi.Rect(startButton.transform, "Start Play Symbol", new Rect(31, 24, 26, 28));
+                DrawGuideStroke(play, new Vector2(0, 0), new Vector2(21, 14), WorkshopUi.Cream);
+                DrawGuideStroke(play, new Vector2(21, 14), new Vector2(0, 28), WorkshopUi.Cream);
+                DrawGuideStroke(play, new Vector2(0, 28), new Vector2(0, 0), WorkshopUi.Cream);
+            }
             harvestRecord = WorkshopUi.Label(body, "Harvest Record", new Rect(40, 585, 780, 29), "", 21,
                 WorkshopUi.Ink, TextAnchor.MiddleCenter, WorkshopArt.ReadingFont);
 
             waitInOrchard = WorkshopUi.Button(introPanel.transform.parent, "Wait While Harvesting",
                 new Rect(0, 0, 278, 60), "等露退、等叶舒展", orchard.WaitForDew, WorkshopUi.Green, size: 25);
             PlaceIntroControl(waitInOrchard.GetComponent<RectTransform>(), new Vector2(278, 60), new Vector2(0, 414));
+            playingGuide = WorkshopUi.PixelCard(introPanel.transform.parent, "Harvest Playing Guide",
+                new Rect(0, 0, 830, 94), WorkshopUi.Paper, WorkshopUi.Bronze);
+            PlaceIntroControl(playingGuide, new Vector2(830, 94), new Vector2(0, -438));
+            leftKeyFaces = new[] { DrawKeyHat(playingGuide, 50, "A"), DrawKeyHat(playingGuide, 127, "←") };
+            rightKeyFaces = new[] { DrawKeyHat(playingGuide, 635, "→"), DrawKeyHat(playingGuide, 712, "D") };
+            var basketSprite = WorkshopObservationArt.Current?.MulberryBasket ?? Resources.Load<Sprite>("WorkshopNoticeBoard/Notices/Basket");
+            guideBasket = WorkshopUi.Picture(playingGuide, "Basket Movement Preview", new Rect(352, 8, 126, 80), basketSprite).rectTransform;
+            guideLeaf = WorkshopUi.Picture(playingGuide, "Young Leaf Example", new Rect(397, 5, 36, 36), readyLeaf).rectTransform;
+            DrawGuideArrow(playingGuide, new Vector2(276, 47), -1, WorkshopUi.Green);
+            DrawGuideArrow(playingGuide, new Vector2(554, 47), 1, WorkshopUi.Green);
             UpdateOrchardChoices();
+        }
+
+        private static Image DrawKeyHat(Transform parent, float x, string key)
+        {
+            Rect bounds = new Rect(x, 16, 67, 62);
+            var card = WorkshopUi.PixelCard(parent, key + " Key", bounds, WorkshopUi.Cream, WorkshopUi.Bronze);
+            if (key == "←" || key == "→")
+                DrawGuideArrow(card, bounds.size * .5f, key == "←" ? -1 : 1, WorkshopUi.Ink);
+            else
+                WorkshopUi.Label(card, "Key Symbol", new Rect(0, 0, bounds.width, bounds.height), key, 36,
+                    WorkshopUi.Ink, TextAnchor.MiddleCenter, WorkshopArt.ReadingFont);
+            return card.Find("Surface").GetComponent<Image>();
+        }
+
+        private static void DrawGuideArrow(Transform parent, Vector2 center, int direction, Color color)
+        {
+            var tip = center + new Vector2(direction * 17, 0f);
+            DrawGuideStroke(parent, center - new Vector2(direction * 17, 0f), tip, color);
+            DrawGuideStroke(parent, tip, center + new Vector2(0f, -13f), color);
+            DrawGuideStroke(parent, tip, center + new Vector2(0f, 13f), color);
+        }
+
+        private static void DrawGuideStroke(Transform parent, Vector2 from, Vector2 to, Color color)
+        {
+            Vector2 line = to - from;
+            var rect = WorkshopUi.Fill(parent, "Direction Stroke", new Rect(from.x, from.y, line.magnitude, 5), color).rectTransform;
+            rect.pivot = new Vector2(0f, .5f);
+            rect.localEulerAngles = new Vector3(0, 0, -Mathf.Atan2(line.y, line.x) * Mathf.Rad2Deg);
+        }
+
+        private void Update()
+        {
+            if (playingGuide == null || !playingGuide.gameObject.activeInHierarchy) return;
+
+            bool left = Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow);
+            bool right = Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow);
+            if (left || right) movedBasket = true;
+
+            float elapsed = Time.unscaledTime - guideOpenedAt;
+            bool demonstrating = !movedBasket && elapsed < 3.2f;
+            float horizontal = demonstrating ? Mathf.Sin(elapsed * Mathf.PI * 1.25f) : (right ? 1f : 0f) - (left ? 1f : 0f);
+            var destination = GuideBasketCenter + Vector2.right * (horizontal * 40f);
+            guideBasket.anchoredPosition = Vector2.MoveTowards(guideBasket.anchoredPosition, destination, Time.unscaledDeltaTime * 320f);
+            float fall = demonstrating ? Mathf.Repeat(elapsed / .8f, 1f) : .5f;
+            guideLeaf.anchoredPosition = new Vector2(guideBasket.anchoredPosition.x + 45f, -3f - 26f * fall);
+
+            SetGuideKeys(leftKeyFaces, left || (demonstrating && horizontal < -.15f));
+            SetGuideKeys(rightKeyFaces, right || (demonstrating && horizontal > .15f));
+        }
+
+        private static void SetGuideKeys(Image[] keys, bool pressed)
+        {
+            foreach (var face in keys)
+                face.color = pressed ? new Color32(241, 208, 133, 255) : WorkshopUi.Cream;
         }
 
         private static Button AddOrchardChoice(Transform parent, string name, Rect bounds, string rowName,
@@ -128,6 +208,9 @@ namespace Qingming.Harvest
                 28, WorkshopUi.Ink, TextAnchor.MiddleLeft, WorkshopArt.ReadingFont);
             WorkshopUi.Label(button.transform, "Row Condition", new Rect(112, 48, 248, 45), condition,
                 23, WorkshopUi.Ink, TextAnchor.MiddleLeft, WorkshopArt.ReadingFont);
+            var selected = WorkshopUi.Rect(button.transform, "Selected Row Mark", new Rect(334, 19, 30, 25));
+            DrawGuideStroke(selected, new Vector2(0, 12), new Vector2(9, 21), WorkshopUi.Cream);
+            DrawGuideStroke(selected, new Vector2(9, 21), new Vector2(28, 0), WorkshopUi.Cream);
             return button;
         }
 
@@ -146,6 +229,8 @@ namespace Qingming.Harvest
             bool early = orchard.ShadedRow && !orchard.ShadeDewCleared;
             MinigameUiPresentation.Action(sunnyRow, !orchard.ShadedRow);
             MinigameUiPresentation.Action(shadedRow, orchard.ShadedRow);
+            sunnyRow.transform.Find("Selected Row Mark").gameObject.SetActive(!orchard.ShadedRow);
+            shadedRow.transform.Find("Selected Row Mark").gameObject.SetActive(orchard.ShadedRow);
             shadedRowNote.text = orchard.ShadeDewCleared ? "嫩叶已展 · 露水已退" : "有芽未展 · 叶面挂露";
             shadedRowLeaf.sprite = orchard.ShadeDewCleared ? readyLeaf : dewyLeaf;
             string rowName = orchard.ShadedRow ? SpringSummerNpcDialogue.ShadedOrchardName : SpringSummerNpcDialogue.SunnyOrchardName;
@@ -155,6 +240,16 @@ namespace Qingming.Harvest
                 ? "清明残页已收集 · 可再玩" : "首次完成可收集清明残页";
             waitForDew.gameObject.SetActive(early);
             waitInOrchard.gameObject.SetActive(early && orchard.State == HarvestGameState.Playing);
+            if (playingGuide != null)
+            {
+                bool playing = orchard.State == HarvestGameState.Playing;
+                if (playing && !playingGuide.gameObject.activeSelf)
+                {
+                    guideOpenedAt = Time.unscaledTime;
+                    movedBasket = false;
+                }
+                playingGuide.gameObject.SetActive(playing);
+            }
         }
 
         /// <summary>显示采桑数量与当前目标。</summary>

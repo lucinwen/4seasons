@@ -125,28 +125,28 @@ public sealed class WorkshopStorageView : MonoBehaviour
                 var challenge = id;
                 bool earned = WorkshopObservationView.HasRecord(id);
                 if (earned) count++;
-                float x = 55 + total % 4 * 376;
-                float y = 169 + total / 4 * 323;
+                float x = 39 + total % 5 * 305;
+                float y = 169 + total / 5 * 323;
                 total++;
-                var card = WorkshopUi.PixelCard(board, "Collected Item " + id, new Rect(x, y, 358, 307),
+                var card = WorkshopUi.PixelCard(board, "Collected Item " + id, new Rect(x, y, 298, 307),
                     earned ? FilledPocket : EmptyPocket, SeasonAccents[(int)chapter]);
                 string term = WorkshopObservationView.RecordTerm(id);
-                Label(card, "Term", new Rect(8, 10, 342, 47), term + " · " + WorkshopObservationView.SeasonGameTitle(id),
-                    26, WorkshopUi.Green, TextAnchor.MiddleCenter);
+                Label(card, "Term", new Rect(8, 10, 282, 47), term + " · " + WorkshopObservationView.SeasonGameTitle(id),
+                    24, WorkshopUi.Green, TextAnchor.MiddleCenter);
                 var best = WorkshopObservationView.BestWork(id, 1) ?? WorkshopObservationView.BestWork(id, 0);
-                var preview = new Rect(109, 61, 140, best != null ? 90 : 112);
+                var preview = new Rect(79, 61, 140, best != null ? 90 : 112);
                 if (!WorkshopObservationView.DrawWorkSample(card, preview, best?.sample))
                     WorkshopUi.Picture(card, "Collectible", preview, WorkshopObservationView.RewardIcon(id),
                         earned ? Color.white : new Color32(74, 89, 58, 97));
-                Label(card, "Item", new Rect(6, best != null ? 149 : 175, 346, 35), WorkshopObservationView.RewardName(id) + (earned ? " ×1" : ""),
-                    26, WorkshopUi.Ink, TextAnchor.MiddleCenter);
+                Label(card, "Item", new Rect(6, best != null ? 149 : 175, 286, 35), WorkshopObservationView.RewardName(id) + (earned ? " ×1" : ""),
+                    24, WorkshopUi.Ink, TextAnchor.MiddleCenter);
                 if (best != null)
                 {
-                    var note = Label(card, "Best Work", new Rect(9, 182, 340, 47), best.description, 20,
+                    var note = Label(card, "Best Work", new Rect(9, 182, 280, 47), best.description, 20,
                         WorkshopUi.Green, TextAnchor.MiddleCenter);
                     note.verticalOverflow = UnityEngine.VerticalWrapMode.Truncate;
                 }
-                var record = WorkshopUi.PixelButton(card, "Read collected page " + id, new Rect(37, 233, 284, 57),
+                var record = WorkshopUi.PixelButton(card, "Read collected page " + id, new Rect(17, 233, 264, 57),
                     earned ? term + "残页 ×1 · 查看" : "待通关 · 残页未收集", () => WorkshopObservationView.ShowRecord(challenge), earned, 23);
                 record.interactable = earned;
             }
@@ -295,6 +295,7 @@ public sealed class WorkshopStorageView : MonoBehaviour
         WorkshopTailor.Show(() =>
         {
             if (current != this) return;
+            workbench.Refresh();
             SetWorkbenchVisible(true);
             resumedFrame = Time.frameCount;
             if (events != null && selected != null) events.SetSelectedGameObject(selected);

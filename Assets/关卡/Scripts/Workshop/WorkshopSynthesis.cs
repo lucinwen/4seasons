@@ -78,7 +78,8 @@ internal sealed class WorkshopSynthesis : MonoBehaviour
             WorkshopProgress.ProductName(season), 34, artwork != null ? WorkshopUi.Cream : ink, TextAnchor.MiddleCenter);
         var productArt = season == WorkshopSeason.Winter
             ? completed ? WorkshopArt.Garment(WorkshopProgress.GarmentId) :
-                WorkshopTailor.PreviewForDye(WorkshopProgress.DyedColor)
+                WorkshopProgress.SeasonalOrderEnabled ? WorkshopArt.Garment(WorkshopProgress.SeasonalGarmentId) :
+                    WorkshopTailor.PreviewForDye(WorkshopProgress.DyedColor)
             : Resources.Load<Sprite>("WorkshopFinish/" + ProductAssets[(int)season]);
         if (productArt == null) productArt = WorkshopArt.ChapterProduct(season);
         product = WorkshopUi.Picture(table, "Synthesis Product", ProductBounds, productArt);
@@ -238,7 +239,7 @@ internal sealed class WorkshopSynthesis : MonoBehaviour
         if (!Busy && dragging < 0) WorkshopKnowledgeView.ShowItem(items[index]);
     }
 
-    private void Refresh()
+    internal void Refresh()
     {
         for (int i = 0; i < slots.Length; i++)
             slots[i].color = Array.IndexOf(assignments, i) >= 0 ? FilledCell : EmptyCell;
@@ -279,8 +280,16 @@ internal sealed class WorkshopSynthesis : MonoBehaviour
         chapterResult.gameObject.SetActive(completed && !Busy);
         action.interactable = !Busy && dragging < 0 &&
             (completed ? season != WorkshopSeason.Winter : count == items.Length && WorkshopProgress.CanSubmit(season));
-        actionText.text = completed ? (season == WorkshopSeason.Winter ? "已缝制" : "前往" + WorkshopProgress.SeasonName(season + 1) + "季")
-            : Busy ? "合成中" : season == WorkshopSeason.Winter ? "选款缝制" : "开始合成";
+        actionText.text = ActionLabel();
+    }
+
+    private string ActionLabel()
+    {
+        if (Busy) return "合成中";
+        if (season != WorkshopSeason.Winter)
+            return completed ? "前往" + WorkshopProgress.SeasonName(season + 1) + "季" : "开始合成";
+        if (completed) return "已交衣";
+        return WorkshopTailor.NextOrderActionLabel();
     }
 
     private void CombineOrContinue()

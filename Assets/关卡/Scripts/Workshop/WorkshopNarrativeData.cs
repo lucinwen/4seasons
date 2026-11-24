@@ -100,8 +100,8 @@ internal static class WorkshopNarrativeData
             "染布、裁衣、缝制",
             "冬 · 染料园与青染轩",
             "小雪衣片 · 冬至交衣",
-            "干绸排了前后片和袖片，也留出里襟用料。把这些衣片送到主厅缝好，冬至贺冬时试穿。",
-            "立冬 · 小雪  →  冬至交衣")
+            "小雪按客人的身量裁好前后片和袖片。大雪把这些衣片与素里绢合好，冬至试过抬手和合襟后交衣。",
+            "小雪量裁  →  大雪缝衣  →  冬至试衣")
     };
 
     private static readonly WorkshopSeasonFieldNote[] FieldNotes =

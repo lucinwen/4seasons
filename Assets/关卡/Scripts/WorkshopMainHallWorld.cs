@@ -549,7 +549,7 @@ public sealed class WorkshopMainHallWorld : MonoBehaviour
         else if (WorkshopProgress.CanSubmit(focusSeason))
         {
             recommendedDestination = storageDestination;
-            nextTaskText.text = focusSeason == WorkshopSeason.Winter ? "去储物屋 · 选款缝制" :
+            nextTaskText.text = focusSeason == WorkshopSeason.Winter ? "去储物屋 · " + WorkshopTailor.NextOrderActionLabel() :
                 "去储物屋 · 合成" + WorkshopProgress.ProductName(focusSeason);
         }
         else

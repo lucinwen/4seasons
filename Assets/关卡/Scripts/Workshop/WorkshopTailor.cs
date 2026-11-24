@@ -4,7 +4,7 @@ using JiangnanDye;
 using Qingming.LevelBackground;
 using UnityEngine;
 
-/// <summary>Winter's final task, from choosing a garment to sewing the three cut pieces.</summary>
+/// <summary>Opens the final garment order and preserves the original route for older journeys.</summary>
 public sealed class WorkshopTailor : MonoBehaviour
 {
     private sealed class GarmentStyle
@@ -90,11 +90,22 @@ public sealed class WorkshopTailor : MonoBehaviour
 
     private bool UsesLining => WorkshopProgress.HasStep(WorkshopObservationView.XiaoxueLiningStep);
 
-    internal static bool IsOpen => active != null;
+    internal static bool IsOpen => active != null || (WorkshopObservationView.ActiveGame is WorkshopObservation game &&
+        WorkshopObservationView.IsGarmentWorkshop(game));
+
+    internal static string NextOrderActionLabel()
+    {
+        if (!WorkshopProgress.SeasonalOrderEnabled) return "选款缝制";
+        if (!WorkshopProgress.GarmentSewn || !WorkshopObservationView.HasOrderWork(WorkshopObservation.DaxueSewing))
+            return "大雪 · 缝夹衣";
+        if (!WorkshopProgress.GarmentFitted || !WorkshopObservationView.HasOrderWork(WorkshopObservation.DongzhiFitting))
+            return "冬至 · 试衣";
+        return "交付成衣";
+    }
 
     internal static void Show(Action back, Action completed)
     {
-        if (active != null) return;
+        if (IsOpen) return;
         if (!WorkshopProgress.CanSubmit(WorkshopSeason.Winter))
         {
             if (SimplePopup.Show("制作成衣", "准备好染布、三块衣片和缝衣针后，就可以制作成衣。",
@@ -105,9 +116,15 @@ public sealed class WorkshopTailor : MonoBehaviour
 
         if (!TryResolveDye(WorkshopProgress.DyedColor, out DyeColor dye))
         {
-            if (SimplePopup.Show("制作成衣", "请在冬季染坊确认布料颜色，再回来选款。",
+            if (SimplePopup.Show("制作成衣", "请在冬季染坊确认布料颜色，再回来做衣。",
                     "返回合成台", back) == null)
                 back?.Invoke();
+            return;
+        }
+
+        if (WorkshopProgress.SeasonalOrderEnabled)
+        {
+            ContinueSeasonGarment(back, completed);
             return;
         }
 
@@ -115,6 +132,29 @@ public sealed class WorkshopTailor : MonoBehaviour
         WorkshopUi.Block(frame, MinigameUiPresentation.BackgroundVeil);
         active = frame.gameObject.AddComponent<WorkshopTailor>();
         active.Open(frame, dye, back, completed);
+    }
+
+    private static void ContinueSeasonGarment(Action back, Action completed)
+    {
+        if (!WorkshopObservationView.HasOrderWork(WorkshopObservation.DaxueSewing) || !WorkshopProgress.GarmentSewn)
+        {
+            if (!WorkshopObservationView.ShowGarmentOrder(WorkshopObservation.DaxueSewing, back,
+                () => ContinueSeasonGarment(back, completed))) back?.Invoke();
+            return;
+        }
+        if (!WorkshopObservationView.HasOrderWork(WorkshopObservation.DongzhiFitting) || !WorkshopProgress.GarmentFitted)
+        {
+            if (!WorkshopObservationView.ShowGarmentOrder(WorkshopObservation.DongzhiFitting, back,
+                () => ContinueSeasonGarment(back, completed))) back?.Invoke();
+            return;
+        }
+        if (WorkshopProgress.CompleteWinter(WorkshopProgress.SeasonalGarmentId))
+        {
+            ShowCompletedGarment(completed);
+            return;
+        }
+        if (SimplePopup.Show("交付夹衣", "请备齐原工单的栀黄染布、衣片和缝衣针。", "返回合成台", back) == null)
+            back?.Invoke();
     }
 
     public static bool IsGarmentAvailable(string id, string color)
@@ -420,6 +460,11 @@ public sealed class WorkshopTailor : MonoBehaviour
 
         var finished = onCompleted;
         CloseFrame();
+        ShowCompletedGarment(finished);
+    }
+
+    private static void ShowCompletedGarment(Action finished)
+    {
         WorkshopDialoguePresenter.PlayOnce("dialogue.winter.garmentSewn", WorkshopDialogueScripts.WinterTailoringComplete,
             () => WorkshopNarrativeView.ShowFinale(() => WorkshopWardrobe.Show(finished)));
     }

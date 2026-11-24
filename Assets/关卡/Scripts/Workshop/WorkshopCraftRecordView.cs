@@ -231,17 +231,19 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
             WorkshopObservation.QingmingMulberry, WorkshopObservation.GuyuLeaf,
             WorkshopObservation.MangzhongCocoon, WorkshopObservation.DashuReeling,
             WorkshopObservation.QiufenOffering, WorkshopObservation.HanluLoom,
-            WorkshopObservation.LidongDye, WorkshopObservation.XiaoxueTailoring
+            WorkshopObservation.LidongDye, WorkshopObservation.XiaoxueTailoring,
+            WorkshopObservation.DaxueSewing, WorkshopObservation.DongzhiFitting
         };
         for (int i = 0; i < terms.Length; i++)
         {
             var term = terms[i];
             bool recorded = WorkshopObservationView.HasRecord(term);
+            bool practice = WorkshopObservationView.CanPracticeGarmentWorkshop(term);
             var view = WorkshopUi.PixelButton(content, "Order Term " + term,
-                new Rect(401 + i % 4 * 218, 211 + i / 4 * 54, 207, 47),
-                WorkshopObservationView.RecordTerm(term) + (recorded ? " · 回看" : " · 待录"),
-                () => OpenChild(done => WorkshopObservationView.ShowRecord(term, done)), recorded, 22);
-            view.interactable = recorded;
+                new Rect(393 + i % 5 * 180, 211 + i / 5 * 54, 170, 47),
+                WorkshopObservationView.RecordTerm(term) + (recorded ? " · 回看" : practice ? " · 试玩" : " · 待录"),
+                () => OpenChild(done => WorkshopObservationView.OpenRecordOrGarmentPractice(term, done)), recorded || practice, 22);
+            view.interactable = recorded || practice;
         }
         Label(content, "Journey", new Rect(429, 329, 811, 55), "从一片桑叶到一件成衣", 30);
 
