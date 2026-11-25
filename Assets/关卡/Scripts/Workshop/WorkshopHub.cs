@@ -1,3 +1,4 @@
+using Qingming.LevelBackground;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -24,6 +25,7 @@ public sealed class WorkshopHub : MonoBehaviour
     private RawImage _backdrop;
     private GameObject _returnButton;
     private bool _returnOnly;
+    private bool _chapterCompletionPromptShown;
     private bool _finishModalOpen;
     private bool _dirty;
     private bool _leaving;
@@ -88,6 +90,12 @@ public sealed class WorkshopHub : MonoBehaviour
         {
             bool available = !_leaving && !WorkshopQuestGuide.IsWorldOverlayActive &&
                 !WorkshopQuestGuide.BlocksWorldInput;
+            if (available && !_chapterCompletionPromptShown && WorkshopProgress.CanSubmit(_season))
+            {
+                var popup = SimplePopup.ShowChapterCompletion(_season, ReturnToWorkshop);
+                _chapterCompletionPromptShown = popup != null;
+                available = !_chapterCompletionPromptShown;
+            }
             if (_returnButton != null && _returnButton.activeSelf != available) _returnButton.SetActive(available);
             return;
         }
