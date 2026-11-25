@@ -280,10 +280,12 @@ public class FeedOverlayManager : MonoBehaviour
                 leaf.Sr.sortingOrder = 1002;
                 TryDropLeaf(leaf); // 未落在蚕匾上时由下方自动飘回原位
             }
+            else WorkshopPointer.GrabWorldTarget();
         }
         // ---------- 按下拾取 ----------
-        else if (!_finishing && Input.GetMouseButtonDown(0) && !IsPointerOverUI())
+        else if (!_finishing && (Input.GetMouseButtonDown(0) || WorkshopPointer.CanShowWorldHint) && !IsPointerOverUI())
         {
+            bool pressed = Input.GetMouseButtonDown(0);
             Vector2 point = ScreenToWorld(Input.mousePosition);
             for (int i = _leaves.Count - 1; i >= 0; i--)
             {
@@ -293,9 +295,12 @@ public class FeedOverlayManager : MonoBehaviour
                 var col = leaf.GetComponent<Collider2D>();
                 if (col == null || !col.OverlapPoint(point)) continue;
 
+                WorkshopPointer.PointAtWorldTarget();
+                if (!pressed) break;
                 _dragging = leaf;
                 leaf.Sr.sortingOrder = 1010; // 拖拽时置于最前
                 _dragOffset = leaf.transform.position - (Vector3)point;
+                WorkshopPointer.GrabWorldTarget();
                 break;
             }
         }

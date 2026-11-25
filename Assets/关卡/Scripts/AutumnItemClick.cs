@@ -58,13 +58,14 @@ public class AutumnItemClick : MonoBehaviour
 
     private void Update()
     {
-        if (WorkshopQuestGuide.BlocksWorldInput || !Input.GetMouseButtonDown(0)) return;
+        bool pressed = Input.GetMouseButtonDown(0);
+        if (WorkshopQuestGuide.BlocksWorldInput || (!pressed && !WorkshopPointer.CanShowWorldHint)) return;
 
         // 小游戏/弹窗进行中不响应
         if (MiniGameOverlay.IsActive) return;
         if (HarvestOverlayManager.IsHarvestActive) return;
         if (FeedOverlayManager.Instance != null && FeedOverlayManager.Instance.IsActive) return;
-        if (WorkshopKnowledgeView.IsOpen || FindObjectOfType<SimplePopup>() != null) return;
+        if (WorkshopKnowledgeView.IsOpen) return;
 
         // 点击 UI 时不响应
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
@@ -80,7 +81,7 @@ public class AutumnItemClick : MonoBehaviour
             hasEnabledCollider = true;
             if (col.OverlapPoint(world))
             {
-                OnClicked();
+                HandlePointerHit(pressed);
                 return;
             }
         }
@@ -92,8 +93,15 @@ public class AutumnItemClick : MonoBehaviour
             Bounds hitArea = _sr.sprite.bounds;
             if (kind == ItemKind.Banana) hitArea.Expand(new Vector3(1.2f, 1.2f, 0f));
             if (hitArea.Contains(new Vector3(local.x, local.y, 0f)))
-                OnClicked();
+                HandlePointerHit(pressed);
         }
+    }
+
+    private void HandlePointerHit(bool pressed)
+    {
+        if (FindObjectOfType<SimplePopup>() != null) return;
+        if (kind != ItemKind.Rice || !AutumnLevelState.HasRice) WorkshopPointer.PointAtWorldTarget();
+        if (pressed) OnClicked();
     }
 
     private void OnClicked()

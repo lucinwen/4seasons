@@ -169,12 +169,12 @@ public class SummerItemInteraction : MonoBehaviour
 
     private void Update()
     {
-        if (WorkshopQuestGuide.BlocksWorldInput || !Input.GetMouseButtonDown(0)) return;
+        bool pressed = Input.GetMouseButtonDown(0);
+        if (WorkshopQuestGuide.BlocksWorldInput || (!pressed && !WorkshopPointer.CanShowWorldHint)) return;
 
         // 小游戏/其它弹窗进行中不响应
         if (HarvestOverlayManager.IsHarvestActive) return;
         if (FeedOverlayManager.Instance != null && FeedOverlayManager.Instance.IsActive) return;
-        if (FindObjectOfType<SimplePopup>() != null) return;
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
 
         if (_cam == null) _cam = Camera.main;
@@ -183,22 +183,17 @@ public class SummerItemInteraction : MonoBehaviour
         Vector3 world = _cam.ScreenToWorldPoint(Input.mousePosition);
         Vector2 point = new Vector2(world.x, world.y);
 
-        if (_saltCol != null && _saltCol.OverlapPoint(point))
-        {
-            OnSaltClicked();
-            return;
-        }
-
-        if (_woodCol != null && _woodCol.OverlapPoint(point))
-        {
-            OnWoodClicked();
-            return;
-        }
-
-        if (_waterCol != null && _waterCol.OverlapPoint(point))
-        {
-            OnWaterClicked();
-        }
+        Collider2D hit;
+        if (_saltCol != null && _saltCol.OverlapPoint(point)) hit = _saltCol;
+        else if (_woodCol != null && _woodCol.OverlapPoint(point)) hit = _woodCol;
+        else if (_waterCol != null && _waterCol.OverlapPoint(point)) hit = _waterCol;
+        else return;
+        if (FindObjectOfType<SimplePopup>() != null) return;
+        WorkshopPointer.PointAtWorldTarget();
+        if (!pressed) return;
+        if (hit == _saltCol) OnSaltClicked();
+        else if (hit == _woodCol) OnWoodClicked();
+        else OnWaterClicked();
     }
 
     private void OnSaltClicked()

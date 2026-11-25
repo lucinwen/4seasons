@@ -20,7 +20,8 @@ public class WinterGrindingClickTarget : MonoBehaviour
     private void Update()
     {
         if (WinterGrindingOverlay.IsActive) return;
-        if (WorkshopQuestGuide.BlocksWorldInput || !Input.GetMouseButtonDown(0)) return;
+        bool pressed = Input.GetMouseButtonDown(0);
+        if (WorkshopQuestGuide.BlocksWorldInput || (!pressed && !WorkshopPointer.CanShowWorldHint)) return;
 
         // 点在 UI 上时不触发世界点击
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
@@ -30,6 +31,9 @@ public class WinterGrindingClickTarget : MonoBehaviour
 
         Vector3 world = cam.ScreenToWorldPoint(Input.mousePosition);
         if (!_collider.OverlapPoint(world)) return;
+
+        WorkshopPointer.PointAtWorldTarget();
+        if (!pressed) return;
 
         TryOpen();
     }

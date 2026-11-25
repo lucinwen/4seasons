@@ -138,10 +138,13 @@ public class PickupItem : MonoBehaviour
         if (_labelCanvas != null)
             _labelCanvas.SetActive(inRange);
 
-        // 弹窗只能由玩家鼠标点击物品本身触发（不自动弹出、也不显示悬浮按钮）
+        bool pressed = Input.GetMouseButtonDown(0);
+        // Reuse the pickup hit test for the cursor without opening the pickup dialog on hover.
         if (inRange && !_picked && _pickupPopup == null &&
-            Input.GetMouseButtonDown(0) && !IsPointerOverUI() && IsMouseOverSelf())
+            (pressed || WorkshopPointer.CanShowWorldHint) && !IsPointerOverUI() && IsMouseOverSelf())
         {
+            WorkshopPointer.PointAtWorldTarget();
+            if (!pressed) return;
             string step = WorkshopStep();
             if (step == "spring.basket" && !SpringSummerNpcDialogue.RequireMulberryBriefing()) return;
             if (step == "spring.eggPaper")

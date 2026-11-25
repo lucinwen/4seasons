@@ -20,7 +20,8 @@ public class WinterDyeVatClickTarget : MonoBehaviour
     private void Update()
     {
         if (WinterDyeingOverlay.IsActive) return;
-        if (WorkshopQuestGuide.BlocksWorldInput || !Input.GetMouseButtonDown(0)) return;
+        bool pressed = Input.GetMouseButtonDown(0);
+        if (WorkshopQuestGuide.BlocksWorldInput || (!pressed && !WorkshopPointer.CanShowWorldHint)) return;
 
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
 
@@ -29,6 +30,9 @@ public class WinterDyeVatClickTarget : MonoBehaviour
 
         Vector3 world = cam.ScreenToWorldPoint(Input.mousePosition);
         if (!_collider.OverlapPoint(world)) return;
+
+        WorkshopPointer.PointAtWorldTarget();
+        if (!pressed) return;
 
         TryOpen();
     }

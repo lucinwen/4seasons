@@ -16,11 +16,16 @@ internal sealed partial class WorkshopObservationView
     private static readonly Rect DongzhiSeamGrip = new Rect(479, 284, 99, 95);
     private static readonly Vector2 DongzhiShoulder = new Vector2(502, 293);
     private static readonly Rect DongzhiCard = new Rect(817, 127, 301, 452);
-    private static readonly Vector2 DongzhiChestStrap = new Vector2(546, 344);
-    private static readonly Vector2 DongzhiClaspRailStart = new Vector2(595, 361);
-    private static readonly Vector2 DongzhiClaspRailEnd = new Vector2(678, 417);
+    private static readonly Rect DongzhiClaspWindow = new Rect(42, 50, 1076, 552);
+    private static readonly Vector2 DongzhiChestStrap = new Vector2(439, 337);
+    private static readonly Vector2 DongzhiClaspRailStart = new Vector2(631, 337);
+    private static readonly Vector2 DongzhiClaspRailEnd = new Vector2(851, 337);
     private static readonly Rect DongzhiClaspArtwork = new Rect(.402f, .156f, .205f, .053f);
     private static readonly Rect DongzhiClaspKnot = new Rect(.548f, .157f, .059f, .051f);
+    private static readonly Rect DongzhiCordArtwork = new Rect(.082f, .23f, .85f, .53f);
+    private static readonly Rect DongzhiCordEye = new Rect(.139f, .32f, .156f, .391f);
+    private static readonly Vector2 DongzhiCordSize = new Vector2(140f, 43f);
+    private const float DongzhiCordKnotAnchor = .90f;
     private const float DongzhiSeamSpacing = 73f;
     private static readonly Vector2 DongzhiSeamPin = new Vector2(71, 140);
 
@@ -51,10 +56,13 @@ internal sealed partial class WorkshopObservationView
     private RectTransform fittingRightFront;
     private Image fittingModelLining;
     private CanvasGroup fittingClaspCreases;
+    private Image[] fittingClaspSlots;
+    private Image fittingClaspStateBacking;
     private Text fittingClaspStatus;
     private const int DongzhiClaspSlotCount = 3;
-    private const float DongzhiClaspSnapDistance = 26f;
+    private const float DongzhiClaspSnapDistance = 43f;
     private RawImage fittingClaspSource;
+    private RectTransform fittingClaspGripCue;
     private RectTransform fittingClaspGhost;
     private CanvasGroup fittingClaspCue;
 
@@ -91,15 +99,22 @@ internal sealed partial class WorkshopObservationView
             WorkshopUi.Picture(art, "Dongzhi Fitting Stage", new Rect(322, 47, 480, 594),
                 Resources.Load<Sprite>("WorkshopFinish/FittingStage"), stretch: true);
 
-        fittingSleeve = fittingLiftCue = fittingClaspGhost = null;
+        fittingSleeve = fittingLiftCue = fittingClaspGripCue = fittingClaspGhost = null;
         fittingClaspCue = null;
         fittingSeamFlap = fittingSeamCue = fittingLeftFront = fittingRightFront = null;
         fittingPullMarks = fittingClaspCreases = null;
         fittingModelLining = null;
+        fittingClaspStateBacking = null;
         fittingClaspStatus = null;
         fittingClaspSource = null;
         fittingArmFill = null;
         fittingArmCaption = null;
+        if (!readOnly && !GameComplete && fittingStep == DongzhiFittingStep.FitClasp)
+        {
+            DrawDongzhiClasp();
+            return;
+        }
+
         DrawDongzhiWorkOrder();
         DrawDongzhiModel();
         if (readOnly || GameComplete)
@@ -114,7 +129,6 @@ internal sealed partial class WorkshopObservationView
             case DongzhiFittingStep.LiftArm: DrawDongzhiLift(); break;
             case DongzhiFittingStep.FindPull: DrawDongzhiFindPull(); break;
             case DongzhiFittingStep.ReleaseSeam: DrawDongzhiRelease(); break;
-            case DongzhiFittingStep.FitClasp: DrawDongzhiClasp(); break;
             case DongzhiFittingStep.Deliver: DrawDongzhiPass(); break;
         }
     }
@@ -159,19 +173,9 @@ internal sealed partial class WorkshopObservationView
         var upperBand = new Rect(0, .242f, .322f, .132f);
         var elbowBand = new Rect(0, .374f, .302f, .126f);
         var cuffBand = new Rect(0, .50f, .27f, .123f);
-        bool fittingFront = !readOnly && !GameComplete && fittingStep == DongzhiFittingStep.FitClasp;
-        if (fittingFront)
-        {
-            fittingModelLining = GameArtSurface(art, "Lining Visible at Front", new Rect(), GameArtSprite("CuttingCloth"), DongzhiLoose);
-        }
         DrawDongzhiCoatSlice(art, "Collar", garment, top, Vector2.zero);
         DrawDongzhiCoatSlice(art, "Hem", garment, new Rect(0, .623f, 1, .377f), Vector2.zero);
         fittingSleeve = WorkshopUi.Rect(art, "Animated Left Sleeve", new Rect(DongzhiShoulder.x, DongzhiShoulder.y, 1, 1));
-        if (fittingFront)
-        {
-            fittingLeftFront = WorkshopUi.Rect(art, "Moving Left Front", new Rect());
-            fittingRightFront = WorkshopUi.Rect(art, "Moving Right Front", new Rect());
-        }
         DrawDongzhiSleeveBand(garment, shoulderBand, "Shoulder");
         DrawDongzhiSleeveBand(garment, upperBand, "Upper Arm");
         DrawDongzhiSleeveBand(garment, elbowBand, "Elbow");
@@ -195,43 +199,8 @@ internal sealed partial class WorkshopObservationView
     private void DrawDongzhiSleeveBand(Sprite garment, Rect band, string part)
     {
         DrawDongzhiCoatSlice(fittingSleeve, "Moving " + part, garment, band, -DongzhiShoulder);
-        if (fittingLeftFront == null)
-        {
-            DrawDongzhiCoatSlice(art, "Garment " + part, garment,
-                new Rect(band.width, band.y, 1f - band.width, band.height), Vector2.zero);
-            return;
-        }
-        // Leave the second original cord out while the player positions its loose end.
-        const float cordTop = .255f;
-        const float cordBottom = .298f;
-        if (band.y >= cordBottom || band.yMax <= cordTop)
-        {
-            DrawDongzhiFrontSlice(garment, band.width, band.y, band.height, part);
-            return;
-        }
-        DrawDongzhiFrontSlice(garment, band.width, band.y, cordTop - band.y, part + " above clasp");
-        DrawDongzhiCoatSlice(fittingLeftFront, part + " left of clasp", garment,
-            new Rect(band.width, cordTop, .396f - band.width, cordBottom - cordTop), Vector2.zero);
-        DrawDongzhiCoatSlice(fittingRightFront, part + " right of clasp", garment,
-            new Rect(.612f, cordTop, .388f, cordBottom - cordTop), Vector2.zero);
-        DrawDongzhiFrontSlice(garment, band.width, cordBottom, band.yMax - cordBottom, part + " below clasp");
-        DrawDongzhiPlacketPatch(fittingLeftFront, garment, new Rect(.394f, cordTop, .106f, cordBottom - cordTop),
-            new Rect(.392f, .305f, .108f, cordBottom - cordTop));
-        DrawDongzhiPlacketPatch(fittingRightFront, garment, new Rect(.5f, cordTop, .112f, cordBottom - cordTop),
-            new Rect(.5f, .305f, .112f, cordBottom - cordTop));
-    }
-
-    private void DrawDongzhiPlacketPatch(Transform parent, Sprite garment, Rect part, Rect sample)
-    {
-        var bounds = new Rect(DongzhiCoat.x + part.x * DongzhiCoat.width, DongzhiCoat.y + part.y * DongzhiCoat.height,
-            part.width * DongzhiCoat.width, part.height * DongzhiCoat.height);
-        DrawWorkbenchSpriteCrop(parent, "Plain Placket Fabric", bounds, garment, sample, DongzhiClothTint());
-    }
-
-    private void DrawDongzhiFrontSlice(Sprite garment, float sleeveEdge, float top, float height, string name)
-    {
-        DrawDongzhiCoatSlice(fittingLeftFront, name, garment, new Rect(sleeveEdge, top, .5f - sleeveEdge, height), Vector2.zero);
-        DrawDongzhiCoatSlice(fittingRightFront, name, garment, new Rect(.5f, top, .5f, height), Vector2.zero);
+        DrawDongzhiCoatSlice(art, "Garment " + part, garment,
+            new Rect(band.width, band.y, 1f - band.width, band.height), Vector2.zero);
     }
 
     private void DrawDongzhiCoatSlice(Transform parent, string name, Sprite garment, Rect part, Vector2 offset)
@@ -547,81 +516,138 @@ internal sealed partial class WorkshopObservationView
 
     private void DrawDongzhiClasp()
     {
-        var card = DongzhiStageCard("② 合襟");
-        WorkshopUi.Label(card, "Lift Test Passed", new Rect(23, 80, 255, 47), "✓ 抬手通过", 25, DongzhiGreen,
-            TextAnchor.MiddleCenter);
-        fittingClaspStatus = WorkshopUi.Label(card, "Dongzhi Clasp Feedback", new Rect(23, 144, 255, 100), "", 27,
-            WorkshopUi.Ink, TextAnchor.MiddleCenter);
-
         var garment = WorkshopArt.Garment("4_02") ?? Resources.Load<Sprite>("WorkshopFinish/SilkVariants/4_02");
+        var cord = GameArtSprite("DongzhiClaspCord");
+        var cordArtwork = cord == null ? DongzhiClaspArtwork : DongzhiCordArtwork;
+        DrawDongzhiCloseupFabric(garment);
+
+        var caption = WorkshopUi.PixelCard(art, "Dongzhi Closeup Caption", new Rect(64, 71, 260, 52),
+            WorkshopUi.PixelInk, WorkshopUi.Bronze);
+        WorkshopUi.Label(caption, "Dongzhi Closeup Name", new Rect(10, 0, 240, 52), "② 前襟近看", 27,
+            WorkshopUi.Cream, TextAnchor.MiddleCenter);
+
         var creases = WorkshopUi.Rect(art, "Fabric gathering beside the clasp", new Rect());
         fittingClaspCreases = creases.gameObject.AddComponent<CanvasGroup>();
         fittingClaspCreases.blocksRaycasts = false;
-        for (int i = 0; i < 3; i++)
+        var wrinkledSilk = GameArtSprite("DongzhiClaspWrinkles");
+        if (wrinkledSilk != null)
+            WorkshopUi.Picture(creases, "Puckered Silk Detail", new Rect(393, 239, 374, 192),
+                wrinkledSilk, DongzhiClothTint());
+        else
         {
-            DrawCueStroke(creases, new Vector2(508 + i * 3, 337 + i * 22),
-                new Vector2(551, 367 + i * 8), 4f, ErrorInk);
-            DrawCueStroke(creases, new Vector2(648 - i * 3, 344 + i * 22),
-                new Vector2(591, 368 + i * 8), 4f, ErrorInk);
+            var stitchShadow = new Color32(151, 90, 45, 210);
+            DrawCueStroke(creases, new Vector2(467, 270), new Vector2(557, 313), 3f, stitchShadow);
+            DrawCueStroke(creases, new Vector2(461, 404), new Vector2(557, 361), 3f, stitchShadow);
+            DrawCueStroke(creases, new Vector2(693, 270), new Vector2(604, 313), 3f, stitchShadow);
+            DrawCueStroke(creases, new Vector2(699, 404), new Vector2(604, 361), 3f, stitchShadow);
         }
-        fittingClaspSource = DrawWorkbenchSpriteCrop(art, "Loose Gold Cord on the Coat", new Rect(), garment,
-            DongzhiClaspArtwork, Color.white);
-        PlaceDongzhiKnot(fittingClaspSource.rectTransform, DongzhiChestStrap, 78, 32);
-        var drag = DongzhiButton(art, "Dongzhi Drag Clasp", SewingTouchArea(DongzhiChestStrap, 42, 34), "",
-            null, transparent: true);
+
+        fittingClaspSource = DrawWorkbenchSpriteCrop(art, "Loose Gold Cord on the Coat", new Rect(), cord ?? garment,
+            cordArtwork, Color.white);
+        PlaceDongzhiKnot(fittingClaspSource.rectTransform, DongzhiChestStrap, .5f);
+        var drag = DongzhiButton(art, "Dongzhi Drag Clasp", DongzhiClaspTouchArea(DongzhiChestStrap, 72f, 42f),
+            "", null, transparent: true);
         var hook = drag.gameObject.AddComponent<EventTrigger>();
         BindWinterEvent(hook, EventTriggerType.BeginDrag, evt => BeginDongzhiClasp((PointerEventData)evt));
         BindWinterEvent(hook, EventTriggerType.Drag, evt => DragDongzhiClasp((PointerEventData)evt));
         BindWinterEvent(hook, EventTriggerType.EndDrag, evt => DropDongzhiClasp((PointerEventData)evt));
 
-        DrawCueStroke(art, DongzhiClaspRailStart, DongzhiClaspRailEnd, 6f, DongzhiLoose);
+        fittingClaspSlots = new Image[DongzhiClaspSlotCount];
+        DrawCueStroke(art, DongzhiClaspRailStart, DongzhiClaspRailEnd, 7f, DongzhiLoose);
         for (int i = 0; i < DongzhiClaspSlotCount; i++)
         {
             int slot = i;
             Vector2 at = DongzhiClaspPosition(i);
-            var target = DongzhiButton(art, "Dongzhi Clasp Slot " + (i + 1), SewingTouchArea(at, 25, 21), "",
+            var target = DongzhiButton(art, "Dongzhi Clasp Slot " + (i + 1),
+                DongzhiClaspTouchArea(at, DongzhiClaspSnapDistance, DongzhiClaspSnapDistance), "",
                 () => TryDongzhiClasp(slot), transparent: true);
-            var loop = WorkshopUi.PixelCard(target.transform, "Button Loop on the Coat", new Rect(9, 5, 32, 32),
-                DongzhiGreen, WorkshopUi.Ink);
-            DrawWorkbenchSpriteCrop(loop, "Silk Knot", new Rect(4, 4, 24, 24), garment, DongzhiClaspKnot, Color.white);
+            var rim = WorkshopUi.Fill(target.transform, "Button Loop Rim", new Rect(7, 7, 72, 72), DongzhiGreen);
+            WorkshopUi.ApplyPixelShape(rim);
+            fittingClaspSlots[i] = rim;
+            var loop = WorkshopUi.PixelCard(target.transform, "Button Loop on the Coat", new Rect(13, 13, 60, 60),
+                WorkshopUi.PixelInk, WorkshopUi.Ink);
+            DrawWorkbenchSpriteCrop(loop, "Silk Knot", new Rect(9, 11, 42, 38), cord ?? garment,
+                cord != null ? DongzhiCordEye : DongzhiClaspKnot, Color.white);
             if (fittingLastClasp == i) VisualStep((RectTransform)target.transform, ErrorInk);
             Act("Dongzhi Clasp Alternative " + i, "试第 " + (i + 1) + " 个扣眼", () => TryDongzhiClasp(slot));
         }
 
+        fittingClaspStateBacking = WorkshopUi.Fill(art, "Clasp Result Panel", new Rect(426, 512, 308, 58), ErrorInk);
+        WorkshopUi.ApplyPixelShape(fittingClaspStateBacking);
+        fittingClaspStatus = WorkshopUi.Label(art, "Dongzhi Clasp Feedback", new Rect(426, 512, 308, 58), "", 29,
+            WorkshopUi.Cream, TextAnchor.MiddleCenter);
         fittingClaspGhost = WorkshopUi.Rect(art, "Clasp in Hand", new Rect());
-        DrawWorkbenchSpriteCrop(fittingClaspGhost, "Moved Gold Cord Clasp", new Rect(0, 0, 70, 32), garment,
-            DongzhiClaspArtwork, Color.white);
+        DrawWorkbenchSpriteCrop(fittingClaspGhost, "Moved Gold Cord Clasp", new Rect(Vector2.zero, DongzhiCordSize),
+            cord ?? garment, cordArtwork, Color.white);
         fittingClaspGhost.gameObject.SetActive(false);
-        VisualStep((RectTransform)drag.transform);
+        fittingClaspGripCue = VisualStep((RectTransform)drag.transform);
         preferredAction = drag;
         if (fittingLastClasp < 0)
-            fittingClaspCue = ShowGesture(art, DongzhiChestStrap, DongzhiClaspRailEnd, WorkGesture.Drag).GetComponent<CanvasGroup>();
+            fittingClaspCue = ShowGesture(art, DongzhiChestStrap + new Vector2(51, 0), DongzhiClaspRailStart + new Vector2(28, 0),
+                WorkGesture.Drag).GetComponent<CanvasGroup>();
         ApplyDongzhiClaspPreview(DongzhiRestingClasp());
-        Copy("合襟对扣", "在衣襟上拉盘扣，松手前可以来回试。", fittingLastClasp >= 0);
+        Copy("合襟对扣", "拖住盘扣，找一个让前襟贴平的扣眼。", fittingLastClasp >= 0);
+    }
+
+    private void DrawDongzhiCloseupFabric(Sprite garment)
+    {
+        WorkshopUi.PixelCard(art, "Dongzhi Closeup Frame", new Rect(34, 42, 1092, 568),
+            WorkshopUi.PixelInk, WorkshopUi.Bronze);
+        var closeup = WorkshopUi.Rect(art, "Dongzhi Clasp Closeup", DongzhiClaspWindow);
+        closeup.gameObject.AddComponent<RectMask2D>();
+
+        var lining = GameArtSprite("CuttingCloth");
+        GameArtSurface(closeup, "Closeup Garment Backing", new Rect(Vector2.zero, DongzhiClaspWindow.size),
+            lining, new Color32(154, 105, 60, 255));
+        fittingModelLining = GameArtSurface(closeup, "Lining Visible at Front", new Rect(), lining,
+            new Color32(116, 93, 58, 255));
+
+        var closeupFabric = GameArtSprite("DongzhiClaspCloseup");
+        var source = closeupFabric ?? garment;
+        // The painting includes a strip of exposed lining between the sewn edges. Draw that
+        // separately so it disappears when the two pieces meet.
+        var left = closeupFabric != null ? new Rect(0f, 0f, .47f, 1f) : new Rect(.24f, .077f, .26f, .278f);
+        var right = closeupFabric != null ? new Rect(.53f, 0f, .47f, 1f) : new Rect(.5f, .077f, .26f, .278f);
+        const float bleed = 58f;
+        float width = DongzhiClaspWindow.width * .5f;
+        float height = DongzhiClaspWindow.height;
+        var tint = DongzhiClothTint();
+        fittingLeftFront = WorkshopUi.Rect(closeup, "Moving Left Front", new Rect());
+        fittingRightFront = WorkshopUi.Rect(closeup, "Moving Right Front", new Rect());
+        DrawWorkbenchSpriteCrop(fittingLeftFront, "Dongzhi Closeup Left Fabric",
+            new Rect(-bleed, 0, width + bleed, height), source, left, tint);
+        DrawWorkbenchSpriteCrop(fittingRightFront, "Dongzhi Closeup Right Fabric",
+            new Rect(width, 0, width + bleed, height), source, right, tint);
     }
 
     private static Vector2 DongzhiClaspPosition(int index) => Vector2.Lerp(DongzhiClaspRailStart, DongzhiClaspRailEnd, index * .5f);
 
+    private static Rect DongzhiClaspTouchArea(Vector2 center, float halfWidth, float halfHeight)
+        => new Rect(center.x - halfWidth, center.y - halfHeight, 2f * halfWidth, 2f * halfHeight);
+
     private float DongzhiRestingClasp() => fittingLastClasp < 0 ? FittingMatchingClasp + 1f : fittingLastClasp;
 
-    private void ApplyDongzhiClaspPreview(float position)
+    private void ApplyDongzhiClaspPreview(float position, int hoveredSlot = -1)
     {
         float error = position - FittingMatchingClasp;
         float slack = Mathf.Max(0f, error - .29f);
         float tension = Mathf.Max(0f, -error - .29f);
-        float opening = Mathf.Min(slack * 26f, 35f);
-        float overlap = Mathf.Min(tension * 17f, 25f);
+        float opening = Mathf.Min(slack * 54f, 57f);
+        float overlap = Mathf.Min(tension * 35f, 38f);
         float modelOffset = opening - overlap;
         fittingClaspCreases.alpha = Mathf.Clamp01(tension * 1.8f);
+        ((RectTransform)fittingClaspCreases.transform).anchoredPosition = new Vector2(-overlap, 0f);
         bool restsFlat = Mathf.Abs(error) <= .29f;
-        fittingClaspStatus.text = restsFlat ? "✓ 衣襟贴平" : error > 0 ? "衣襟留缝" : "衣襟起皱";
-        fittingClaspStatus.color = restsFlat ? DongzhiGreen : ErrorInk;
-        if (fittingModelLining == null) return;
+        bool waitingForFirstTry = fittingLastClasp < 0 && !fittingClaspGhost.gameObject.activeSelf;
+        fittingClaspStatus.text = waitingForFirstTry ? "挑一个扣眼" : restsFlat ? "✓ 衣襟贴平" : error > 0 ? "衣襟留缝" : "衣襟起皱";
+        fittingClaspStateBacking.color = waitingForFirstTry ? WorkshopUi.PixelInk : restsFlat ? DongzhiGreen : ErrorInk;
+        for (int i = 0; i < fittingClaspSlots.Length; i++)
+            fittingClaspSlots[i].color = i == hoveredSlot ? (restsFlat ? HotspotSurface : GuideGold) : DongzhiGreen;
+
         fittingLeftFront.anchoredPosition = new Vector2(-modelOffset, 0f);
         fittingRightFront.anchoredPosition = new Vector2(modelOffset, 0f);
-        fittingSleeve.anchoredPosition = new Vector2(DongzhiShoulder.x - modelOffset, -DongzhiShoulder.y);
-        SetDongzhiSurface(fittingModelLining, new Rect(DongzhiCoat.center.x - 3f - opening,
-            DongzhiCoat.y + DongzhiCoat.height * .13f, Mathf.Max(18f, 2f * opening + 6f), DongzhiCoat.height * .493f));
+        SetDongzhiSurface(fittingModelLining, new Rect(DongzhiClaspWindow.width * .5f - opening, 0,
+            opening * 2f, DongzhiClaspWindow.height));
     }
 
     private static void SetDongzhiSurface(Image panel, Rect bounds)
@@ -630,16 +656,18 @@ internal sealed partial class WorkshopObservationView
         panel.rectTransform.sizeDelta = bounds.size;
     }
 
-    private static void PlaceDongzhiKnot(RectTransform knot, Vector2 at, float width, float height)
+    private static void PlaceDongzhiKnot(RectTransform knot, Vector2 at, float horizontalAnchor)
     {
-        knot.sizeDelta = new Vector2(width, height);
-        knot.anchoredPosition = new Vector2(at.x - width * .5f, -at.y + height * .5f);
+        knot.sizeDelta = DongzhiCordSize;
+        knot.anchoredPosition = new Vector2(at.x - DongzhiCordSize.x * horizontalAnchor, -at.y + DongzhiCordSize.y * .5f);
     }
 
     private void BeginDongzhiClasp(PointerEventData pointer)
     {
         if (fittingStep != DongzhiFittingStep.FitClasp || pointer.button != PointerEventData.InputButton.Left) return;
+        pointer.eligibleForClick = false;
         if (fittingClaspCue != null) fittingClaspCue.alpha = 0f;
+        fittingClaspGripCue.gameObject.SetActive(false);
         fittingClaspSource.enabled = false;
         fittingClaspGhost.gameObject.SetActive(true);
         WorkshopAudioFeedback.Fabric();
@@ -651,14 +679,18 @@ internal sealed partial class WorkshopObservationView
         if (fittingClaspGhost == null || !fittingClaspGhost.gameObject.activeSelf) return;
         var at = DongzhiPointerOnArt(pointer, pointer.position);
         float travel = DongzhiClaspTravel(at);
-        int slot = Mathf.Clamp(Mathf.RoundToInt(travel), 0, DongzhiClaspSlotCount - 1);
-        if (Vector2.Distance(at, DongzhiClaspPosition(slot)) <= DongzhiClaspSnapDistance)
+        int slot = DongzhiClaspNearSlot(at, travel);
+        if (slot >= 0)
         {
             at = DongzhiClaspPosition(slot);
             travel = slot;
         }
-        PlaceDongzhiKnot(fittingClaspGhost, at, 70, 32);
-        ApplyDongzhiClaspPreview(Mathf.Clamp(travel, -.55f, 2.55f));
+        at.x = Mathf.Clamp(at.x, DongzhiClaspWindow.xMin + DongzhiCordSize.x * DongzhiCordKnotAnchor,
+            DongzhiClaspWindow.xMax - DongzhiCordSize.x * (1f - DongzhiCordKnotAnchor));
+        at.y = Mathf.Clamp(at.y, DongzhiClaspWindow.yMin + DongzhiCordSize.y * .5f,
+            DongzhiClaspWindow.yMax - DongzhiCordSize.y * .5f);
+        PlaceDongzhiKnot(fittingClaspGhost, at, DongzhiCordKnotAnchor);
+        ApplyDongzhiClaspPreview(Mathf.Clamp(travel, -.55f, 2.55f), slot);
     }
 
     private void DropDongzhiClasp(PointerEventData pointer)
@@ -667,14 +699,22 @@ internal sealed partial class WorkshopObservationView
         fittingClaspGhost.gameObject.SetActive(false);
         fittingClaspSource.enabled = true;
         var at = DongzhiPointerOnArt(pointer, pointer.position);
-        int slot = Mathf.Clamp(Mathf.RoundToInt(DongzhiClaspTravel(at)), 0, DongzhiClaspSlotCount - 1);
-        if (Vector2.Distance(at, DongzhiClaspPosition(slot)) <= DongzhiClaspSnapDistance)
+        int slot = DongzhiClaspNearSlot(at, DongzhiClaspTravel(at));
+        if (slot >= 0)
         {
             TryDongzhiClasp(slot);
             return;
         }
         ApplyDongzhiClaspPreview(DongzhiRestingClasp());
+        fittingClaspGripCue.gameObject.SetActive(true);
         if (fittingClaspCue != null) fittingClaspCue.alpha = 1f;
+    }
+
+    private static int DongzhiClaspNearSlot(Vector2 at, float travel)
+    {
+        int slot = Mathf.Clamp(Mathf.RoundToInt(travel), 0, DongzhiClaspSlotCount - 1);
+        return (at - DongzhiClaspPosition(slot)).sqrMagnitude <= DongzhiClaspSnapDistance * DongzhiClaspSnapDistance
+            ? slot : -1;
     }
 
     private static float DongzhiClaspTravel(Vector2 point)
