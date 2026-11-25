@@ -7,6 +7,7 @@ internal sealed partial class WorkshopObservationView
         switch (observation)
         {
             case WorkshopObservation.MangzhongCocoon: DrawXiazhiPuzzle(); break;
+            case WorkshopObservation.MangzhongCocoonHarvest: DrawCocoonHarvestChallenge(); break;
             case WorkshopObservation.QiufenOffering: DrawOfferingWorkshop(); break;
             case WorkshopObservation.HanluLoom: DrawShuttleWorkshop(); break;
             case WorkshopObservation.LidongDye: DrawWinterDye(); break;

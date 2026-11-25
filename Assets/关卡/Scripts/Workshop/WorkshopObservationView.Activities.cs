@@ -14,6 +14,7 @@ internal sealed partial class WorkshopObservationView
         {
             case WorkshopObservation.QingmingMulberry: DrawQingming(); break;
             case WorkshopObservation.MangzhongCocoon: DrawMangzhong(); break;
+            case WorkshopObservation.MangzhongCocoonHarvest: DrawCocoonHarvestRecord(); break;
             case WorkshopObservation.DashuVentilation: DrawVentilation(); break;
             case WorkshopObservation.QiufenOffering: DrawQiufen(); break;
             case WorkshopObservation.HanluLoom: DrawLoom(); break;

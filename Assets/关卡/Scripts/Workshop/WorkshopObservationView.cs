@@ -17,7 +17,8 @@ internal enum WorkshopObservation
     LidongDye,
     XiaoxueTailoring,
     DaxueSewing,
-    DongzhiFitting
+    DongzhiFitting,
+    MangzhongCocoonHarvest
 }
 
 internal sealed partial class WorkshopObservationView : MonoBehaviour
@@ -74,7 +75,10 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
             "① 找到成对的布边记号。\n② 直边走长针，弯处收短针。\n③ 留口翻衣，翻正后补针。"),
         new Definition(WorkshopSeason.Winter, "winter.dongzhi.fitting", "冬至", "冬至交衣", "主厅试衣台", "试衣改合身",
             "冬至贺冬要穿着出门见客。衣襟得合得严，抬手行礼时袖根也不能勒。", "大雪夹衣 → 叠穿试衣与返修 → 新衣上架",
-            "① 拖衣袖向上，试试能抬多高。\n② 绷紧处可松一点缝份，再抬手。\n③ 扣好衣襟，交付新衣。")
+            "① 拖衣袖向上，试试能抬多高。\n② 绷紧处可松一点缝份，再抬手。\n③ 扣好衣襟，交付新衣。"),
+        new Definition(WorkshopSeason.Summer, "summer.mangzhong.harvest", "芒种", "春茧收存记录", "采收干茧", "落茧快收",
+            "芒种前后有江南产区采收春茧。挑选成熟、干爽且完整的茧，分批收存。", "四轨收茧 → 干茧配批",
+            "① 开始后蚕茧会沿四轨落下。\n② 从最下方一排开始，点深色篮或按轨道键。\n③ 避开浅色篮，在金线前收齐好茧。")
     };
 
     private static readonly Color[] Accents =
@@ -282,6 +286,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         }
 
         if (showBriefing) return;
+        TickCocoonRun();
         if (!Input.GetKeyDown(KeyCode.Tab) || EventSystem.current == null || navigation.Count == 0) return;
         var available = navigation.FindAll(button => button != null && button.IsActive() && button.IsInteractable());
         if (available.Count == 0) return;
@@ -366,9 +371,13 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
         DrawActivity();
         if (IsSeasonGame(observation)) DrawChallengeReward();
+        if (ChallengeIsActive &&
+            (observation == WorkshopObservation.MangzhongCocoon || observation == WorkshopObservation.MangzhongCocoonHarvest))
+            DrawSummerGameSwitch(accent);
 
-        bool xiazhiGame = observation == WorkshopObservation.MangzhongCocoon && ChallengeIsActive;
-        string exitLabel = xiazhiGame ? "返回夏季" : onClosed == null && !readOnly && !ChallengeIsActive ? "返回关卡" : "返回";
+        bool summerGame = ChallengeIsActive &&
+            (observation == WorkshopObservation.MangzhongCocoon || observation == WorkshopObservation.MangzhongCocoonHarvest);
+        string exitLabel = summerGame ? "返回夏季" : onClosed == null && !readOnly && !ChallengeIsActive ? "返回关卡" : "返回";
         if (!CanPauseGameplay) exitLabel += " · Esc";
         var exit = WorkshopUi.PixelButton(page, "Return From Observation", new Rect(1473, 848, 243, 58),
             exitLabel, Close, false, 27);
@@ -384,6 +393,20 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
             ApplyWorkbenchReadingFont();
         var prior = previousFocus != null ? page.Find(previousFocus) : null;
         BindNavigation(replay ?? preferredAction ?? prior?.GetComponent<Button>());
+    }
+
+    private void DrawSummerGameSwitch(Color accent)
+    {
+        bool threadGame = observation == WorkshopObservation.MangzhongCocoon;
+        var button = WorkshopUi.PixelButton(page, "Switch Mangzhong Game", new Rect(1402, 19, 314, 44),
+            threadGame ? "落茧快收 · 试玩" : "返回芒种理线", () =>
+            {
+                if (WorkshopMinigameMenu.BlocksGameplayInput) return;
+                WorkshopAudioFeedback.Click();
+                if (threadGame) ClearXiazhiHint();
+                Link(threadGame ? WorkshopObservation.MangzhongCocoonHarvest : WorkshopObservation.MangzhongCocoon);
+            }, false, 25, accent);
+        RegisterButton(button);
     }
 
     private void ReviewWorkbenchBriefing()

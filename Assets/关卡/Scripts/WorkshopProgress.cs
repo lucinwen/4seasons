@@ -128,6 +128,26 @@ public static class WorkshopProgress
                 save.observations.Add(newThread);
                 migrated = true;
             }
+            // The local falling-cocoon build used the inspection ID but wrote a distinct result description.
+            const string oldCocoon = "observation.summer.mangzhong";
+            const string harvestId = "observation.summer.mangzhong.harvest";
+            foreach (var work in save.challengeWorks.FindAll(work => work != null && work.id == oldCocoon &&
+                         work.sample?.Length == 9 && work.description?.StartsWith("连收 ", StringComparison.Ordinal) == true))
+            {
+                if (save.challengeWorks.Exists(current => current != null && current.id == harvestId &&
+                    current.order == work.order)) continue;
+                save.challengeWorks.Add(new ChallengeWork
+                {
+                    id = harvestId, order = work.order, score = work.score,
+                    description = work.description, sample = work.sample
+                });
+                migrated = true;
+            }
+            if (!save.observations.Contains(harvestId) && save.challengeWorks.Exists(work => work != null && work.id == harvestId))
+            {
+                save.observations.Add(harvestId);
+                migrated = true;
+            }
             if (migrated)
             {
                 PlayerPrefs.SetString(SaveKey, JsonUtility.ToJson(save));

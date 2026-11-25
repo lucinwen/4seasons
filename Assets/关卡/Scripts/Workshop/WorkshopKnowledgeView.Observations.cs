@@ -15,7 +15,7 @@ public sealed partial class WorkshopKnowledgeView
             WorkshopUi.Paper, WorkshopUi.Bronze);
         Label(panel, "Title", new Rect(52, 42, 1200, 80), "节气小游戏与观察", 51, Jade);
         Label(panel, "Hint", new Rect(55, 123, 1500, 42),
-            "节气工位共有十关。完成后，残页与工艺记录会收在这里。", 28, WorkshopUi.Ink);
+            "完成节气小游戏后，残页与工艺记录会收在这里。", 28, WorkshopUi.Ink);
         var back = WorkshopUi.PixelButton(panel, "Back", new Rect(1456, 63, 196, 58), "返回织录", RenderItems, false, 28);
 
         for (int i = 0; i < ObservationCoverPaths.Length; i++)

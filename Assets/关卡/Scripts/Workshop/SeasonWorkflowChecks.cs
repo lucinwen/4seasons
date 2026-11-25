@@ -27,8 +27,10 @@ public static class SeasonWorkflowChecks
             Load("{\"chapters\":1,\"items\":63,\"seasonalOrder\":true}");
             Require(!WorkshopProgress.CanSubmit(WorkshopSeason.Summer), "summer delivery requires thread puzzle");
             Require(WorkshopObservationView.ObservationsFor(WorkshopSeason.Summer)
-                .Where(WorkshopObservationView.IsSeasonGame).SequenceEqual(new[] { WorkshopObservation.MangzhongCocoon }),
-                "exactly one summer puzzle, at Mangzhong");
+                .Where(WorkshopObservationView.IsSeasonGame).SequenceEqual(new[]
+                {
+                    WorkshopObservation.MangzhongCocoon, WorkshopObservation.MangzhongCocoonHarvest
+                }), "formal thread puzzle and optional cocoon harvest");
             Require(WorkshopObservationView.RecordTerm(WorkshopObservation.MangzhongCocoon) == "芒种", "new puzzle term");
             Require(WorkshopObservationView.StationLabel(WorkshopObservation.MangzhongCocoon) == "络纬整经", "rack entry caption");
             var quests = WorkshopQuests.ForSeason(WorkshopSeason.Summer);
@@ -47,6 +49,19 @@ public static class SeasonWorkflowChecks
             Require(!WorkshopObservationView.HasOrderWork(WorkshopObservation.MangzhongCocoon) &&
                 !WorkshopObservationView.HasRecord(WorkshopObservation.MangzhongCocoon), "old inspection is not a completed thread puzzle");
             Require(!WorkshopProgress.CanSubmit(WorkshopSeason.Summer), "old inspection cannot skip puzzle");
+            Require(!WorkshopObservationView.HasRecord(WorkshopObservation.MangzhongCocoonHarvest),
+                "old inspection does not award the separate harvest record");
+
+            Load("{\"chapters\":1,\"items\":63,\"seasonalOrder\":true,\"observations\":[\"observation.summer.mangzhong\"],\"challengeWorks\":[{\"id\":\"observation.summer.mangzhong\",\"order\":0,\"score\":120,\"description\":\"连收 10 枚 · 交货 5 枚 · 备存 5 枚\",\"sample\":\"444550000\"}]}");
+            Require(WorkshopObservationView.HasRecord(WorkshopObservation.MangzhongCocoonHarvest) &&
+                WorkshopObservationView.BestWork(WorkshopObservation.MangzhongCocoonHarvest, 0)?.sample == "444550000",
+                "local falling-cocoon practice migrates to the distinct record");
+            Require(!WorkshopObservationView.HasOrderWork(WorkshopObservation.MangzhongCocoonHarvest) &&
+                !WorkshopObservationView.HasRecord(WorkshopObservation.MangzhongCocoon) &&
+                !WorkshopProgress.CanSubmit(WorkshopSeason.Summer), "harvest practice does not satisfy the formal thread order");
+            WorkshopProgress.ResetSession();
+            Require(WorkshopObservationView.BestWork(WorkshopObservation.MangzhongCocoonHarvest, 0)?.score == 120,
+                "harvest practice survives reload");
 
             Load("{\"chapters\":1,\"items\":63,\"seasonalOrder\":true,\"observations\":[\"observation.summer.dashu.reeling\"],\"challengeWorks\":[{\"id\":\"observation.summer.dashu.reeling\",\"order\":1,\"score\":900,\"sample\":\"111/949/111\"}],\"orderWorks\":[{\"id\":\"observation.summer.dashu.reeling\",\"order\":0,\"score\":1000,\"sample\":\"111/949/111\"}]}");
             Require(WorkshopObservationView.HasRecord(WorkshopObservation.MangzhongCocoon), "legacy puzzle page migrates");
