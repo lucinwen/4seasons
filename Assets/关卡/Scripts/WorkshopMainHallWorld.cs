@@ -439,7 +439,7 @@ public sealed class WorkshopMainHallWorld : MonoBehaviour
     }
 
     private bool InputBlocked =>
-        modalOpen || WorkshopQuestGuide.IsWorldOverlayActive || WorkshopDialoguePresenter.BlocksWorldInput ||
+        modalOpen || WorkshopMinigameMenu.BlocksGameplayInput || WorkshopQuestGuide.IsWorldOverlayActive || WorkshopDialoguePresenter.BlocksWorldInput ||
         WorkshopKnowledgeView.IsOpen || WorkshopStorageView.IsOpen ||
         WorkshopNarrativeView.IsOpen || WorkshopChapterGuide.IsOpen || WorkshopHeritageBrief.IsOpen ||
         WorkshopCraftRecordView.BlocksWorldInput;

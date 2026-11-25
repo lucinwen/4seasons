@@ -133,6 +133,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     internal static bool BlocksWorldInput => IsOpen || lastClosedFrame == Time.frameCount;
     internal static WorkshopObservation? ActiveGame => current != null && !current.readOnly &&
         IsSeasonGame(current.observation) ? current.observation : (WorkshopObservation?)null;
+    internal static bool CanPauseGameplay => ActiveGame.HasValue && !current.showBriefing;
 
     internal static WorkshopSeason Season(WorkshopObservation id) => Definitions[(int)id].Season;
     internal static string RecordTitle(WorkshopObservation id) => Definitions[(int)id].Title;
@@ -285,7 +286,8 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (WorkshopMinigameMenu.BlocksGameplayInput) return;
+        if (!CanPauseGameplay && Input.GetKeyDown(KeyCode.Escape))
         {
             if (showBriefing && resumeFromBriefing) ResumeWorkbench();
             else Close();
@@ -379,9 +381,10 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         DrawActivity();
         if (IsSeasonGame(observation)) DrawChallengeReward();
 
+        string exitLabel = onClosed == null && !readOnly && !ChallengeIsActive ? "返回关卡" : "返回";
+        if (!CanPauseGameplay) exitLabel += " · Esc";
         var exit = WorkshopUi.PixelButton(page, "Return From Observation", new Rect(1473, 848, 243, 58),
-            ChallengeIsActive ? "返回 · Esc" : onClosed == null && !readOnly ? "返回关卡 · Esc" : "返回 · Esc",
-            Close, false, 27);
+            exitLabel, Close, false, 27);
         Button replay = ChallengeIsActive ? DrawChallengeControls() : null;
         if (ChallengeIsActive && !GameComplete && !readOnly)
         {
@@ -505,7 +508,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (EventSystem.current == null) return;
+        if (WorkshopMinigameMenu.BlocksGameplayInput || EventSystem.current == null) return;
         var selected = EventSystem.current.currentSelectedGameObject;
         int stamp = 17;
         foreach (var button in navigation)

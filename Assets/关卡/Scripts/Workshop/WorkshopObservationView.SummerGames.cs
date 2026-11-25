@@ -1080,16 +1080,23 @@ internal sealed partial class WorkshopObservationView
         var events = hit.gameObject.AddComponent<EventTrigger>();
         SummerPointer(events, EventTriggerType.BeginDrag, pointer =>
         {
+            if (WorkshopMinigameMenu.BlocksGameplayInput) return;
             pointer.eligibleForClick = false;
             dashuDraggingSilk = true;
             ghost.gameObject.SetActive(true);
             SetDashuDryingDragPosition(desk, ghost.rectTransform, pointer);
         });
-        SummerPointer(events, EventTriggerType.Drag, pointer => SetDashuDryingDragPosition(desk, ghost.rectTransform, pointer));
+        SummerPointer(events, EventTriggerType.Drag, pointer =>
+        {
+            if (dashuDraggingSilk && !WorkshopMinigameMenu.BlocksGameplayInput)
+                SetDashuDryingDragPosition(desk, ghost.rectTransform, pointer);
+        });
         SummerPointer(events, EventTriggerType.EndDrag, pointer =>
         {
+            if (!dashuDraggingSilk) return;
             dashuDraggingSilk = false;
             ghost.gameObject.SetActive(false);
+            if (WorkshopMinigameMenu.BlocksGameplayInput) return;
             if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(desk, pointer.position, pointer.pressEventCamera, out var at))
                 return;
             var drop = new Vector2(at.x, -at.y);
@@ -1142,9 +1149,13 @@ internal sealed partial class WorkshopObservationView
     {
         if (dashuMoisture == 0 || dashuDryingPlace == SilkDryingPlace.None ||
             (dashuDryingPlace == SilkDryingPlace.Window && DashuRainy)) yield break;
-        yield return new WaitForSecondsRealtime(1.6f);
-        while (desk != null && desk.gameObject.activeInHierarchy && dashuDraggingSilk)
+        float elapsed = 0f;
+        while (desk != null && desk.gameObject.activeInHierarchy &&
+            (elapsed < 1.6f || dashuDraggingSilk || WorkshopMinigameMenu.BlocksGameplayInput))
+        {
+            if (!WorkshopMinigameMenu.BlocksGameplayInput) elapsed += Time.unscaledDeltaTime;
             yield return null;
+        }
         if (desk != null && desk.gameObject.activeInHierarchy && dashuDrying && !GameComplete)
             AdvanceDashuDrying();
     }
@@ -1253,6 +1264,11 @@ internal sealed partial class WorkshopObservationView
         while (worktop != null && worktop.gameObject.activeInHierarchy && !showBriefing && !GameComplete && !dashuDrying)
         {
             if (dashuHoldingPointer && !Input.GetMouseButton(0)) dashuHoldingPointer = false;
+            if (WorkshopMinigameMenu.BlocksGameplayInput)
+            {
+                yield return null;
+                continue;
+            }
             bool held = Application.isFocused && (dashuHoldingPointer || Input.GetKey(KeyCode.Space));
             if (!Application.isFocused) dashuHoldingPointer = false;
             if (Application.isFocused && Input.GetKeyDown(KeyCode.E)) SpliceDashuSilk();

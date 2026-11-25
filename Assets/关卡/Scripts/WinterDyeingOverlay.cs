@@ -219,7 +219,8 @@ public class WinterDyeingOverlay : MonoBehaviour
 
     public bool TryDyeCloth()
     {
-        if (!CanDragSilk || RequiresSeasonalSwatch || WorkshopProgress.Has(WorkshopItem.CutPieces)) return false;
+        if (WorkshopMinigameMenu.BlocksGameplayInput || !CanDragSilk ||
+            RequiresSeasonalSwatch || WorkshopProgress.Has(WorkshopItem.CutPieces)) return false;
         if (WorkshopObservationView.HasOrderWork(WorkshopObservation.LidongDye) && _selectedColor != DyeColor.Yellow) return false;
 
         _dyeingComplete = true;

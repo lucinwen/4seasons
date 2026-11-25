@@ -184,7 +184,7 @@ public class WinterGrindingOverlay : MonoBehaviour
 
     public bool AcceptMaterial(WinterGrindingRawCard card)
     {
-        if (!CanAcceptMaterial || card == null || card.Material == null) return false;
+        if (WorkshopMinigameMenu.BlocksGameplayInput || !CanAcceptMaterial || card == null || card.Material == null) return false;
 
         _selectedCard = card;
         _selectedMaterial = card.Material;
@@ -201,7 +201,7 @@ public class WinterGrindingOverlay : MonoBehaviour
 
     public void AddGrind(float localDistance)
     {
-        if (!HasMaterial) return;
+        if (WorkshopMinigameMenu.BlocksGameplayInput || !HasMaterial) return;
 
         _grindProgress += localDistance;
         ShowProgress(Mathf.Clamp01(_grindProgress / GrindDistanceRequired));

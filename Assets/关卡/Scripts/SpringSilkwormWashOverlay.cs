@@ -130,7 +130,7 @@ internal sealed class SpringSilkwormWashOverlay : MonoBehaviour
         WorkshopUi.Fill(instructions, "Instruction Rule", new Rect(27, 341, 444, 2), WorkshopUi.Line);
         action = WorkshopUi.PixelButton(instructions, "Bath Action", new Rect(27, 386, 444, 64),
             "放入蚕种筛", () => EnterRinse(), true, 28);
-        WorkshopUi.PixelButton(page, "Leave Bath", new Rect(1473, 848, 243, 58), "返回 · Esc", Close, false, 27);
+        WorkshopUi.PixelButton(page, "Leave Bath", new Rect(1473, 848, 243, 58), "返回", Close, false, 27);
         foreach (var label in page.GetComponentsInChildren<Text>(true))
             label.font = WorkshopArt.ReadingFont;
         RefreshPhase();
@@ -145,7 +145,8 @@ internal sealed class SpringSilkwormWashOverlay : MonoBehaviour
 
     private void BeginDrag(PointerEventData pointer)
     {
-        if (pointer.button != PointerEventData.InputButton.Left || phase > WashPhase.Rinse) return;
+        if (WorkshopMinigameMenu.BlocksGameplayInput ||
+            pointer.button != PointerEventData.InputButton.Left || phase > WashPhase.Rinse) return;
         var start = WorkPoint(pointer.pressPosition, pointer.pressEventCamera);
         dragging = phase == WashPhase.Load ? Around(TrayRest, 204, 148).Contains(start) : OverWater(start);
         lastPoint = start;
@@ -154,6 +155,11 @@ internal sealed class SpringSilkwormWashOverlay : MonoBehaviour
     private void Drag(PointerEventData pointer)
     {
         if (!dragging) return;
+        if (WorkshopMinigameMenu.BlocksGameplayInput)
+        {
+            lastPoint = WorkPoint(pointer.position, pointer.pressEventCamera);
+            return;
+        }
         Vector2 point = WorkPoint(pointer.position, pointer.pressEventCamera);
         if (phase == WashPhase.Load)
         {
@@ -177,6 +183,11 @@ internal sealed class SpringSilkwormWashOverlay : MonoBehaviour
         if (!dragging) return;
         dragging = false;
         if (phase != WashPhase.Load) return;
+        if (WorkshopMinigameMenu.BlocksGameplayInput)
+        {
+            MoveTray(TrayRest);
+            return;
+        }
         Vector2 point = WorkPoint(pointer.position, pointer.pressEventCamera);
         if (OverWater(point)) EnterRinse();
         else MoveTray(TrayRest);
@@ -296,11 +307,6 @@ internal sealed class SpringSilkwormWashOverlay : MonoBehaviour
 
     private static Rect Around(Vector2 center, float width, float height) =>
         new Rect(center.x - width / 2, center.y - height / 2, width, height);
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape)) Close();
-    }
 
     private void Close()
     {
