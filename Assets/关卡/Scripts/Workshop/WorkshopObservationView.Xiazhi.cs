@@ -85,6 +85,7 @@ internal sealed partial class WorkshopObservationView
     {
         var button = WorkshopUi.PixelButton(art, name, bounds, caption, () =>
         {
+            if (WorkshopMinigameMenu.BlocksGameplayInput) return;
             WorkshopAudioFeedback.Click();
             action();
         }, primary, 27, SummerJade);
@@ -114,7 +115,7 @@ internal sealed partial class WorkshopObservationView
 
     private void RotateXiazhiTile(int index)
     {
-        if (GameComplete || readOnly || !xiazhiPuzzle.Rotate(index)) return;
+        if (WorkshopMinigameMenu.BlocksGameplayInput || GameComplete || readOnly || !xiazhiPuzzle.Rotate(index)) return;
         WorkshopAudioFeedback.Click();
         ClearXiazhiHint();
         if (xiazhiPuzzle.Solved)
@@ -158,6 +159,11 @@ internal sealed partial class WorkshopObservationView
         float elapsed = 0;
         while (generation == xiazhiGeneration && marker != null && elapsed < 5)
         {
+            if (WorkshopMinigameMenu.BlocksGameplayInput)
+            {
+                yield return null;
+                continue;
+            }
             elapsed += Time.unscaledDeltaTime;
             marker.color = Mathf.FloorToInt(elapsed * 3) % 2 == 0 ? SummerGold : WorkshopUi.Cream;
             yield return null;
@@ -202,6 +208,11 @@ internal sealed partial class WorkshopObservationView
         float elapsed = 0;
         while (wheel != null && wheel.gameObject.activeInHierarchy && elapsed < .85f)
         {
+            if (WorkshopMinigameMenu.BlocksGameplayInput)
+            {
+                yield return null;
+                continue;
+            }
             elapsed += Time.unscaledDeltaTime;
             wheel.rectTransform.localRotation = Quaternion.Euler(0,0,-Mathf.Floor(elapsed * 24) * 15);
             yield return null;

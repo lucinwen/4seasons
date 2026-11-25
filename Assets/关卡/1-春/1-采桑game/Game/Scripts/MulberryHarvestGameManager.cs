@@ -80,13 +80,6 @@ namespace Qingming.Harvest
             UpdateUI();
         }
 
-        private void Update()
-        {
-            if (!HarvestOverlayManager.IsHarvestActive && State != HarvestGameState.Completed &&
-                Input.GetKeyDown(KeyCode.Escape))
-                ReturnToSpring();
-        }
-
         /// <summary>开始按钮点击后调用，正式进入游玩状态。</summary>
         public void StartGame()
         {

@@ -367,7 +367,8 @@ internal sealed partial class WorkshopObservationView
     private IEnumerator AnimateDongzhiLift(RectTransform scene, float from, float to)
     {
         const float duration = .27f;
-        for (float elapsed = 0; elapsed < duration; elapsed += Time.unscaledDeltaTime)
+        for (float elapsed = 0; elapsed < duration;
+             elapsed += WorkshopMinigameMenu.BlocksGameplayInput ? 0f : Time.unscaledDeltaTime)
         {
             if (scene == null || !scene.gameObject.activeInHierarchy) { fittingPlayingPose = false; yield break; }
             float attempt = Mathf.SmoothStep(from, 1f, elapsed / duration);

@@ -14,7 +14,7 @@ internal sealed class WorkshopQuestGuide : MonoBehaviour
     private static WorkshopQuestGuide current;
     private static int lastDismissalFrame = -1;
     internal static bool IsOpen => current != null && current.card != null && current.card.gameObject.activeSelf;
-    internal static bool BlocksWorldInput => IsOpen || lastDismissalFrame == Time.frameCount ||
+    internal static bool BlocksWorldInput => WorkshopMinigameMenu.BlocksGameplayInput || IsOpen || lastDismissalFrame == Time.frameCount ||
         WorkshopDialoguePresenter.BlocksWorldInput || MiniGameCompletionAnimation.IsPlaying ||
         AutumnOfferingView.BlocksWorldInput || WorkshopObservationView.BlocksWorldInput ||
         WorkshopCraftRecordView.BlocksWorldInput || WorkshopHeritageBrief.IsOpen || SpringSilkwormWashOverlay.IsOpen;
