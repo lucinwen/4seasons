@@ -24,24 +24,29 @@ public static class SpringCollectionChecks
         try
         {
             WorkshopProgress.StartNewGame();
-            Require(!WorkshopProgress.Has(WorkshopItem.Silkworm), "new game must not grant a harvesting reward");
+            Require(!WorkshopProgress.Has(WorkshopItem.Silkworm), "new game must not grant a feeding reward");
             Require(!WorkshopObservationView.HasSeasonOrderDeliveries(WorkshopSeason.Spring), "harvest is required");
-            Require(WorkshopObservationView.ObservationsFor(WorkshopSeason.Spring).SequenceEqual(
-                new[] { WorkshopObservation.QingmingMulberry }), "only harvest remains in spring collection");
+            Require(!WorkshopObservationView.ObservationsFor(WorkshopSeason.Spring).Any(),
+                "retired spring minigames are not listed");
 
-            SpringSummerNpcDialogue.RecordHarvestedLeaves(false);
-            WorkshopObservationView.RecordQingmingHarvest(8);
-            Require(WorkshopProgress.Has(WorkshopItem.MulberryLeaf) && WorkshopProgress.Has(WorkshopItem.Silkworm), "harvest grants both rewards");
-            Require(SpringSummerNpcDialogue.CanWash, "harvest unlocks bath preparation");
+            SpringSummerNpcDialogue.RecordHarvestedLeaves();
+            Require(WorkshopProgress.Has(WorkshopItem.MulberryLeaf) && !WorkshopProgress.Has(WorkshopItem.Silkworm), "harvest grants leaves");
+            Require(!WorkshopProgress.HasObservation("observation.spring.qingming"), "direct harvest only grants quest progress");
+            WorkshopProgress.ResetSession();
+            Require(!WorkshopProgress.Has(WorkshopItem.Silkworm), "reloading after harvest keeps feeding pending");
+            Require(!SpringSummerNpcDialogue.CanWash, "bath preparation requires feeding");
+            Require(WorkshopQuests.NextReady(WorkshopSeason.Spring)?.Id == nameof(WorkshopItem.Silkworm), "next quest is feeding");
+            SpringSummerNpcDialogue.RecordHarvestedLeaves(true);
+            Require(WorkshopProgress.Award(WorkshopItem.Silkworm), "first feeding grants one reward");
+            Require(!WorkshopProgress.Award(WorkshopItem.Silkworm), "repeat feeding does not duplicate reward");
+            Require(SpringSummerNpcDialogue.CanWash, "feeding unlocks bath preparation");
             Require(WorkshopQuests.NextReady(WorkshopSeason.Spring)?.Id == "EggPaper", "next quest is egg paper");
             Require(!WorkshopProgress.CanSubmit(WorkshopSeason.Spring), "egg still required");
-            SpringSummerNpcDialogue.RecordHarvestedLeaves(true);
-            Require(!WorkshopProgress.Award(WorkshopItem.Silkworm), "replay does not duplicate reward");
             WorkshopProgress.MarkStep("spring.eggPaper");
             Require(WorkshopQuests.NextReady(WorkshopSeason.Spring)?.Id == nameof(WorkshopItem.SilkwormEgg), "bath remains playable");
             WorkshopProgress.Award(WorkshopItem.SilkwormEgg);
             Require(!WorkshopProgress.HasStep("spring.guyu.batchFed"), "no retired completion flag needed");
-            Require(WorkshopProgress.CanSubmit(WorkshopSeason.Spring), "can deliver without Guyu");
+            Require(WorkshopProgress.CanSubmit(WorkshopSeason.Spring), "can deliver after feeding and washing");
             Require(WorkshopProgress.Submit(WorkshopSeason.Spring) && WorkshopProgress.IsUnlocked(WorkshopSeason.Summer), "summer unlock");
 
             foreach (string fixture in new[]
@@ -52,18 +57,20 @@ public static class SpringCollectionChecks
             })
             {
                 Load(fixture);
-                Require(WorkshopProgress.Has(WorkshopItem.Silkworm) && WorkshopProgress.Has(WorkshopItem.MulberryLeaf), "old harvest save migration");
-                Require(WorkshopQuests.NextReady(WorkshopSeason.Spring)?.Id == "EggPaper", "old save can continue");
+                Require(!WorkshopProgress.Has(WorkshopItem.Silkworm) && WorkshopProgress.Has(WorkshopItem.MulberryLeaf), "old harvest saves recover leaves");
+                Require(WorkshopQuests.NextReady(WorkshopSeason.Spring)?.Id == nameof(WorkshopItem.Silkworm), "old harvest saves can feed");
                 WorkshopProgress.ResetSession();
-                Require(WorkshopProgress.Has(WorkshopItem.Silkworm), "migration persisted across reload");
+                Require(WorkshopProgress.Has(WorkshopItem.MulberryLeaf) && !WorkshopProgress.Has(WorkshopItem.Silkworm), "migration persists without skipping feeding");
             }
+            Load("{\"items\":5,\"seasonalOrder\":true}");
+            Require(WorkshopQuests.NextReady(WorkshopSeason.Spring)?.Id == "EggPaper", "previously earned silkworm continues to bath");
             Load("{\"items\":7,\"steps\":[\"spring.guyu.batchFed\"],\"observations\":[\"observation.spring.guyu\"],\"seasonalOrder\":true}");
             Require(WorkshopProgress.CanSubmit(WorkshopSeason.Spring), "old completed Guyu save can submit");
             Require(WorkshopProgress.HasObservation("observation.spring.guyu"), "legacy record preserved");
-            Require(WorkshopObservationView.ObservationsFor(WorkshopSeason.Spring).Count() == 1, "legacy save adds no retired journal entry");
+            Require(!WorkshopObservationView.ObservationsFor(WorkshopSeason.Spring).Any(), "legacy save adds no retired journal entry");
             Load("{}");
             Require(!WorkshopProgress.Has(WorkshopItem.Silkworm), "unplayed save gets no reward");
-            Debug.Log("[SpringVerify] PASS: new game, harvest rewards, replay, bath, handoff, summer unlock, 3 legacy migrations, reload and retired entries.");
+            Debug.Log("[SpringVerify] PASS: harvest, feeding reward, bath, handoff, reload and legacy saves.");
         }
         finally
         {

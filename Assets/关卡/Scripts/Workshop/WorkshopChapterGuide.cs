@@ -15,7 +15,7 @@ internal sealed class WorkshopChapterGuide : MonoBehaviour
 
     private static readonly string[] Process =
     {
-        "清明采桑 · 备好蚕种",
+        "采桑喂蚕 · 备好蚕种",
         "芒种理线 · 收齐生丝材料",
         "秋分验丝 · 寒露织造",
         "立冬染栀黄 · 小雪做夹衣"
@@ -23,10 +23,10 @@ internal sealed class WorkshopChapterGuide : MonoBehaviour
 
     private static readonly string[] Tips =
     {
-        "先向蚕房师傅领任务，拿篮左右接桑叶。采桑后收下蚕种纸，前往浴蚕桶。",
+        "先向蚕房师傅领任务，带篮采桑，再到蚕架喂蚕。喂饱后收下蚕种纸，前往浴蚕桶。",
         "到蚕茧簇架择茧、接通丝路。备好水和木柴，再从煮茧锅进入迷宫寻找线轴。",
-        "秋分后天黑渐早，先借光验丝。寒露冷露沾轴，按丝轴状态选料，再理经走梭。",
-        "立冬用浙南入库的熟栀子试染，合样才染整绸。小雪这单遇冷雨，避雨晾干后为夹衣排面片、留里襟。"
+        "秋分后天黑渐早，先借光验丝。修好织机、拿到梭子后，就能织出生坯绸。",
+        "立冬用浙南入库的熟栀子试染，合样才染整绸。带染好的布到小雪裁衣台，沿样板裁出衣片。"
     };
 
     private static readonly string[] RegionalBoards = { "B01", "B02", "B03" };

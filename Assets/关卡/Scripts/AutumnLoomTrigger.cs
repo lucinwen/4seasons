@@ -78,13 +78,15 @@ public class AutumnLoomTrigger : MonoBehaviour
             return;
         }
 
-        _floatBtn.Hide();
-        _shown = false;
-        if (WorkshopProgress.SeasonalOrderEnabled && !WorkshopObservationView.HasOrderWork(WorkshopObservation.HanluLoom))
+        if (WorkshopProgress.SeasonalOrderEnabled && !WorkshopProgress.Has(WorkshopItem.RawSilkCloth) &&
+            !WorkshopObservationView.HasOrderWork(WorkshopObservation.QiufenOffering))
         {
-            WorkshopObservationView.Show(WorkshopObservation.HanluLoom);
+            SimplePopup.Show("先完成秋分验丝", "到秋分窗台按 O，验过生丝后再回来织造。", "知道了");
             return;
         }
+
+        _floatBtn.Hide();
+        _shown = false;
         MiniGameOverlay.Show("EmbroideryScene");
     }
 

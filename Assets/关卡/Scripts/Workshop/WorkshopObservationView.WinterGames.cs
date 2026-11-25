@@ -109,9 +109,6 @@ internal sealed partial class WorkshopObservationView
                 winterDyeFeedback = null;
                 RestoreWinterVat();
                 break;
-            case WorkshopObservation.XiaoxueTailoring:
-                ResetWinterCutting();
-                break;
         }
     }
 

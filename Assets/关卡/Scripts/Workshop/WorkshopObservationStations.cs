@@ -55,7 +55,6 @@ internal sealed class WorkshopObservationStations : MonoBehaviour
                 break;
             case WorkshopSeason.Autumn:
                 Register<AutumnRitualTrigger>(WorkshopObservation.QiufenOffering, 2.85f);
-                Register<AutumnLoomTrigger>(WorkshopObservation.HanluLoom, 3.25f);
                 break;
             case WorkshopSeason.Winter:
                 Register<WinterGrindingClickTarget>(WorkshopObservation.LidongDye, 2.5f);

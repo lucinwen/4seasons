@@ -10,7 +10,7 @@ public sealed partial class WorkshopKnowledgeView
         "桐乡桑园 · 下过春雨，记一记叶面保持湿润的时间。",
         "桐乡桑园 · 留心天气回暖时，桑芽和小虫有什么变化。",
         "桐乡桑园 · 从早到晚，比较桥边和树下的日照。",
-        "清明江南新桑展叶 · 看叶展、等露收，再选垄接桑。",
+        "清明江南新桑展叶 · 桑园采嫩叶，蚕房备蚕种。",
         "谷雨江南春蚕渐忙 · 同垄新采，湿叶去水再喂。",
         "南浔工坊 · 午后摸一摸阴凉处，感受暑热来临。",
         "南浔蚕房 · 同地养蚕也可能分批，茧况要逐批看。",
@@ -22,10 +22,10 @@ public sealed partial class WorkshopKnowledgeView
         "苏州织造 · 比较窗边午后和傍晚的凉热。",
         "苏州织造 · 看晨露，留心丝线放在干爽处。",
         "秋分后天黑渐早 · 织坊借光验生丝，为夜织备料。",
-        "寒露这班窗沿有冷露 · 先领合适丝轴，再理经走梭。",
+        "寒露织造 · 修好织机，备好梭子再上机织绸。",
         "苏州织造 · 天凉后再回看桑园，留意叶色的变化。",
         "立冬这班收到浙南熟栀子 · 试栀黄，再染整幅。",
-        "小雪遇冷雨 · 避雨晾布，量过身再排夹衣的面片和里襟。",
+        "小雪裁衣 · 染好的绸布按样板裁成衣片。",
         "大雪降温 · 主厅合缝表里，留一段口把夹衣翻正。",
         "冬至贺冬 · 合襟抬臂都顺利，才把新衣交给客人。",
         "江南染坊 · 看存放染材的角落是否干燥。",
@@ -117,12 +117,9 @@ public sealed partial class WorkshopKnowledgeView
     {
         switch (ordinal)
         {
-            case 4: return WorkshopObservation.QingmingMulberry;
             case 8: return WorkshopObservation.MangzhongCocoon;
             case 15: return WorkshopObservation.QiufenOffering;
-            case 16: return WorkshopObservation.HanluLoom;
             case 18: return WorkshopObservation.LidongDye;
-            case 19: return WorkshopObservation.XiaoxueTailoring;
             case 20: return WorkshopObservation.DaxueSewing;
             case 21: return WorkshopObservation.DongzhiFitting;
             default: return null;
@@ -157,7 +154,7 @@ public sealed partial class WorkshopKnowledgeView
                 DrawSolarPrint(parent, bounds, region, region.Text);
         }
         Label(parent, "Solar Workshop Legend", ScaleSolarRect(bounds, new Rect(859, 212, 470, 31)),
-            "标「工序」的十个节气可在工坊游玩", 20, Jade, TextAnchor.MiddleRight);
+            "标「工序」的节气可在工坊游玩", 20, Jade, TextAnchor.MiddleRight);
         for (int season = 0; season < SolarRows.Length; season++)
         {
             for (int index = 0; index < SolarColumns.Length; index++)

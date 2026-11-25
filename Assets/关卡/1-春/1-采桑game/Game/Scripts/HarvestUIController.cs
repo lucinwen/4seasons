@@ -313,7 +313,7 @@ namespace Qingming.Harvest
             if (description != null)
             {
                 string status = earnedPage ? "获得嫩桑标本与清明残页" : "清明残页已收集";
-                description.text = $"接到嫩叶 {total} 片 · {status}\n桑叶与蚕宝宝已收好";
+                description.text = $"接到嫩叶 {total} 片 · {status}\n桑叶已收好";
                 description.font = WorkshopArt.ReadingFont;
             }
             UpdateOrchardChoices();

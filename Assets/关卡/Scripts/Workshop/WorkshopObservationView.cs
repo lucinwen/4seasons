@@ -52,8 +52,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
     private static readonly Definition[] Definitions =
     {
-        new Definition(WorkshopSeason.Spring, "spring.qingming", "清明", "桑园里的新叶", "清明采桑", "移篮接桑",
-            "清明前后桑树陆续展叶。舒展开、叶面干的嫩叶适合取用。", "移篮接桑 → 师傅照料小蚕"),
+        new Definition(WorkshopSeason.Spring, "spring.qingming", "清明", "桑园里的新叶", "桑园"),
         new Definition(WorkshopSeason.Summer, "summer.mangzhong.thread", "芒种", "簇架上的丝路", "络纬整经", "丝路接接乐",
             "芒种时节，簇架上的蚕茧已收好。转动线段，把丝头接到丝轴。", "蚕茧簇架 → 接通丝路 → 整理丝样",
             "点击线段，连接左侧丝头与右侧丝轴。接通一张即可完成。"),
@@ -61,15 +60,11 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         new Definition(WorkshopSeason.Autumn, "autumn.qiufen", "秋分", "窗光下的丝样", "借光验丝", "借光验丝",
             "秋分后白昼渐短。织坊在夜织前，用剩下的窗光检查生丝的粗节和结头。", "夏季丝样 → 对光验丝 → 寒露上机",
             "① 点后排空盘放丝轴。\n② 切到侧窗，挪开挡光的酒坛。\n③ 点有接头的丝段，再挂验收签。"),
-        new Definition(WorkshopSeason.Autumn, "autumn.hanlu", "寒露", "看经线", "看经线", "双色走梭",
-            "寒露晨凉，窗沿可能结露。丝轴沾了露，要整备妥当才能上机。", "验过的丝 → 理经走梭织绸 → 立冬试染",
-            "① 点选干爽丝轴备料。\n② 按当前一梭的提示点经线。\n③ 点对应颜色的梭子，织满六行。"),
+        new Definition(WorkshopSeason.Autumn, "autumn.hanlu", "寒露", "织造", "织机"),
         new Definition(WorkshopSeason.Winter, "winter.lidong", "立冬", "染坊里的色样", "看色样", "两单一缸",
             "立冬这班收到浙南十一月一批栀子果料。熟果的黄色素更适合这张工单。", "寒露素绸 → 栀黄试色与染布 → 小雪裁衣",
             "① 点红黄色熟果，再点石臼研料。\n② 短蘸上色，晾看干样。\n③ 对照左侧色样，完成深浅两块。"),
-        new Definition(WorkshopSeason.Winter, "winter.xiaoxue", "小雪", "从试染到成衣", "看成衣工序", "排料留布",
-            "小雪时冷空气更活跃。遇到冷雨，布要先避雨晾透，再按客人的内搭和身量裁片。", "晾布与量体 → 裁面片与里襟 → 大雪缝衣",
-            "① 晾布。\n② 拉软尺，再比对两种袖样。\n③ 留好里襟贴边，再下剪。"),
+        new Definition(WorkshopSeason.Winter, "winter.xiaoxue", "小雪", "按样裁衣", "裁衣台"),
         new Definition(WorkshopSeason.Winter, "winter.daxue.sewing", "大雪", "拼缝夹衣", "主厅针线台", "合缝翻衣",
             "大雪后天气更冷，夹衣要能叠穿。表里缝牢，袖下也要留出抬手的余量。", "小雪衣片＋素里绢 → 合缝翻面 → 冬至验衣",
             "① 找到成对的布边记号。\n② 直边走长针，弯处收短针。\n③ 留口翻衣，翻正后补针。"),
@@ -119,7 +114,6 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     private string briefingCheckpoint;
     private Button preferredAction;
     private int navigationStamp;
-    private bool showSongJin;
     private bool earnedRewardThisRun;
     private int stage;
     private int rows;
@@ -136,6 +130,10 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     internal static string SeasonGameTitle(WorkshopObservation id) => Definitions[(int)id].ChallengeName;
     internal static bool IsSeasonGame(WorkshopObservation id) => !string.IsNullOrEmpty(SeasonGameTitle(id));
     internal static bool HasRecord(WorkshopObservation id) => WorkshopProgress.HasObservation(Definitions[(int)id].Id);
+    private static bool IsRetiredObservation(WorkshopObservation id) =>
+        id == WorkshopObservation.QingmingMulberry || id == WorkshopObservation.HanluLoom ||
+        id == WorkshopObservation.XiaoxueTailoring;
+
     internal static bool IsGarmentWorkshop(WorkshopObservation id) =>
         id == WorkshopObservation.DaxueSewing || id == WorkshopObservation.DongzhiFitting;
 
@@ -144,7 +142,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
     internal static void OpenRecordOrGarmentPractice(WorkshopObservation id, Action onClosed = null)
     {
-        if (HasRecord(id)) ShowRecord(id, onClosed);
+        if (!IsRetiredObservation(id) && HasRecord(id)) ShowRecord(id, onClosed);
         else if (CanPracticeGarmentWorkshop(id)) Show(id, onClosed);
         else onClosed?.Invoke();
     }
@@ -178,13 +176,16 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     internal static IEnumerable<WorkshopObservation> ObservationsFor(WorkshopSeason season)
     {
         for (int i = 0; i < Definitions.Length; i++)
-            if (Definitions[i].Season == season)
-                yield return (WorkshopObservation)i;
+        {
+            var id = (WorkshopObservation)i;
+            if (Definitions[i].Season == season && !IsRetiredObservation(id))
+                yield return id;
+        }
     }
 
     internal static void Show(WorkshopObservation id, Action onClosed = null)
     {
-        if (id == WorkshopObservation.QingmingMulberry || IsOpen) return;
+        if (IsRetiredObservation(id) || IsOpen) return;
         if (WorkshopProgress.SeasonalOrderEnabled && IsAtOwnWorkshop(id) && MissingOrderInput(id) is string guide)
         {
             SimplePopup.Show("先备齐这道工序", guide, "知道了");
@@ -204,8 +205,8 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         {
             case WorkshopSeason.Spring: return SpringSummerNpcDialogue.HasHarvestedLeaves;
             case WorkshopSeason.Summer: return HasOrderWork(WorkshopObservation.MangzhongCocoon);
-            case WorkshopSeason.Autumn: return HasOrderWork(WorkshopObservation.QiufenOffering) && HasOrderWork(WorkshopObservation.HanluLoom);
-            case WorkshopSeason.Winter: return HasOrderWork(WorkshopObservation.LidongDye) && HasOrderWork(WorkshopObservation.XiaoxueTailoring);
+            case WorkshopSeason.Autumn: return HasOrderWork(WorkshopObservation.QiufenOffering);
+            case WorkshopSeason.Winter: return HasOrderWork(WorkshopObservation.LidongDye);
             default: return true;
         }
     }
@@ -219,14 +220,8 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         {
             case WorkshopObservation.QiufenOffering when !HasOrderWork(WorkshopObservation.MangzhongCocoon):
                 return "先到夏季蚕茧簇架接通丝路，再带丝样到秋分验丝。";
-            case WorkshopObservation.HanluLoom when !HasOrderWork(WorkshopObservation.QiufenOffering):
-                return "先到秋分窗台验生丝，把验过的丝轴带回织机。";
-            case WorkshopObservation.HanluLoom when !AutumnLevelState.HasLoomRepaired || !AutumnLevelState.HasShuttle:
-                return "先修好织机并取得梭子，再把寒露整理过的丝织成绸。";
-            case WorkshopObservation.LidongDye when !HasOrderWork(WorkshopObservation.HanluLoom) || !WorkshopProgress.Has(WorkshopItem.RawSilkCloth):
-                return "寒露织样和正式整绸都备好后，才能在立冬试色。";
-            case WorkshopObservation.XiaoxueTailoring when !WorkshopProgress.Has(WorkshopItem.DyedCloth):
-                return "先完成立冬试色和正式染整幅，再到小雪裁衣台。";
+            case WorkshopObservation.LidongDye when !WorkshopProgress.Has(WorkshopItem.RawSilkCloth):
+                return "先在秋季织成生坯绸，再到立冬染坊试色。";
             default:
                 return null;
         }
@@ -245,7 +240,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
     internal static void ShowRecord(WorkshopObservation id, Action onClosed = null)
     {
-        if (HasRecord(id))
+        if (!IsRetiredObservation(id) && HasRecord(id))
             Open(id, onClosed, true);
     }
 
@@ -442,9 +437,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     {
         var bounds = new Rect(28, 163, 1688, 660);
         var scene = DrawWorkshopPaper(page, "Season Work Briefing", bounds, accent, WorkshopUi.Bronze);
-        string backdrop = observation == WorkshopObservation.XiaoxueTailoring
-            ? "WorkshopGameArt/XiaoxueRainCourtyard"
-            : "WorkshopGuides/" + definition.Season + "_ChapterGuide";
+        string backdrop = "WorkshopGuides/" + definition.Season + "_ChapterGuide";
         var place = Resources.Load<Sprite>(backdrop);
         WorkshopUi.Picture(scene, "Workshop Region", new Rect(8, 8, 854, 644), place, stretch: true);
         var card = DrawWorkshopPaper(scene, "Season Work Card", new Rect(878, 26, 782, 602),
@@ -781,7 +774,6 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         {
             case WorkshopObservation.MangzhongCocoon:
             case WorkshopObservation.LidongDye:
-            case WorkshopObservation.XiaoxueTailoring:
                 return 3;
             default:
                 return 2;

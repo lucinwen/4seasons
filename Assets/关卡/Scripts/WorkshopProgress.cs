@@ -90,15 +90,14 @@ public static class WorkshopProgress
             if (save.observations == null) save.observations = new List<string>();
             if (save.challengeWorks == null) save.challengeWorks = new List<ChallengeWork>();
             if (save.orderWorks == null) save.orderWorks = new List<ChallengeWork>();
-            // Old saves may have finished harvesting but stopped before the retired Guyu game.
-            // Keep their records and grant the reward now earned by harvesting.
-            bool harvested = (save.items & (1 << (int)WorkshopItem.MulberryLeaf)) != 0
-                || save.steps.Contains("spring.qingming.harvested")
+            // Older saves may record harvesting without the corresponding leaf item.
+            bool harvested = save.steps.Contains("spring.qingming.harvested")
                 || save.observations.Contains("observation.spring.qingming");
             bool migrated = false;
-            if (harvested && (save.items & (1 << (int)WorkshopItem.Silkworm)) == 0)
+            int leafItem = 1 << (int)WorkshopItem.MulberryLeaf;
+            if (harvested && (save.items & leafItem) == 0)
             {
-                save.items |= (1 << (int)WorkshopItem.MulberryLeaf) | (1 << (int)WorkshopItem.Silkworm);
+                save.items |= leafItem;
                 migrated = true;
             }
             // The old Mangzhong id belongs to the removed cocoon inspection game.

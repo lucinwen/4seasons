@@ -82,7 +82,6 @@ internal sealed partial class WorkshopObservationView
     private void PrepareActivity(WorkshopObservation id)
     {
         observation = id;
-        showSongJin = false;
         challengePhase = ChallengePhase.None;
         stage = readOnly ? CompletionStage(id) : 0;
         runResult = null;
@@ -101,7 +100,6 @@ internal sealed partial class WorkshopObservationView
         ChallengeVariant = order;
         challengePhase = ChallengePhase.Playing;
         stage = 0;
-        showSongJin = false;
         earnedRewardThisRun = false;
         runResult = null;
         stampCurrentResult = false;
@@ -119,8 +117,7 @@ internal sealed partial class WorkshopObservationView
             ChallengeOrderLabel() + (GameComplete ? "已完成 · " : " · ") + pageStatus, 30, accent, TextAnchor.MiddleRight);
     }
 
-    private bool IsGarmentProductionRun => IsFormalGarmentOrder ||
-        (observation == WorkshopObservation.XiaoxueTailoring && winterCutOrderCloth && WorkshopProgress.SeasonalOrderEnabled);
+    private bool IsGarmentProductionRun => IsFormalGarmentOrder;
 
     private string ChallengeOrderLabel() => IsGarmentProductionRun ? "贺冬工单" : OrderTitle(ChallengeVariant);
 
@@ -136,8 +133,7 @@ internal sealed partial class WorkshopObservationView
             if (first != null || extra != null)
             {
                 DrawArchivedOrder(0, first, delivery != null ? "主线工单" : null);
-                if (extra != null || observation != WorkshopObservation.QingmingMulberry)
-                    DrawArchivedOrder(1, extra);
+                DrawArchivedOrder(1, extra);
                 return;
             }
         }

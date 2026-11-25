@@ -2,7 +2,7 @@ using UnityEngine;
 using Qingming.LevelBackground;
 
 /// <summary>
-/// 冬季裁衣台。先晾干立冬染布，再为小雪夹衣排料和裁片。
+/// 冬季裁衣台。用染好的布沿样板裁出衣片。
 /// </summary>
 public class WinterClothCuttingTrigger : MonoBehaviour
 {
@@ -27,7 +27,7 @@ public class WinterClothCuttingTrigger : MonoBehaviour
     private void Awake()
     {
         _floatBtn = gameObject.AddComponent<FloatingActionButton>();
-        _floatBtn.Configure("小雪 · 晾布裁衣", buttonOffset, OnStartCuttingClicked);
+        _floatBtn.Configure("开始裁衣", buttonOffset, OnStartCuttingClicked);
         _floatBtn.SetOpacity(buttonOpacity);
         WorkshopPickupGlow.Bind(gameObject, () => WinterLevelState.HasDyedCloth &&
             !WorkshopProgress.Has(WorkshopItem.CutPieces));
@@ -58,7 +58,7 @@ public class WinterClothCuttingTrigger : MonoBehaviour
         _shown = inRange;
         if (inRange)
         {
-            _floatBtn.SetText(WorkshopProgress.Has(WorkshopItem.CutPieces) ? "小雪裁衣 · 再玩" : "小雪 · 晾布裁衣");
+            _floatBtn.SetText(WorkshopProgress.Has(WorkshopItem.CutPieces) ? "小雪裁衣 · 再玩" : "开始裁衣");
             _floatBtn.Show();
         }
         else _floatBtn.Hide();
@@ -74,11 +74,11 @@ public class WinterClothCuttingTrigger : MonoBehaviour
 
         _floatBtn.Hide();
         _shown = false;
-        if (WorkshopProgress.Has(WorkshopItem.CutPieces)) OpenXiaoxue();
-        else WinterNpcDialogue.IntroduceTailoring(OpenXiaoxue);
+        if (WorkshopProgress.Has(WorkshopItem.CutPieces)) OpenCutting();
+        else WinterNpcDialogue.IntroduceTailoring(OpenCutting);
     }
 
-    private static void OpenXiaoxue() => WorkshopObservationView.Show(WorkshopObservation.XiaoxueTailoring);
+    private static void OpenCutting() => MiniGameOverlay.Show("ClothCutting");
 
     private void OnDestroy()
     {

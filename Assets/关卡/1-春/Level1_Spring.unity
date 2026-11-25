@@ -1680,6 +1680,60 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 30.765032, y: 1.3592983}
   m_EdgeRadius: 0
+--- !u!1 &809536944
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 809536946}
+  - component: {fileID: 809536945}
+  m_Layer: 0
+  m_Name: FeedOverlayManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &809536945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 809536944}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97f5243b7a77f50469e8b19ba5251818, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  traySprite: {fileID: 21300000, guid: 9a6f036cd30f5b7478bff93866c01f5b, type: 3}
+  leafSprites:
+  - {fileID: 21300000, guid: 3e0a9cc16d09b1e46aeddb30fe22e0a9, type: 3}
+  - {fileID: 21300000, guid: 4563edc1babe1014dae5e3c43b25e334, type: 3}
+  - {fileID: 21300000, guid: 86dfb83d3e7b71040b687e99f64d60b4, type: 3}
+  - {fileID: 21300000, guid: 04c17c31e35633a45a5441ebcf7690a2, type: 3}
+  heartSprite: {fileID: 21300000, guid: 1fb182ddca18df14da78455d882f9a80, type: 3}
+  silkwormBabySprite: {fileID: 21300000, guid: c3657f65c0f9a4f49a93e2cb80f8dec8, type: 3}
+  overlayAlpha: 0.88
+  leafCount: 4
+--- !u!4 &809536946
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 809536944}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &857908964
 GameObject:
   m_ObjectHideFlags: 0
@@ -1819,6 +1873,7 @@ GameObject:
   - component: {fileID: 988651772}
   - component: {fileID: 988651771}
   - component: {fileID: 988651773}
+  - component: {fileID: 988651774}
   m_Layer: 0
   m_Name: "1-\u8695\u7C07\u67B62"
   m_TagString: Untagged
@@ -1938,6 +1993,20 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 4.65, y: 4.22}
   m_EdgeRadius: 0
+--- !u!114 &988651774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 988651770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8116ba28ebb95fd4b8a5cf7e534304f5, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  buttonOffset: {x: 0, y: 2.4, z: 0}
+  buttonOpacity: 0.9
 --- !u!1 &1004594350
 GameObject:
   m_ObjectHideFlags: 0
@@ -3685,9 +3754,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonOffset: {x: 0, y: 3.33, z: 0}
   buttonOpacity: 0.9
-  noBasketTitle: "\u9700\u8981\u91C7\u6851\u7BEE"
-  noBasketMessage: "\u8BF7\u5148\u62FE\u53D6\u91C7\u6851\u7BEE\uFF0C\u518D\u8FDB\u5165\u6851\u56ED\u5B8C\u6210\u91C7\u6851\u3002"
-  gameSceneName: MulberryHarvest
 --- !u!1 &1884489980
 GameObject:
   m_ObjectHideFlags: 0
@@ -4279,68 +4345,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2.1842537, y: 0.17130071}
   m_EdgeRadius: 0
---- !u!1 &2121284122
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2121284124}
-  - component: {fileID: 2121284123}
-  m_Layer: 0
-  m_Name: HarvestOverlayManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &2121284123
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2121284122}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d428bb7d13313ea4da26d454488a5330, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pathSprite: {fileID: 21300000, guid: fb5ae7572cac63341bc3b9aba81698e9, type: 3}
-  basketSprites:
-  - {fileID: 21300000, guid: 2cfb916061653804ebf587311d1d353d, type: 3}
-  - {fileID: 21300000, guid: e365550c9721788428fd0a3d557bdbfa, type: 3}
-  - {fileID: 21300000, guid: 402f5e5ff7d1a04469f78d4cd5c915b4, type: 3}
-  - {fileID: 21300000, guid: ea1f9d7a7978c3d41bb798c673e892b1, type: 3}
-  leafSprites:
-  - {fileID: 21300000, guid: e2230105c8e62f3458eb686e5ec06b1b, type: 3}
-  - {fileID: 21300000, guid: 70b46bef6a83419419139d29ade0b2f8, type: 3}
-  - {fileID: 21300000, guid: 0f449f22b2b96b948a12e466e98d3215, type: 3}
-  - {fileID: 21300000, guid: fdf55c0e62baacf4c85a7df11c5e6d6d, type: 3}
-  - {fileID: 21300000, guid: b06ca6d9b663bc54896c328f50341bb8, type: 3}
-  - {fileID: 21300000, guid: e5ad97d3dfcc91f458ce35b785a1bdea, type: 3}
-  - {fileID: 21300000, guid: d4131d5bcd86e314aae79324fd284a61, type: 3}
-  playerAnimatorCtrl: {fileID: 9100000, guid: 6f70cd386b4a43b6840443ac4931ca33, type: 2}
-  overlayAlpha: 0.88
-  harvestOrthoSize: 4.5
-  harvestCameraPos: {x: 0, y: 0, z: -10}
---- !u!4 &2121284124
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2121284122}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -4365,5 +4369,5 @@ SceneRoots:
   - {fileID: 258611810}
   - {fileID: 1872517867}
   - {fileID: 948230705}
-  - {fileID: 2121284124}
+  - {fileID: 809536946}
   - {fileID: 694141986}

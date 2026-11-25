@@ -14,17 +14,18 @@ internal sealed class WorkshopQuestGuide : MonoBehaviour
     private static WorkshopQuestGuide current;
     private static int lastDismissalFrame = -1;
     internal static bool IsOpen => current != null && current.card != null && current.card.gameObject.activeSelf;
+    private static bool IsFeeding => FeedOverlayManager.Instance != null && FeedOverlayManager.Instance.IsActive;
     internal static bool BlocksWorldInput => WorkshopMinigameMenu.BlocksGameplayInput || IsOpen || lastDismissalFrame == Time.frameCount ||
         WorkshopDialoguePresenter.BlocksWorldInput || MiniGameCompletionAnimation.IsPlaying ||
         AutumnOfferingView.BlocksWorldInput || WorkshopObservationView.BlocksWorldInput ||
-        WorkshopCraftRecordView.BlocksWorldInput || WorkshopHeritageBrief.IsOpen || SpringSilkwormWashOverlay.IsOpen;
+        WorkshopCraftRecordView.BlocksWorldInput || WorkshopHeritageBrief.IsOpen || SpringSilkwormWashOverlay.IsOpen || IsFeeding;
 
     internal static bool IsWorldOverlayActive
     {
         get
         {
             return MiniGameCompletionAnimation.IsPlaying || MiniGameOverlay.IsActive || HarvestOverlayManager.IsHarvestActive ||
-                WinterDyeingOverlay.IsActive || WinterGrindingOverlay.IsActive || SpringSilkwormWashOverlay.IsOpen ||
+                WinterDyeingOverlay.IsActive || WinterGrindingOverlay.IsActive || SpringSilkwormWashOverlay.IsOpen || IsFeeding ||
                 WorkshopKnowledgeView.IsOpen ||
                 WorkshopNarrativeView.IsOpen || SimplePopup.IsOpen || WorkshopDialoguePresenter.IsOpen ||
                 AutumnOfferingView.IsOpen || WorkshopObservationView.IsOpen ||

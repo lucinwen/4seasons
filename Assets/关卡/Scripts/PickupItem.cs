@@ -150,7 +150,7 @@ public class PickupItem : MonoBehaviour
             {
                 if (!SpringSummerNpcDialogue.CanWash)
                 {
-                    SimplePopup.Show("先去采桑", "先完成接桑叶，再回来准备下一批蚕种。", "知道了", null);
+                    SimplePopup.Show("先采桑喂蚕", "带桑叶到蚕架喂饱小蚕，再回来准备下一批蚕种。", "知道了");
                     return;
                 }
                 SpringSummerNpcDialogue.BeforeBath(ShowPickupPopup);
@@ -209,11 +209,11 @@ public class PickupItem : MonoBehaviour
         WorkshopProgress.MarkStep(WorkshopStep());
         Debug.Log($"[PickupItem] 拾取了: {itemName}");
 
-        // 如果拾取的是采桑篮，通知触发点已可进入采桑游戏
+        // 采桑篮是从桑树上采摘桑叶的前置条件。
         if (itemName.Contains("采桑篮"))
         {
             SpringPrompt.HasPickedBasket = true;
-            Debug.Log("[PickupItem] ✅ 已拾取采桑篮，采桑游戏已解锁");
+            Debug.Log("[PickupItem] 已拾取采桑篮，可以采摘桑叶");
         }
 
         // 如果拾取的是蚕种纸，解锁浴蚕清洗

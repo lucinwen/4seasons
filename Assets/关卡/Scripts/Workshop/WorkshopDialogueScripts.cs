@@ -26,10 +26,9 @@ internal static class WorkshopDialogueScripts
     internal static readonly WorkshopDialogueLine[] SpringMulberryIntro =
     {
         new WorkshopDialogueLine("蚕房师傅", "哎，小织匠，你来得正好！"),
-        new WorkshopDialogueLine("蚕房师傅", "清明前后桐乡回暖。向阳的桑芽常先舒展开，背阴处可还挂着露，去看看两垄的叶况。"),
-        new WorkshopDialogueLine("蚕房师傅", "等叶展、露退再采。拿上篮子左右移动，接八片干爽的嫩叶。"),
-        new WorkshopDialogueLine("玩家", "我把今天采的鲜叶带回来，也记下是哪一垄。"),
-        new WorkshopDialogueLine("蚕房师傅", "接满后把桑叶带回来，小蚕交给我照料。你再去捡蚕种纸，给下一批备好蚕种。"),
+        new WorkshopDialogueLine("蚕房师傅", "清明前后桐乡回暖，桑芽舒展开了。拿上采桑篮，到桑树前采些干爽的嫩叶。"),
+        new WorkshopDialogueLine("玩家", "好，我这就去采些鲜叶给小蚕。"),
+        new WorkshopDialogueLine("蚕房师傅", "采好桑叶就去蚕架喂小蚕。喂饱了，再去捡蚕种纸，给下一批备好蚕种。"),
     };
 
     internal static readonly WorkshopDialogueLine[] SpringBathIntro =
@@ -150,8 +149,8 @@ internal static class WorkshopDialogueScripts
 
     internal static readonly WorkshopDialogueLine[] AutumnWarpComplete =
     {
-        new WorkshopDialogueLine("织造师傅", "不错！你看，原本散乱的丝线现在排列得整整齐齐。经线是织造的基础，纬线穿过经线，才能慢慢形成布面。"),
-        new WorkshopDialogueLine("织造师傅", "当然！最后再把这些丝线送上织机，就能织成素绸了。"),
+        new WorkshopDialogueLine("织造师傅", "不错，经线和纬线交织成了这匹生坯绸。"),
+        new WorkshopDialogueLine("织造师傅", "把它带回工坊，留给冬季染色。"),
     };
 
     internal static readonly WorkshopDialogueLine[] AutumnReview =
@@ -275,7 +274,12 @@ internal static class WorkshopDialogueScripts
     // Quest progress and return visits
     internal static readonly WorkshopDialogueLine[] SpringInProgress =
     {
-        new WorkshopDialogueLine("蚕房掌事", "到桑树前点「清明采桑」，先选叶展、露退的桑垄，再左右移篮接嫩叶。"),
+        new WorkshopDialogueLine("蚕房掌事", "带上采桑篮，到桑树前点「采摘桑叶」。"),
+    };
+
+    internal static readonly WorkshopDialogueLine[] SpringFeedingReminder =
+    {
+        new WorkshopDialogueLine("蚕房掌事", "带着采好的桑叶到蚕架前，把叶子一片片放进蚕匾喂小蚕。"),
     };
 
     internal static readonly WorkshopDialogueLine[] SpringDone =

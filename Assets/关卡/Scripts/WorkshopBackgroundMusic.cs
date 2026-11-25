@@ -140,9 +140,7 @@ internal sealed class WorkshopBackgroundMusic : MonoBehaviour
                 return FieldworkTrack;
             case WorkshopObservation.MangzhongCocoon:
             case WorkshopObservation.QiufenOffering:
-            case WorkshopObservation.HanluLoom:
             case WorkshopObservation.LidongDye:
-            case WorkshopObservation.XiaoxueTailoring:
             case WorkshopObservation.DaxueSewing:
                 return HandcraftTrack;
             case WorkshopObservation.DongzhiFitting:

@@ -72,7 +72,27 @@ public static class SeasonWorkflowChecks
             WorkshopProgress.ResetSession();
             Require(WorkshopObservationView.HasOrderWork(WorkshopObservation.MangzhongCocoon), "migration persists");
             Require(JsonUtility.FromJson<Counts>(PlayerPrefs.GetString(Key)).orderWorks.Length == 2, "migration idempotent");
-            Debug.Log("[WorkflowVerify] PASS: spring cleanup, Mangzhong routing, summer delivery, one-time rewards, autumn input, legacy migration and reload.");
+
+            Load("{\"chapters\":1,\"steps\":[\"dialogue.review.Spring\"],\"seasonalOrder\":true}");
+            bool enteredSummer = false;
+            WorkshopNarrativeView.ShowChapterInterlude(WorkshopSeason.Spring, WorkshopSeason.Summer,
+                () => enteredSummer = true, () => throw new Exception("Spring handoff returned to the hall"));
+            Require(enteredSummer && !WorkshopNarrativeView.IsOpen, "spring handoff directly enters summer");
+
+            Load("{\"chapters\":3,\"seasonalOrder\":true}");
+            foreach (var item in WorkshopProgress.Items(WorkshopSeason.Autumn)) WorkshopProgress.Award(item);
+            Require(!WorkshopProgress.CanSubmit(WorkshopSeason.Autumn), "autumn still requires Qiufen inspection");
+            WorkshopProgress.RecordSeasonalOrderWork("observation.autumn.qiufen", 0, 100, "验丝通过", null);
+            Require(!WorkshopObservationView.HasOrderWork(WorkshopObservation.HanluLoom) &&
+                WorkshopProgress.CanSubmit(WorkshopSeason.Autumn), "woven cloth submits without retired shuttle order");
+            Require(WorkshopProgress.Submit(WorkshopSeason.Autumn), "winter unlock");
+
+            foreach (var item in WorkshopProgress.Items(WorkshopSeason.Winter)) WorkshopProgress.Award(item);
+            Require(!WorkshopProgress.CanSubmit(WorkshopSeason.Winter), "winter still requires Lidong dye sample");
+            WorkshopProgress.RecordSeasonalOrderWork("observation.winter.lidong", 0, 100, "试色通过", null);
+            Require(!WorkshopObservationView.HasOrderWork(WorkshopObservation.XiaoxueTailoring) &&
+                WorkshopProgress.CanSubmit(WorkshopSeason.Winter), "cut pieces submit without retired layout order");
+            Debug.Log("[WorkflowVerify] PASS: spring handoff, summer thread order, autumn and winter delivery gates, legacy migration and reload.");
         }
         finally
         {

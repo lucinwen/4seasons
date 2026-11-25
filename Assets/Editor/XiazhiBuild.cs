@@ -50,7 +50,6 @@ public static class XiazhiBuild
     public static void BuildSpringReview() { SpringCollectionChecks.Verify(); Build(true, true); }
     public static void BuildSeasonReview()
     {
-        GameWorkflowMaintenance.FinalizeSpringCleanup();
         SeasonWorkflowChecks.Verify();
         GameWorkflowMaintenance.ValidateScenes();
         Build(true, false, true);

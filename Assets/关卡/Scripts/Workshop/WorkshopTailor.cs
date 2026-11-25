@@ -88,7 +88,8 @@ public sealed class WorkshopTailor : MonoBehaviour
     private UnityEngine.UI.Button sewButton;
     private UnityEngine.UI.Button liningButton;
 
-    private bool UsesLining => WorkshopProgress.HasStep(WorkshopObservationView.XiaoxueLiningStep);
+    private const string XiaoxueLiningStep = "winter.xiaoxue.lining";
+    private bool UsesLining => WorkshopProgress.HasStep(XiaoxueLiningStep);
 
     internal static bool IsOpen => active != null || (WorkshopObservationView.ActiveGame is WorkshopObservation game &&
         WorkshopObservationView.IsGarmentWorkshop(game));

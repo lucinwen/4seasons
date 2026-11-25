@@ -76,8 +76,7 @@ public class SilkwormWashingController : MonoBehaviour
         if (role != RoleType.Bucket || WorkshopQuestGuide.BlocksWorldInput || washingStarted) return;
         if (!SpringSummerNpcDialogue.CanWash)
         {
-            SimplePopup.Show("先去采桑", "先按师傅的交代完成接桑叶，再准备下一批蚕种。",
-                "知道了", null);
+            SimplePopup.Show("先采桑喂蚕", "带桑叶到蚕架喂饱小蚕，再回来准备下一批蚕种。", "知道了");
             return;
         }
 

@@ -154,7 +154,8 @@ internal sealed partial class WorkshopObservationView
         if (DrawWorkSample(samples, new Rect(153, 0, 86, 43), WorkshopProgress.GarmentCutSample))
             WorkshopUi.Label(samples, "Cut Batch", new Rect(0, 0, 144, 43), "小雪裁片", 23, WorkshopUi.Cream);
         else
-            WorkshopUi.Label(samples, "Practice Stock", new Rect(0, 0, 239, 43), "织坊备用裁片", 23, WorkshopUi.Cream, TextAnchor.MiddleRight);
+            WorkshopUi.Label(samples, "Cut Batch", new Rect(0, 0, 239, 43),
+                IsFormalGarmentOrder ? "小雪裁片" : "织坊备用裁片", 23, WorkshopUi.Cream, TextAnchor.MiddleRight);
     }
 
     private void DrawSewingAlignment()
