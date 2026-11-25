@@ -127,7 +127,7 @@ internal static class WorkshopUi
         UnityEngine.Object.Destroy(canvas.gameObject);
     }
 
-    internal static void Block(RectTransform frame, Color color)
+    internal static Image Block(RectTransform frame, Color color)
     {
         var backdrop = Fill(frame.parent, "Backdrop", new Rect(), color);
         var rect = backdrop.rectTransform;
@@ -136,6 +136,7 @@ internal static class WorkshopUi
         rect.offsetMin = rect.offsetMax = Vector2.zero;
         rect.SetAsFirstSibling();
         backdrop.raycastTarget = true;
+        return backdrop;
     }
 
     internal static RectTransform Rect(Transform parent, string name, Rect bounds)
