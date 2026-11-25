@@ -64,7 +64,6 @@ public class AutumnItemClick : MonoBehaviour
         // 小游戏/弹窗进行中不响应
         if (MiniGameOverlay.IsActive) return;
         if (HarvestOverlayManager.IsHarvestActive) return;
-        if (FeedOverlayManager.Instance != null && FeedOverlayManager.Instance.IsActive) return;
         if (WorkshopKnowledgeView.IsOpen) return;
 
         // 点击 UI 时不响应

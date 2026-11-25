@@ -29,7 +29,7 @@ internal static class WorkshopDialogueScripts
         new WorkshopDialogueLine("蚕房师傅", "清明前后桐乡回暖。向阳的桑芽常先舒展开，背阴处可还挂着露，去看看两垄的叶况。"),
         new WorkshopDialogueLine("蚕房师傅", "等叶展、露退再采。拿上篮子左右移动，接八片干爽的嫩叶。"),
         new WorkshopDialogueLine("玩家", "我把今天采的鲜叶带回来，也记下是哪一垄。"),
-        new WorkshopDialogueLine("蚕房师傅", "好。到了谷雨，从同一垄当天再采。春雨打湿的叶面先去水，再按蚕龄分给两匾。"),
+        new WorkshopDialogueLine("蚕房师傅", "接满后把桑叶带回来，小蚕交给我照料。你再去捡蚕种纸，给下一批备好蚕种。"),
     };
 
     internal static readonly WorkshopDialogueLine[] SpringBathIntro =
@@ -108,7 +108,7 @@ internal static class WorkshopDialogueScripts
         new WorkshopDialogueLine("缫丝师傅", "火候差不多了！接下来要把茧层里的丝头理出来。"),
         new WorkshopDialogueLine("玩家", "丝头？就是蚕吐出来的那根丝吗？"),
         new WorkshopDialogueLine("缫丝师傅", "没错。蚕茧是由一根连续的茧丝绕成的，不过丝头藏在茧层里，需要先找到它。"),
-        new WorkshopDialogueLine("缫丝师傅", "这道工序叫作索绪。要把刚才理好的茧丝引到车上。只要转动缫丝车，控制速度和丝线的松紧。让丝线平稳地绕到卷绕架上，就能完成了！"),
+        new WorkshopDialogueLine("缫丝师傅", "煮茧准备好了。接下来进入迷宫寻找线轴，带回来就能和盐、索绪一起交给工坊。"),
     };
 
     internal static readonly WorkshopDialogueLine[] SummerReview =
@@ -278,16 +278,6 @@ internal static class WorkshopDialogueScripts
         new WorkshopDialogueLine("蚕房掌事", "到桑树前点「清明采桑」，先选叶展、露退的桑垄，再左右移篮接嫩叶。"),
     };
 
-    internal static readonly WorkshopDialogueLine[] SpringCarryToGuyu =
-    {
-        new WorkshopDialogueLine("蚕房掌事", "到谷雨蚕架领当天新采的桑叶。先擦干湿叶，把嫩叶给幼蚕，适熟叶分给长大一些的蚕。"),
-    };
-
-    internal static readonly WorkshopDialogueLine[] SpringReadyToFeed =
-    {
-        new WorkshopDialogueLine("蚕房掌事", "上一篮桑叶已经备好。回到谷雨蚕架，选「继续喂上一篮」，就可以拿它去喂小蚕。"),
-    };
-
     internal static readonly WorkshopDialogueLine[] SpringDone =
     {
         new WorkshopDialogueLine("蚕房掌事", "小蚕已经吃上了。接下来到浴蚕桶边，给下一批备好蚕种。"),
@@ -295,7 +285,7 @@ internal static class WorkshopDialogueScripts
 
     internal static readonly WorkshopDialogueLine[] SummerInProgress =
     {
-        new WorkshopDialogueLine("缫丝师傅", "先别急着离开，丝头还没有全部理好呢。"),
+        new WorkshopDialogueLine("缫丝师傅", "到蚕茧簇架择茧、接通丝路，再备水拾柴，去煮茧锅寻找线轴。"),
     };
 
     internal static readonly WorkshopDialogueLine[] SummerDone =

@@ -235,7 +235,7 @@ internal sealed partial class WorkshopObservationView
     {
         Sprite rackArt = GameArtSprite("DyeDryRack");
         Sprite cloth = GameArtSprite("CuttingCloth");
-        var drops = GuyuDewSprite();
+        var drops = SpringSummerArt("DewBead");
         var dampCloth = GameArtSurface(art, "Xiaoxue Cloth In Hand", new Rect(486, 29, 188, 105),
             cloth, Color.Lerp(winterCutClothBase, new Color32(128, 147, 154, 255), winterCutMoisture * .21f));
         for (int i = 0; i < winterCutMoisture; i++)

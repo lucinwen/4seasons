@@ -276,7 +276,7 @@ internal sealed partial class WorkshopObservationView
             .transform.Find("Label").GetComponent<Text>();
         winterDyeConcentrateLabel = WinterControl(desk, "Lidong Concentrate", new Rect(526, 346, 189, 62), "添原液", () => AdjustWinterVat(true), textSize: 24)
             .transform.Find("Label").GetComponent<Text>();
-        WorkshopUi.Picture(desk, "Water Ingredient Symbol", new Rect(365, 406, 108, 68), GuyuDewSprite());
+        WorkshopUi.Picture(desk, "Water Ingredient Symbol", new Rect(365, 406, 108, 68), SpringSummerArt("DewBead"));
         WorkshopUi.Picture(desk, "Concentrate Ingredient Symbol", new Rect(560, 405, 114, 76), GameArtSprite("GardeniaRipe"));
         WorkshopUi.Button(desk, "Pour Water Icon", new Rect(365, 406, 108, 68), "", () => AdjustWinterVat(false), Color.clear);
         WorkshopUi.Button(desk, "Pour Concentrate Icon", new Rect(560, 405, 114, 76), "", () => AdjustWinterVat(true), Color.clear);

@@ -10,10 +10,8 @@ using Qingming.LevelBackground;
 internal enum WorkshopObservation
 {
     QingmingMulberry,
-    GuyuLeaf,
     MangzhongCocoon,
     DashuVentilation,
-    DashuReeling,
     QiufenOffering,
     HanluLoom,
     LidongDye,
@@ -54,19 +52,13 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     private static readonly Definition[] Definitions =
     {
         new Definition(WorkshopSeason.Spring, "spring.qingming", "清明", "桑园里的新叶", "清明采桑", "移篮接桑",
-            "清明前后桑树陆续展叶。舒展开、叶面干的嫩叶适合取用。", "清明选桑垄 → 谷雨同垄新采"),
-        new Definition(WorkshopSeason.Spring, "spring.guyu", "谷雨", "雨后的桑叶", "观察桑叶", "擦露配桑",
-            "江南谷雨时节春蚕渐忙。雨后叶湿时，给桑前先去掉叶面水。", "今日鲜叶 → 按蚕龄给桑 → 上蔟结茧",
-            "① 点干叶入篮；湿叶点开后划掉水珠。\n② 收齐后点「去喂蚕」。\n③ 点叶子，再点亮起的蚕匾。"),
-        new Definition(WorkshopSeason.Summer, "summer.mangzhong", "芒种", "蔟架上的蚕茧", "看茧况", "翻茧配批",
-            "芒种前后有江南产区收春茧。同批到站的茧也可能有早采、过潮和破损。", "成熟春茧 → 翻验收存 → 夏至缫丝",
-            "① 点一枚茧，读它的茧况。\n② 看不清的点「翻面检查」。\n③ 点右侧盘子分好，再交货。"),
+            "清明前后桑树陆续展叶。舒展开、叶面干的嫩叶适合取用。", "移篮接桑 → 师傅照料小蚕"),
+        new Definition(WorkshopSeason.Summer, "summer.mangzhong.thread", "芒种", "簇架上的丝路", "络纬整经", "丝路接接乐",
+            "芒种时节，簇架上的蚕茧已收好。转动线段，把丝头接到丝轴。", "蚕茧簇架 → 接通丝路 → 整理丝样",
+            "点击线段，连接左侧丝头与右侧丝轴。接通一张即可完成。"),
         new Definition(WorkshopSeason.Summer, "summer.dashu.vent", "大暑", "蔟房的通风窗", "暑热观察"),
-        new Definition(WorkshopSeason.Summer, "summer.dashu.reeling", "夏至", "梅雨缫丝", "梅雨缫丝", "稳丝续绪",
-            "夏至前后江南常逢梅雨。刚缫的湿丝在潮处晾不妥，收存前要干丝。", "验过的茧 → 缫成生丝 → 干妥入库",
-            "① 点「煮茧、找丝头」。\n② 按住轮子，指针在绿区就能绕丝。\n③ 余丝快尽时松手续丝，绕好再晾干。"),
         new Definition(WorkshopSeason.Autumn, "autumn.qiufen", "秋分", "窗光下的丝样", "借光验丝", "借光验丝",
-            "秋分后白昼渐短。织坊在夜织前，用剩下的窗光检查生丝的粗节和结头。", "夏至生丝 → 对光验丝 → 寒露上机",
+            "秋分后白昼渐短。织坊在夜织前，用剩下的窗光检查生丝的粗节和结头。", "夏季丝样 → 对光验丝 → 寒露上机",
             "① 点后排空盘放丝轴。\n② 切到侧窗，挪开挡光的酒坛。\n③ 点有接头的丝段，再挂验收签。"),
         new Definition(WorkshopSeason.Autumn, "autumn.hanlu", "寒露", "看经线", "看经线", "双色走梭",
             "寒露晨凉，窗沿可能结露。丝轴沾了露，要整备妥当才能上机。", "验过的丝 → 理经走梭织绸 → 立冬试染",
@@ -124,7 +116,6 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     private Button preferredAction;
     private int navigationStamp;
     private bool showSongJin;
-    private bool showBatches;
     private bool earnedRewardThisRun;
     private int stage;
     private int rows;
@@ -206,8 +197,8 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     {
         switch (season)
         {
-            case WorkshopSeason.Spring: return WorkshopProgress.HasStep("spring.guyu.batchFed");
-            case WorkshopSeason.Summer: return HasOrderWork(WorkshopObservation.MangzhongCocoon) && HasOrderWork(WorkshopObservation.DashuReeling);
+            case WorkshopSeason.Spring: return SpringSummerNpcDialogue.HasHarvestedLeaves;
+            case WorkshopSeason.Summer: return HasOrderWork(WorkshopObservation.MangzhongCocoon);
             case WorkshopSeason.Autumn: return HasOrderWork(WorkshopObservation.QiufenOffering) && HasOrderWork(WorkshopObservation.HanluLoom);
             case WorkshopSeason.Winter: return HasOrderWork(WorkshopObservation.LidongDye) && HasOrderWork(WorkshopObservation.XiaoxueTailoring);
             default: return true;
@@ -221,12 +212,8 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     {
         switch (id)
         {
-            case WorkshopObservation.DashuReeling when !HasOrderWork(WorkshopObservation.MangzhongCocoon):
-                return "先到蔟架完成芒种验茧，再带合格茧到夏至缫丝台。";
-            case WorkshopObservation.DashuReeling when !SummerItemInteraction.WaterCollected || !SummerItemInteraction.WoodCollected:
-                return "先取水、拾柴，再煮前一站交来的合格茧。";
-            case WorkshopObservation.QiufenOffering when !HasOrderWork(WorkshopObservation.DashuReeling):
-                return "秋分要验夏至入库的生丝，先完成夏章缫丝。";
+            case WorkshopObservation.QiufenOffering when !HasOrderWork(WorkshopObservation.MangzhongCocoon):
+                return "先到夏季蚕茧簇架接通丝路，再带丝样到秋分验丝。";
             case WorkshopObservation.HanluLoom when !HasOrderWork(WorkshopObservation.QiufenOffering):
                 return "先到秋分窗台验生丝，把验过的丝轴带回织机。";
             case WorkshopObservation.HanluLoom when !AutumnLevelState.HasLoomRepaired || !AutumnLevelState.HasShuttle:
@@ -244,7 +231,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     {
         const WorkshopObservation harvest = WorkshopObservation.QingmingMulberry;
         string id = Definitions[(int)harvest].Id;
-        string result = $"{SpringSummerNpcDialogue.HarvestOrchardName} · 试采 {leaves} 片 · 谷雨同垄新采";
+        string result = $"{SpringSummerNpcDialogue.HarvestOrchardName} · 接到嫩叶 {leaves} 片";
         if (WorkshopProgress.SeasonalOrderEnabled && IsAtOwnWorkshop(harvest))
             WorkshopProgress.RecordSeasonalOrderWork(id, 0, 100, result, null);
         return WorkshopProgress.RecordChallenge(id, 0, 100, result, null);
@@ -293,8 +280,6 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         }
 
         if (showBriefing) return;
-        TickGuyuWiping();
-
         if (!Input.GetKeyDown(KeyCode.Tab) || EventSystem.current == null || navigation.Count == 0) return;
         var available = navigation.FindAll(button => button != null && button.IsActive() && button.IsInteractable());
         if (available.Count == 0) return;
@@ -309,6 +294,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     private void Close()
     {
         if (current != this) return;
+        if (observation == WorkshopObservation.MangzhongCocoon) ClearXiazhiHint();
         RestoreTime();
         WorkshopUi.CloseCanvas(frame);
         Select(priorSelection);
@@ -379,8 +365,9 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         DrawActivity();
         if (IsSeasonGame(observation)) DrawChallengeReward();
 
+        bool xiazhiGame = observation == WorkshopObservation.MangzhongCocoon && ChallengeIsActive;
         var exit = WorkshopUi.PixelButton(page, "Return From Observation", new Rect(1473, 848, 243, 58),
-            ChallengeIsActive ? "返回 · Esc" : onClosed == null && !readOnly ? "返回关卡 · Esc" : "返回 · Esc",
+            xiazhiGame ? "返回夏季 · Esc" : ChallengeIsActive ? "返回 · Esc" : onClosed == null && !readOnly ? "返回关卡 · Esc" : "返回 · Esc",
             Close, false, 27);
         Button replay = ChallengeIsActive ? DrawChallengeControls() : null;
         if (ChallengeIsActive && !GameComplete && !readOnly)
@@ -460,7 +447,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
     private void ApplyWorkbenchReadingFont()
     {
-        var readingFont = WorkshopArt.ReadingFont;
+        var readingFont = observation == WorkshopObservation.MangzhongCocoon ? WorkshopArt.PixelFont : WorkshopArt.ReadingFont;
         foreach (var label in page.GetComponentsInChildren<Text>(true))
         {
             label.font = readingFont;
@@ -766,7 +753,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     {
         switch (id)
         {
-            case WorkshopObservation.DashuReeling:
+            case WorkshopObservation.MangzhongCocoon:
             case WorkshopObservation.LidongDye:
             case WorkshopObservation.XiaoxueTailoring:
                 return 3;

@@ -240,7 +240,7 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
         Label(page, "Finale Title", new Rect(96, 167, 1190, 88),
             "一张工单，缝成一件丝衣", 57, Cream, TextAnchor.MiddleCenter);
         Label(page, "Finale Body", new Rect(147, 277, 1090, 220),
-            "清明选垄，谷雨给桑。芒种验茧，夏至缫丝。秋分借光验丝，寒露理经走梭。立冬试色染绸，小雪量体排裁，大雪合缝翻衣。\n\n冬至试衣合身，师傅把贺冬的新衣挂上展架。打开制作记录，可以顺着同一张工单回看每道工序。",
+            "清明接桑叶，再备好蚕种。芒种择茧、接通丝路，再收齐材料合成生丝。秋分借光验丝，寒露理经走梭。立冬试色染绸，小雪量体排裁，大雪合缝翻衣。\n\n冬至试衣合身，师傅把贺冬的新衣挂上展架。打开制作记录，可以顺着同一张工单回看每道工序。",
             30, Cream, TextAnchor.UpperCenter);
 
         for (int i = 0; i < 4; i++)

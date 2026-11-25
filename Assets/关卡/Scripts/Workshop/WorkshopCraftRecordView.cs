@@ -228,8 +228,8 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
         Label(content, "Title", new Rect(595, 131, 482, 68), "制作记录", 47);
         var terms = new[]
         {
-            WorkshopObservation.QingmingMulberry, WorkshopObservation.GuyuLeaf,
-            WorkshopObservation.MangzhongCocoon, WorkshopObservation.DashuReeling,
+            WorkshopObservation.QingmingMulberry,
+            WorkshopObservation.MangzhongCocoon,
             WorkshopObservation.QiufenOffering, WorkshopObservation.HanluLoom,
             WorkshopObservation.LidongDye, WorkshopObservation.XiaoxueTailoring,
             WorkshopObservation.DaxueSewing, WorkshopObservation.DongzhiFitting

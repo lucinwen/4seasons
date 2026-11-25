@@ -90,12 +90,55 @@ public static class WorkshopProgress
             if (save.observations == null) save.observations = new List<string>();
             if (save.challengeWorks == null) save.challengeWorks = new List<ChallengeWork>();
             if (save.orderWorks == null) save.orderWorks = new List<ChallengeWork>();
+            // Old saves may have finished harvesting but stopped before the retired Guyu game.
+            // Keep their records and grant the reward now earned by harvesting.
+            bool harvested = (save.items & (1 << (int)WorkshopItem.MulberryLeaf)) != 0
+                || save.steps.Contains("spring.qingming.harvested")
+                || save.observations.Contains("observation.spring.qingming");
+            bool migrated = false;
+            if (harvested && (save.items & (1 << (int)WorkshopItem.Silkworm)) == 0)
+            {
+                save.items |= (1 << (int)WorkshopItem.MulberryLeaf) | (1 << (int)WorkshopItem.Silkworm);
+                migrated = true;
+            }
+            // The old Mangzhong id belongs to the removed cocoon inspection game.
+            // Only the former thread puzzle's records transfer to its new station.
+            const string oldThread = "observation.summer.dashu.reeling";
+            const string newThread = "observation.summer.mangzhong.thread";
+            foreach (var works in new[] { save.challengeWorks, save.orderWorks })
+            {
+                var legacy = works.FindAll(work => work != null && work.id == oldThread);
+                foreach (var work in legacy)
+                {
+                    if (works.Exists(current => current != null && current.id == newThread &&
+                        (works == save.orderWorks || current.order == work.order))) continue;
+                    works.Add(new ChallengeWork
+                    {
+                        id = newThread, order = work.order, score = work.score,
+                        description = work.description, sample = work.sample
+                    });
+                    migrated = true;
+                }
+            }
+            if ((save.observations.Contains(oldThread) ||
+                save.challengeWorks.Exists(work => work != null && work.id == newThread) ||
+                save.orderWorks.Exists(work => work != null && work.id == newThread)) &&
+                !save.observations.Contains(newThread))
+            {
+                save.observations.Add(newThread);
+                migrated = true;
+            }
+            if (migrated)
+            {
+                PlayerPrefs.SetString(SaveKey, JsonUtility.ToJson(save));
+                PlayerPrefs.Save();
+            }
             return save;
         }
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    private static void ResetSession()
+    internal static void ResetSession()
     {
         SceneManager.sceneLoaded -= ShowQueuedCard;
         nextSceneCard = null;

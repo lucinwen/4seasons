@@ -113,7 +113,7 @@ internal sealed partial class WorkshopObservationView
                 ResetExhibition();
                 exhibitionSide = exhibitionLamp = exhibitionKnotFound = false;
                 lastEvenSilkSegment = -1;
-                string reeled = WorkshopUpstreamWork(WorkshopObservation.DashuReeling, 0)?.sample;
+                string reeled = WorkshopUpstreamWork(WorkshopObservation.MangzhongCocoon, 0)?.sample;
                 var bands = reeled?.Split('/');
                 exhibitionSilk = bands != null && bands.Length == 3 && bands[1].Contains("4") ? reeled : "111/949/111";
                 exhibitionKnot = exhibitionSilk.Split('/')[1].IndexOf('4');
@@ -184,8 +184,8 @@ internal sealed partial class WorkshopObservationView
         exhibitionSunbeam = WorkshopUi.Picture(art, "Offering Sunbeam", new Rect(0, 101, 1, 112),
             GameArtSprite("OfferingSunbeam"), stretch: true);
         exhibitionSunbeam.raycastTarget = false;
-        string silkCaption = WorkshopUpstreamWork(WorkshopObservation.DashuReeling, 0) == null
-            ? "工坊存丝 · 对照样" : "夏至干丝已入库 · 本班验丝";
+        string silkCaption = WorkshopUpstreamWork(WorkshopObservation.MangzhongCocoon, 0) == null
+            ? "工坊存丝 · 对照样" : "夏季丝样已入库 · 本班验丝";
         DrawAutumnSilkHandoff("Offering Silk Handoff", new Rect(53, 439, 1054, 31), silkCaption,
             GameComplete ? AcceptedExhibitionSilk() : null);
 
@@ -625,9 +625,9 @@ internal sealed partial class WorkshopObservationView
         Layer("Autumn_WarpAligned");
         string inspected = WorkshopUpstreamWork(WorkshopObservation.QiufenOffering, 0)?.sample;
         bool verified = !string.IsNullOrEmpty(inspected) && inspected.Split('/').Length == 3;
-        string silkSample = verified ? inspected : WorkshopUpstreamWork(WorkshopObservation.DashuReeling, 0)?.sample;
+        string silkSample = verified ? inspected : WorkshopUpstreamWork(WorkshopObservation.MangzhongCocoon, 0)?.sample;
         string silkCaption = verified ? "秋分验收丝轴 · 接头已登记"
-            : string.IsNullOrEmpty(silkSample) ? "工坊备丝 · 先验干湿" : "夏至生丝 · 先验干湿";
+            : string.IsNullOrEmpty(silkSample) ? "工坊备丝 · 先验干湿" : "夏季丝样 · 先验干湿";
         DrawAutumnSilkHandoff("Loom Silk Handoff", new Rect(64, 7, 1032, 32), silkCaption, silkSample);
         if (!weavingSilkReady && !GameComplete)
         {

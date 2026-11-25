@@ -174,7 +174,6 @@ public class SummerItemInteraction : MonoBehaviour
 
         // 小游戏/其它弹窗进行中不响应
         if (HarvestOverlayManager.IsHarvestActive) return;
-        if (FeedOverlayManager.Instance != null && FeedOverlayManager.Instance.IsActive) return;
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
 
         if (_cam == null) _cam = Camera.main;

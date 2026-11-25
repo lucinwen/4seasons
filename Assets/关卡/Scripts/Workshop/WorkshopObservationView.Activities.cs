@@ -2,13 +2,8 @@ using UnityEngine;
 
 internal sealed partial class WorkshopObservationView
 {
-    private static readonly int[] CocoonReviewSlots = { 1, 0, 1 };
-    private const int LeafReadyToFeed = 3;
     private const int DryDyeSelected = 4;
-    private int cocoonRound;
-    private int cocoonWrongSlot = -1;
     private bool loomWrong;
-    private bool driedWetLeaf;
     private bool dyeWrong;
 
     private void DrawActivity()
@@ -18,10 +13,8 @@ internal sealed partial class WorkshopObservationView
         switch (observation)
         {
             case WorkshopObservation.QingmingMulberry: DrawQingming(); break;
-            case WorkshopObservation.GuyuLeaf: DrawGuyu(); break;
             case WorkshopObservation.MangzhongCocoon: DrawMangzhong(); break;
             case WorkshopObservation.DashuVentilation: DrawVentilation(); break;
-            case WorkshopObservation.DashuReeling: DrawReeling(); break;
             case WorkshopObservation.QiufenOffering: DrawQiufen(); break;
             case WorkshopObservation.HanluLoom: DrawLoom(); break;
             case WorkshopObservation.LidongDye: DrawDye(); break;
@@ -67,161 +60,15 @@ internal sealed partial class WorkshopObservationView
         Prop("Spring_QingmingDamagedMulberry", damaged);
         Tag("Young Leaf Finding", "嫩叶收进篮", At(0.29f, 0.84f, 0.26f, 0.08f));
         Tag("Damaged Leaf Finding", "黄褐破叶跳过", At(0.71f, 0.84f, 0.26f, 0.08f));
-        Copy("清明记桑垄，谷雨采鲜叶", "清明前后，桑树展开新叶。选叶已舒展、露已退的桑垄移篮接叶。谷雨从同一垄新采，湿叶去水后给桑。");
-    }
-
-    private void DrawGuyu()
-    {
-        Layer("Spring_LeafDesk");
-        var dry = At(0.34f, 0.48f, 0.16f, 0.30f);
-        var wet = At(0.66f, 0.48f, 0.16f, 0.30f);
-        var tray = At(0.50f, 0.80f, 0.25f, 0.39f);
-
-        if (stage == 2)
-        {
-            Prop("Spring_LeafOnTray", tray);
-            Copy("给桑完成", "给小蚕选洁净、适熟的桑叶。雨后的湿叶先晾干，蚕座也要保持干爽。");
-            Restart();
-            return;
-        }
-
-        if (stage == LeafReadyToFeed)
-        {
-            Prop("Spring_LeafDry", driedWetLeaf ? wet : dry);
-            WorkshopUi.Picture(art, "Silkworms Ready To Feed", tray, WorkshopObservationArt.Current?.SilkwormTray);
-            Tag("Prepared Leaf Caption", driedWetLeaf ? "已晾干" : "叶面干爽",
-                At(driedWetLeaf ? 0.66f : 0.34f, 0.69f, 0.16f, 0.073f));
-            Copy("把桑叶放进蚕匾", driedWetLeaf
-                ? "水珠已经晾干。点击下方的蚕匾，把这片桑叶喂给小蚕。"
-                : "这片叶面没有水珠。点击下方的蚕匾，把选好的桑叶喂给小蚕。");
-            Hotspot("Feed Prepared Leaf", tray, Finish);
-            Act("Feed Dry Leaf", "把叶子放进蚕匾", Finish, true);
-            Act("Choose Other Leaf", "重新选一片", () => Step(0));
-            return;
-        }
-
-        Prop("Spring_LeafDry", dry);
-        Prop("Spring_LeafWet", wet);
-        Hotspot("Choose Dry Leaf", dry, () => PrepareLeaf(false));
-        Hotspot("Choose Wet Leaf", wet, () => Step(1));
-        if (stage == 1)
-        {
-            Tag("Wet Leaf Finding", "叶上有水珠", At(0.66f, 0.71f, 0.22f, 0.08f), true);
-            Copy("湿叶先晾干", "这片桑叶还有水珠。可等叶面晾干再给桑，也可以回头选那片干爽的桑叶。", true);
-            Act("Air Dry The Leaf", "晾干后再用", () => PrepareLeaf(true), true);
-            Act("Choose Other Leaf", "重新选一片", () => Step(0));
-            return;
-        }
-
-        Copy("先用哪一片？", "雨刚停，竹盘里有同批的两片桑叶。看一看叶面，选出现在可以给小蚕的那片。");
-        Act("Select Left Leaf", "选左边的桑叶", () => PrepareLeaf(false));
-        Act("Select Right Leaf", "选右边的桑叶", () => Step(1));
-    }
-
-    private void PrepareLeaf(bool airDried)
-    {
-        driedWetLeaf = airDried;
-        Step(LeafReadyToFeed);
+        Copy("清明移篮接桑", "左右移动篮子接住嫩叶。桑叶交给师傅照料小蚕，再为下一批备好蚕种。");
     }
 
     private void DrawMangzhong()
     {
-        if (showBatches)
-        {
-            DrawSummerBatches();
-            return;
-        }
-
         Layer("Summer_CocoonBench");
-        bool completed = stage == 2;
-        DrawCocoonReviewTray(completed ? CocoonReviewSlots.Length : cocoonRound);
-
-        if (completed)
-        {
-            Copy("三盘都已分拣", "有破口的茧已放入复查栏。南浔六月初的地方报道也记录了同期进度不同的两批蚕，可接着看。");
-            Act("Compare Nanxun Batches", "看南浔的两批蚕", ToggleSummerBatches, true);
-            Restart();
-            return;
-        }
-
-        bool finalPlate = cocoonRound == CocoonReviewSlots.Length - 1;
-        float[] centers = finalPlate ? new[] { 0.17f, 0.335f, 0.50f } : new[] { 0.236f, 0.439f };
-        string[] positions = finalPlate ? new[] { "Left", "Middle", "Right" } : new[] { "Left", "Right" };
-        string[] labels = finalPlate ? new[] { "左边", "中间", "右边" } : new[] { "左边", "右边" };
-        for (int i = 0; i < centers.Length; i++)
-        {
-            int slot = i;
-            string sample = slot == CocoonReviewSlots[cocoonRound] ? "Summer_CocoonReview" : "Summer_CocoonIntact";
-            var bounds = finalPlate ? At(centers[i], 0.746f, 0.135f, 0.18f) : At(centers[i], 0.746f, 0.156f, 0.208f);
-            Prop(sample, bounds);
-            if (slot == cocoonWrongSlot)
-                Tag("Inspected Intact Shell", "表面完整", At(centers[i], 0.57f, 0.15f, 0.073f), true);
-            Hotspot("Choose " + positions[i] + " Cocoon", bounds, () => InspectCocoon(slot));
-            Act("Select " + positions[i] + " Cocoon", "复查" + labels[i] + "的茧", () => InspectCocoon(slot));
-        }
-
-        bool incorrect = cocoonWrongSlot >= 0;
-        WorkshopUi.Label(infoPanel, "Cocoon Round Progress", new Rect(27, 567, 444, 61),
-            $"第 {cocoonRound + 1} / {CocoonReviewSlots.Length} 盘", 28, WorkshopUi.Faded);
-        Copy(incorrect ? "这枚茧壳完整" : "哪枚茧需要复查？",
-            incorrect
-                ? "刚才这枚没有可见破口，留在原盘。再看其他茧的边缘和表面，挑一枚有破口的。"
-                : "每盘有一枚茧壳带破口。把它挑进复查栏，再继续检查下一盘。", incorrect);
-    }
-
-    private void InspectCocoon(int slot)
-    {
-        if (slot != CocoonReviewSlots[cocoonRound])
-        {
-            cocoonWrongSlot = slot;
-            Step(1);
-            return;
-        }
-
-        cocoonWrongSlot = -1;
-        cocoonRound++;
-        if (cocoonRound == CocoonReviewSlots.Length)
-            Finish();
-        else
-            Step(0);
-    }
-
-    private void DrawCocoonReviewTray(int count)
-    {
-        var panel = WorkshopUi.PixelCard(art, "Cocoon Review Tray", new Rect(792, 436, 333, 180),
-            LightSurface, WorkshopUi.Bronze);
-        WorkshopUi.Label(panel, "Cocoons Held For Review", new Rect(10, 9, 313, 49),
-            $"待复查 {count} / {CocoonReviewSlots.Length}", 29, WorkshopUi.Green, TextAnchor.MiddleCenter);
-        for (int i = 0; i < CocoonReviewSlots.Length; i++)
-        {
-            float x = 14f + i * 103f;
-            WorkshopUi.PixelCard(panel, "Review Slot " + i, new Rect(x, 65, 94, 91), InsetPaper, WorkshopUi.Line);
-            if (i < count)
-                Prop("Summer_CocoonReview", new Rect(792 + x + 9, 436 + 72, 76, 67));
-        }
-    }
-
-    private void DrawSummerBatches()
-    {
-        Layer("Summer_CocoonBench");
-        var first = new Rect(89, 111, 445, 410);
-        var second = new Rect(625, 111, 445, 410);
-        WorkshopUi.PixelCard(art, "Early Batch Frame", first, LightSurface, WorkshopUi.Bronze);
-        WorkshopUi.PixelCard(art, "Later Batch Frame", second, LightSurface, WorkshopUi.Bronze);
-        Art("First Batch Cocoons", "WorkshopFinish/Cocoon", new Rect(184, 169, 255, 260));
-        Prop("Spring_LeafOnTray", new Rect(691, 173, 313, 246));
-        Tag("Early Batch Caption", "第一批 · 吐丝结茧", new Rect(118, 454, 387, 50));
-        Tag("Later Batch Caption", "第二批 · 开始养殖", new Rect(654, 454, 387, 50));
-        Copy("同在南浔，进度各有不同", "六月初的报道记录了当地具体蚕农的批次。两张画面示意同期的两种进度。");
-        Act("Return To Cocoon Comparison", "返回茧况观察", ToggleSummerBatches, true);
-        Act("Read Nanxun Reporting", "阅读南浔地方蚕讯", () => Application.OpenURL(
-            "https://paper.xinmin.cn/html/home/2024-06/05/06/22494.html"));
-    }
-
-    private void ToggleSummerBatches()
-    {
-        showBatches = !showBatches;
-        Render();
+        var work = WorkshopUpstreamWork(WorkshopObservation.MangzhongCocoon, 0);
+        DrawWorkSample(art, new Rect(180, 210, 800, 230), work?.sample);
+        Copy("芒种 · 丝路已接通", "在蚕茧簇架转动线段，把丝头引到丝轴。丝样已保存，秋季可继续借光验丝。");
     }
 
     private void DrawVentilation()
@@ -244,61 +91,8 @@ internal sealed partial class WorkshopObservationView
             Act("Open Window", "打开木窗", Finish, true);
         }
 
-        if (!readOnly || HasRecord(WorkshopObservation.DashuReeling))
-            Act("Return To Reeling", "回看缫丝三步", () => Link(WorkshopObservation.DashuReeling));
-    }
-
-    private void DrawReeling()
-    {
-        var strip = new Rect(21, 150, 1118, 291.15f);
-        Art("Reeling Steps", "WorkshopObservation/Summer_ReelingSteps", strip, true);
-        if (stage >= 2)
-            Art("Reeling Thread Path", "WorkshopObservation/Summer_ReelingThreadPath", strip, true);
-        var steps = new[] { "煮茧", "找丝头", "绕丝轴" };
-        float tileWidth = strip.width / 3f;
-        for (int i = 0; i < steps.Length; i++)
-        {
-            var tile = new Rect(strip.x + i * tileWidth, strip.y, tileWidth, strip.height);
-            int step = i;
-            if (stage == step)
-                Hotspot("Reeling Step " + step, tile, AdvanceReeling);
-            Tag("Reeling Step Label " + step, steps[i] + (stage > i ? " · 已看" : ""),
-                new Rect(tile.x + 74f, 472, tileWidth - 148f, 57));
-        }
-
-        switch (stage)
-        {
-            case 0:
-                Copy("先看煮茧", "锅里的水让茧丝较易分离。先点左格看煮过的茧，准备寻找丝头。");
-                break;
-            case 1:
-                Copy("找出丝头", "用索绪工具从煮过的茧上找出丝头。点中格，观察丝头从蚕茧引向丝车。");
-                break;
-            case 2:
-                Copy("看丝线绕上木轴", "沿亮色丝线看向右格。整理并合添丝绪后，丝车稳稳卷绕，把蚕丝收在轴上。");
-                break;
-            default:
-                Copy("一枚茧经过多道工序", "三格示意选取煮茧、索绪与绕轴三个动作。辑里湖丝的实际工序还包括添绪、烘丝等步骤。");
-                Act("Read Hand Reeling Practice", "阅读辑里湖丝工艺", () => Application.OpenURL(
-                    "https://www.ihchina.cn/project_details/14472/"), true);
-                if (!readOnly || HasRecord(WorkshopObservation.DashuVentilation))
-                    Act("Go To Summer Ventilation", "看蔟房通风", () => Link(WorkshopObservation.DashuVentilation));
-                Restart();
-                return;
-        }
-        Act("Advance Reeling", steps[stage], AdvanceReeling, true);
-        if (stage > 0)
-            Act("Previous Reeling Step", "返回上一步", () => Step(stage - 1));
-        else if (!readOnly)
-            Act("Go To Summer Ventilation", "看蔟房通风", () => Link(WorkshopObservation.DashuVentilation));
-    }
-
-    private void AdvanceReeling()
-    {
-        if (stage == 2)
-            Finish();
-        else
-            Step(stage + 1);
+        if (!readOnly || HasRecord(WorkshopObservation.MangzhongCocoon))
+            Act("Return To Thread Record", "回看芒种丝路", () => Link(WorkshopObservation.MangzhongCocoon));
     }
 
     private void DrawQiufen()

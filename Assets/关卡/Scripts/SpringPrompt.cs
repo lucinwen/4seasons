@@ -16,7 +16,7 @@ public class SpringPrompt : MonoBehaviour
     [Tooltip("是否已拾取蚕种纸（浴蚕清洗的前置条件）")]
     public static bool HasEggPaper = false;
 
-    [Tooltip("是否已获得蚕宝宝（喂蚕小游戏通关后置 true）")]
+    [Tooltip("是否已获得蚕宝宝（采桑小游戏通关后置 true）")]
     public static bool HasSilkwormBaby = false;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]

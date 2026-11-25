@@ -84,11 +84,6 @@ public class SummerCookerTrigger : MonoBehaviour
             return;
         }
 
-        if (WorkshopProgress.SeasonalOrderEnabled && !WorkshopObservationView.HasOrderWork(WorkshopObservation.DashuReeling))
-        {
-            WorkshopObservationView.Show(WorkshopObservation.DashuReeling);
-            return;
-        }
         SpringSummerNpcDialogue.BeforeFindingSpool(OpenMaze);
     }
 

@@ -102,8 +102,7 @@ public class NpcTalkButton : MonoBehaviour
 
         if (WorkshopDialoguePresenter.IsOpen || MiniGameOverlay.IsActive || HarvestOverlayManager.IsHarvestActive ||
             WinterDyeingOverlay.IsActive || WinterGrindingOverlay.IsActive || WorkshopKnowledgeView.IsOpen ||
-            AutumnOfferingView.IsOpen ||
-            (FeedOverlayManager.Instance != null && FeedOverlayManager.Instance.IsActive))
+            AutumnOfferingView.IsOpen)
         {
             if (_near)
             {

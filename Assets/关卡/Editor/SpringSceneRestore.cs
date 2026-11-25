@@ -181,7 +181,7 @@ public static class SpringSceneRestore
     {
         Plain,          // 纯装饰
         Pickup,         // PickupItem
-        SilkwormRack,   // SilkwormRackTrigger
+        SilkwormRack,   // 春季簇架仅作场景陈设
         WashingEgg,     // SilkwormWashingController (role = Egg)
         WashingBucket,  // SilkwormWashingController (role = Bucket)
         Prompt          // SpringPrompt（采桑游戏触发点位）
@@ -321,7 +321,6 @@ public static class SpringSceneRestore
                     break;
 
                 case SpringItemKind.SilkwormRack:
-                    go.AddComponent<SilkwormRackTrigger>().guyuStation = item.Name == "1-蚕簇架2";
                     break;
 
                 case SpringItemKind.WashingEgg:

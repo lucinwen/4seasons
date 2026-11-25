@@ -112,9 +112,8 @@ public class PickupItem : MonoBehaviour
             return;
         }
 
-        // 采桑/喂蚕小游戏进行中，不响应拾取点击，避免拖拽操作误触发拾取弹窗
-        if (HarvestOverlayManager.IsHarvestActive ||
-            (FeedOverlayManager.Instance != null && FeedOverlayManager.Instance.IsActive))
+        // 采桑小游戏进行中，不响应拾取点击，避免拖拽操作误触发拾取弹窗
+        if (HarvestOverlayManager.IsHarvestActive)
         {
             if (_labelCanvas != null && _labelCanvas.activeSelf) _labelCanvas.SetActive(false);
             return;
@@ -151,7 +150,7 @@ public class PickupItem : MonoBehaviour
             {
                 if (!SpringSummerNpcDialogue.CanWash)
                 {
-                    SimplePopup.Show("先去喂蚕", "先收集桑叶并给已经孵化的小蚕添桑，再回来准备下一批蚕种。", "知道了", null);
+                    SimplePopup.Show("先去采桑", "先完成接桑叶，再回来准备下一批蚕种。", "知道了", null);
                     return;
                 }
                 SpringSummerNpcDialogue.BeforeBath(ShowPickupPopup);

@@ -52,7 +52,6 @@ internal sealed class WorkshopObservationStations : MonoBehaviour
         {
             case WorkshopSeason.Summer:
                 Register<SummerCocoonRackTrigger>(WorkshopObservation.MangzhongCocoon, 3.25f);
-                Register<SummerCookerTrigger>(WorkshopObservation.DashuReeling, 2.75f);
                 break;
             case WorkshopSeason.Autumn:
                 Register<AutumnRitualTrigger>(WorkshopObservation.QiufenOffering, 2.85f);

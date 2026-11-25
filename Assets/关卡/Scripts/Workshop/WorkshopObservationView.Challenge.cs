@@ -16,10 +16,8 @@ internal sealed partial class WorkshopObservationView
     private static readonly (string name, string icon)[] ChallengeRewards =
     {
         ("嫩桑标本", "WorkshopObservation/Spring_QingmingYoungMulberry"),
-        ("净桑叶样本", "WorkshopObservation/Spring_LeafDry"),
-        ("完整蚕茧", "WorkshopObservation/Summer_CocoonIntact"),
+        ("整经丝束", "WorkshopFinish/RawSilk"),
         (null, null),
-        ("手缫丝束", "WorkshopFinish/RawSilk"),
         ("生丝验收签", "WorkshopGameArt/SilkBobbin"),
         ("平纹织样", "WorkshopFinish/PlainSilk"),
         ("双染试色布头", "WorkshopObservation/Winter_DyedSwatch"),
@@ -83,7 +81,7 @@ internal sealed partial class WorkshopObservationView
     private void PrepareActivity(WorkshopObservation id)
     {
         observation = id;
-        showSongJin = showBatches = false;
+        showSongJin = false;
         challengePhase = ChallengePhase.None;
         stage = readOnly ? CompletionStage(id) : 0;
         runResult = null;
@@ -98,11 +96,10 @@ internal sealed partial class WorkshopObservationView
         ChallengeVariant = order;
         challengePhase = ChallengePhase.Playing;
         stage = 0;
-        showSongJin = showBatches = false;
+        showSongJin = false;
         earnedRewardThisRun = false;
         runResult = null;
         stampCurrentResult = false;
-        ResetSpringChallenge();
         ResetSummerChallenge();
         ResetAutumnChallenge();
         ResetWinterChallenge();
@@ -223,6 +220,11 @@ internal sealed partial class WorkshopObservationView
                 }, true, 27, Accents[(int)Season(observation)]);
             RegisterButton(deliver);
             return deliver;
+        }
+        if (observation == WorkshopObservation.MangzhongCocoon)
+        {
+            if (!GameComplete) DrawXiazhiOrderSelectors();
+            return null;
         }
         int next = 1 - ChallengeVariant;
         bool canSwitch = (!IsGarmentProductionRun || GameComplete) && BestWork(observation, 0) != null;

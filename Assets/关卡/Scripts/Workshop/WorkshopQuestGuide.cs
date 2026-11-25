@@ -23,10 +23,9 @@ internal sealed class WorkshopQuestGuide : MonoBehaviour
     {
         get
         {
-            var feed = FeedOverlayManager.Instance;
             return MiniGameCompletionAnimation.IsPlaying || MiniGameOverlay.IsActive || HarvestOverlayManager.IsHarvestActive ||
                 WinterDyeingOverlay.IsActive || WinterGrindingOverlay.IsActive || SpringSilkwormWashOverlay.IsOpen ||
-                (feed != null && feed.IsActive) || WorkshopKnowledgeView.IsOpen ||
+                WorkshopKnowledgeView.IsOpen ||
                 WorkshopNarrativeView.IsOpen || SimplePopup.IsOpen || WorkshopDialoguePresenter.IsOpen ||
                 AutumnOfferingView.IsOpen || WorkshopObservationView.IsOpen ||
                 WorkshopCraftRecordView.IsOpen || WorkshopHeritageBrief.IsOpen;

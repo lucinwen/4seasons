@@ -4,25 +4,6 @@ using UnityEngine.UI;
 
 internal sealed partial class WorkshopObservationView
 {
-    private void ResetSpringChallenge()
-    {
-        if (observation == WorkshopObservation.GuyuLeaf)
-            ResetGuyuOrder();
-    }
-
-    private static bool HasSpringBit(int mask, int bit) => (mask & (1 << bit)) != 0;
-
-    private static int CountSpringBits(int mask)
-    {
-        int count = 0;
-        while (mask != 0)
-        {
-            mask &= mask - 1;
-            count++;
-        }
-        return count;
-    }
-
     private Sprite SpringSprite(string resource)
     {
         if (!sprites.TryGetValue(resource, out var sprite))
