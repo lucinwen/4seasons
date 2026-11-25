@@ -2,6 +2,17 @@
 
 **从清明采下第一篮桑叶，到冬至穿上自己缝的夹衣。**
 
+## 已经拉下项目？从这里开始
+
+1. 在 Unity Hub 安装 [Unity **2022.3.62f3c1**](ProjectSettings/ProjectVersion.txt)。
+2. 在 Unity Hub 的「项目」页添加本地项目，选中克隆下来的 **`4seasons` 根目录**。选中的文件夹里应当同时看得到 `Assets`、`Packages`、`ProjectSettings` 和这份 README。选好后，在 Hub 项目列表里打开它。
+3. 等编辑器导入完成，在下方 **Project** 窗口展开 **Assets → Scenes**，双击 [**FourSeasonsTitle.unity**](Assets/Scenes/FourSeasonsTitle.unity)。
+4. 点击编辑器上方的 **▶ Play**，在 Game 窗口选「开始游戏」。这是游戏标题场景，从这里进入会走完整主线。
+
+如果工程能打开但图片或音频缺失，在 `4seasons` 根目录运行 `git lfs pull`。如果终端找不到 `git lfs`，先安装 Git LFS，再运行 `git lfs install` 和 `git lfs pull`。
+
+## 游戏介绍
+
 《四时织坊》是一款以二十四节气和中国传统蚕桑丝织技艺为主题的 2D 像素游戏。你在一间虚构的江南织坊里跟着师傅学手艺，走过春夏秋冬，在十个节气工位完成同一张制衣工单。春天养出的蚕批、夏天缫出的丝、秋天织好的纹样，都会成为冬天做衣的材料。
 
 ![大雪合缝翻衣实机画面，箭头从衣边露出的布角指向拖动方向](docs/readme-daxue.jpg)
@@ -41,19 +52,17 @@
 
 春章从蚕房开始。先找师傅领任务、拿好篮子，再去桑园。成衣展架也提供可选的「AR 镜前试衣」，进入该模式时会尝试使用摄像头，普通角色换装可以直接操作。
 
-## 用 Unity 运行源码
+## 获取源码与打包
 
-1. 安装 Git、Git LFS 和 [项目指定的 Unity 2022.3.62f3c1](ProjectSettings/ProjectVersion.txt)。图片、音频和字体由 Git LFS 管理。
-2. 克隆仓库并下载 LFS 资源。
+安装 Git 和 Git LFS 后，克隆仓库并下载图片、音频与字体资源。
 
-   ```sh
-   git lfs install
-   git clone https://github.com/lucinwen/4seasons.git
-   cd 4seasons
-   git lfs pull
-   ```
+```sh
+git lfs install
+git clone https://github.com/lucinwen/4seasons.git
+cd 4seasons
+git lfs pull
+```
 
-3. 在 Unity Hub 中添加克隆得到的 `4seasons` 文件夹。等待 Unity 导入资源与依赖。
-4. 打开 [标题场景 FourSeasonsTitle.unity](Assets/Scenes/FourSeasonsTitle.unity)，点击 Play。若要自行打包，在 Unity 中打开 `File → Build Settings`，选择 Windows 平台后点击 `Build`。
+若要自行打包，在 Unity 中打开 `File → Build Settings`，选择 Windows 平台后点击 `Build`。
 
 游戏场景、脚本和美术资源位于 `Assets/`，依赖与编辑器配置位于 `Packages/` 和 `ProjectSettings/`。[查看版本记录](CHANGELOG.md)
