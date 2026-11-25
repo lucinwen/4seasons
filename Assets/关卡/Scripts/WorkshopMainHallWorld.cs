@@ -89,6 +89,9 @@ public sealed class WorkshopMainHallWorld : MonoBehaviour
         BuildHud();
         BuildInteractions();
         RefreshHud();
+        WorkshopQuestArrow.AttachMainHall(player,
+            () => recommendedDestination != null ? recommendedDestination.transform : null,
+            () => InputBlocked);
 
         WorkshopProgress.Changed += RefreshHud;
         if (!WorkshopProgress.HasStep("announcement.Spring") &&

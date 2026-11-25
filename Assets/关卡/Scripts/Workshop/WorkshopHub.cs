@@ -71,6 +71,7 @@ public sealed class WorkshopHub : MonoBehaviour
             "返回工坊", hub.ReturnToWorkshop, WorkshopUi.Ink, size: 28,
             font: WorkshopArt.WorkshopFont).gameObject;
         WorkshopQuestGuide.Attach(season);
+        WorkshopQuestArrow.Attach(season);
     }
 
     private static WorkshopSeason RecommendedSeason()
