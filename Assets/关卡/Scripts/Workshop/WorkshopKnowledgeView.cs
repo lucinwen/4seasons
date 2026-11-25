@@ -136,7 +136,7 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
         Label(journal, "Title", new Rect(589, 112, 631, 89), "四时织录", 54,
             Jade, TextAnchor.MiddleCenter);
         Label(journal, "Item Hint", new Rect(291, 288, 876, 49),
-            "取得关键道具后，点选图鉴卡片阅读。", 25, WorkshopUi.Faded);
+            "获得关键道具后可点击卡片阅读。", 25, WorkshopUi.Faded);
         var back = WorkshopUi.PixelButton(journal, "Close", new Rect(1337, 283, 160, 56),
             "返回", Close, false, 28);
 
@@ -173,10 +173,7 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
         var surface = WorkshopUi.Button(parent, "Item Card " + item, rect, "",
             () => RenderDetail(sprite, RenderItems, "返回图鉴"), Color.clear, acquired).transform;
         if (acquired)
-        {
             DrawItemCard(surface, new Rect(14, 7, 350, 374), item, sprite);
-            Label(surface, "Card Open", new Rect(9, 381, 360, 42), "展开阅读", 27, Jade, TextAnchor.MiddleCenter);
-        }
         else
         {
             WorkshopUi.Panel(surface, "Uncollected Card Frame", new Rect(48, 61, 282, 306),
@@ -230,8 +227,8 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
         else
             MarkPrintedButtonFocus(back);
         string guide = justReceived
-            ? "已收录" + WorkshopProgress.SeasonName(season) + "季的六张节气卡。点选卡片阅读。"
-            : "和四季关卡里的师傅交谈，领取对应的六张节气卡。";
+            ? "已收录" + WorkshopProgress.SeasonName(season) + "季节气卡。"
+            : "向各季师傅领取节气卡。";
         Label(page, "Solar Guide", new Rect(210, 966, 1500, 54), guide, 29, Cream, TextAnchor.MiddleCenter);
         WorkshopCraftRecordView.KeepFocusIn(page, back);
     }

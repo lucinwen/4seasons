@@ -38,6 +38,7 @@ internal sealed partial class WorkshopObservationView
     };
     private const int StartingVatDepth = 5;
     private const int MaxVatDepth = 6;
+    private const string WinterDyeSteps = "轻蘸最多加深一阶，浸染可加深更多。对照预览，晾干比色。";
     private static readonly Color UndyedLinen = new Color32(237, 221, 188, 255);
     private static readonly Color WinterVatRim = new Color32(80, 69, 67, 255);
     private static readonly Color WinterWorktop = new Color32(244, 232, 207, 240);
@@ -173,9 +174,9 @@ internal sealed partial class WorkshopObservationView
             }
         }
 
-        Copy(winterDyeWarning ? "这批果料先留复查" : "立冬 · 认栀果成熟度",
+        Copy(winterDyeWarning ? "这批果料先留复查" : "挑选熟果",
             winterDyeWarning ? winterDyeFeedback :
-            "挑一包栀果", winterDyeWarning);
+            "选一包红黄熟果。", winterDyeWarning);
         if (winterDyeRejectedBatch >= 0)
         {
             bool damaged = winterDyeRejectedBatch == (ripeBatch + 1) % 3;
@@ -225,7 +226,7 @@ internal sealed partial class WorkshopObservationView
         VisualStep((RectTransform)grind.transform);
         ShowGesture(art, new Vector2(560, 263), new Vector2(560, 263), WorkGesture.Tap);
         WinterControl(art, "Lidong Grind", new Rect(432, 468, 296, 58), "点击石臼 · 研细果料", GrindWinterGardenia, true, 26);
-        Copy("红黄熟果", "研料");
+        Copy("红黄熟果已选好", null);
         DrawWinterLoomSample();
     }
 
@@ -312,7 +313,7 @@ internal sealed partial class WorkshopObservationView
         winterDyeDrop = DrawWinterSwatch(art, "Lidong Dragged Swatch", new Rect(0, 0, 110, 83), 0);
         winterDyeDrop.gameObject.SetActive(false);
 
-        Copy("栀黄试色", "左边是订单色。轻蘸少上一层，浸染更快。选一块预览色，再晾干比对。");
+        Copy("栀黄试色", WinterDyeSteps);
         winterDyeGuide = infoPanel.Find("Instruction Body").GetComponent<Text>();
         Act("Lidong Blot", "吸回上一次染色", BlotWinterDye);
         winterDyeBlotButton = infoPanel.Find("Lidong Blot").GetComponentInChildren<Button>();
@@ -439,7 +440,7 @@ internal sealed partial class WorkshopObservationView
         winterDyeReplaceButton.interactable = depth > 0;
         winterDyeReplaceButton.transform.parent.gameObject.SetActive(depth > target.y && !canBlot);
         winterDyeHangButton.transform.Find("Label").GetComponent<Text>().text = ready ? "晾干交样 ✓" : "晾看";
-        winterDyeGuide.text = $"目标：{CurrentDyeRun.Names[winterDyeOrder]}\n看布块比色，再选轻蘸或浸染。";
+        winterDyeGuide.text = $"目标：{CurrentDyeRun.Names[winterDyeOrder]}\n{WinterDyeSteps}";
         var dryObject = winterDyeRackAction.Find("Dry This Swatch").GetComponent<Button>();
         dryObject.interactable = depth > 0;
         UpdateWinterDyeVisualGuide(depth, next, fine, target, ready);

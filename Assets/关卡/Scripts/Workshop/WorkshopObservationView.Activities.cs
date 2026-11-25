@@ -51,7 +51,7 @@ internal sealed partial class WorkshopObservationView
         Layer("Summer_CocoonBench");
         var work = WorkshopUpstreamWork(WorkshopObservation.MangzhongCocoon, 0);
         DrawWorkSample(art, new Rect(180, 210, 800, 230), work?.sample);
-        Copy("芒种 · 丝路已接通", "在蚕茧簇架转动线段，把丝头引到丝轴。丝样已保存，秋季可继续借光验丝。");
+        Copy("丝样已保存", "秋季可在验丝位借光检查丝样。");
     }
 
     private void DrawVentilation()
@@ -63,13 +63,13 @@ internal sealed partial class WorkshopObservationView
         {
             Layer("Summer_OpenWindow");
             Tag("Ventilation State", "窗已打开", At(0.77f, 0.49f, 0.19f, 0.08f));
-            Copy("先透气，再看茧", "窗扇打开，空气可以流通。暑热时还要按现场的闷湿情况检查工位和这批备茧。");
+            Copy("通风后检查备茧", "暑热时还要按现场的闷湿情况检查工位和这批备茧。");
             Restart();
         }
         else
         {
             Tag("Window State", "窗扇关闭", At(0.77f, 0.49f, 0.19f, 0.08f));
-            Copy("作坊有些闷热", "观察蔟房上方的窗扇。打开这扇窗，再看看空气流动的示意。");
+            Copy("作坊有些闷热", "打开蔟房上方的窗扇，观察空气流动。");
             Hotspot("Open Cocoon Room Window", At(0.771f, 0.304f, 0.258f, 0.331f), Finish);
             Act("Open Window", "打开木窗", Finish, true);
         }
@@ -85,7 +85,7 @@ internal sealed partial class WorkshopObservationView
             LightSurface, WorkshopUi.Bronze);
         var work = WorkshopUpstreamWork(WorkshopObservation.QiufenOffering, 0);
         DrawWorkSample(panel, new Rect(24, 13, 744, 115), work?.sample);
-        Copy("秋分借光验丝", "白昼渐短，织坊在夜织前借光查接头。验过的生丝收进柜子，留给寒露理经走梭。");
+        Copy("夜织前验丝", "秋分后白昼渐短，织坊趁有窗光时查接头。验过的生丝留给寒露理经走梭。");
         Act("Read Autumn Heritage", "看苏州织造资料", OpenAutumnHeritage, true);
     }
 

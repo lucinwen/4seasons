@@ -71,8 +71,7 @@ internal sealed class SpringSilkwormWashOverlay : MonoBehaviour
         var rippleArt = Resources.Load<Sprite>(ArtPath + "WaterRipple");
         var page = WorkshopUi.WorkbenchCard(frame, "Bath Panel", new Rect(88, 77, 1744, 926),
             WorkshopUi.Paper, WorkshopUi.Bronze);
-        WorkshopUi.Label(page, "Bath Season", new Rect(29, 19, 440, 40), "春 · 下一批蚕种", 28, WorkshopUi.Green);
-        WorkshopUi.Label(page, "Bath Title", new Rect(29, 60, 750, 77), "浴蚕桶 · 漂洗蚕种", 54);
+        WorkshopUi.Label(page, "Bath Title", new Rect(29, 42, 750, 77), "浴蚕", 54);
         WorkshopUi.Fill(page, "Heading Rule", new Rect(28, 145, 1688, 2), WorkshopUi.Line);
         work = WorkshopUi.PixelCard(page, "Bath Worktable", new Rect(28, 163, 1172, 665),
             new Color32(117, 78, 51, 255), WorkshopUi.Bronze);
@@ -267,26 +266,26 @@ internal sealed class SpringSilkwormWashOverlay : MonoBehaviour
         switch (phase)
         {
             case WashPhase.Load:
-                title.text = "把筛浸入水中";
-                hint.text = "把左边的竹筛拖进水里，也可以点击下方按钮。";
+                title.text = "入水";
+                hint.text = "把左边的竹筛拖进水里，或点下方按钮。";
                 goal.text = "入水 → 漂洗 → 捞杂质";
                 break;
             case WashPhase.Rinse:
-                title.text = "沿水面轻轻漂洗";
-                hint.text = "在桶里按住鼠标，带着筛子依次经过发亮的 1、2、3、4 号水圈。绕行两圈。";
+                title.text = "漂洗";
+                hint.text = "在桶里按住鼠标，拖着竹筛依次经过 1 至 4 号亮圈，绕行两圈。";
                 goal.text = $"漂洗 {rinsed} / {RinseTarget}";
                 break;
             case WashPhase.Skim:
-                title.text = "捞去浮起的杂质";
-                hint.text = "竹筛先搁回桌边。点击水面上泛着金圈的碎屑，一件一件捞出来。";
+                title.text = "捞杂质";
+                hint.text = "点击水面上泛着金圈的碎屑。";
                 goal.text = $"捞出杂质 {skimmed} / {scraps.Length}";
                 if (skimmed == 0)
                     foreach (GameObject scrap in scraps) scrap.SetActive(true);
                 break;
             case WashPhase.Complete:
-                title.text = "蚕种漂洗完成";
-                hint.text = "下一批蚕种已经整理好。带着它和春季其余材料返回织坊交付。";
-                goal.text = "筛出杂质 · 蚕种已备好";
+                title.text = "蚕种已备好";
+                hint.text = "带着蚕种和春季其余材料返回织坊交付。";
+                goal.text = $"杂质已捞出 {skimmed} / {scraps.Length}";
                 action.onClick.RemoveAllListeners();
                 action.onClick.AddListener(Close);
                 action.GetComponentInChildren<Text>().text = "收好蚕种";

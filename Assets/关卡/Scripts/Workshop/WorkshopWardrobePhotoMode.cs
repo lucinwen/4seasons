@@ -37,7 +37,6 @@ internal sealed class WorkshopWardrobePhotoMode : MonoBehaviour
     private const float PhotoHeight = 1080f;
     private const float PortraitHeight = 588f;
     private const float PortraitWidth = PortraitHeight * 260f / 540f;
-    private const string PhotoFormat = "1920 × 1080 PNG";
     private const string HallBackdropName = WorkshopTitle.GameName;
     private static readonly Rect PhotoBounds = new Rect(0f, 0f, PhotoWidth, PhotoHeight);
     private static readonly Color Night = new Color32(16, 28, 48, 255);
@@ -99,14 +98,14 @@ internal sealed class WorkshopWardrobePhotoMode : MonoBehaviour
     {
         WorkshopUi.Fill(page, "Photo Mode Backdrop", PhotoBounds, Night);
         Label(page, "Photo Title", new Rect(80f, 38f, 335f, 76f), "拍照打卡", 59, Ivory);
-        Label(page, "Photo Outfit", new Rect(415f, 57f, 850f, 48f), "当前造型 · " + outfitName, 29, Mist);
+        Label(page, "Photo Outfit", new Rect(415f, 57f, 850f, 48f), outfitName, 29, Mist);
         WardrobeButton(page, "Leave Wardrobe Photo", new Rect(1590f, 47f, 250f, 55f), "← 返回换装", Close);
         DrawComposition(page, drawPortrait);
         DrawSceneryPicker(page);
 
         shootButton = WorkshopUi.Button(page, "Take Wardrobe Photo", new Rect(1374f, 766f, 466f, 79f),
             "拍照并保存", TakePhoto, Gold, size: 34);
-        saveStatus = Label(page, "Photo Save Status", new Rect(82f, 873f, 919f, 58f), PhotoFormat, 25, Mist);
+        saveStatus = Label(page, "Photo Save Status", new Rect(82f, 873f, 919f, 58f), "", 25, Mist);
         var folderButton = WardrobeButton(page, "Open Wardrobe Photo Folder", new Rect(1066f, 873f, 268f, 58f),
             "打开照片文件夹", OpenFolder);
         folderControl = folderButton.transform.parent.gameObject;
@@ -170,7 +169,7 @@ internal sealed class WorkshopWardrobePhotoMode : MonoBehaviour
     private void SelectScenery(int index)
     {
         if (saving) return;
-        if (index != activeScene) saveStatus.text = PhotoFormat;
+        if (index != activeScene) saveStatus.text = "";
         activeScene = index;
         var entry = scenes[index];
         scenery.texture = entry.Texture;

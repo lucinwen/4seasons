@@ -61,7 +61,7 @@ public class AutumnLoomTrigger : MonoBehaviour
         {
             if (!AutumnLevelState.HasHammer)
             {
-                SimplePopup.Show("缺少修复工具", "请先与 NPC 对话，拿到锤子后再来修复织机。", "知道了", null);
+                SimplePopup.Show("缺少修机锤", "找织造师傅领取。", "知道了", null);
                 return;
             }
 
@@ -74,14 +74,14 @@ public class AutumnLoomTrigger : MonoBehaviour
         // 修复完成后的织造阶段：需要梭子
         if (!AutumnLevelState.HasShuttle)
         {
-            SimplePopup.Show("缺少梭子", "请先点击工具箱，获取梭子后再开始织造。", "知道了", null);
+            SimplePopup.Show("缺少梭子", "点击织机旁的工具箱领取。", "知道了", null);
             return;
         }
 
         if (WorkshopProgress.SeasonalOrderEnabled && !WorkshopProgress.Has(WorkshopItem.RawSilkCloth) &&
             !WorkshopObservationView.HasOrderWork(WorkshopObservation.QiufenOffering))
         {
-            SimplePopup.Show("先完成秋分验丝", "到秋分窗台按 O，验过生丝后再回来织造。", "知道了");
+            SimplePopup.Show("秋分验丝未完成", "走近窗台按 O，验好生丝再回来织造。", "知道了");
             return;
         }
 

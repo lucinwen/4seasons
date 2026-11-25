@@ -128,7 +128,7 @@ internal sealed partial class WorkshopObservationView
 
         if (GameComplete)
         {
-            Copy("验收完成 · 挂上丝签", "光下看清了接头，这轴丝已登记。收进柜子，寒露开机时从这里领丝。");
+            Copy("丝样已入库", "寒露开机时可从柜中领丝。");
             Act("Read Autumn Heritage", "看苏州织造资料", OpenAutumnHeritage, true);
             RefreshExhibition();
             return;
@@ -292,8 +292,9 @@ internal sealed partial class WorkshopObservationView
         for (int item = 0; item < ExhibitionNames.Length; item++)
         {
             bool placed = Array.IndexOf(exhibition, item) >= 0;
-            exhibitionSupplyLabels[item].text = item != SilkOffering && item != 0 ? ExhibitionNames[item] + " · 陈设"
-                : ExhibitionNames[item] + (item == exhibitionHeld ? " · 已拿起" : placed ? " · 可挪动" : " · 点选");
+            exhibitionSupplyLabels[item].text = ExhibitionNames[item];
+            if (item == SilkOffering || item == 0)
+                exhibitionSupplyLabels[item].text += item == exhibitionHeld ? " · 已拿起" : placed ? " · 可挪动" : " · 点选";
         }
         exhibitionHeading.text = exhibitionKnotFound && lit ? "验收入库" : lit ? "找接头"
             : needsSpool ? "先放丝轴" : "给丝轴找光";
@@ -322,7 +323,7 @@ internal sealed partial class WorkshopObservationView
             exhibitionSampleThreads[i].color = hasKnot ? WorkshopUi.Ink : WorkshopUi.Bronze;
             exhibitionSampleKnots[i].enabled = hasKnot;
         }
-        exhibitionStatus.text = message ?? (exhibitionKnotFound && lit ? "已标记，可以挂签。" : needsLamp ? "窗暗了，点灯补光。" : "");
+        exhibitionStatus.text = message ?? "";
 
         if (needsSpool && suggestedSeat >= OfferingColumns)
         {

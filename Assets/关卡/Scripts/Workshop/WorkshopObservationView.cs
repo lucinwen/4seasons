@@ -54,8 +54,8 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     {
         new Definition(WorkshopSeason.Spring, "spring.qingming", "清明", "桑园里的新叶", "桑园"),
         new Definition(WorkshopSeason.Summer, "summer.mangzhong.thread", "芒种", "簇架上的丝路", "络纬整经", "丝路接接乐",
-            "芒种时节，簇架上的蚕茧已收好。转动线段，把丝头接到丝轴。", "蚕茧簇架 → 接通丝路 → 整理丝样",
-            "点击线段，连接左侧丝头与右侧丝轴。接通一张即可完成。"),
+            "芒种时节，簇架上的蚕茧已收好。", "蚕茧簇架 → 接通丝路 → 整理丝样",
+            "点击线段，连接左侧丝头与右侧丝轴。接通一张即可完成工单。"),
         new Definition(WorkshopSeason.Summer, "summer.dashu.vent", "大暑", "蔟房的通风窗", "暑热观察"),
         new Definition(WorkshopSeason.Autumn, "autumn.qiufen", "秋分", "窗光下的丝样", "借光验丝", "借光验丝",
             "秋分后白昼渐短。织坊在夜织前，用剩下的窗光检查生丝的粗节和结头。", "夏季丝样 → 对光验丝 → 寒露上机",
@@ -342,7 +342,6 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
         WorkshopUi.Label(page, "Season and Solar Term", new Rect(28, 19, 560, 40),
             WorkshopProgress.SeasonName(definition.Season) + " · " + definition.Term, 28, accent);
-        if (IsSeasonGame(observation)) DrawSeasonalHandoff(definition, accent);
         WorkshopUi.Label(page, "Observation Title", new Rect(28, 61, 1320, 78),
             ChallengeIsActive ? definition.ChallengeName : definition.Title, 54, WorkshopUi.Ink);
         if (readOnly)
@@ -353,6 +352,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         WorkshopUi.Fill(page, "Heading Rule", new Rect(28, 144, 1688, 2), WorkshopUi.Line);
         if (showBriefing)
         {
+            DrawSeasonalHandoff(definition, accent);
             DrawWorkbenchBriefing(definition, accent);
             return;
         }
@@ -374,8 +374,6 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
             (observation == WorkshopObservation.MangzhongCocoon || observation == WorkshopObservation.MangzhongCocoonHarvest);
         string exitLabel = summerGame ? "返回夏季" : onClosed == null && !readOnly && !ChallengeIsActive ? "返回关卡" : "返回";
         if (!CanPauseGameplay) exitLabel += " · Esc";
-        var exit = WorkshopUi.PixelButton(page, "Return From Observation", new Rect(1473, 848, 243, 58),
-            exitLabel, Close, false, 27);
         Button replay = ChallengeIsActive ? DrawChallengeControls() : null;
         if (ChallengeIsActive && !GameComplete && !readOnly)
         {
@@ -383,7 +381,12 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
                 "节气工单", ReviewWorkbenchBriefing, false, 26);
             RegisterButton(help);
         }
-        RegisterButton(exit);
+        if (!(ChallengeIsActive && GameComplete && observation == WorkshopObservation.MangzhongCocoon))
+        {
+            var exit = WorkshopUi.PixelButton(page, "Return From Observation", new Rect(1473, 848, 243, 58),
+                exitLabel, Close, false, 27);
+            RegisterButton(exit);
+        }
         if (ChallengeIsActive)
             ApplyWorkbenchReadingFont();
         var prior = previousFocus != null ? page.Find(previousFocus) : null;
@@ -538,13 +541,16 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
             WorkshopUi.Picture(infoPanel, "Recovery Cue", new Rect(420, 20, 47, 53), recovery);
         WorkshopUi.Label(infoPanel, "Instruction Heading", new Rect(27, 28, recovery == null ? 444 : 384, 62),
             heading, 35, warning ? ErrorInk : Accents[(int)Season(observation)], TextAnchor.UpperLeft);
-        var label = WorkshopUi.Label(infoPanel, "Instruction Body", new Rect(27, 102, 444, 195),
-            body, 30, WorkshopUi.Ink, TextAnchor.UpperLeft);
-        label.lineSpacing = 1.12f;
-        label.resizeTextForBestFit = true;
-        label.resizeTextMinSize = 24;
-        label.resizeTextMaxSize = 30;
-        if (ChallengeIsActive && !GameComplete && !warning) label.color = WorkshopUi.Faded;
+        if (!string.IsNullOrEmpty(body))
+        {
+            var label = WorkshopUi.Label(infoPanel, "Instruction Body", new Rect(27, 102, 444, 195),
+                body, 30, WorkshopUi.Ink, TextAnchor.UpperLeft);
+            label.lineSpacing = 1.12f;
+            label.resizeTextForBestFit = true;
+            label.resizeTextMinSize = 24;
+            label.resizeTextMaxSize = 30;
+            if (ChallengeIsActive && !GameComplete && !warning) label.color = WorkshopUi.Faded;
+        }
         WorkshopUi.Fill(infoPanel, "Instruction Rule", new Rect(27, 309, 444, 2), WorkshopUi.Line);
     }
 

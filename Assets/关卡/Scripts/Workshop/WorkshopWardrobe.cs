@@ -83,7 +83,6 @@ public sealed class WorkshopWardrobe : MonoBehaviour
         public UnityEngine.UI.Image Border;
         public UnityEngine.UI.Image Surface;
         public UnityEngine.UI.Image Caption;
-        public GameObject Selection;
     }
 
     private static readonly string[] CategoryNames = { "四时丝衣", "红粉", "明黄", "青绿", "霁蓝", "烟紫" };
@@ -165,7 +164,6 @@ public sealed class WorkshopWardrobe : MonoBehaviour
     private RectTransform wornClip;
     private UnityEngine.UI.Image worn;
     private Sprite silkBacking;
-    private Text catalogCount;
     private Text styleName;
     private Text previewStatus;
     private Text materialToggleLabel;
@@ -335,7 +333,7 @@ public sealed class WorkshopWardrobe : MonoBehaviour
         detailEntry.transform.parent.gameObject.SetActive(false);
         var hint = WorkshopUi.PixelCard(frame, "Fitting Hint", new Rect(162f, 1003f, 542f, 42f), Night, IndigoEdge);
         Label(hint, "Preview Controls", new Rect(12f, 0f, 518f, 42f),
-            "点选衣样、左右滑动或按 ← / → 换衣", 24, Mist, TextAnchor.MiddleCenter);
+            "滑动或按 ← / → 换衣", 24, Mist, TextAnchor.MiddleCenter);
 
         var plaque = WorkshopUi.PixelCard(frame, "Fitting Plaque", new Rect(220f, 884f, 428f, 110f), Night, Brass);
         styleName = Label(plaque, "Fitting Name", new Rect(26f, 10f, 376f, 58f), "", 48, Ivory, TextAnchor.MiddleCenter);
@@ -347,7 +345,6 @@ public sealed class WorkshopWardrobe : MonoBehaviour
         silkBacking = Resources.Load<Sprite>("WorkshopFinish/WardrobeSilkBacking");
         catalogPane = WorkshopUi.Rect(frame, "Wardrobe Catalog Area", new Rect(843f, 146f, 993f, 825f));
         Label(catalogPane, "Catalog Title", new Rect(0f, 0f, 230f, 64f), "试穿衣样", 49, Ivory);
-        catalogCount = Label(catalogPane, "Catalog Count", new Rect(222f, 17f, 130f, 39f), "", 24, Mist);
 
         const float tabGap = 11f;
         float tabWidth = (993f - (CategoryNames.Length - 1) * tabGap) / CategoryNames.Length;
@@ -429,11 +426,8 @@ public sealed class WorkshopWardrobe : MonoBehaviour
                 var badge = PixelFill(button.transform, "Made Garment", new Rect(12f, 11f, 86f, 32f), Ink);
                 Label(badge.transform, "Made Garment Label", new Rect(0f, 0f, 86f, 32f), "已制成", 21, Ivory, TextAnchor.MiddleCenter);
             }
-            var selection = PixelFill(button.transform, "Fitted Garment", new Rect(210f, 11f, 89f, 32f), SelectedCaption);
-            Label(selection.transform, "Fitted Garment Label", new Rect(0f, 0f, 89f, 32f), "试穿中", 21, Ivory, TextAnchor.MiddleCenter);
-            cards.Add(new Card { Style = style, Border = border, Surface = surface, Caption = caption, Selection = selection.gameObject });
+            cards.Add(new Card { Style = style, Border = border, Surface = surface, Caption = caption });
         }
-        catalogCount.text = $"{cards.Count} 款";
 
         // Browsing a color leaves the chosen clothing on the stage until a card is clicked.
         Style requested = null;
@@ -605,7 +599,6 @@ public sealed class WorkshopWardrobe : MonoBehaviour
             card.Border.color = isFitted ? Gold : CardEdge;
             card.Surface.color = isFitted ? Color.white : SilkTint;
             card.Caption.color = isFitted ? SelectedCaption : Ink;
-            card.Selection.SetActive(isFitted);
         }
     }
 

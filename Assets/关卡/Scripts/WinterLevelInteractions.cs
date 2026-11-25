@@ -350,8 +350,8 @@ public class WinterLevelInteractions : MonoBehaviour
         pickup.itemName = "锄头";
         pickup.triggerDistance = 2.5f;
         pickup.labelHeight = 3f; // 锄头缩放较小，按局部比例抬高名字
-        pickup.pickupTitle = "获得锄头";
-        pickup.pickupMessage = "锄头：用来挖掘染料根茎的农具。\n有了它，就可以进入染料园寻找染料了。";
+        pickup.pickupTitle = "锄头";
+        pickup.pickupMessage = "带去染料园挖取染材。";
         pickup.pickupButtonText = "拾取";
     }
 }

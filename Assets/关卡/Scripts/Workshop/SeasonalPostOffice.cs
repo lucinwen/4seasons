@@ -98,7 +98,6 @@ public sealed class SeasonalPostOffice : MonoBehaviour
     private UnityEngine.UI.Button previous;
     private UnityEngine.UI.Button next;
     private UnityEngine.UI.Button newCard;
-    private UnityEngine.UI.Button returnToDraft;
     private UnityEngine.UI.Selectable[] navigation;
 
     public static void Open(Transform parent, Action closed)
@@ -222,8 +221,6 @@ public sealed class SeasonalPostOffice : MonoBehaviour
     {
         envelopeOptions = WorkshopUi.Rect(sidebar, "Sealed Postcard", new Rect(0, 0, 528, 654));
         Heading(envelopeOptions, "明信片已装入信封");
-        WorkshopUi.Label(envelopeOptions, "Envelope Instructions", new Rect(30, 108, 468, 70),
-            "现在可以把它寄出。", 30, WorkshopUi.Faded);
         sendStatus = WorkshopUi.Label(envelopeOptions, "Send Status", new Rect(30, 344, 468, 78), "",
             24, WorkshopUi.Clay);
         unseal = WorkshopUi.Button(envelopeOptions, "Reopen Envelope", new Rect(30, 460, 468, 66), "拆开继续写",
@@ -236,8 +233,6 @@ public sealed class SeasonalPostOffice : MonoBehaviour
     {
         receipt = WorkshopUi.Rect(sidebar, "Sent Receipt", new Rect(0, 0, 528, 654));
         WorkshopUi.Label(receipt, "Postcard Receipt", new Rect(30, 28, 468, 58), "明信片已寄出", 37);
-        WorkshopUi.Label(receipt, "Receipt Instructions", new Rect(30, 108, 468, 96),
-            "可以在「已寄明信片」里翻看。", 28, WorkshopUi.Faded);
         newCard = WorkshopUi.Button(receipt, "Write Another Postcard", new Rect(30, 554, 468, 72), "再写一张",
             () => Show(Page.Write), WorkshopUi.Green, size: 32);
     }
@@ -256,8 +251,6 @@ public sealed class SeasonalPostOffice : MonoBehaviour
             () => BrowseSent(1), WorkshopUi.Paper, size: 26);
         sentPosition = WorkshopUi.Label(sentOptions, "Sent Postcard Position", new Rect(194, 420, 140, 62), "",
             25, WorkshopUi.Faded, TextAnchor.MiddleCenter);
-        returnToDraft = WorkshopUi.Button(sentOptions, "Return to Draft", new Rect(30, 554, 468, 72), "返回写信",
-            () => Show(Page.Write), WorkshopUi.Green, size: 32);
     }
 
     private void Show(Page nextPage)
@@ -298,8 +291,8 @@ public sealed class SeasonalPostOffice : MonoBehaviour
         else if (viewingSent)
         {
             RefreshSent();
-            navigation = new UnityEngine.UI.Selectable[] { turn, message, previous, next, returnToDraft, archive, close };
-            Select(returnToDraft);
+            navigation = new UnityEngine.UI.Selectable[] { turn, message, previous, next, archive, close };
+            Select(archive);
         }
         else if (page == Page.Envelope)
         {

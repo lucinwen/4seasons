@@ -558,7 +558,7 @@ internal sealed partial class WorkshopObservationView
             float x = 121f - width * .5f + (i + .5f) * 31f;
             DrawCueStroke(gauge, new Vector2(x - 9f, 147), new Vector2(x + 9f, 147), 5f, SewingSeamInk);
         }
-        Copy("先选一个翻口", "选一个够衣身通过的开口。");
+        Copy("留翻口", "选一个够衣身通过的开口。");
         DrawDaxueTurnGoal();
     }
 
@@ -876,7 +876,7 @@ internal sealed partial class WorkshopObservationView
         var status = WorkshopUi.PixelCard(art, "Daxue Closing Steps", new Rect(828, 482, 250, 72), WorkshopUi.Ink, WorkshopUi.Bronze);
         WorkshopUi.Label(status, "Closing Progress", new Rect(0, 0, 250, 72), $"翻口收针 {sewingClosed} / {need}", 27,
             WorkshopUi.Cream, TextAnchor.MiddleCenter);
-        Copy("翻正了，缝上开口", "点亮起的针眼，把翻口缝上。");
+        Copy("翻衣完成", "点击亮起的针眼补针收口。");
         Act("Daxue Close from Rail", "补一针收口", CloseDaxueOpening);
     }
 

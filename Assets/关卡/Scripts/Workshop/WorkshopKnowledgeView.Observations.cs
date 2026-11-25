@@ -13,9 +13,7 @@ public sealed partial class WorkshopKnowledgeView
         StartPage(RenderItems);
         var panel = WorkshopUi.PixelCard(page, "Observation Gallery", new Rect(107, 123, 1706, 833),
             WorkshopUi.Paper, WorkshopUi.Bronze);
-        Label(panel, "Title", new Rect(52, 42, 1200, 80), "节气小游戏与观察", 51, Jade);
-        Label(panel, "Hint", new Rect(55, 123, 1500, 42),
-            "完成节气小游戏后，残页与工艺记录会收在这里。", 28, WorkshopUi.Ink);
+        Label(panel, "Title", new Rect(52, 42, 1200, 80), "四季观察", 51, Jade);
         var back = WorkshopUi.PixelButton(panel, "Back", new Rect(1456, 63, 196, 58), "返回织录", RenderItems, false, 28);
 
         for (int i = 0; i < ObservationCoverPaths.Length; i++)
@@ -73,8 +71,8 @@ public sealed partial class WorkshopKnowledgeView
             if (!game && !recorded) continue;
             bool practice = WorkshopObservationView.CanPracticeGarmentWorkshop(id);
             float y = 153 + index * 111f;
-            string status = !game ? "已记录 · 工艺观察" : recorded ? "已通关 · 残页已收集" :
-                practice ? "未通关 · 可试玩" : "未通关 · 前往关卡工位";
+            string status = !game ? "工艺观察" : recorded ? "已收录" :
+                practice ? "可试玩" : "完成工位挑战后收录";
             Label(panel, "Record Status " + id, new Rect(835, y, 690, 37), status,
                 24, WorkshopUi.Ink);
             var read = WorkshopUi.PixelButton(panel, "Read " + id, new Rect(828, y + 44, 702, 62),

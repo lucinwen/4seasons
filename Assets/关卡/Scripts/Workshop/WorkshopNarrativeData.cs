@@ -10,11 +10,10 @@ internal sealed class WorkshopSeasonNarrative
     public readonly string Area;
     public readonly string ClosingTitle;
     public readonly string ClosingBody;
-    public readonly string TransitionLabel;
 
     public WorkshopSeasonNarrative(string issue, string timeLabel, string announcementTitle,
         string announcementBody, string craft, string area, string closingTitle,
-        string closingBody, string transitionLabel)
+        string closingBody)
     {
         Issue = issue;
         TimeLabel = timeLabel;
@@ -24,7 +23,6 @@ internal sealed class WorkshopSeasonNarrative
         Area = area;
         ClosingTitle = closingTitle;
         ClosingBody = closingBody;
-        TransitionLabel = transitionLabel;
     }
 }
 
@@ -70,8 +68,7 @@ internal static class WorkshopNarrativeData
             "采桑喂蚕、备蚕种",
             "春 · 桑园与蚕房",
             "谷雨将尽 · 新茧入夏",
-            "这批蚕渐渐长大，上蔟结茧。到夏季的蚕茧簇架择茧，再把丝头接到丝轴。",
-            "清明 · 谷雨  →  芒种 · 夏至"),
+            "这批蚕渐渐长大，上蔟结茧。到夏季的蚕茧簇架择茧，再把丝头接到丝轴。"),
         new WorkshopSeasonNarrative(
             "夏字第一号",
             "芒种 · 夏至",
@@ -80,8 +77,7 @@ internal static class WorkshopNarrativeData
             "择茧、接通丝路、寻找线轴",
             "夏 · 晾素轩与缫丝处",
             "夏季交付 · 生丝入库",
-            "绕好的丝已经干妥，带着批签入库。秋分织坊会把这一轴丝摊开检查，再给寒露的织机备料。",
-            "芒种 · 夏至  →  秋分 · 寒露"),
+            "绕好的丝已经干妥，带着批签入库。秋分织坊会把这一轴丝摊开检查，再给寒露的织机备料。"),
         new WorkshopSeasonNarrative(
             "秋字第一号",
             "秋分 · 寒露",
@@ -90,8 +86,7 @@ internal static class WorkshopNarrativeData
             "验丝、修织机、织绸",
             "秋 · 灵桑阙与织造工坊",
             "寒露收梭 · 素绸入冬",
-            "织好的整幅素绸已经入库。立冬的染坊会从这匹绸留样头试色，再染正式衣料。",
-            "秋分 · 寒露  →  立冬 · 小雪"),
+            "织好的整幅素绸已经入库。立冬的染坊会从这匹绸留样头试色，再染正式衣料。"),
         new WorkshopSeasonNarrative(
             "冬字第一号",
             "立冬 · 小雪",
@@ -100,8 +95,7 @@ internal static class WorkshopNarrativeData
             "染布、裁衣、缝制",
             "冬 · 染料园与青染轩",
             "小雪衣片 · 冬至交衣",
-            "小雪按样板裁好前后片和袖片。大雪把这些衣片与素里绢合好，冬至试过抬手和合襟后交衣。",
-            "小雪裁衣  →  大雪缝衣  →  冬至试衣")
+            "小雪按样板裁好前后片和袖片。大雪把这些衣片与素里绢合好，冬至试过抬手和合襟后交衣。")
     };
 
     private static readonly WorkshopSeasonFieldNote[] FieldNotes =

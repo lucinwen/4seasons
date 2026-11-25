@@ -13,14 +13,6 @@ internal sealed class WorkshopChapterGuide : MonoBehaviour
         "冬｜江南织坊"
     };
 
-    private static readonly string[] Process =
-    {
-        "采桑喂蚕 · 备好蚕种",
-        "芒种理线 · 收齐生丝材料",
-        "秋分验丝 · 寒露织造",
-        "立冬染栀黄 · 小雪做夹衣"
-    };
-
     private static readonly string[] Tips =
     {
         "先向蚕房师傅领任务，带篮采桑，再到蚕架喂蚕。喂饱后收下蚕种纸，前往浴蚕桶。",
@@ -66,23 +58,23 @@ internal sealed class WorkshopChapterGuide : MonoBehaviour
 
     private void Build(WorkshopSeason season, Action onEnter)
     {
+        const float contentTop = 174f;
         WorkshopUi.Block(layout, WorkshopUi.Veil);
         var page = WorkshopUi.PixelCard(layout, "Chapter Guide", new Rect(185, 105, 1550, 870),
             WorkshopUi.Paper, WorkshopUi.Bronze);
         int index = (int)season;
         WorkshopUi.Label(page, "Chapter Location", new Rect(48, 32, 1340, 70), Places[index], 49, font: WorkshopArt.ReadingFont);
         WorkshopUi.Fill(page, "Guide Rule", new Rect(48, 112, 1455, 2), WorkshopUi.Bronze);
-        WorkshopUi.Label(page, "Chapter Process", new Rect(50, 137, 930, 46), Process[index], 35, WorkshopUi.Green);
         var guide = Resources.Load<Sprite>("WorkshopGuides/" + season + "_ChapterGuide");
-        WorkshopUi.PixelCard(page, "Chapter Artwork Border", new Rect(48, 202, 919, 520), WorkshopUi.Cream, WorkshopUi.Bronze);
-        WorkshopUi.Picture(page, "Chapter Artwork", new Rect(54, 208, 907, 508), guide);
-        WorkshopUi.Label(page, "Map Credit", new Rect(49, 738, 800, 40), "关卡取景 · 游戏像素演绎", 25, WorkshopUi.Faded);
+        WorkshopUi.PixelCard(page, "Chapter Artwork Border", new Rect(48, contentTop, 919, 520), WorkshopUi.Cream, WorkshopUi.Bronze);
+        WorkshopUi.Picture(page, "Chapter Artwork", new Rect(54, contentTop + 6, 907, 508), guide);
 
         var field = WorkshopNarrativeData.FieldNote(season);
         var board = index < RegionalBoards.Length ? Resources.Load<Sprite>("WorkshopDelivery/" + RegionalBoards[index]) : null;
+        float textTop = contentTop;
         if (board != null)
         {
-            var boardBounds = new Rect(1016, 188, 474, 267);
+            var boardBounds = new Rect(1016, contentTop, 474, 267);
             var boardTitle = RegionalBoardTitles[index];
             var center = boardBounds.position + Vector2.Scale(boardBounds.size, boardTitle);
             WorkshopUi.Picture(page, "Illustrated Regional Board", boardBounds, board);
@@ -90,20 +82,22 @@ internal sealed class WorkshopChapterGuide : MonoBehaviour
                 "地点原型", 24, WorkshopUi.Green, TextAnchor.MiddleCenter, WorkshopArt.ReadingFont);
             WorkshopUi.Label(page, "Illustrated Region Name", new Rect(center.x - 118, center.y - 13, 236, 57),
                 field.Region, 37, WorkshopUi.Green, TextAnchor.MiddleCenter, WorkshopArt.ReadingFont);
+            textTop = boardBounds.yMax + 11;
         }
-        else
+        else if (season != WorkshopSeason.Winter)
         {
             WorkshopUi.Label(page, "Chapter Region", new Rect(1016, 210, 474, 49),
-                season == WorkshopSeason.Winter ? "织坊故事 · 江南" : "地点原型 · " + field.Region, 31, WorkshopUi.Green);
+                "地点原型 · " + field.Region, 31, WorkshopUi.Green);
+            textTop = 281;
         }
 
-        var textBounds = board != null ? new Rect(1016, 466, 470, 197) : new Rect(1016, 281, 470, 265);
+        var textBounds = new Rect(1016, textTop, 470, board != null ? 197 : 265);
         var overview = WorkshopUi.Label(page, "Chapter Context", textBounds, Tips[index], board != null ? 28 : 32,
             WorkshopUi.Ink, TextAnchor.UpperLeft, WorkshopArt.ReadingFont);
         overview.horizontalOverflow = HorizontalWrapMode.Wrap;
         overview.lineSpacing = 1.2f;
 
-        var source = WorkshopUi.PixelButton(page, "Chapter Sources", new Rect(1016, board != null ? 669 : 580, 272, 61),
+        var source = WorkshopUi.PixelButton(page, "Chapter Sources", new Rect(1016, textBounds.yMax + 12, 272, 61),
             "阅读相关资料", () => WorkshopHeritageBrief.ShowSeason(season), false, 28);
         var back = WorkshopUi.PixelButton(page, "Close Chapter Guide", new Rect(1016, 752, 199, 62),
             "返回", () => Close(dismissed), false, 29);

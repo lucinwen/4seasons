@@ -230,7 +230,7 @@ public class WinterGrindingOverlay : MonoBehaviour
         bool producedDye = WinterLevelState.MarkDyeProduced(material.Color);
 
         HighlightMortar(false);
-        _statusText.text = "研磨完成！获得【" + material.Name + "】";
+        _statusText.text = "可收下染料";
         SimplePopup.Show("研磨完成", "获得【" + material.Name + "】", "收下", () =>
         {
             ResetBowl();

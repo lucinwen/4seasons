@@ -268,7 +268,7 @@ internal sealed partial class WorkshopObservationView
     {
         WorkshopUi.Fill(infoPanel, "Cocoon Instruction Gold Rule", new Rect(28, 40, 5, 36), WorkshopUi.Bronze);
         var heading = WorkshopUi.Label(infoPanel, "Instruction Heading", new Rect(48, 27, 421, 60),
-            cocoonRunFailed ? "再试一轮" : "收茧要领", 39, SummerDark);
+            "收茧要领", 39, SummerDark);
         heading.fontStyle = FontStyle.Bold;
 
         var directions = WorkshopUi.PixelCard(infoPanel, "Cocoon Directions", new Rect(28, 102, 442, 196),
@@ -463,7 +463,7 @@ internal sealed partial class WorkshopObservationView
     private void DrawCocoonRunResult()
     {
         DrawCocoonBatchResult(CaptureDeliveredCocoons(), runResult);
-        Copy("合格春茧已收好", "干爽的成熟春茧已经配批，余下的留作备用。本次练习已记入织录。");
+        Copy("织录已更新", "余下的干茧留作备用。");
         Act("Compare Nanxun Batches", "看南浔的两批蚕", ToggleSummerBatches, true);
     }
 
@@ -514,7 +514,7 @@ internal sealed partial class WorkshopObservationView
         var work = BestWork(WorkshopObservation.MangzhongCocoonHarvest, 1) ??
             BestWork(WorkshopObservation.MangzhongCocoonHarvest, 0);
         DrawCocoonBatchResult(work?.sample, work?.description);
-        Copy("春茧收存记录", "合格干茧按圆茧和长茧配批。也可以看看南浔的两批春蚕。");
+        Copy("分批干存", "合格干茧按圆茧和长茧配批。");
         Act("Compare Nanxun Batches", "看南浔的两批蚕", ToggleSummerBatches, true);
     }
 

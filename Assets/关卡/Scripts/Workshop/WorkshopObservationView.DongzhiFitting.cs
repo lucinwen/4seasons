@@ -250,18 +250,20 @@ internal sealed partial class WorkshopObservationView
 
     private void DrawDongzhiLift()
     {
-        var card = DongzhiStageCard("① 抬手试袖");
+        var card = DongzhiStageCard("抬手幅度");
         var sleeve = WorkshopArt.CutPiece(2);
         WorkshopUi.Picture(card, "Fitting Sleeve Swatch", new Rect(77, 68, 150, 116), sleeve,
             DongzhiClothTint());
         DrawDongzhiReachMeter(card, 220f);
-        fittingArmCaption = WorkshopUi.Label(card, "Dongzhi Arm Result", new Rect(21, 245, 259, 52), "抬手试袖", 23,
+        fittingArmCaption = WorkshopUi.Label(card, "Dongzhi Arm Result", new Rect(21, 245, 259, 52), "", 23,
             WorkshopUi.Faded, TextAnchor.MiddleCenter);
         if (!string.IsNullOrEmpty(fittingNotice))
             WorkshopUi.Label(card, "Dongzhi Fit Notice", new Rect(21, 307, 259, 118), fittingNotice, 22,
                 WorkshopUi.Green, TextAnchor.MiddleCenter);
 
-        Copy("抬手试袖", ChallengeVariant == 0 ? "冬至穿夹衣，活动时袖根需要余量。" : "添了厚内搭，袖根需要留更多余量。");
+        Copy("抬手试袖", ChallengeVariant == 0
+            ? "向上拖动衣袖，检查袖根的活动余量。"
+            : "向上拖动衣袖。添了厚内搭，袖根需要更多余量。");
         Act("Dongzhi Raise Arm", "抬起手臂", TryDongzhiArmTap, true);
         var lift = DongzhiButton(art, "Dongzhi Lift Sleeve", DongzhiSleeveGrip, "", TryDongzhiArmTap, true, true);
         var gesture = lift.gameObject.AddComponent<EventTrigger>();
@@ -353,7 +355,7 @@ internal sealed partial class WorkshopObservationView
             fittingArmFill.rectTransform.sizeDelta = new Vector2(lift * 237f, 18f);
             fittingArmFill.color = lift >= .9f ? DongzhiGreen : DongzhiDye;
         }
-        if (fittingArmCaption != null) fittingArmCaption.text = lift >= .92f ? "抬手到位" : "抬手试袖";
+        if (fittingArmCaption != null) fittingArmCaption.text = lift >= .92f ? "抬手到位" : "";
     }
 
     private void TryDongzhiArmTap()
@@ -751,7 +753,7 @@ internal sealed partial class WorkshopObservationView
         WorkshopUi.Label(card, "Verified Front", new Rect(20, 294, 261, 49), "✓ 衣襟平整", 26, DongzhiGreen,
             TextAnchor.MiddleCenter);
         if (readOnly || GameComplete) return;
-        Copy("合身 · 可以交衣", "袖子和衣襟都通过试穿。把这件夹衣交到展架。");
+        Copy("交付夹衣", "把这件夹衣交到展架。");
         Act("Dongzhi Deliver Garment", "交衣验收", DeliverDongzhiGarment, true);
         var deliver = DongzhiButton(card, "Dongzhi Deliver from Stage", new Rect(32, 365, 237, 58), "交衣验收", DeliverDongzhiGarment, true);
         VisualStep((RectTransform)deliver.transform);

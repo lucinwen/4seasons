@@ -42,7 +42,7 @@ public class WinterGrindingClickTarget : MonoBehaviour
     {
         if (!WinterLevelState.HasGrindingRod)
         {
-            SimplePopup.Show("研磨", "还没有研磨棒，先去场景里找到并点击研磨棒。", "知道了", null);
+            SimplePopup.Show("缺少研磨棒", "在染坊里点击研磨棒拾取。", "知道了", null);
             return;
         }
 

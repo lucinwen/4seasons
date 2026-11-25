@@ -51,7 +51,7 @@ public class WinterDyeVatClickTarget : MonoBehaviour
         }
         if (!WorkshopProgress.SeasonalOrderEnabled && WinterLevelState.ProducedDyeColors.Count == 0)
         {
-            SimplePopup.Show("染色", "还没有研磨好的染料，先去研磨染料吧。", "知道了", null);
+            SimplePopup.Show("染料未研磨", "点击研钵研磨染料。", "知道了", null);
             return;
         }
 

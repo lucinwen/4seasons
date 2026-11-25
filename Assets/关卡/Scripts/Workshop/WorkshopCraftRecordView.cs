@@ -115,7 +115,7 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
 
         var side = WorkshopUi.PixelCard(frame, "Chapter Record", new Rect(1142, 157, 675, 765),
             WorkshopUi.Paper, WorkshopUi.Bronze);
-        Label(side, "Heading", new Rect(40, 30, 595, 57), "本章工序回看", 39);
+        Label(side, "Heading", new Rect(40, 30, 595, 57), "本章记录", 39);
         HeaderRule(side, 100);
 
         var process = WorkshopUi.Rect(side, "Process", new Rect(35, 179, 605, 233));
@@ -131,7 +131,7 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
             collapseLabel.text = expanded ? "收起工序" : "展开工序";
         });
 
-        Label(side, "Observed Heading", new Rect(40, 400, 595, 48), "已记录的观察", 30, TextAnchor.MiddleLeft);
+        Label(side, "Observed Heading", new Rect(40, 400, 595, 48), "观察记录", 30, TextAnchor.MiddleLeft);
         int count = 0;
         foreach (var observation in WorkshopObservationView.ObservationsFor(season))
         {
@@ -143,7 +143,7 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
             count++;
         }
         if (count == 0)
-            Label(side, "No Observation", new Rect(40, 457, 595, 57), "回访本章工位后，观察记录会在这里出现。", 25);
+            Label(side, "No Observation", new Rect(40, 457, 595, 57), "回访工位可补记观察。", 25);
 
         int term = ChapterTerm[index];
         bool hasTerm = WorkshopProgress.HasSolarTerms(season) && WorkshopArt.SolarCard(season, term) != null;
@@ -244,8 +244,6 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
                 () => OpenChild(done => WorkshopObservationView.OpenRecordOrGarmentPractice(term, done)), recorded || practice, 22);
             view.interactable = recorded || practice;
         }
-        Label(content, "Journey", new Rect(429, 329, 811, 55), "从一片桑叶到一件成衣", 30);
-
         string garmentId = WorkshopProgress.GarmentId;
         var garment = WorkshopArt.Garment(garmentId);
         Sprite[] stages = { WorkshopObservationArt.Current?.Leaf, Product(0), Product(1), Product(2), garment };

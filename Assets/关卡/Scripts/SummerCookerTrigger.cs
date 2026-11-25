@@ -20,11 +20,11 @@ public class SummerCookerTrigger : MonoBehaviour
     public float buttonOpacity = 0.9f;
 
     [Header("提示文案")]
-    public string missingBothTitle = "条件未满足";
+    public string missingBothTitle = "煮茧前需备齐水和木柴";
     public string missingWaterTitle = "缺少水";
-    [TextArea] public string missingWaterMsg = "请先到“水源”处取水，再来煮茧。";
+    [TextArea] public string missingWaterMsg = "点击水源取水。";
     public string missingWoodTitle = "缺少木柴";
-    [TextArea] public string missingWoodMsg = "请先拾取“木柴”，再来煮茧。";
+    [TextArea] public string missingWoodMsg = "点击木柴拾取。";
 
     private FloatingActionButton _floatBtn;
 
@@ -67,7 +67,7 @@ public class SummerCookerTrigger : MonoBehaviour
             if (!hasWater && !hasWood)
             {
                 title = missingBothTitle;
-                msg = missingWaterMsg + "\n\n" + missingWoodMsg;
+                msg = missingWaterMsg + "\n" + missingWoodMsg;
             }
             else if (!hasWater)
             {

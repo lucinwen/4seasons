@@ -126,7 +126,7 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
         WardrobeButton(page, "Mirror Next Garment", new Rect(1018f, 922f, 229f, 55f),
             "下一款 →", () => cycle(1));
         Label(page, "Mirror Swap Help", new Rect(328f, 921f, 669f, 56f),
-            "← / → 键、拖动或按钮换款", 27, Mist, TextAnchor.MiddleCenter);
+            "拖动或按 ← / → 换款", 27, Mist, TextAnchor.MiddleCenter);
 
         var info = WorkshopUi.PixelCard(page, "Mirror Controls",
             new Rect(1275f, 134f, 562f, 842f), Night, Brass);
@@ -159,7 +159,7 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
         detailImage = WorkshopUi.Picture(detailClip, "Mirror Fabric Artwork", new Rect(), null, stretch: true);
         detailCaption = Label(detailCard, "Mirror Fabric Note", new Rect(24f, 320f, 508f, 34f), "", 23, Mist);
         detailCard.gameObject.SetActive(false);
-        ShowCharacter("角色试衣", "使用摄像头可开启镜面。选中的衣样和材质会带入拍照。");
+        ShowCharacter("角色试衣", "当前衣样与材质会带入拍照。");
         if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(back.gameObject);
     }
 
@@ -184,7 +184,7 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
     private void ToggleCamera()
     {
         if (mode == CameraMode.Character) StartCamera();
-        else ShowCharacter("角色试衣", "摄像头已关闭。选中的衣样和材质仍可试穿。");
+        else ShowCharacter("角色试衣", "摄像头已关闭。");
     }
 
     private void StartCamera()

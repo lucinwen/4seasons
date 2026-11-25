@@ -72,8 +72,6 @@ internal sealed class WorkshopSynthesis : MonoBehaviour
 
         DrawArrow();
         DrawOutputTray(artwork);
-        WorkshopStorageView.Label(table, "Output Heading", new Rect(1380, 348, 354, 29),
-            "成品", 24, ink, TextAnchor.MiddleCenter);
         WorkshopStorageView.Label(table, "Product Name", new Rect(1407, 627, 300, 55),
             WorkshopProgress.ProductName(season), 34, artwork != null ? WorkshopUi.Cream : ink, TextAnchor.MiddleCenter);
         var productArt = season == WorkshopSeason.Winter

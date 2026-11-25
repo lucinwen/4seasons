@@ -207,8 +207,8 @@ namespace ShiXu.CocoonMatch
             {
                 bool won = model.State == CocoonGameState.Won;
                 if (won) yield return new WaitForSecondsRealtime(.35f);
-                resultTitle.text = won ? "收茧圆满" : "收集槽已满";
-                resultMessage.text = won ? "芒种收茧，寸丝成锦。\n全部蚕茧与工具都已收好！" : "七个位置已用尽。\n请重新开始，再试着凑齐三个同类。";
+                resultTitle.text = won ? "收茧完成" : "收集槽已满";
+                resultMessage.text = won ? "蚕茧和工具已收好。" : "收集槽有七格，凑齐三个同类即可腾出位置。";
                 if (won)
                 {
                     MiniGameCompletionAnimation.PlayThen(MiniGameCompletionId.CocoonSorting, () => PresentEnd(won));
@@ -226,7 +226,7 @@ namespace ShiXu.CocoonMatch
             {
                 if (won)
                 {
-                    SimplePopup.ShowItem(WorkshopItem.Suoxu, "收茧圆满，获得【索绪】",
+                    SimplePopup.ShowItem(WorkshopItem.Suoxu, "可与盐、线轴合成生丝。",
                         () =>
                         {
                             ClaimReward();

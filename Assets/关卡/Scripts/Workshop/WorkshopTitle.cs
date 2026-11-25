@@ -188,11 +188,9 @@ public sealed class WorkshopTitle : MonoBehaviour
 
     private void ShowQuitConfirmation()
     {
-        RectTransform panel = OpenModal("Title Quit Confirmation", "退出游戏", menuButtons[QuitButtonIndex]);
-        Label(panel, "Quit Message", new Rect(120f, 164f, 740f, 110f),
-            "确定要退出游戏吗？", 30, WorkshopUi.Ink);
-        var cancel = DialogButton(panel, "Title Cancel Quit", new Rect(130f, 365f, 310f, 72f), "取消", CloseModal, Jade);
-        var confirm = DialogButton(panel, "Title Confirm Quit", new Rect(524f, 365f, 310f, 72f), "确认退出", QuitGame, Red);
+        RectTransform panel = OpenModal("Title Quit Confirmation", "退出游戏？", menuButtons[QuitButtonIndex], 326f);
+        var cancel = DialogButton(panel, "Title Cancel Quit", new Rect(130f, 192f, 310f, 72f), "取消", CloseModal, Jade);
+        var confirm = DialogButton(panel, "Title Confirm Quit", new Rect(524f, 192f, 310f, 72f), "确认退出", QuitGame, Red);
         SetConfirmationNavigation(cancel, confirm);
     }
 
@@ -327,13 +325,14 @@ public sealed class WorkshopTitle : MonoBehaviour
     private static string FullscreenLabel() =>
         PlayerPrefs.GetInt(FullscreenKey, Screen.fullScreen ? 1 : 0) != 0 ? "全屏" : "窗口";
 
-    private RectTransform OpenModal(string name, string title, UnityEngine.UI.Button origin)
+    private RectTransform OpenModal(string name, string title, UnityEngine.UI.Button origin, float height = 516f)
     {
         BlockMenu(origin);
         modal = WorkshopUi.Rect(frame, name, new Rect(0f, 0f, 1920f, 1080f));
         var shade = WorkshopUi.Fill(modal, "Title Modal Shade", new Rect(0f, 0f, 1920f, 1080f), new Color32(29, 46, 40, 175));
         shade.raycastTarget = true;
-        var panel = WorkshopUi.Panel(modal, "Title Modal Frame", new Rect(480f, 282f, 960f, 516f), WorkshopArt.WorkshopTaskBoard).rectTransform;
+        var panel = WorkshopUi.Panel(modal, "Title Modal Frame", new Rect(480f, (1080f - height) * 0.5f, 960f, height),
+            WorkshopArt.WorkshopTaskBoard).rectTransform;
         Label(panel, "Title Modal Heading", new Rect(130f, 66f, 700f, 68f), title, 49, Jade);
         WorkshopUi.Fill(panel, "Title Modal Rule", new Rect(118f, 140f, 724f, 2f), Gold);
         return panel;

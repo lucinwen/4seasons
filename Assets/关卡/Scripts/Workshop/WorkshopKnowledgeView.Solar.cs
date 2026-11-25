@@ -86,9 +86,7 @@ public sealed partial class WorkshopKnowledgeView
         var footer = WorkshopUi.PixelCard(page, "Solar Review Notes", new Rect(195, 949, 1530, 76),
             WorkshopUi.Paper, WorkshopUi.Bronze);
         var observation = SolarObservation(ordinal);
-        Label(footer, "Solar Entry Kind", new Rect(24, 5, 770, 24),
-            observation.HasValue ? "工序体验 · 到对应工位游玩" : "时令观察 · 翻阅节气卡", 19, Jade);
-        Label(footer, "Regional Observation", new Rect(24, 29, 770, 38), SolarReviewNotes[ordinal], 24, WorkshopUi.Ink);
+        Label(footer, "Regional Observation", new Rect(24, 13, 770, 50), SolarReviewNotes[ordinal], 24, WorkshopUi.Ink);
         WorkshopUi.PixelButton(footer, "Regional Source", new Rect(1288, 13, 218, 50), "地方资料",
             () => WorkshopHeritageBrief.ShowSeason(season), false, 25);
 
@@ -108,7 +106,7 @@ public sealed partial class WorkshopKnowledgeView
         bool recorded = WorkshopObservationView.HasRecord(id);
         bool practice = WorkshopObservationView.CanPracticeGarmentWorkshop(id);
         var button = WorkshopUi.PixelButton(footer, "Open Solar Observation " + id, new Rect(x, 13, 218, 50),
-            recorded ? caption : practice ? "试玩工序" : "工序待记录",
+            recorded ? caption : practice ? "试玩工序" : "到工位体验后开放",
             () => WorkshopObservationView.OpenRecordOrGarmentPractice(id), true, 23, Jade);
         button.interactable = recorded || practice;
     }

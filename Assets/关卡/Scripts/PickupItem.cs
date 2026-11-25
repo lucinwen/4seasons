@@ -26,7 +26,7 @@ public class PickupItem : MonoBehaviour
     public string pickupTitle = "采桑篮";
 
     [Tooltip("拾取弹窗的正文")]
-    public string pickupMessage = "采桑篮：用来采集桑叶的篮子";
+    public string pickupMessage = "带到桑树前采摘桑叶。";
 
     [Tooltip("拾取弹窗的按钮文字")]
     public string pickupButtonText = "拾取";

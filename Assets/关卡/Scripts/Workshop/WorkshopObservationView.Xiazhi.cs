@@ -34,7 +34,7 @@ internal sealed partial class WorkshopObservationView
         var board = WorkshopUi.PixelCard(art, "Xiazhi Silk Board", new Rect(275,65,610,486),
             new Color32(156,112,64,255), new Color32(105,76,48,255));
         WorkshopUi.Label(art, "Xiazhi Board Title", new Rect(35,9,1090,45),
-            xiazhiPuzzle.Title + " · 不赶时间，慢慢理线", 28, WorkshopUi.Cream, TextAnchor.MiddleCenter);
+            xiazhiPuzzle.Title, 28, WorkshopUi.Cream, TextAnchor.MiddleCenter);
         for (int i = 0; i < XiazhiPuzzle.CellCount; i++)
         {
             int index = i;
@@ -60,7 +60,7 @@ internal sealed partial class WorkshopObservationView
         });
         xiazhiHint = XiazhiAction("Xiazhi Hint", "给点提示", new Rect(475,575,210,56), HintXiazhi);
         XiazhiAction("Xiazhi Restart", "重新理线", new Rect(706,575,210,56), () => LoadXiazhiBoard(xiazhiPuzzle.LevelIndex));
-        Copy("把这一缕丝接到丝轴上", "点击线段，顺时针转动一格。\n从左侧丝头接到右侧丝轴。\n接通一张即可完成芒种；没有倒计时和步数限制。");
+        Copy("接通丝路", "点击线段，顺时针转动一格，把左侧丝头接到右侧丝轴。\n接通一张即可完成工单。不计时，不限步数。");
         var wheel = WorkshopUi.Picture(infoPanel, "Xiazhi Reeling Wheel", new Rect(169,322,160,160),
             SpringSummerArt("ReelingWheel"));
         xiazhiTally = WorkshopUi.Label(infoPanel, "Xiazhi Tally", new Rect(20,490,458,52), "", 28,
@@ -183,22 +183,15 @@ internal sealed partial class WorkshopObservationView
 
     private void DrawXiazhiCompleted()
     {
-        var card = WorkshopUi.PixelCard(art, "Xiazhi Completed Work", new Rect(125,50,910,540),
+        var card = WorkshopUi.PixelCard(art, "Xiazhi Completed Work", new Rect(125,106,910,441),
             SummerNeutral, SummerGold);
-        WorkshopUi.Label(card, "Xiazhi Complete Heading", new Rect(25,18,860,65), "丝路已通 · 一缕好丝绕好了", 38,
+        WorkshopUi.Label(card, "Xiazhi Complete Heading", new Rect(25,34,860,65), "丝路已接通", 38,
             SummerDark, TextAnchor.MiddleCenter);
-        var wheel = WorkshopUi.Picture(card, "Xiazhi Winding Wheel", new Rect(155,107,186,186), SpringSummerArt("ReelingWheel"));
-        WorkshopUi.Picture(card, "Xiazhi Reward Silk", new Rect(490,111,174,174), RewardIcon(observation));
-        WorkshopUi.Label(card, "Xiazhi Reward Name", new Rect(410,302,334,49), "整经丝束 ×1", 32,
-            SummerDark, TextAnchor.MiddleCenter);
-        WorkshopUi.Label(card, "Xiazhi Reward Page", new Rect(25,369,860,50),
-            earnedRewardThisRun ? "芒种残页 ×1 · 已收好" : "芒种残页已收藏 · 重玩不重复领取", 29,
-            SummerDark, TextAnchor.MiddleCenter);
-        WorkshopUi.Label(card, "Xiazhi Saved Work", new Rect(25,443,860,61),
-            "工单已保存，可返回夏季继续择茧、寻找线轴。", 28, SummerDark, TextAnchor.MiddleCenter);
-        Copy("工单已完成", "奖励已收好。\n返回夏季后继续原任务链。\n盐、索绪、线轴集齐后，仍按原规则回工坊合成生丝。");
+        var wheel = WorkshopUi.Picture(card, "Xiazhi Winding Wheel", new Rect(201,144,186,186), SpringSummerArt("ReelingWheel"));
+        WorkshopUi.Picture(card, "Xiazhi Reward Silk", new Rect(526,150,174,174), RewardIcon(observation));
+        Copy("接下来", "回夏季择茧、找线轴。集齐盐、索绪和线轴后，回织坊合成生丝。");
         Act("Xiazhi Return To Summer", "返回夏季", Close, true);
-        Act("Xiazhi Next Order", "下一张工单 · 自愿挑战", () => LoadXiazhiBoard((xiazhiPuzzle.LevelIndex + 1) % XiazhiPuzzle.LevelCount));
+        Act("Xiazhi Next Order", "下一张工单", () => LoadXiazhiBoard((xiazhiPuzzle.LevelIndex + 1) % XiazhiPuzzle.LevelCount));
         Act("Xiazhi Replay Order", "再理一回", () => LoadXiazhiBoard(xiazhiPuzzle.LevelIndex));
         StartCoroutine(AnimateXiazhiWheel(wheel));
     }

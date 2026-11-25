@@ -51,12 +51,12 @@ namespace Qingming.LevelBackground
             if (HarvestOverlayManager.IsHarvestActive) return null;
 
             const string title = "章节任务达成";
-            const string message = "本章节的所有任务已达成。";
             const string confirmText = "去合成";
             const string cancelText = "稍后";
+            string product = WorkshopProgress.ProductName(season);
             var atlas = Resources.Load<Texture2D>("WorkshopFinish/ChapterCompletionPixelCards");
             if (atlas == null)
-                return Show(WorkshopProgress.SeasonName(season) + "季" + title, message, confirmText, onConfirm,
+                return Show(WorkshopProgress.SeasonName(season) + "季任务达成", "待合成「" + product + "」", confirmText, onConfirm,
                     showCancel: true, cancelText: cancelText);
 
             var popup = Create(out var frame, onConfirm, null);
@@ -78,13 +78,8 @@ namespace Qingming.LevelBackground
                 title, 46, WorkshopUi.Cream, TextAnchor.MiddleCenter).fontStyle = FontStyle.Bold;
             WorkshopUi.Label(card, "Chapter Season", new Rect(1230, 296, 64, 105),
                 WorkshopProgress.SeasonName(season), 47, accent, TextAnchor.MiddleCenter).fontStyle = FontStyle.Bold;
-            WorkshopUi.Label(card, "Message", new Rect(165, 324, 480, 58),
-                message, 32, WorkshopUi.Ink, TextAnchor.MiddleCenter).fontStyle = FontStyle.Bold;
-            WorkshopUi.Label(card, "Chapter Product Label", new Rect(191, 405, 209, 56),
-                "合成成果", 28, WorkshopUi.Faded, TextAnchor.MiddleRight).fontStyle = FontStyle.Bold;
-            WorkshopUi.Fill(card, "Chapter Product Rule", new Rect(418, 418, 2, 30), WorkshopUi.Bronze);
-            WorkshopUi.Label(card, "Chapter Product", new Rect(439, 405, 150, 56),
-                WorkshopProgress.ProductName(season), 34, accent).fontStyle = FontStyle.Bold;
+            WorkshopUi.Label(card, "Chapter Product", new Rect(165, 364, 480, 64),
+                product, 42, accent, TextAnchor.MiddleCenter).fontStyle = FontStyle.Bold;
 
             var cancel = WorkshopUi.PixelButton(card, "Cancel", new Rect(181, 484, 152, 67),
                 cancelText, popup.OnCancel, primary: false, size: 29);

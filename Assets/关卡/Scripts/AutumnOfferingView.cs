@@ -95,10 +95,11 @@ internal sealed class AutumnOfferingView : MonoBehaviour
             ready ? ReadyPaper : RowPaper, ready ? WorkshopUi.Green : WorkshopUi.Bronze);
         WorkshopUi.Picture(row, "Offering Icon", new Rect(20, 25, 88, 88), icon,
             ready ? Color.white : new Color(1f, 1f, 1f, 0.73f));
-        WorkshopUi.Label(row, "Offering Name", new Rect(124, 19, 240, 43), name, 32);
-        WorkshopUi.Label(row, "Offering Status", new Rect(390, 20, 164, 42),
-            completed ? "已献上" : ready ? "已备齐" : "待收集", 26,
-            ready ? WorkshopUi.Green : FrameEdge, TextAnchor.MiddleRight);
+        float labelTop = ready ? 48 : 19;
+        WorkshopUi.Label(row, "Offering Name", new Rect(124, labelTop, 240, 43), name, 32);
+        if (!completed)
+            WorkshopUi.Label(row, "Offering Status", new Rect(390, labelTop, 164, 43),
+                ready ? "已备齐" : "待收集", 26, ready ? WorkshopUi.Green : FrameEdge, TextAnchor.MiddleRight);
         if (!ready)
             WorkshopUi.Label(row, "Offering Source", new Rect(124, 68, 426, 61), source, 27, WorkshopUi.Ink,
                 TextAnchor.UpperLeft);

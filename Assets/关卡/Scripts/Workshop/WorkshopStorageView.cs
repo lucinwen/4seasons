@@ -147,14 +147,14 @@ public sealed class WorkshopStorageView : MonoBehaviour
                     note.verticalOverflow = UnityEngine.VerticalWrapMode.Truncate;
                 }
                 var record = WorkshopUi.PixelButton(card, "Read collected page " + id, new Rect(17, 233, 264, 57),
-                    earned ? term + "残页 ×1 · 查看" : "待通关 · 残页未收集", () => WorkshopObservationView.ShowRecord(challenge), earned, 23);
+                    earned ? "查看残页" : "待通关", () => WorkshopObservationView.ShowRecord(challenge), earned, 23);
                 record.interactable = earned;
             }
         }
 
         Label(board, "Collection Heading", new Rect(55, 45, 688, 67), $"节气收藏　{count} / {total}", 47, WorkshopUi.Green);
         if (WorkshopProgress.HasStep("autumn.loom"))
-            Label(board, "Loom Repair Ticket", new Rect(811, 50, 458, 61), "工坊凭证 · 修机工票 ×1", 27,
+            Label(board, "Loom Repair Ticket", new Rect(811, 50, 458, 61), "修机工票 ×1", 27,
                 WorkshopUi.Green, TextAnchor.MiddleRight);
         var back = WorkshopUi.PixelButton(board, "Close Collections", new Rect(1303, 48, 238, 64),
             "返回背包", CloseCollections, true, 31);
@@ -176,8 +176,7 @@ public sealed class WorkshopStorageView : MonoBehaviour
         var inventory = WorkshopUi.Rect(page, "Illustrated Backpack", InventoryBounds);
         Label(page, "Inventory Title", new Rect(176, 313, 156, 42), "背包", 34, WorkshopUi.Ink);
         bool canArrange = WorkshopProgress.IsUnlocked(season) && !WorkshopProgress.IsComplete(season);
-        string help = canArrange ? "拖动金边材料 · 点击看图鉴" : "点击材料查看图鉴";
-        Label(page, "Inventory Help", new Rect(315, 317, 368, 38), help, 24, WorkshopUi.Ink);
+        Label(page, "Inventory Help", new Rect(315, 317, 368, 38), "点击材料查看图鉴", 24, WorkshopUi.Ink);
 
         int total = 0;
         int ownedCount = 0;

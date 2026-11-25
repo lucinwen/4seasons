@@ -112,9 +112,9 @@ internal sealed partial class WorkshopObservationView
 
     private void DrawChallengeStatus(Color accent)
     {
-        string pageStatus = HasRecord(observation) ? "残页已收集" : "残页待收集";
+        string suffix = GameComplete ? "已完成" : HasRecord(observation) ? " · 残页已收集" : " · 残页待收集";
         WorkshopUi.Label(page, GameComplete ? "Challenge Completed" : "Challenge Playing", new Rect(1140, 68, 566, 39),
-            ChallengeOrderLabel() + (GameComplete ? "已完成 · " : " · ") + pageStatus, 30, accent, TextAnchor.MiddleRight);
+            ChallengeOrderLabel() + suffix, 30, accent, TextAnchor.MiddleRight);
     }
 
     private bool IsGarmentProductionRun => IsFormalGarmentOrder;
@@ -151,9 +151,12 @@ internal sealed partial class WorkshopObservationView
             return;
         }
 
-        string receiptHeading = earnedRewardThisRun ? result : ChallengeOrderLabel() + "已完成 · 残页已收藏";
-        WorkshopUi.Label(reward, "Work Order Result", new Rect(94, 1, 945, 28), receiptHeading, 23, WorkshopUi.Ink);
-        WorkshopUi.Label(reward, "Reward Contents", new Rect(94, 28, 945, 30), contents, 23, WorkshopUi.Green);
+        if (earnedRewardThisRun)
+            WorkshopUi.Label(reward, "Work Order Result", new Rect(94, 1, 945, 28), result, 23, WorkshopUi.Ink);
+        else
+            contents += " · 残页已收藏";
+        WorkshopUi.Label(reward, "Reward Contents", new Rect(94, earnedRewardThisRun ? 28 : 0, 945, earnedRewardThisRun ? 30 : 60),
+            contents, 23, WorkshopUi.Green);
         var seal = WorkshopUi.Picture(reward, "Workshop Success Seal", new Rect(1095, 6, 48, 48),
             Resources.Load<Sprite>("WorkshopGameArt/SuccessSeal"));
         var stamp = seal.rectTransform;

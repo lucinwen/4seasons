@@ -99,7 +99,7 @@ public class WinterDyeingOverlay : MonoBehaviour
             WinterWorktableUi.Nameplate(_frame, "Lidong Accepted Swatch", new Rect(1380, 406, 303, 49),
                 "立冬干样 · 深浅栀黄", 24);
             SelectColor(DyeColor.Yellow);
-            SetStatus("寒露素绸已备好。立冬干样已验，确认栀黄色，把整幅绸拖进缸。");
+            SetStatus("寒露素绸已备好。确认栀子黄后即可染布。");
         }
     }
 
@@ -185,7 +185,7 @@ public class WinterDyeingOverlay : MonoBehaviour
             selection.Value.enabled = selection.Key == color;
 
         SetConfirmAvailable(true);
-        SetStatus("已选" + DyeColorUtil.ChineseName(color) + "。确定后，把素绸拖入缸口。");
+        SetStatus("已选" + DyeColorUtil.ChineseName(color) + "。请确定颜色。");
     }
 
     private void ConfirmColor()
@@ -197,7 +197,7 @@ public class WinterDyeingOverlay : MonoBehaviour
         _confirmLabel.text = "已确定";
         foreach (var selection in _dyeSelections.Values)
             selection.GetComponentInParent<Button>().interactable = false;
-        _vatLabel.text = "把素绸拖到这里";
+        _vatLabel.text = "缸口";
         SetStatus("把右侧的素绸拖到缸口，松手染色。");
     }
 
@@ -236,7 +236,7 @@ public class WinterDyeingOverlay : MonoBehaviour
         _vatLabel.text = DyeColorUtil.ChineseName(color) + "染缸";
         _silkLabel.text = clothName;
 
-        _statusText.text = "染色完成！获得【" + clothName + "】";
+        _statusText.text = "染色完成";
         SimplePopup.ShowItem(WorkshopItem.DyedCloth, "获得【" + clothName + "】", () =>
         {
             WinterLevelState.SetDyedCloth(clothName);

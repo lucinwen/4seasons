@@ -150,17 +150,13 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
         BuildBase();
         var closed = WorkshopNarrativeData.For(completed);
         var opened = WorkshopNarrativeData.For(next);
-        Label(page, "Interlude Kicker", new Rect(98, 56, 620, 40),
-            "章节流转 · 时间推进", 27, Gold);
-        Label(page, "Interlude Issue", new Rect(1000, 58, 318, 38),
-            WorkshopProgress.SeasonName(completed) + "章已入库", 24, Muted, TextAnchor.MiddleRight);
+        Label(page, "Interlude Chapter", new Rect(98, 56, 620, 40),
+            WorkshopProgress.SeasonName(completed) + "章完成", 30, Gold);
         WorkshopUi.Fill(page, "Interlude Line", new Rect(98, 112, 1220, 2), new Color32(214, 174, 103, 160));
 
-        Label(page, "Interlude Chapter", new Rect(98, 154, 1180, 54),
-            WorkshopProgress.SeasonName(completed) + "章完成", 31, Muted);
-        Label(page, "Interlude Title", new Rect(96, 207, 1190, 80),
+        Label(page, "Interlude Title", new Rect(96, 164, 1190, 80),
             closed.ClosingTitle, 54, Cream);
-        Label(page, "Interlude Body", new Rect(100, 296, 1178, 150),
+        Label(page, "Interlude Body", new Rect(100, 253, 1178, 128),
             closed.ClosingBody, 30, Cream);
 
         WorkshopUi.Fill(page, "Season Progress Rail", new Rect(100, 470, 402, 3),
@@ -182,13 +178,10 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
                 WorkshopNarrativeData.SeasonTime((WorkshopSeason)i), 24, text, TextAnchor.UpperCenter);
         }
 
-        Label(page, "Interlude Time", new Rect(525, 611, 820, 42),
-            closed.TransitionLabel, 30, Gold, TextAnchor.MiddleCenter);
-        WorkshopUi.Fill(page, "Interlude Next Rule", new Rect(100, 670, 1218, 2),
+        WorkshopUi.Fill(page, "Interlude Next Rule", new Rect(100, 637, 1218, 2),
             new Color32(214, 174, 103, 130));
-        Label(page, "Next Announcement", new Rect(100, 690, 1218, 80),
-            WorkshopProgress.SeasonName(next) + "季 · " + opened.AnnouncementTitle +
-            "\n" + opened.TimeLabel + " · " + opened.Craft, 28, Cream, TextAnchor.UpperCenter);
+        Label(page, "Next Announcement", new Rect(100, 665, 1218, 70),
+            "下一章 · " + opened.AnnouncementTitle, 30, Cream, TextAnchor.MiddleCenter);
 
         ready = false;
         if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null);
@@ -237,17 +230,12 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
     private void BuildFinale()
     {
         BuildBase();
-        Label(page, "Finale Kicker", new Rect(98, 58, 650, 40),
-            "冬至 · 贺冬交衣", 28, Gold);
-        Label(page, "Finale Time", new Rect(976, 58, 342, 40),
-            "二十四节气 22/24", 24, Muted, TextAnchor.MiddleRight);
-        WorkshopUi.Fill(page, "Finale Line", new Rect(98, 112, 1220, 2), new Color32(214, 174, 103, 160));
-
-        Label(page, "Finale Title", new Rect(96, 167, 1190, 88),
-            "一张工单，缝成一件丝衣", 57, Cream, TextAnchor.MiddleCenter);
-        Label(page, "Finale Body", new Rect(147, 277, 1090, 220),
-            "清明采桑喂蚕，再备好蚕种。芒种择茧、接通丝路，再收齐材料合成生丝。秋分借光验丝，寒露织绸。立冬试色染绸，小雪按样裁衣，大雪合缝翻衣。\n\n冬至试衣合身，师傅把贺冬的新衣挂上展架。打开制作记录，可以回看收藏的工序。",
-            30, Cream, TextAnchor.UpperCenter);
+        Label(page, "Finale Title", new Rect(96, 78, 1228, 88),
+            "冬至 · 贺冬交衣", 57, Cream, TextAnchor.MiddleCenter);
+        WorkshopUi.Fill(page, "Finale Line", new Rect(98, 184, 1220, 2), new Color32(214, 174, 103, 160));
+        Label(page, "Finale Body", new Rect(147, 233, 1126, 250),
+            "清明采桑喂蚕，备下蚕种。芒种择茧理丝，合成生丝。秋分借光验丝，寒露织绸。立冬试色染绸，小雪按样裁衣，大雪合缝翻衣。\n\n冬至试衣合身，师傅把贺冬的新衣挂上展架。",
+            30, Cream, TextAnchor.MiddleCenter);
 
         for (int i = 0; i < 4; i++)
         {

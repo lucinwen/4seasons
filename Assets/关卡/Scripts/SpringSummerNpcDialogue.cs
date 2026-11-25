@@ -55,7 +55,7 @@ internal static class SpringSummerNpcDialogue
     internal static bool RequireMulberryBriefing()
     {
         if (HasMulberryBriefing) return true;
-        SimplePopup.Show("先去找蚕房师傅", "请先与春章的蚕房师傅交谈，领到今天的采桑任务。", "知道了", null);
+        SimplePopup.Show("采桑任务未领取", "去找蚕房师傅交谈。", "知道了", null);
         return false;
     }
 

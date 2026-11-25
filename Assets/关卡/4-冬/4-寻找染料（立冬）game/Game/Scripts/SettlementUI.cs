@@ -65,7 +65,12 @@ namespace JiangnanDye
         {
             visible = true;
             if (titleText != null) titleText.text = "本次采集成果";
-            if (subtitleText != null) subtitleText.text = "本次共收集到 " + items.Count + " 件天然染料";
+            if (subtitleText != null)
+            {
+                bool showSubtitle = history == null || summaryText == null;
+                subtitleText.gameObject.SetActive(showSubtitle);
+                if (showSubtitle) subtitleText.text = $"收下 {items?.Count ?? 0} 件染料";
+            }
 
             if (summaryText != null && history != null)
             {

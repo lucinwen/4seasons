@@ -736,7 +736,7 @@ MonoBehaviour:
   labelHeight: 0.8
   destroyOnPickup: 1
   pickupTitle: "\u91C7\u6851\u7BEE"
-  pickupMessage: "\u91C7\u6851\u7BEE\uFF1A\u7528\u6765\u91C7\u96C6\u6851\u53F6\u7684\u7BEE\u5B50"
+  pickupMessage: "\u5E26\u5230\u6851\u6811\u524D\u91C7\u6458\u6851\u53F6\u3002"
   pickupButtonText: "\u62FE\u53D6"
 --- !u!61 &298792311
 BoxCollider2D:
@@ -2679,7 +2679,7 @@ MonoBehaviour:
   labelHeight: 0.8
   destroyOnPickup: 1
   pickupTitle: "\u8695\u79CD\u7EB8"
-  pickupMessage: "\u8695\u79CD\u7EB8\uFF1A\u5199\u7740\u8695\u79CD\u7684\u7EB8\uFF0C\u62FF\u5230\u6D74\u8695\u6876\u6E05\u6D17\u540E\u5373\u53EF\u5B75\u5316\u3002"
+  pickupMessage: "\u5E26\u5230\u6D74\u8695\u6876\u6F02\u6D17\uFF0C\u4E3A\u5B75\u5316\u505A\u51C6\u5907\u3002"
   pickupButtonText: "\u62FE\u53D6"
 --- !u!1 &1311171341
 GameObject:

@@ -237,7 +237,7 @@ public sealed class WorkshopTailor : MonoBehaviour
         BuildChooser();
     }
 
-    private void BuildPanel(string title, string prompt, string backLabel, Action back)
+    private void BuildPanel(string title, string backLabel, Action back)
     {
         backAction = back;
         if (panel != null)
@@ -250,7 +250,6 @@ public sealed class WorkshopTailor : MonoBehaviour
         WorkshopUi.Panel(panel, "Embroidered Tailor Frame", new Rect(0, 0, 1828, 1020),
             Resources.Load<Sprite>("WorkshopDelivery/B04") ?? WorkshopArt.WorkshopTaskBoard);
         Label(panel, "Title", new Rect(689, 93, 450, 85), title, 45, Accent, TextAnchor.MiddleCenter);
-        Label(panel, "Prompt", new Rect(252, 323, 1085, 49), prompt, 31, Accent);
         if (back != null)
             WorkshopUi.PixelButton(panel, "Back", new Rect(1114, 262, 187, 56), backLabel, back, true, 27, Accent);
     }
@@ -265,9 +264,7 @@ public sealed class WorkshopTailor : MonoBehaviour
 
     private void BuildChooser()
     {
-        BuildPanel(UsesLining ? "小雪 · 夹衣选样" : "缝素堂 · 选衣样",
-            UsesLining ? "小雪转凉，用裁好的外片和里襟配衣样。" : "选择一件衣样，使用已染好的布料缝制。",
-            "返回合成台", Close);
+        BuildPanel(UsesLining ? "小雪 · 夹衣选样" : "缝素堂 · 选衣样", "返回合成台", Close);
         Sprite winterFrame = WorkshopArt.SeasonPanel(WorkshopSeason.Winter);
         WorkshopUi.Panel(panel, "PreviewPanel", new Rect(866, 377, 454, 363), winterFrame);
         var swatch = WorkshopUi.Fill(panel, "FabricSwatch", new Rect(906, 410, 25, 25), fabricTint);
@@ -281,7 +278,7 @@ public sealed class WorkshopTailor : MonoBehaviour
         var previewName = Label(panel, "GarmentName", new Rect(887, 672, 410, 51), "", 32,
             Accent, TextAnchor.MiddleCenter);
         var next = WorkshopUi.Button(panel, "ConfirmStyle", new Rect(906, 833, 378, 61),
-            "确认款式 · 开始缝制", BuildSewing, Accent, enabled: false, size: 32, font: WorkshopArt.WorkshopFont);
+            "确认衣样", BuildSewing, Accent, enabled: false, size: 32, font: WorkshopArt.WorkshopFont);
 
         var optionSurfaces = new UnityEngine.UI.Image[available.Count];
         var optionSelections = new UnityEngine.UI.Image[available.Count];
@@ -335,9 +332,8 @@ public sealed class WorkshopTailor : MonoBehaviour
     private void BuildSewing()
     {
         bool winterLining = UsesLining;
-        BuildPanel(winterLining ? "小雪 · 拼缝夹衣" : "缝素堂 · 拼合衣片",
-            winterLining ? "冷天要夹衣。先对齐三片面料，再合上裁台特意留下的里襟。" : "把衣片拖到对应的样板上，三片归位后即可缝制。",
-            "重新选款", BuildChooser);
+        BuildPanel(winterLining ? "小雪 · 拼缝夹衣" : "缝素堂 · 拼合衣片", "重新选款", BuildChooser);
+        Label(panel, "Prompt", new Rect(252, 323, 1085, 49), "把衣片拖到对应样板上。", 31, Accent);
         submitting = false;
         liningFitted = false;
         liningButton = null;
@@ -375,7 +371,6 @@ public sealed class WorkshopTailor : MonoBehaviour
         {
             WorkshopUi.Picture(panel, "Xiaoxue Reserved Lining", new Rect(588, 728, 73, 52),
                 WorkshopArt.CutPiece(0), Color.Lerp(fabricTint, Color.white, .40f));
-            Label(panel, "Xiaoxue Lining Caption", new Rect(672, 736, 469, 43), "里襟 · 小雪排料时所留整布", 22, WorkshopUi.Ink);
             liningButton = WorkshopUi.Button(panel, "XiaoxueFitLining", new Rect(684, 840, 215, 59),
                 "贴合里襟", FitLining, Accent, enabled: false, size: 25, font: WorkshopArt.WorkshopFont);
         }
@@ -415,7 +410,7 @@ public sealed class WorkshopTailor : MonoBehaviour
 
             if (liningButton != null)
             {
-                sewingStatus.text = "外片已对齐 · 合上里襟再缝";
+                sewingStatus.text = "请贴合里襟";
                 liningButton.interactable = true;
             }
             else
@@ -439,8 +434,6 @@ public sealed class WorkshopTailor : MonoBehaviour
         liningButton.interactable = false;
         var lining = panel.Find("Xiaoxue Reserved Lining") as RectTransform;
         if (lining != null) lining.anchoredPosition += new Vector2(209, 38);
-        var caption = panel.Find("Xiaoxue Lining Caption")?.GetComponent<UnityEngine.UI.Text>();
-        if (caption != null) caption.text = "里襟已对齐 · 可缝外缘";
         sewingStatus.text = "外片和里襟已对齐";
         sewButton.interactable = true;
         WorkshopAudioFeedback.Fabric();
