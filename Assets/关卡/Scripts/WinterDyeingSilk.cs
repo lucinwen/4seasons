@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 
 /// <summary>将木托盘里的素绸拖入染缸。</summary>
 public class WinterDyeingSilk : MonoBehaviour,
-    IBeginDragHandler, IDragHandler, IEndDragHandler
+    IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
     private WinterDyeingOverlay _overlay;
     private RectTransform _rt;
@@ -24,7 +24,8 @@ public class WinterDyeingSilk : MonoBehaviour,
     {
         if (_overlay == null || !_overlay.CanDragSilk)
         {
-            if (_overlay != null) _overlay.SetStatus("请先选择颜色并点击确定");
+            if (_overlay != null && !_overlay.IsDyeing && !_overlay.HasFinishedCloth)
+                _overlay.SetStatus("先点左侧染料，再把素绸拖入染缸。");
             _dragging = false;
             return;
         }
@@ -57,5 +58,11 @@ public class WinterDyeingSilk : MonoBehaviour,
 
         _rt.anchoredPosition = _homeAnchored;
         _overlay.SetStatus("素绸已放回木托盘。拖到缸口再松手。");
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (_overlay != null && eventData.button == PointerEventData.InputButton.Left)
+            _overlay.CollectFinishedCloth();
     }
 }

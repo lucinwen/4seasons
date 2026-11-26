@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 internal static class MinigameUiPresentation
 {
@@ -7,7 +8,7 @@ internal static class MinigameUiPresentation
     internal static readonly Color Linen = new Color32(235, 223, 197, 255);
     internal static readonly Color MutedInk = new Color32(78, 89, 77, 255);
     internal static readonly Color Bronze = new Color32(182, 139, 75, 255);
-    internal const float BackgroundVeilAlpha = 0.88f;
+    internal const float BackgroundVeilAlpha = 0.60f;
     internal static readonly Color BackgroundVeil = new Color(0f, 0f, 0f, BackgroundVeilAlpha);
     internal static readonly Color Veil = new Color32(12, 20, 19, 158);
     private static Sprite veilSprite;
@@ -55,27 +56,16 @@ internal static class MinigameUiPresentation
         }
 
         if (card == null) return;
-        var background = card.GetComponent<UnityEngine.UI.Image>();
-        Surface(background, Bronze, true);
-        if (background != null)
-        {
-            var face = InsertFill(card, "Paper Face", Paper);
-            WorkshopUi.ApplyPixelShape(face);
-            face.rectTransform.offsetMin = new Vector2(2f, 2f);
-            face.rectTransform.offsetMax = new Vector2(-2f, -2f);
-        }
+        WorkshopImmersive.StripSurface(card);
 
         foreach (var text in card.GetComponentsInChildren<UnityEngine.UI.Text>(true))
         {
             if (text.GetComponentInParent<UnityEngine.UI.Button>(true) == null)
-                Label(text, text == title ? Pine : MutedInk);
+                WorkshopImmersive.QuietText(text);
         }
 
         var divider = Find<UnityEngine.UI.Image>(card, "Divider");
-        if (divider != null)
-            divider.color = Bronze;
-        else if (title != null)
-            AddTitleRule(title.rectTransform);
+        if (divider != null) divider.gameObject.SetActive(false);
     }
 
     internal static void Surface(UnityEngine.UI.Image image, Color color, bool shadow = false)
@@ -97,7 +87,9 @@ internal static class MinigameUiPresentation
         var image = button.targetGraphic as UnityEngine.UI.Image ?? button.GetComponent<UnityEngine.UI.Image>();
         if (image == null) return;
 
-        Surface(image, primary ? Pine : Linen, true);
+        image.color = new Color(0,0,0,.002f);
+        var shadow = image.GetComponent<UnityEngine.UI.Shadow>();
+        if (shadow != null) shadow.enabled = false;
         button.targetGraphic = image;
         button.transition = UnityEngine.UI.Selectable.Transition.ColorTint;
         var colors = button.colors;
@@ -110,7 +102,56 @@ internal static class MinigameUiPresentation
         button.colors = colors;
 
         foreach (var text in button.GetComponentsInChildren<UnityEngine.UI.Text>(true))
-            Label(text, primary ? Paper : Pine);
+            WorkshopImmersive.QuietText(text);
+    }
+
+    /// <summary>Keep the playable objects; remove decorative HUD sheets from legacy scenes.</summary>
+    internal static void Immerse(Scene scene, WorkshopSeason season)
+    {
+        if (scene.name == "CocoonMatch")
+        {
+            RestoreCocoonBackground(scene);
+            return;
+        }
+        foreach (var root in scene.GetRootGameObjects())
+        {
+            foreach (var part in root.GetComponentsInChildren<Transform>(true))
+            {
+                switch (part.name)
+                {
+                    case "CocoonOrnatePanel": case "QuietPaperGlow": case "PanelShadow":
+                    case "TitleDivider": case "SolarIntroduction": case "SolarTerm":
+                    case "Subtitle": case "Rules": case "CapacityHint":
+                        part.gameObject.SetActive(false); break;
+                }
+            }
+        }
+    }
+
+    internal static void RestoreCocoonBackground(Scene scene)
+    {
+        Transform backdrop = null;
+        Transform glow = null;
+        // Earlier presentation imports saved these original layers inactive in the scene.
+        foreach (var root in scene.GetRootGameObjects())
+            foreach (var part in root.GetComponentsInChildren<Transform>(true))
+                switch (part.name)
+                {
+                    case "TealBackdrop":
+                        backdrop = part;
+                        part.gameObject.SetActive(true);
+                        break;
+                    case "QuietPaperGlow":
+                        glow = part;
+                        part.gameObject.SetActive(true);
+                        break;
+                    case "CocoonOrnatePanel":
+                    case "PanelShadow":
+                        part.gameObject.SetActive(true);
+                        break;
+                }
+        if (glow != null) glow.SetAsFirstSibling();
+        if (backdrop != null) backdrop.SetAsFirstSibling();
     }
 
     internal static void Label(UnityEngine.UI.Text text, Color color, int size = 0)

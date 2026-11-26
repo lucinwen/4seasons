@@ -10,7 +10,7 @@ using Qingming.LevelBackground;
 public class AutumnRitualTrigger : MonoBehaviour
 {
     [Tooltip("玩家离仪式点多近时显示悬浮按钮（世界单位）")]
-    public float triggerDistance = 3f;
+    public float triggerDistance = 5f;
 
     private FloatingActionButton _floatBtn;
     private Transform _player;
@@ -19,7 +19,8 @@ public class AutumnRitualTrigger : MonoBehaviour
     private bool _shown;
 
     private Vector2 TriggerCenter => _triggerCollider != null
-        ? (Vector2)_triggerCollider.bounds.center
+        ? (_triggerCollider.enabled ? (Vector2)_triggerCollider.bounds.center
+            : (Vector2)_triggerCollider.transform.TransformPoint(_triggerCollider.offset))
         : (Vector2)transform.position;
 
     private Vector3 ActionOffset =>
@@ -31,6 +32,7 @@ public class AutumnRitualTrigger : MonoBehaviour
         _floatBtn = gameObject.AddComponent<FloatingActionButton>();
         _label = OfferingLabel();
         _floatBtn.Configure(_label, ActionOffset, OnRitualClicked);
+        _floatBtn.SetSize(new Vector2(300f, 84f), new Vector2(30f, 20f));
         _floatBtn.SetOpacity(0.9f);
     }
 
@@ -46,7 +48,7 @@ public class AutumnRitualTrigger : MonoBehaviour
 
         _floatBtn.offset = ActionOffset;
         bool inRange = !WorkshopQuestGuide.BlocksWorldInput && !WorkshopQuestGuide.IsWorldOverlayActive &&
-            Vector2.Distance(_player.position, TriggerCenter) <= triggerDistance;
+            IsWithinReach(_player.position);
 
         if (inRange)
         {
@@ -68,6 +70,15 @@ public class AutumnRitualTrigger : MonoBehaviour
     {
         if (WorkshopQuestGuide.BlocksWorldInput || WorkshopQuestGuide.IsWorldOverlayActive) return;
         AutumnOfferingView.Show(() => AutumnNpcDialogue.IntroduceRitual(SubmitOfferings));
+    }
+
+    private bool IsWithinReach(Vector2 point)
+    {
+        float distance = Mathf.Max(5f, triggerDistance);
+        if (Vector2.Distance(point, TriggerCenter) <= distance) return true;
+        if (_triggerCollider == null || !_triggerCollider.enabled) return false;
+        // A wide supply table should remain available near either end.
+        return Vector2.Distance(point, _triggerCollider.ClosestPoint(point)) <= distance;
     }
 
     private static string OfferingLabel()

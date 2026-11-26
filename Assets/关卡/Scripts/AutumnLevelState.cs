@@ -19,7 +19,7 @@ public static class AutumnLevelState
     /// <summary>是否已找到工具箱（点击工具箱后置 true）</summary>
     public static bool HasToolbox;
 
-    /// <summary>是否已通过与 NPC 的对话获得锤子（修复织机工具）</summary>
+    /// <summary>是否已拾取场景里的锤子（修复织机工具，兼容旧对话领取记录）</summary>
     public static bool HasHammer;
 
     /// <summary>是否已通过与 NPC 的对话获得糕点</summary>

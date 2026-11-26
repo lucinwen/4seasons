@@ -186,7 +186,6 @@ public class MiniGameOverlay : MonoBehaviour
 
         if (_sceneName == "CocoonMatch")
         {
-            HideCanvasChild(canvas, "TealBackdrop");
             StartCoroutine(PrepareCocoonControls(scene));
         }
 
@@ -308,7 +307,7 @@ public class MiniGameOverlay : MonoBehaviour
 
     private static void SetLoomHint(Scene scene)
     {
-        const string hint = "点击或按空格开工，指针进入黄区时点击锤子校准";
+        const string hint = "按下空格键开始制造；在黄色区域内点击锤子完成校准";
         foreach (var root in scene.GetRootGameObjects())
         {
             foreach (var t in root.GetComponentsInChildren<Transform>(true))
@@ -415,9 +414,7 @@ public class MiniGameOverlay : MonoBehaviour
             if (mgr.resultPanel != null) mgr.resultPanel.SetActive(false);
             if (mgr.closedPanel != null) mgr.closedPanel.SetActive(false);
 
-            KeepPopupInScene(scene, SimplePopup.Show("蔟上收茧",
-                "点击亮起的蚕茧，凑齐三个相同图案。",
-                "开始游戏", mgr.BeginGame, true, "离开", Close));
+            mgr.BeginGame();
             return;
         }
     }
@@ -428,7 +425,7 @@ public class MiniGameOverlay : MonoBehaviour
         {
             void ShowReward()
             {
-                KeepPopupInScene(mgr.gameObject.scene, SimplePopup.ShowItem(WorkshopItem.Suoxu, "可与盐、线轴合成生丝。",
+                KeepPopupInScene(mgr.gameObject.scene, SimplePopup.ShowItem(WorkshopItem.Suoxu, "收茧圆满，获得【索绪】",
                     () =>
                     {
                         mgr.ClaimReward();
@@ -444,7 +441,7 @@ public class MiniGameOverlay : MonoBehaviour
         }
 
         KeepPopupInScene(mgr.gameObject.scene, SimplePopup.Show("收集槽已满",
-            "收集槽有七格，凑齐三个同类即可腾出位置。",
+            "七个位置已用尽。\n请重新开始，再试着凑齐三个同类。",
             "重新开始", mgr.RestartGame, true, "离开", Close));
     }
 

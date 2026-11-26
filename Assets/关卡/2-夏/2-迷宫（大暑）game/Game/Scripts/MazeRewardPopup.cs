@@ -38,22 +38,11 @@ namespace JiangnanDye.MazeGame
 
         public void Show()
         {
-            if (WorkshopArt.ItemCard(WorkshopItem.Spool) != null)
-            {
-                SimplePopup.ShowItem(WorkshopItem.Spool, "找到线轴，可以带回夏季工坊。",
-                    OnFinishClicked, fallbackIcon: itemIconImage != null ? itemIconImage.sprite : null);
-                return;
-            }
-
-            if (rootPanel == null) return;
-            if (dim != null) dim.gameObject.SetActive(true);
-            rootPanel.SetActive(true);
-            if (rootRt != null)
-            {
-                // 简单缩放进入动画（不用协程，避免 inactive GO 上 StartCoroutine 报错）
-                rootRt.localScale = new Vector3(0.9f, 0.9f, 1f);
-                StartCoroutine(ScaleIn());
-            }
+            WorkshopProgress.Award(WorkshopItem.Spool);
+            // Finding the tool now ends with its corresponding Xiaoman craft card.
+            // Keep Spool in the inventory without a second item-knowledge reward.
+            WorkshopRewardCards.FinishItemCard(WorkshopItem.Spool);
+            WorkshopRewardCards.ShowTermReward(WorkshopSeason.Summer, 1, OnFinishClicked);
         }
 
         public void Hide()

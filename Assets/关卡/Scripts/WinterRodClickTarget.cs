@@ -21,8 +21,7 @@ public class WinterRodClickTarget : MonoBehaviour
     {
         if (WinterLevelState.HasGrindingRod) return;
         if (WinterGrindingOverlay.IsActive || WinterDyeingOverlay.IsActive) return;
-        bool pressed = Input.GetMouseButtonDown(0);
-        if (WorkshopQuestGuide.BlocksWorldInput || (!pressed && !WorkshopPointer.CanShowWorldHint)) return;
+        if (WorkshopQuestGuide.BlocksWorldInput || !Input.GetMouseButtonDown(0)) return;
 
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
 
@@ -31,9 +30,6 @@ public class WinterRodClickTarget : MonoBehaviour
 
         Vector3 world = cam.ScreenToWorldPoint(Input.mousePosition);
         if (!_collider.OverlapPoint(world)) return;
-
-        WorkshopPointer.PointAtWorldTarget();
-        if (!pressed) return;
 
         PickUp();
     }

@@ -2,16 +2,13 @@ using System;
 using Qingming.LevelBackground;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
-/// <summary>Pause controls shared by the workshop, chapters, and minigames.</summary>
+/// <summary>Shared pause and return controls for workshop minigame runs.</summary>
 [DefaultExecutionOrder(-900)]
 internal sealed class WorkshopMinigameMenu : MonoBehaviour
 {
     private static WorkshopMinigameMenu pausedMenu;
-    private static int lastCloseFrame = -1;
-    private const float PanelWidth = 660f;
+    private static readonly Rect PanelBounds = new Rect(650, 315, 620, 450);
 
     private RectTransform launcher;
     private RectTransform pauseFrame;
@@ -21,33 +18,10 @@ internal sealed class WorkshopMinigameMenu : MonoBehaviour
     private Func<bool> hasRunProgress;
     private Func<bool> canOpen;
     private Action pendingAction;
-    private Selectable[] navigation;
     private float previousTimeScale;
     private GameObject previousSelection;
 
     internal static bool IsPaused => pausedMenu != null;
-    internal static bool BlocksGameplayInput => IsPaused || lastCloseFrame == Time.frameCount;
-
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-    private static void ResetSession()
-    {
-        pausedMenu = null;
-        lastCloseFrame = -1;
-        SceneManager.sceneLoaded -= InstallSceneMenu;
-    }
-
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    private static void Bootstrap()
-    {
-        SceneManager.sceneLoaded += InstallSceneMenu;
-        InstallSceneMenu(SceneManager.GetActiveScene(), LoadSceneMode.Single);
-    }
-
-    private static void InstallSceneMenu(Scene scene, LoadSceneMode mode)
-    {
-        if (mode != LoadSceneMode.Single || scene.buildIndex < 0 || scene.name == WorkshopTitle.SceneName) return;
-        new GameObject("Game Pause Menu").AddComponent<WorkshopMinigameMenu>();
-    }
 
     internal static WorkshopMinigameMenu Attach(Transform owner, Action restart, Action leave,
         Func<bool> hasRunProgress, Func<bool> canOpen = null)
@@ -58,26 +32,14 @@ internal sealed class WorkshopMinigameMenu : MonoBehaviour
         menu.hasRunProgress = hasRunProgress;
         menu.canOpen = canOpen;
         menu.launcher = WorkshopUi.NewCanvas("Minigame Controls", 8000);
-        WorkshopUi.PixelButton(menu.launcher, "Pause Minigame", new Rect(1742, 25, 148, 52),
-            "暂停 · Esc", menu.OpenMenu, false, 25);
+        WorkshopImmersive.Button(menu.launcher, "Pause Minigame", new Rect(1742, 25, 148, 52),
+            "暂停 · Esc", menu.OpenMenu);
         menu.launcher.gameObject.SetActive(false);
         return menu;
     }
 
     private bool CanPauseHere => !SimplePopup.IsOpen && !WorkshopDialoguePresenter.BlocksWorldInput &&
         !MiniGameCompletionAnimation.IsPlaying && (canOpen?.Invoke() ?? true);
-
-    private static bool CanPauseScene()
-    {
-        if (WorkshopObservationView.IsOpen) return WorkshopObservationView.CanPauseGameplay;
-        if (SpringSilkwormWashOverlay.IsOpen || WinterDyeingOverlay.IsActive || WinterGrindingOverlay.IsActive) return true;
-
-        return Time.timeScale > 0f && !WorkshopQuestGuide.BlocksWorldInput && !WorkshopQuestGuide.IsWorldOverlayActive &&
-            !WorkshopChapterGuide.IsOpen && !WorkshopStorageView.IsOpen && !WorkshopTailor.IsOpen && !WorkshopWardrobe.IsOpen;
-    }
-
-    private bool CanOpenMenu => !BlocksGameplayInput && CanPauseHere &&
-        (launcher == null ? CanPauseScene() : Time.timeScale > 0f);
 
     private void Update()
     {
@@ -89,44 +51,32 @@ internal sealed class WorkshopMinigameMenu : MonoBehaviour
                 return;
             }
 
-            if (Input.GetKeyDown(KeyCode.Escape)) HandleEscape();
-            else if (Input.GetKeyDown(KeyCode.Tab)) SelectNext();
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                WorkshopAudioFeedback.Click();
+                if (pendingAction != null) ShowOptions();
+                else CloseMenu(true);
+            }
             return;
         }
 
-        if (launcher != null)
-        {
-            bool available = CanOpenMenu;
-            if (launcher.gameObject.activeSelf != available) launcher.gameObject.SetActive(available);
-        }
-        if (Input.GetKeyDown(KeyCode.Escape)) HandleEscape();
-    }
-
-    private void HandleEscape()
-    {
-        if (pausedMenu != this)
-        {
-            OpenMenu();
-            return;
-        }
-
-        WorkshopAudioFeedback.Click();
-        if (pendingAction != null) ShowOptions();
-        else CloseMenu(true);
+        bool available = !IsPaused && Time.timeScale > 0f && CanPauseHere;
+        if (launcher.gameObject.activeSelf != available) launcher.gameObject.SetActive(available);
+        if (available && Input.GetKeyDown(KeyCode.Escape)) OpenMenu();
     }
 
     private void OpenMenu()
     {
-        if (!CanOpenMenu) return;
+        if (IsPaused || Time.timeScale <= 0f || !CanPauseHere) return;
 
         previousTimeScale = Time.timeScale;
         previousSelection = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
-        if (launcher != null) launcher.gameObject.SetActive(false);
+        launcher.gameObject.SetActive(false);
         pausedMenu = this;
         Time.timeScale = 0f;
         WorkshopAudioFeedback.Click();
 
-        pauseFrame = WorkshopUi.NewCanvas("Game Pause", 30000);
+        pauseFrame = WorkshopUi.NewCanvas("Minigame Pause", 8100);
         WorkshopUi.Block(pauseFrame, new Color32(21, 32, 29, 178));
         ShowOptions();
     }
@@ -134,36 +84,17 @@ internal sealed class WorkshopMinigameMenu : MonoBehaviour
     private void ShowOptions()
     {
         pendingAction = null;
-        bool hasMinigameActions = launcher != null;
-        MakePanel("游戏暂停", hasMinigameActions ? 470f : 386f);
-        WorkshopUi.Label(panel, "Master Volume Label", new Rect(60, 126, 118, 46),
-            "总音量", 28, WorkshopUi.Ink, TextAnchor.MiddleLeft, WorkshopArt.ReadingFont);
-        var readout = WorkshopUi.Label(panel, "Master Volume Value", new Rect(534, 126, 66, 46),
-            "", 26, WorkshopUi.Ink, TextAnchor.MiddleRight, WorkshopArt.ReadingFont);
-        var volume = WorkshopTitle.CreateVolumeSlider(panel, new Rect(184, 127, 334, 44), readout);
-
-        var resume = WorkshopUi.PixelButton(panel, "Resume Game", new Rect(60, 198, 540, 72),
+        MakePanel(WorkshopTitle.GameName + " · 暂停");
+        var resumeButton = WorkshopUi.PixelButton(panel, "Resume Minigame", new Rect(125, 120, 370, 76),
             "继续游戏", () => CloseMenu(true), true, 32);
-        float exitRow = hasMinigameActions ? 360f : 282f;
-        var mainMenu = WorkshopUi.PixelButton(panel, "Return to Main Menu", new Rect(60, exitRow, 258, 64),
-            "返回主菜单", () => ShowConfirmation("返回主菜单？", "确认返回", ReturnToTitle), false, 28);
-        var quit = WorkshopUi.PixelButton(panel, "Quit Game", new Rect(342, exitRow, 258, 64),
-            "退出游戏", () => ShowConfirmation("退出游戏？", "确认退出", WorkshopTitle.QuitApplication), false, 28);
-
-        if (hasMinigameActions)
-        {
-            var retry = WorkshopUi.PixelButton(panel, "Restart Minigame", new Rect(60, 282, 258, 64),
-                "重试小游戏", () => RequestMinigameAction(restart, "重新开始本轮？", "确认重试"), false, 28);
-            var station = WorkshopUi.PixelButton(panel, "Leave Minigame", new Rect(342, 282, 258, 64),
-                "返回原工位", () => RequestMinigameAction(leave, "返回原工位？", "确认返回"), false, 28);
-            SetNavigation(resume, retry, station, mainMenu, quit, volume);
-            LinkHorizontal(retry, station);
-        }
-        else SetNavigation(resume, mainMenu, quit, volume);
-        LinkHorizontal(mainMenu, quit);
+        WorkshopUi.PixelButton(panel, "Restart Minigame", new Rect(125, 219, 370, 69),
+            "重试小游戏", () => RequestAction(restart, true), false, 29);
+        WorkshopUi.PixelButton(panel, "Leave Minigame", new Rect(125, 313, 370, 69),
+            "返回原工位", () => RequestAction(leave, false), false, 29);
+        Select(resumeButton.gameObject);
     }
 
-    private void RequestMinigameAction(Action action, string title, string label)
+    private void RequestAction(Action action, bool retry)
     {
         if (pausedMenu != this) return;
         if (!(hasRunProgress?.Invoke() ?? false))
@@ -172,38 +103,28 @@ internal sealed class WorkshopMinigameMenu : MonoBehaviour
             return;
         }
 
-        ShowConfirmation(title, label, action, "本轮进度会清空。\n已记入工坊的成果会保留。");
-    }
-
-    private void ShowConfirmation(string title, string label, Action action, string notice = "已保存的进度会保留。")
-    {
         pendingAction = action;
-        MakePanel(title, 334f);
-        WorkshopUi.Label(panel, "Progress Notice", new Rect(60, 130, 540, 72),
-            notice, 28, WorkshopUi.Ink, TextAnchor.MiddleCenter, WorkshopArt.ReadingFont);
-        var back = WorkshopUi.PixelButton(panel, "Cancel Pause Action", new Rect(60, 222, 258, 68),
+        MakePanel(retry ? "重新开始本轮？" : "返回原工位？");
+        WorkshopUi.Label(panel, "Progress Notice", new Rect(62, 126, 496, 104),
+            "本轮进度会清空。\n已记入工坊的成果会保留。", 29, WorkshopUi.Ink, TextAnchor.MiddleCenter);
+        var back = WorkshopUi.PixelButton(panel, "Cancel Minigame Action", new Rect(61, 297, 226, 70),
             "取消", ShowOptions, false, 30);
-        var confirm = WorkshopUi.PixelButton(panel, "Confirm Pause Action", new Rect(342, 222, 258, 68),
-            label, () => FinishAction(pendingAction), true, 30, WorkshopUi.Clay);
-        SetNavigation(back, confirm);
-        LinkHorizontal(back, confirm);
+        WorkshopUi.PixelButton(panel, "Confirm Minigame Action", new Rect(333, 297, 226, 70),
+            retry ? "确认重试" : "确认返回", () => FinishAction(pendingAction), true, 30, WorkshopUi.Clay);
+        Select(back.gameObject);
     }
 
-    private void MakePanel(string title, float height)
+    private void MakePanel(string title)
     {
         if (panel != null)
         {
             panel.gameObject.SetActive(false);
             Destroy(panel.gameObject);
         }
-        var bounds = new Rect((1920f - PanelWidth) / 2f, (1080f - height) / 2f, PanelWidth, height);
-        panel = WorkshopUi.PixelCard(pauseFrame, "Pause Options", bounds, WorkshopUi.Paper, WorkshopUi.Bronze);
-        WorkshopUi.Label(panel, "Pause Title", new Rect(60, 35, 540, 58), title, 40,
+        panel = WorkshopUi.PixelCard(pauseFrame, "Pause Options", PanelBounds, WorkshopUi.Paper, WorkshopUi.Bronze);
+        WorkshopUi.Label(panel, "Pause Title", new Rect(47, 32, 526, 58), title, 38,
             WorkshopUi.Green, TextAnchor.MiddleCenter);
-        WorkshopUi.Fill(panel, "Divider", new Rect(60, 108, 540, 2), WorkshopUi.Bronze);
     }
-
-    private static void ReturnToTitle() => SceneManager.LoadScene(WorkshopTitle.SceneName);
 
     private void FinishAction(Action action)
     {
@@ -216,52 +137,13 @@ internal sealed class WorkshopMinigameMenu : MonoBehaviour
     {
         if (pausedMenu != this) return;
         pausedMenu = null;
-        lastCloseFrame = Time.frameCount;
         Time.timeScale = previousTimeScale;
-        PlayerPrefs.Save();
         WorkshopUi.CloseCanvas(pauseFrame);
         pauseFrame = null;
         panel = null;
         pendingAction = null;
-        navigation = null;
         Select(restoreSelection ? previousSelection : null);
         previousSelection = null;
-    }
-
-    private void SetNavigation(params Selectable[] options)
-    {
-        navigation = options;
-        for (int i = 0; i < options.Length; i++)
-        {
-            options[i].navigation = new Navigation
-            {
-                mode = Navigation.Mode.Explicit,
-                selectOnUp = options[(i + options.Length - 1) % options.Length],
-                selectOnDown = options[(i + 1) % options.Length]
-            };
-        }
-        Select(options[0].gameObject);
-    }
-
-    private static void LinkHorizontal(Selectable left, Selectable right)
-    {
-        var leftNavigation = left.navigation;
-        var rightNavigation = right.navigation;
-        leftNavigation.selectOnRight = right;
-        rightNavigation.selectOnLeft = left;
-        left.navigation = leftNavigation;
-        right.navigation = rightNavigation;
-    }
-
-    private void SelectNext()
-    {
-        if (EventSystem.current == null) return;
-        var selected = EventSystem.current.currentSelectedGameObject;
-        int index = Array.FindIndex(navigation, option => option.gameObject == selected);
-        bool reverse = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
-        if (index < 0) index = reverse ? 0 : navigation.Length - 1;
-        int next = (index + (reverse ? -1 : 1) + navigation.Length) % navigation.Length;
-        Select(navigation[next].gameObject);
     }
 
     private static void Select(GameObject target)

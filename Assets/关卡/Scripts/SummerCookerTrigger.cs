@@ -20,13 +20,20 @@ public class SummerCookerTrigger : MonoBehaviour
     public float buttonOpacity = 0.9f;
 
     [Header("提示文案")]
-    public string missingBothTitle = "煮茧前需备齐水和木柴";
+    public string missingBothTitle = "条件未满足";
     public string missingWaterTitle = "缺少水";
-    [TextArea] public string missingWaterMsg = "点击水源取水。";
+    [TextArea] public string missingWaterMsg = "请先到“水源”处取水，再来煮茧。";
     public string missingWoodTitle = "缺少木柴";
-    [TextArea] public string missingWoodMsg = "点击木柴拾取。";
+    [TextArea] public string missingWoodMsg = "请先拾取“木柴”，再来煮茧。";
 
     private FloatingActionButton _floatBtn;
+    private void Update()
+    {
+        if (_floatBtn == null) return;
+        string label = !WorkshopProgress.Has(WorkshopItem.Spool) ? "小满 · 寻找线轴" :
+            !WorkshopProgress.HasStep(WorkshopWordRules.Reeled) ? "小满 · 缫丝绕轴" : "小满 · 缫丝已完成";
+        if (_floatBtn.buttonText != label) _floatBtn.SetText(label);
+    }
 
     private void Start()
     {
@@ -57,6 +64,18 @@ public class SummerCookerTrigger : MonoBehaviour
 
     private void ContinueAtCooker()
     {
+        if (WorkshopProgress.Has(WorkshopItem.Spool))
+        {
+            _floatBtn.Hide();
+            if (WorkshopWordRules.HasDelivery(WorkshopSeason.Summer))
+            {
+                SimplePopup.Show("练丝备料已完成", "缫丝与接水管备料都已完成。带盐、线轴和索绪回工坊交付夏季成果，不用重做。", "知道了");
+                return;
+            }
+            if (!WorkshopProgress.HasStep(WorkshopWordRules.Reeled)) WorkshopSimpleGames.Show(WorkshopSimpleGame.Reeling);
+            else SimplePopup.Show("缫丝已完成", "走近右侧缫丝车，点击「绕丝上轴」完成丝路接接乐。", "知道了");
+            return;
+        }
         bool hasWater = SummerItemInteraction.WaterCollected;
         bool hasWood = SummerItemInteraction.WoodCollected;
 
@@ -67,7 +86,7 @@ public class SummerCookerTrigger : MonoBehaviour
             if (!hasWater && !hasWood)
             {
                 title = missingBothTitle;
-                msg = missingWaterMsg + "\n" + missingWoodMsg;
+                msg = missingWaterMsg + "\n\n" + missingWoodMsg;
             }
             else if (!hasWater)
             {

@@ -13,13 +13,12 @@ public sealed class WorkshopTitle : MonoBehaviour
     private const string CoverResource = "WorkshopFinish/TitleCover";
     private const int PostOfficeButtonIndex = 3;
     private const int HeritageButtonIndex = 4;
-    private const int QuitButtonIndex = 5;
 
     private static readonly Color Jade = new Color32(41, 83, 68, 255);
     private static readonly Color Red = new Color32(156, 78, 66, 255);
     private static readonly Color Gold = new Color32(197, 159, 92, 255);
 
-    private static readonly float[] ButtonTops = { 537f, 629f, 722f, 810f, 810f, 878f };
+    private static readonly float[] ButtonTops = { 537f, 629f, 722f, 810f, 810f };
     private readonly UnityEngine.UI.Button[] menuButtons = new UnityEngine.UI.Button[ButtonTops.Length];
     private readonly RectTransform[] focusMarks = new RectTransform[ButtonTops.Length];
     private RectTransform frame;
@@ -77,9 +76,6 @@ public sealed class WorkshopTitle : MonoBehaviour
         var heritageButton = AddMenuButton(menu, HeritageButtonIndex, "Title Heritage Sources", "新闻与来源",
             ShowHeritage, true, cover != null);
         menuButtons[HeritageButtonIndex] = heritageButton;
-        var quitButton = AddMenuButton(menu, QuitButtonIndex, "Title Quit Game", "退出游戏",
-            ShowQuitConfirmation, true, cover != null);
-        menuButtons[QuitButtonIndex] = quitButton;
         if (!canContinue && cover != null)
         {
             var tint = WorkshopUi.Fill(menuButtons[1].transform, "Continue Unavailable",
@@ -89,7 +85,7 @@ public sealed class WorkshopTitle : MonoBehaviour
 
         SetNavigation(canContinue
             ? menuButtons
-            : new UnityEngine.UI.Selectable[] { menuButtons[0], menuButtons[2], postOfficeButton, heritageButton, quitButton });
+            : new UnityEngine.UI.Selectable[] { menuButtons[0], menuButtons[2], postOfficeButton, heritageButton });
         Select(menuButtons[0]);
     }
 
@@ -98,14 +94,8 @@ public sealed class WorkshopTitle : MonoBehaviour
     {
         bool isShortcut = index >= PostOfficeButtonIndex;
         // Keep the first three targets aligned to the cover's painted buttons.
-        float left = index switch
-        {
-            HeritageButtonIndex => 318f,
-            QuitButtonIndex => 237f,
-            _ => 156f
-        };
-        float height = index == QuitButtonIndex ? 46f : isShortcut ? 60f : 75f;
-        var bounds = CoverRect(left, ButtonTops[index], isShortcut ? 156f : 325f, height);
+        float left = index == HeritageButtonIndex ? 318f : 156f;
+        var bounds = CoverRect(left, ButtonTops[index], isShortcut ? 156f : 325f, isShortcut ? 60f : 75f);
         bool useCoverButton = hasCoverArt && !isShortcut;
         var button = WorkshopUi.Button(menu, name, bounds, "", action, useCoverButton ? Color.clear : Jade, enabled);
         if (useCoverButton)
@@ -183,32 +173,13 @@ public sealed class WorkshopTitle : MonoBehaviour
             CloseModal();
             ShowOpening();
         }, Red);
-        SetConfirmationNavigation(cancel, confirm);
-    }
-
-    private void ShowQuitConfirmation()
-    {
-        RectTransform panel = OpenModal("Title Quit Confirmation", "退出游戏？", menuButtons[QuitButtonIndex], 326f);
-        var cancel = DialogButton(panel, "Title Cancel Quit", new Rect(130f, 192f, 310f, 72f), "取消", CloseModal, Jade);
-        var confirm = DialogButton(panel, "Title Confirm Quit", new Rect(524f, 192f, 310f, 72f), "确认退出", QuitGame, Red);
-        SetConfirmationNavigation(cancel, confirm);
-    }
-
-    private void QuitGame()
-    {
-        if (leaving) return;
-        leaving = true;
-        QuitApplication();
-    }
-
-    internal static void QuitApplication()
-    {
-        PlayerPrefs.Save();
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
+        SetModalNavigation(cancel, confirm);
+        var cancelNav = cancel.navigation;
+        var confirmNav = confirm.navigation;
+        cancelNav.selectOnLeft = cancelNav.selectOnRight = confirm;
+        confirmNav.selectOnLeft = confirmNav.selectOnRight = cancel;
+        cancel.navigation = cancelNav;
+        confirm.navigation = confirmNav;
     }
 
     private void ShowOpening()
@@ -261,7 +232,7 @@ public sealed class WorkshopTitle : MonoBehaviour
         RectTransform panel = OpenModal("Title Settings Dialog", "游戏设置", menuButtons[2]);
         Label(panel, "Master Volume Label", new Rect(125f, 150f, 285f, 67f), "总音量", 32, Jade);
         var readout = Label(panel, "Master Volume Value", new Rect(737f, 150f, 99f, 67f), "", 30, Jade);
-        var slider = CreateVolumeSlider(panel, new Rect(380f, 162f, 345f, 44f), readout);
+        var slider = CreateVolumeSlider(panel, readout);
 
         Label(panel, "Fullscreen Label", new Rect(125f, 242f, 285f, 67f), "显示模式", 32, Jade);
         UnityEngine.UI.Button mode = null;
@@ -278,35 +249,24 @@ public sealed class WorkshopTitle : MonoBehaviour
         SetModalNavigation(slider, mode, back);
     }
 
-    internal static UnityEngine.UI.Slider CreateVolumeSlider(RectTransform panel, Rect bounds, UnityEngine.UI.Text readout)
+    private UnityEngine.UI.Slider CreateVolumeSlider(RectTransform panel, UnityEngine.UI.Text readout)
     {
-        const float trackInset = 8f;
-        const float trackHeight = 10f;
-        const float handleHeight = 30f;
-        float trackWidth = bounds.width - 2f * trackInset;
-
-        var sliderHit = WorkshopUi.Fill(panel, "Master Volume Slider", bounds,
+        var sliderHit = WorkshopUi.Fill(panel, "Title Master Volume", new Rect(380f, 162f, 345f, 44f),
             new Color32(255, 255, 255, 1));
         sliderHit.raycastTarget = true;
         RectTransform sliderArea = sliderHit.rectTransform;
-        var track = WorkshopUi.Fill(sliderArea, "Volume Track",
-            new Rect(trackInset, (bounds.height - trackHeight) * 0.5f, trackWidth, trackHeight),
-            new Color32(174, 157, 115, 255)).rectTransform;
-        var level = WorkshopUi.Fill(track, "Volume Level", new Rect(0f, 0f, trackWidth, trackHeight), Jade).rectTransform;
-        level.anchorMin = Vector2.zero;
-        level.anchorMax = Vector2.one;
-        level.offsetMin = level.offsetMax = Vector2.zero;
-        var handleTrack = WorkshopUi.Rect(sliderArea, "Handle Track", new Rect(trackInset, 0f, trackWidth, bounds.height));
-        var handle = WorkshopUi.Fill(handleTrack, "Volume Handle", new Rect(0f, 0f, 18f, handleHeight), Jade);
+        WorkshopUi.Fill(sliderArea, "Volume Track", new Rect(8f, 17f, 329f, 10f),
+            new Color32(174, 157, 115, 255));
+        var handleTrack = WorkshopUi.Rect(sliderArea, "Handle Track", new Rect(8f, 0f, 329f, 44f));
+        var handle = WorkshopUi.Fill(handleTrack, "Volume Handle", new Rect(0f, 0f, 18f, 30f), Jade);
         handle.rectTransform.pivot = new Vector2(0.5f, 0.5f);
         handle.rectTransform.anchorMin = Vector2.zero;
         handle.rectTransform.anchorMax = Vector2.up;
-        handle.rectTransform.sizeDelta = new Vector2(18f, handleHeight - bounds.height);
+        handle.rectTransform.sizeDelta = new Vector2(18f, -14f);
         handle.rectTransform.anchoredPosition = Vector2.zero;
         handle.raycastTarget = true;
         var slider = sliderArea.gameObject.AddComponent<UnityEngine.UI.Slider>();
         slider.targetGraphic = handle;
-        slider.fillRect = level;
         slider.handleRect = handle.rectTransform;
         slider.minValue = 0;
         slider.maxValue = 100;
@@ -325,14 +285,13 @@ public sealed class WorkshopTitle : MonoBehaviour
     private static string FullscreenLabel() =>
         PlayerPrefs.GetInt(FullscreenKey, Screen.fullScreen ? 1 : 0) != 0 ? "全屏" : "窗口";
 
-    private RectTransform OpenModal(string name, string title, UnityEngine.UI.Button origin, float height = 516f)
+    private RectTransform OpenModal(string name, string title, UnityEngine.UI.Button origin)
     {
         BlockMenu(origin);
         modal = WorkshopUi.Rect(frame, name, new Rect(0f, 0f, 1920f, 1080f));
         var shade = WorkshopUi.Fill(modal, "Title Modal Shade", new Rect(0f, 0f, 1920f, 1080f), new Color32(29, 46, 40, 175));
         shade.raycastTarget = true;
-        var panel = WorkshopUi.Panel(modal, "Title Modal Frame", new Rect(480f, (1080f - height) * 0.5f, 960f, height),
-            WorkshopArt.WorkshopTaskBoard).rectTransform;
+        var panel = WorkshopUi.Panel(modal, "Title Modal Frame", new Rect(480f, 282f, 960f, 516f), WorkshopArt.WorkshopTaskBoard).rectTransform;
         Label(panel, "Title Modal Heading", new Rect(130f, 66f, 700f, 68f), title, 49, Jade);
         WorkshopUi.Fill(panel, "Title Modal Rule", new Rect(118f, 140f, 724f, 2f), Gold);
         return panel;
@@ -370,17 +329,6 @@ public sealed class WorkshopTitle : MonoBehaviour
         modalNavigation = options;
         SetNavigation(options);
         Select(options[0]);
-    }
-
-    private void SetConfirmationNavigation(UnityEngine.UI.Button cancel, UnityEngine.UI.Button confirm)
-    {
-        SetModalNavigation(cancel, confirm);
-        var cancelNav = cancel.navigation;
-        var confirmNav = confirm.navigation;
-        cancelNav.selectOnLeft = cancelNav.selectOnRight = confirm;
-        confirmNav.selectOnLeft = confirmNav.selectOnRight = cancel;
-        cancel.navigation = cancelNav;
-        confirm.navigation = confirmNav;
     }
 
     private static void SetNavigation(UnityEngine.UI.Selectable[] options)

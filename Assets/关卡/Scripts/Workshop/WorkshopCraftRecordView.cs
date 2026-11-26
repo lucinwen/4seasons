@@ -7,21 +7,15 @@ using UnityEngine.EventSystems;
 internal sealed class WorkshopCraftRecordView : MonoBehaviour
 {
     internal const int CanvasOrder = 18100;
-    private static readonly Rect ChapterArtwork = new Rect(102, 225, 1008, 567.3f);
-    private static readonly Rect[] PrintedInstructions =
-    {
-        new Rect(321, 550, 589, 87), new Rect(310, 510, 522, 80),
-        new Rect(466, 571, 551, 83), new Rect(406, 530, 531, 83)
-    };
+    private static readonly Rect ChapterArtwork = new Rect(330, 120, 1260, 709);
     private static readonly Rect[] PrintedButtons =
     {
         new Rect(610, 705, 424, 82), new Rect(635, 785, 400, 78),
         new Rect(650, 695, 369, 78), new Rect(675, 691, 312, 83)
     };
-    private static readonly int[] ChapterTerm = { 5, 5, 4, 1 };
     private static readonly string[][] ChapterSteps =
     {
-        new[] { "桑叶", "养蚕", "结茧" }, new[] { "择茧", "缫丝", "生丝" },
+        new[] { "桑叶", "养蚕", "结茧" }, new[] { "择茧", "缫丝", "丝束" },
         new[] { "引纬", "织坯", "素绸" }, new[] { "染布", "裁片", "成衣" }
     };
     private static readonly string[] ChapterNotes =
@@ -39,6 +33,8 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
     private GameObject previousSelection;
     private Action onClose;
     private int resumedFrame = -1;
+    private RectTransform processFrame;
+    private GameObject processSelection;
 
     internal static bool IsOpen => current != null;
     internal static bool BlocksWorldInput => IsOpen || closedFrame == Time.frameCount;
@@ -95,10 +91,6 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
         if (cover != null)
         {
             WorkshopUi.Picture(frame, "Original Chapter Completion", ChapterArtwork, cover);
-            // These printed areas are contextual controls in the result screen after the reward has been granted.
-            Rect note = FromArtwork(PrintedInstructions[index]);
-            WorkshopUi.Fill(frame, "Updated Status Surface", note, WorkshopUi.Paper);
-            Label(frame, "Reward Stored", note, index == 3 ? "成衣已经缝好。" : "本章成果已经入库。", 28);
             close = WorkshopUi.PixelButton(frame, "Continue from Result", FromArtwork(PrintedButtons[index]),
                 "继续", Close, true, 32);
         }
@@ -113,47 +105,65 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
                 "继续", Close, true, 32);
         }
 
-        var side = WorkshopUi.PixelCard(frame, "Chapter Record", new Rect(1142, 157, 675, 765),
-            WorkshopUi.Paper, WorkshopUi.Bronze);
-        Label(side, "Heading", new Rect(40, 30, 595, 57), "本章记录", 39);
-        HeaderRule(side, 100);
-
-        var process = WorkshopUi.Rect(side, "Process", new Rect(35, 179, 605, 233));
-        DrawChapterSteps(process, season, assets != null ? assets.GreigeSilk : null);
-        Label(process, "Craft Note", new Rect(10, 145, 585, 83), ChapterNotes[index], 25, TextAnchor.UpperLeft);
-        process.gameObject.SetActive(false);
-        var collapse = WorkshopUi.PixelButton(side, "Toggle Process", new Rect(41, 116, 247, 54), "展开工序", null, true, 28);
-        var collapseLabel = collapse.GetComponentInChildren<UnityEngine.UI.Text>();
-        collapse.onClick.AddListener(() =>
-        {
-            bool expanded = !process.gameObject.activeSelf;
-            process.gameObject.SetActive(expanded);
-            collapseLabel.text = expanded ? "收起工序" : "展开工序";
-        });
-
-        Label(side, "Observed Heading", new Rect(40, 400, 595, 48), "观察记录", 30, TextAnchor.MiddleLeft);
-        int count = 0;
+        var observations = new List<WorkshopObservation>();
         foreach (var observation in WorkshopObservationView.ObservationsFor(season))
+            if (WorkshopObservationView.HasRecord(observation)) observations.Add(observation);
+
+        int actions = observations.Count + 2;
+        float width = (ChapterArtwork.width - (actions - 1) * 16) / actions;
+        int action = 0;
+        SecondaryButton("Toggle Process", action++, width, "展开工序",
+            () => OpenChapterProcess(season, assets != null ? assets.GreigeSilk : null));
+        foreach (var observation in observations)
         {
             var id = observation;
-            if (!WorkshopObservationView.HasRecord(id)) continue;
-            WorkshopUi.PixelButton(side, "Observation " + id, new Rect(40, 453 + count * 53, 595, 46),
-                WorkshopObservationView.RecordTitle(id), () => OpenChild(done => WorkshopObservationView.ShowRecord(id, done)),
-                false, 26);
-            count++;
+            SecondaryButton("Observation " + id, action++, width, WorkshopObservationView.RecordTitle(id),
+                () => OpenChild(done => WorkshopObservationView.ShowRecord(id, done)));
         }
-        if (count == 0)
-            Label(side, "No Observation", new Rect(40, 457, 595, 57), "回访工位可补记观察。", 25);
-
-        int term = ChapterTerm[index];
-        bool hasTerm = WorkshopProgress.HasSolarTerms(season) && WorkshopArt.SolarCard(season, term) != null;
-        var solar = WorkshopUi.PixelButton(side, "Related Solar Card", new Rect(40, 681, 277, 55),
-            WorkshopArt.SolarNames(season)[term] + "节气卡", () => OpenChild(done => WorkshopKnowledgeView.ShowTerm(season, term, done)),
-            false, 27);
-        solar.interactable = hasTerm;
-        WorkshopUi.PixelButton(side, "Regional Sources", new Rect(336, 681, 299, 55),
-            "地方工艺与来源", () => OpenChild(done => WorkshopHeritageBrief.ShowSeason(season, done)), true, 27);
+        SecondaryButton("Regional Sources", action, width, "地方工艺与来源",
+            () => OpenChild(done => WorkshopHeritageBrief.ShowSeason(season, done)));
         KeepFocusIn(frame, close);
+    }
+
+    private void SecondaryButton(string name, int column, float width, string text, Action clicked)
+    {
+        var button = WorkshopUi.PixelButton(frame, name,
+            new Rect(ChapterArtwork.x + column * (width + 16), 850, width, 56), text, clicked, false, 26);
+        var label = button.GetComponentInChildren<UnityEngine.UI.Text>();
+        label.resizeTextForBestFit = true;
+        label.resizeTextMinSize = 20;
+        label.resizeTextMaxSize = 26;
+    }
+
+    private void OpenChapterProcess(WorkshopSeason season, Sprite greigeSilk)
+    {
+        if (processFrame != null || !controls.interactable) return;
+        processSelection = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
+        controls.alpha = 0;
+        controls.interactable = false;
+        controls.blocksRaycasts = false;
+        processFrame = WorkshopUi.NewCanvas("Workshop Chapter Process", CanvasOrder + 50);
+        var board = WorkshopUi.PixelCard(processFrame, "Chapter Process Detail", new Rect(550, 290, 820, 500),
+            WorkshopUi.Paper, WorkshopUi.Bronze);
+        Label(board, "Process Title", new Rect(70, 34, 680, 62), WorkshopProgress.SeasonName(season) + "季工序", 40);
+        var process = WorkshopUi.Rect(board, "Process", new Rect(94, 127, 632, 233));
+        DrawChapterSteps(process, season, greigeSilk);
+        Label(process, "Craft Note", new Rect(10, 145, 612, 83), ChapterNotes[(int)season], 25, TextAnchor.UpperLeft);
+        var back = WorkshopUi.PixelButton(board, "Close Chapter Process", new Rect(285, 400, 250, 62),
+            "返回", CloseChapterProcess, false, 28);
+        KeepFocusIn(processFrame, back);
+    }
+
+    private void CloseChapterProcess()
+    {
+        if (processFrame == null) return;
+        WorkshopUi.CloseCanvas(processFrame);
+        processFrame = null;
+        controls.alpha = 1;
+        controls.interactable = true;
+        controls.blocksRaycasts = true;
+        resumedFrame = Time.frameCount;
+        Select(processSelection);
     }
 
     private static void DrawChapterSteps(Transform parent, WorkshopSeason season, Sprite greigeSilk)
@@ -226,27 +236,22 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
         else WorkshopUi.PixelCard(frame, "Production Board", bounds, WorkshopUi.Paper, WorkshopUi.Bronze);
         var content = WorkshopUi.Rect(frame, "Production Journey", bounds);
         Label(content, "Title", new Rect(595, 131, 482, 68), "制作记录", 47);
-        var terms = new[]
+        string[] processes = { "春 · 采桑浴蚕与喂蚕", "夏 · 下簇缫丝与备料", "秋 · 织造染色与攀花", "冬 · 剪帛量体与缝衣" };
+        for (int i = 0; i < processes.Length; i++)
         {
-            WorkshopObservation.MangzhongCocoon,
-            WorkshopObservation.LidongDye,
-            WorkshopObservation.DaxueSewing, WorkshopObservation.DongzhiFitting
-        };
-        for (int i = 0; i < terms.Length; i++)
-        {
-            var term = terms[i];
-            bool recorded = WorkshopObservationView.HasRecord(term);
-            bool practice = WorkshopObservationView.CanPracticeGarmentWorkshop(term);
-            var view = WorkshopUi.PixelButton(content, "Order Term " + term,
-                new Rect(393 + i % 5 * 180, 211 + i / 5 * 54, 170, 47),
-                WorkshopObservationView.RecordTerm(term) + (recorded ? " · 回看" : practice ? " · 试玩" : " · 待录"),
-                () => OpenChild(done => WorkshopObservationView.OpenRecordOrGarmentPractice(term, done)), recorded || practice, 22);
-            view.interactable = recorded || practice;
+            var season = (WorkshopSeason)i;
+            bool recorded = WorkshopProgress.IsComplete(season);
+            Label(content, "Chapter Process " + season,
+                new Rect(401 + i % 2 * 436, 211 + i / 2 * 54, 425, 47),
+                processes[i] + (recorded ? " · 已完成" : " · 待完成"),
+                24);
         }
+        Label(content, "Journey", new Rect(429, 329, 811, 55), "从一片桑叶到一件成衣", 30);
+
         string garmentId = WorkshopProgress.GarmentId;
         var garment = WorkshopArt.Garment(garmentId);
         Sprite[] stages = { WorkshopObservationArt.Current?.Leaf, Product(0), Product(1), Product(2), garment };
-        string[] names = { "桑叶", "蚕茧", "生丝", "素绸", garment != null ? WorkshopTailor.GarmentName(garmentId) : "成衣图未记录" };
+        string[] names = { "桑叶", "蚕茧", "丝束", "素绸", garment != null ? WorkshopTailor.GarmentName(garmentId) : "成衣图未记录" };
         for (int i = 0; i < stages.Length; i++)
         {
             float x = 398 + i * 183;
@@ -280,6 +285,11 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
 
     private void Update()
     {
+        if (current == this && processFrame != null)
+        {
+            if (Input.GetKeyDown(KeyCode.Escape)) CloseChapterProcess();
+            return;
+        }
         if (current != this || !controls.interactable || resumedFrame == Time.frameCount ||
             WorkshopDialoguePresenter.BlocksWorldInput || WorkshopObservationView.BlocksWorldInput || WorkshopHeritageBrief.IsOpen)
             return;
@@ -298,6 +308,7 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (processFrame != null) WorkshopUi.CloseCanvas(processFrame);
         if (current == this) current = null;
     }
 
@@ -329,9 +340,6 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
 
         if (initial != null) Select(initial.gameObject);
     }
-
-    private static void HeaderRule(Transform parent, float y) =>
-        WorkshopUi.Fill(parent, "Heading Rule", new Rect(40, y, 595, 2), WorkshopUi.Bronze);
 
     private static void DrawArrow(Transform parent, float x, float y)
     {

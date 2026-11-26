@@ -20,8 +20,7 @@ public class WinterGrindingClickTarget : MonoBehaviour
     private void Update()
     {
         if (WinterGrindingOverlay.IsActive) return;
-        bool pressed = Input.GetMouseButtonDown(0);
-        if (WorkshopQuestGuide.BlocksWorldInput || (!pressed && !WorkshopPointer.CanShowWorldHint)) return;
+        if (WorkshopQuestGuide.BlocksWorldInput || !Input.GetMouseButtonDown(0)) return;
 
         // 点在 UI 上时不触发世界点击
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
@@ -32,17 +31,20 @@ public class WinterGrindingClickTarget : MonoBehaviour
         Vector3 world = cam.ScreenToWorldPoint(Input.mousePosition);
         if (!_collider.OverlapPoint(world)) return;
 
-        WorkshopPointer.PointAtWorldTarget();
-        if (!pressed) return;
-
         TryOpen();
     }
 
     private void TryOpen()
     {
+        if (!WorkshopProgress.HasStep("autumn.mortar"))
+        {
+            SimplePopup.Show("发现研钵", "收下研钵，和研磨棒一起用于青染轩的染材研磨。", "收下", () =>
+                WorkshopProgress.MarkStep("autumn.mortar"));
+            return;
+        }
         if (!WinterLevelState.HasGrindingRod)
         {
-            SimplePopup.Show("缺少研磨棒", "在染坊里点击研磨棒拾取。", "知道了", null);
+            SimplePopup.Show("研磨", "还没有研磨棒，先去场景里找到并点击研磨棒。", "知道了", null);
             return;
         }
 

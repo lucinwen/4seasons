@@ -72,12 +72,13 @@ internal sealed class WorkshopSynthesis : MonoBehaviour
 
         DrawArrow();
         DrawOutputTray(artwork);
+        WorkshopStorageView.Label(table, "Output Heading", new Rect(1380, 348, 354, 29),
+            "成品", 24, ink, TextAnchor.MiddleCenter);
         WorkshopStorageView.Label(table, "Product Name", new Rect(1407, 627, 300, 55),
             WorkshopProgress.ProductName(season), 34, artwork != null ? WorkshopUi.Cream : ink, TextAnchor.MiddleCenter);
         var productArt = season == WorkshopSeason.Winter
             ? completed ? WorkshopArt.Garment(WorkshopProgress.GarmentId) :
-                WorkshopProgress.SeasonalOrderEnabled ? WorkshopArt.Garment(WorkshopProgress.SeasonalGarmentId) :
-                    WorkshopTailor.PreviewForDye(WorkshopProgress.DyedColor)
+                WorkshopTailor.PreviewForDye(WorkshopProgress.DyedColor)
             : Resources.Load<Sprite>("WorkshopFinish/" + ProductAssets[(int)season]);
         if (productArt == null) productArt = WorkshopArt.ChapterProduct(season);
         product = WorkshopUi.Picture(table, "Synthesis Product", ProductBounds, productArt);
@@ -117,6 +118,14 @@ internal sealed class WorkshopSynthesis : MonoBehaviour
         for (int i = 0; i < outline.Length; i++) outline[i] = Vector2.Scale(outline[i], scale);
         outputTray.OverrideGeometry(outline, new ushort[] { 0, 1, 2, 0, 2, 3, 0, 3, 4, 0, 4, 5, 0, 5, 6, 0, 6, 7 });
         WorkshopUi.Picture(table, "Output Slot", OutputBounds, outputTray, stretch: true).useSpriteMesh = true;
+    }
+
+    internal void ArrangeReadyMaterials()
+    {
+        if (Busy || completed || !unlocked || !WorkshopProgress.CanSubmit(season)) return;
+        for (int i = 0; i < items.Length; i++) assignments[i] = i;
+        Refresh();
+        status.text = "材料已备齐，点击开始合成。";
     }
 
     private void OnDestroy()
@@ -237,7 +246,7 @@ internal sealed class WorkshopSynthesis : MonoBehaviour
         if (!Busy && dragging < 0) WorkshopKnowledgeView.ShowItem(items[index]);
     }
 
-    internal void Refresh()
+    private void Refresh()
     {
         for (int i = 0; i < slots.Length; i++)
             slots[i].color = Array.IndexOf(assignments, i) >= 0 ? FilledCell : EmptyCell;
@@ -264,6 +273,7 @@ internal sealed class WorkshopSynthesis : MonoBehaviour
         tally.text = $"{count} / {items.Length}";
         if (completed) status.text = "本季成果已完成。";
         else if (!unlocked) status.text = "完成上一季后开放。";
+        else if (!WorkshopWordRules.HasDelivery(season)) status.text = "待完成：" + (WorkshopQuests.NextReady(season)?.Title ?? "本章工序");
         else if (count == items.Length) status.text = "材料已就位。";
         else
         {
@@ -278,16 +288,8 @@ internal sealed class WorkshopSynthesis : MonoBehaviour
         chapterResult.gameObject.SetActive(completed && !Busy);
         action.interactable = !Busy && dragging < 0 &&
             (completed ? season != WorkshopSeason.Winter : count == items.Length && WorkshopProgress.CanSubmit(season));
-        actionText.text = ActionLabel();
-    }
-
-    private string ActionLabel()
-    {
-        if (Busy) return "合成中";
-        if (season != WorkshopSeason.Winter)
-            return completed ? "前往" + WorkshopProgress.SeasonName(season + 1) + "季" : "开始合成";
-        if (completed) return "已交衣";
-        return WorkshopTailor.NextOrderActionLabel();
+        actionText.text = completed ? (season == WorkshopSeason.Winter ? "已缝制" : "前往" + WorkshopProgress.SeasonName(season + 1) + "季")
+            : Busy ? "合成中" : season == WorkshopSeason.Winter ? "选款缝制" : "开始合成";
     }
 
     private void CombineOrContinue()

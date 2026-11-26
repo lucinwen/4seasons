@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Qingming.LevelBackground;
 
-/// <summary>桑树采摘点。鼠标和 O 键使用同一入口。</summary>
+/// <summary>清明采桑工位。鼠标和 O 键使用同一入口。</summary>
 [RequireComponent(typeof(Collider2D))]
 public class SpringPrompt : MonoBehaviour
 {
@@ -10,13 +10,13 @@ public class SpringPrompt : MonoBehaviour
     [Tooltip("是否已拾取采桑篮（PickupItem 拾取时自动置 true）")]
     public static bool HasPickedBasket = false;
 
-    [Tooltip("是否已获得桑叶")]
+    [Tooltip("是否已获得桑叶（采桑小游戏通关后置 true）")]
     public static bool HasMulberryLeaves = false;
 
     [Tooltip("是否已拾取蚕种纸（浴蚕清洗的前置条件）")]
     public static bool HasEggPaper = false;
 
-    [Tooltip("是否已获得蚕宝宝")]
+    [Tooltip("是否已获得蚕宝宝（采桑小游戏通关后置 true）")]
     public static bool HasSilkwormBaby = false;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -51,6 +51,18 @@ public class SpringPrompt : MonoBehaviour
     [Range(0f, 1f)]
     public float buttonOpacity = 0.9f;
 
+    [Header("未拾取提示")]
+    [Tooltip("未拾取采桑篮时的提示标题")]
+    public string noBasketTitle = "需要采桑篮";
+
+    [Tooltip("未拾取采桑篮时的提示正文")]
+    [TextArea]
+    public string noBasketMessage = "先在春章收下采桑篮，再回到桑树前接桑叶。";
+
+    [Header("备用采桑场景")]
+    [Tooltip("采桑覆盖层不可用时加载此场景")]
+    public string gameSceneName = "MulberryHarvest";
+
     private FloatingActionButton _floatBtn;
     private bool playerNearby;
 
@@ -63,7 +75,7 @@ public class SpringPrompt : MonoBehaviour
     private void Awake()
     {
         _floatBtn = gameObject.AddComponent<FloatingActionButton>();
-        _floatBtn.Configure("采摘桑叶 · O", buttonOffset, CollectLeaves, FloatingActionButton.VisualStyle.PaperTag);
+        _floatBtn.Configure(StationLabel(), buttonOffset, OnEnterButtonClicked, FloatingActionButton.VisualStyle.PaperTag);
         _floatBtn.SetOpacity(buttonOpacity);
     }
 
@@ -78,7 +90,9 @@ public class SpringPrompt : MonoBehaviour
     {
         if (!IsPlayer(other)) return;
         playerNearby = true;
-        if (!SpringSummerNpcDialogue.HasHarvestedLeaves) _floatBtn?.Show();
+        if (HarvestOverlayManager.IsHarvestActive || _floatBtn == null) return;
+        _floatBtn.SetText(StationLabel());
+        _floatBtn.Show();
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -90,34 +104,41 @@ public class SpringPrompt : MonoBehaviour
 
     private void Update()
     {
-        if (playerNearby && Input.GetKeyDown(KeyCode.O)) CollectLeaves();
+        if (playerNearby && Input.GetKeyDown(KeyCode.O)) OnEnterButtonClicked();
     }
 
     private void OnDisable()
     {
         playerNearby = false;
-        _floatBtn?.Hide();
+        if (!HarvestOverlayManager.IsHarvestActive && _floatBtn != null) _floatBtn.Hide();
     }
 
-    private void CollectLeaves()
+    private void OnEnable() => _floatBtn?.SetText(StationLabel());
+
+    private void OnEnterButtonClicked()
     {
         if (WorkshopQuestGuide.BlocksWorldInput || WorkshopQuestGuide.IsWorldOverlayActive ||
-            SpringSummerNpcDialogue.HasHarvestedLeaves ||
             !SpringSummerNpcDialogue.RequireMulberryBriefing()) return;
 
         if (!SpringSummerNpcDialogue.HasHarvestBasket)
         {
-            SimplePopup.Show("需要采桑篮", "先收下采桑篮，再回到桑树前采摘桑叶。", "知道了");
+            SimplePopup.Show(noBasketTitle, noBasketMessage, "知道了", null);
             return;
         }
 
-        SpringSummerNpcDialogue.RecordHarvestedLeaves();
-        _floatBtn.Hide();
+        var harvest = HarvestOverlayManager.Instance;
+        if (harvest != null) harvest.ShowHarvest();
+        else SceneManager.LoadScene(gameSceneName);
     }
 
     private static bool IsPlayer(Collider2D other)
     {
         return other.CompareTag("Player") ||
                other.gameObject.name.Equals("Player", System.StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string StationLabel()
+    {
+        return WorkshopObservationView.HasRecord(WorkshopObservation.QingmingMulberry) ? "清明采桑 · 再玩 · O" : "清明采桑 · O";
     }
 }

@@ -26,7 +26,7 @@ public class PickupItem : MonoBehaviour
     public string pickupTitle = "采桑篮";
 
     [Tooltip("拾取弹窗的正文")]
-    public string pickupMessage = "带到桑树前采摘桑叶。";
+    public string pickupMessage = "采桑篮：用来采集桑叶的篮子";
 
     [Tooltip("拾取弹窗的按钮文字")]
     public string pickupButtonText = "拾取";
@@ -137,20 +137,17 @@ public class PickupItem : MonoBehaviour
         if (_labelCanvas != null)
             _labelCanvas.SetActive(inRange);
 
-        bool pressed = Input.GetMouseButtonDown(0);
-        // Reuse the pickup hit test for the cursor without opening the pickup dialog on hover.
+        // 弹窗只能由玩家鼠标点击物品本身触发（不自动弹出、也不显示悬浮按钮）
         if (inRange && !_picked && _pickupPopup == null &&
-            (pressed || WorkshopPointer.CanShowWorldHint) && !IsPointerOverUI() && IsMouseOverSelf())
+            Input.GetMouseButtonDown(0) && !IsPointerOverUI() && IsMouseOverSelf())
         {
-            WorkshopPointer.PointAtWorldTarget();
-            if (!pressed) return;
             string step = WorkshopStep();
             if (step == "spring.basket" && !SpringSummerNpcDialogue.RequireMulberryBriefing()) return;
             if (step == "spring.eggPaper")
             {
                 if (!SpringSummerNpcDialogue.CanWash)
                 {
-                    SimplePopup.Show("先采桑喂蚕", "带桑叶到蚕架喂饱小蚕，再回来准备下一批蚕种。", "知道了");
+                    SimplePopup.Show("先去采桑", "先完成接桑叶，再回来准备蚕种。", "知道了", null);
                     return;
                 }
                 SpringSummerNpcDialogue.BeforeBath(ShowPickupPopup);
@@ -209,11 +206,11 @@ public class PickupItem : MonoBehaviour
         WorkshopProgress.MarkStep(WorkshopStep());
         Debug.Log($"[PickupItem] 拾取了: {itemName}");
 
-        // 采桑篮是从桑树上采摘桑叶的前置条件。
+        // 如果拾取的是采桑篮，通知触发点已可进入采桑游戏
         if (itemName.Contains("采桑篮"))
         {
             SpringPrompt.HasPickedBasket = true;
-            Debug.Log("[PickupItem] 已拾取采桑篮，可以采摘桑叶");
+            Debug.Log("[PickupItem] ✅ 已拾取采桑篮，采桑游戏已解锁");
         }
 
         // 如果拾取的是蚕种纸，解锁浴蚕清洗

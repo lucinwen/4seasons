@@ -48,16 +48,18 @@ namespace ShiXu.CocoonMatch
         private Coroutine notice;
         public CocoonMatchModel Model => model;
         public bool IsAnimating => busy;
-        internal bool CanPause => started && !busy && model?.State == CocoonGameState.Playing;
+        internal bool CanPause => started && model?.State == CocoonGameState.Playing;
 
         private void Start()
         {
+            MinigameUiPresentation.RestoreCocoonBackground(gameObject.scene);
             StylePresentation();
             restartButton.onClick.AddListener(RestartGame);
             resultRestartButton.onClick.AddListener(LeaveWorkshop);
             startButton.onClick.AddListener(BeginGame);
             returnButton.onClick.AddListener(ShowStartScreen);
             ShowStartScreen();
+            BeginGame();
         }
 
         private void StylePresentation()
@@ -92,8 +94,8 @@ namespace ShiXu.CocoonMatch
         public void ShowStartScreen()
         {
             RestartGame();
-            started = false;
-            startPanel.SetActive(true);
+            started = true;
+            startPanel.SetActive(false);
             RefreshViews();
         }
 
@@ -207,8 +209,8 @@ namespace ShiXu.CocoonMatch
             {
                 bool won = model.State == CocoonGameState.Won;
                 if (won) yield return new WaitForSecondsRealtime(.35f);
-                resultTitle.text = won ? "收茧完成" : "收集槽已满";
-                resultMessage.text = won ? "蚕茧和工具已收好。" : "收集槽有七格，凑齐三个同类即可腾出位置。";
+                resultTitle.text = won ? "收茧圆满" : "收集槽已满";
+                resultMessage.text = won ? "芒种收茧，寸丝成锦。\n全部蚕茧与工具都已收好！" : "七个位置已用尽。\n请重新开始，再试着凑齐三个同类。";
                 if (won)
                 {
                     MiniGameCompletionAnimation.PlayThen(MiniGameCompletionId.CocoonSorting, () => PresentEnd(won));
@@ -226,7 +228,7 @@ namespace ShiXu.CocoonMatch
             {
                 if (won)
                 {
-                    SimplePopup.ShowItem(WorkshopItem.Suoxu, "可与盐、线轴合成生丝。",
+                    SimplePopup.ShowItem(WorkshopItem.Suoxu, "收茧圆满，获得【索绪】",
                         () =>
                         {
                             ClaimReward();

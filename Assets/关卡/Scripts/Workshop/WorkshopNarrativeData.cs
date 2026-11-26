@@ -10,10 +10,11 @@ internal sealed class WorkshopSeasonNarrative
     public readonly string Area;
     public readonly string ClosingTitle;
     public readonly string ClosingBody;
+    public readonly string TransitionLabel;
 
     public WorkshopSeasonNarrative(string issue, string timeLabel, string announcementTitle,
         string announcementBody, string craft, string area, string closingTitle,
-        string closingBody)
+        string closingBody, string transitionLabel)
     {
         Issue = issue;
         TimeLabel = timeLabel;
@@ -23,6 +24,7 @@ internal sealed class WorkshopSeasonNarrative
         Area = area;
         ClosingTitle = closingTitle;
         ClosingBody = closingBody;
+        TransitionLabel = transitionLabel;
     }
 }
 
@@ -63,46 +65,50 @@ internal static class WorkshopNarrativeData
         new WorkshopSeasonNarrative(
             "春字第一号",
             "清明 · 谷雨",
-            "清明已至 · 采桑给蚕",
-            "清明前后回暖，桑芽舒展。带篮到桑树前采摘嫩叶，喂饱小蚕，再为下一批备好蚕种。",
-            "采桑喂蚕、备蚕种",
-            "春 · 桑园与蚕房",
-            "谷雨将尽 · 新茧入夏",
-            "这批蚕渐渐长大，上蔟结茧。到夏季的蚕茧簇架择茧，再把丝头接到丝轴。"),
+            "清明已至 谷雨将临",
+            "春气渐暖，桑芽初展。向蚕房师傅领任务，拾篮采桑，查验蚕种并完成浴蚕，再把桑叶拖给小蚕。",
+            "采桑、浴蚕、喂蚕",
+            "春日桑园 · 浴蚕平台 · 养蚕区",
+            "春季交付 新茧入夏",
+            "蚕种、桑叶和蚕宝宝已登记，获得蚕茧。道具保留，下一章学习下簇和缫丝。",
+            "清明谷雨 → 立夏小满"),
         new WorkshopSeasonNarrative(
             "夏字第一号",
-            "芒种 · 夏至",
-            "芒种收茧 · 理顺丝路",
-            "在蚕茧簇架择茧、转动线段接通丝路。收好盐和索绪，备水拾柴后去煮茧锅寻找线轴。",
-            "择茧、接通丝路、寻找线轴",
-            "夏 · 晾素轩与缫丝处",
-            "夏季交付 · 生丝入库",
-            "绕好的丝已经干妥，带着批签入库，给寒露的织机备料。"),
+            "立夏 · 小满 · 芒种 · 夏至",
+            "下簇缫丝 络丝备料",
+            "先在择茧草堂完成下簇。备好木材与水源，穿行迷宫寻找线轴，再移动导丝环均匀绕轴，接通丝路备料。",
+            "下簇、寻轴、缫丝、备料",
+            "择茧草堂 · 练丝坊",
+            "夏季交付 丝束入库",
+            "提交盐、线轴和索绪，获得丝束。秋季将用它学习织造、染色与攀花。",
+            "立夏小满芒种夏至 → 立秋白露"),
         new WorkshopSeasonNarrative(
             "秋字第一号",
-            "寒露 · 立冬",
-            "寒露纺织 · 秋色染布",
-            "修好织机，寒露纺织生坯绸。再领取糕点、备齐贡品酬蚕；之后拾锄采集染材、研磨染料并完成秋色染布，回工坊交付秋季成果。",
-            "纺织、采集、研磨、染色、染布",
-            "秋 · 灵桑阙、织造工坊与染料园",
-            "秋色染布 · 交付秋季成果",
-            "纺织、采染、研磨、染色与酬蚕均已完成。带梭子、生坯绸、土地公和秋色染布回主厅交付，再把染布送往冬季裁衣。"),
+            "立秋 · 白露 · 秋分 · 寒露",
+            "采材织造 秋染攀花",
+            "立秋采收天然染材。白露拾槌修机、取梭织出生坯绸；秋分研磨染色，参加秋社；寒露再在染布上攀花。所有道具一直保留。",
+            "采材、修机织造、研磨染色、秋社、攀花",
+            "染材园 · 织造坊 · 青染轩 · 灵桑阙",
+            "秋季交付 染布入冬",
+            "提交土地公雕像、梭子和生坯绸，获得素绸。染布与其他道具仍在，带入冬章裁制成衣。",
+            "立秋白露秋分寒露 → 立冬小雪"),
         new WorkshopSeasonNarrative(
             "冬字第一号",
-            "小雪 · 冬至",
-            "小雪裁衣 · 缝制冬衣",
-            "秋季染好的秋色布已经备妥。到裁衣台按样板裁出前后片和袖片，拾缝衣针，再回工坊缝制成衣。",
-            "裁衣、缝制",
-            "冬 · 青染轩与裁衣间",
-            "小雪衣片 · 冬至交衣",
-            "小雪按样板裁好前后片和袖片。大雪把这些衣片与素里绢合好，冬至试过抬手和合襟后交衣。")
+            "立冬 · 小雪",
+            "剪帛制衣 试衣留念",
+            "带秋季染好的布到缝素堂。沿虚线剪出前衣、后衣和衣袖，再拖放衣样纸确认版型。备好缝衣针，选择款式并缝衣。",
+            "剪帛、量体裁衣、选款、缝衣、试衣",
+            "缝素堂 · 锦衣堂",
+            "小雪成衣 晋升大织将",
+            "染布、衣片和缝衣针已登记，成衣缝制完成。到锦衣堂试衣留念，回看从桑叶到成衣的四季旅程。",
+            "小雪成衣 → 锦衣堂试衣"),
     };
 
     private static readonly WorkshopSeasonFieldNote[] FieldNotes =
     {
         new WorkshopSeasonFieldNote(
             "浙北桐乡", "桑园与蚕房", "清明前后渐暖，桑树抽嫩叶。谷雨前后的春雨也会打湿叶面。",
-            "桑园采嫩叶，带回蚕房喂小蚕，再备蚕种。",
+            "桑园接新叶，蚕房备蚕种。小蚕交给师傅照料。",
             "刚下过一场春雨，要给小蚕喂桑，先做什么？", "等叶面干，再采嫩叶", "趁叶上有雨水，马上采喂", 0,
             "嫩叶适合小蚕。让叶面保持干爽，再把新鲜桑叶带进蚕房。",
             "中国丝绸博物馆《清明至 蚕事启》", "https://www.chinasilkmuseum.com/cs/info_164.aspx?itemid=31631"),
@@ -113,14 +119,14 @@ internal static class WorkshopNarrativeData
             "生丝要干妥后再收存。了解梅雨时节如何保存丝料。",
             "中国非遗网《辑里湖丝手工制作技艺》", "https://www.ihchina.cn/art/detail/id/14472.html"),
         new WorkshopSeasonFieldNote(
-            "江苏苏州", "验丝窗台与织机", "秋分后白昼渐短，本坊趁亮验丝。",
+            "江苏苏州", "验丝窗台与织机", "秋分后白昼渐短，本坊趁亮验丝。寒露这一班窗沿见冷露。",
             "看经线是否齐整、松紧是否均匀，再穿梭引纬。本关用素绸练基础，苏州宋锦还能用经纬显花。",
             "上机后经线有的松、有的紧，应先做哪一步？", "校准织机，理齐经线", "多穿几趟梭子盖住松线", 0,
             "先把经线排齐并调匀松紧，梭子穿过时才更容易织出齐整布面。",
             "中国非遗网《宋锦织造技艺》", "https://www.ihchina.cn/art/detail/id/19995.html"),
         new WorkshopSeasonFieldNote(
             "江南工坊", "染坊与裁衣间", "温栀子在十一月有第二批采果，小雪冷空气活动增多。本坊从熟果试色，赶做夹衣。",
-            "选成熟栀子染材，验干样再染整绸。裁衣前先看清样板的位置。",
+            "选成熟栀子染材，验干样再染整绸。冷雨天找避雨通风处晾布，排衣片和里襟。",
             "这班遇冷雨，染绸该在哪里晾？", "露天晾架", "避雨通风的晾架", 1,
             "先晾干再下剪，夹衣工单还要为里襟留整料。",
             "中国丝绸博物馆植物染料研究", "https://www.chinasilkmuseum.com/kyjd/info_30.aspx?itemid=5473")

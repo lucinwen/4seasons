@@ -32,8 +32,6 @@ namespace Qingming.Harvest
 
         /// <summary>游戏当前状态。</summary>
         public HarvestGameState State { get; private set; } = HarvestGameState.WaitingToStart;
-        internal bool ShadedRow { get; private set; }
-        internal bool ShadeDewCleared { get; private set; }
 
         /// <summary>通关后触发一次，供主游戏订阅。</summary>
         public event System.Action OnHarvestCompleted;
@@ -61,26 +59,18 @@ namespace Qingming.Harvest
                 if (allLeaves[i] != null) Destroy(allLeaves[i].gameObject);
             }
 
-            // 初始等待状态：禁用玩家移动与生成
-            if (player != null) player.SetControlEnabled(false);
-            if (spawner != null)
-            {
-                spawner.StopSpawning();
-                spawner.ClearAllLeaves();
-            }
-            if (ui != null)
-            {
-                ui.ShowIntro();
-                Debug.Log("[HarvestGameManager] 开场面板已显示");
-            }
-            else
-            {
-                Debug.LogError("[HarvestGameManager] ui 为 null！");
-            }
-            UpdateUI();
+            // 进入工位即开始接叶，首次进入和重新开始使用同一流程。
+            ResetGame();
         }
 
-        /// <summary>开始按钮点击后调用，正式进入游玩状态。</summary>
+        private void Update()
+        {
+            if (!HarvestOverlayManager.IsHarvestActive && State != HarvestGameState.Completed &&
+                Input.GetKeyDown(KeyCode.Escape))
+                ReturnToSpring();
+        }
+
+        /// <summary>直接进入游玩状态，不经过桑垄选择或开始确认。</summary>
         public void StartGame()
         {
             Debug.Log($"[HarvestGameManager] StartGame() called. State={State}");
@@ -90,7 +80,7 @@ namespace Qingming.Harvest
             if (player != null) player.SetControlEnabled(true);
             if (spawner != null)
             {
-                spawner.EarlyShade = ShadedRow && !ShadeDewCleared;
+                spawner.EarlyShade = false;
                 spawner.StartSpawning();
             }
             if (ui != null) ui.HideIntro();
@@ -116,32 +106,6 @@ namespace Qingming.Harvest
             }
         }
 
-        internal void SelectRow(bool shaded)
-        {
-            if (State != HarvestGameState.WaitingToStart) return;
-            ShadedRow = shaded;
-            if (ui != null) ui.UpdateOrchardChoices();
-        }
-
-        internal void WaitForDew()
-        {
-            if (State == HarvestGameState.Completed || !ShadedRow || ShadeDewCleared) return;
-            ShadeDewCleared = true;
-            if (State == HarvestGameState.Playing && spawner != null)
-            {
-                spawner.EarlyShade = false;
-                spawner.StopSpawning();
-                spawner.ClearAllLeaves();
-                spawner.StartSpawning();
-            }
-            if (ui != null)
-            {
-                ui.UpdateOrchardChoices();
-                if (State == HarvestGameState.Playing)
-                    ui.ShowHarvestNotice("露已收 · 接展开的嫩叶", CollectedLeaves, targetLeaves);
-            }
-        }
-
         internal void NotifyUnsuitableLeafCollected(MulberryLeafCondition condition)
         {
             if (State == HarvestGameState.Playing && ui != null)
@@ -156,13 +120,12 @@ namespace Qingming.Harvest
         {
             State = HarvestGameState.Completed;
 
-            SpringSummerNpcDialogue.RecordHarvestedLeaves(ShadedRow);
+            SpringSummerNpcDialogue.RecordHarvestedLeaves(false);
             _earnedPage = WorkshopObservationView.RecordQingmingHarvest(targetLeaves);
 
             if (spawner != null) spawner.StopSpawning();
             if (player != null) player.SetControlEnabled(false);
             if (basket != null) basket.UpdateBasketSprite(targetLeaves);
-            if (ui != null) ui.UpdateOrchardChoices();
             UpdateUI();
 
             // 清理残留桑叶
@@ -208,7 +171,7 @@ namespace Qingming.Harvest
             if (spawner != null) spawner.ClearAllLeaves();
         }
 
-        /// <summary>重置到初始等待状态。</summary>
+        /// <summary>清空本轮进度并立即重新开始。</summary>
         public void ResetGame()
         {
             CollectedLeaves = 0;
@@ -216,8 +179,6 @@ namespace Qingming.Harvest
             _completionFired = false;
             _earnedPage = false;
             _returning = false;
-            ShadedRow = false;
-            ShadeDewCleared = false;
 
             if (spawner != null)
             {
@@ -233,9 +194,9 @@ namespace Qingming.Harvest
             if (ui != null)
             {
                 ui.HideComplete();
-                ui.ShowIntro();
             }
             UpdateUI();
+            StartGame();
         }
 
         private void UpdateUI()

@@ -68,7 +68,7 @@ public static class WinterLevelState
 
     public static void RestoreWorkshopProgress()
     {
-        HasHoe = WorkshopProgress.HasStep("autumn.hoe");
+        HasHoe = WorkshopProgress.HasStep("autumn.hoe") || WorkshopProgress.HasStep("winter.hoe");
         HasGrindingRod = WorkshopProgress.HasStep("winter.rod");
         HasAskedGrindingMethod = WorkshopProgress.HasStep("winter.grindExplained");
         HasGrindingTask = WorkshopProgress.HasStep("winter.grindTask");

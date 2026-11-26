@@ -46,6 +46,7 @@ public class AutumnLevelInteractions : MonoBehaviour
         AttachItem("3-香蕉果篮", AutumnItemClick.ItemKind.Banana);
         AttachItem("3-工具箱", AutumnItemClick.ItemKind.Toolbox);
         AttachLoom();
+        CreateHammerPickup();
         AttachDyeGardenTrigger();
         AttachHoePickup();
         AttachGrindingBowl();
@@ -56,6 +57,38 @@ public class AutumnLevelInteractions : MonoBehaviour
         AttachNpcDialogue();
         CreateRitualPoint();
         StartCoroutine(ShowPendingGrindingPromptNextFrame());
+    }
+
+    internal static GameObject CreateHammerPickup()
+    {
+        const string name = "3-修机锤";
+        var existing = GameObject.Find(name);
+        if (existing != null) return existing;
+        if (WorkshopProgress.HasStep("autumn.hammer")) return null;
+        var loom = GameObject.Find("3-破损的织机") ?? GameObject.Find("3-织机");
+        var sprite = AutumnItemIcons.Load()?.hammer;
+        if (loom == null || sprite == null) return null;
+
+        var pickup = new GameObject(name);
+        SceneManager.MoveGameObjectToScene(pickup, loom.scene);
+        float scale = 0.9f / Mathf.Max(sprite.bounds.size.x, sprite.bounds.size.y);
+        pickup.transform.localScale = Vector3.one * scale;
+        pickup.transform.position = new Vector3(loom.transform.position.x - 2f,
+            -2.6f - sprite.bounds.min.y * scale, loom.transform.position.z);
+        var renderer = pickup.AddComponent<SpriteRenderer>();
+        renderer.sprite = sprite;
+        var loomRenderer = loom.GetComponent<SpriteRenderer>();
+        if (loomRenderer != null)
+        {
+            renderer.sortingLayerID = loomRenderer.sortingLayerID;
+            renderer.sortingOrder = loomRenderer.sortingOrder + 1;
+        }
+        var collider = pickup.AddComponent<BoxCollider2D>();
+        collider.isTrigger = true;
+        collider.offset = sprite.bounds.center;
+        collider.size = (Vector2)sprite.bounds.size + Vector2.one * (0.18f / scale);
+        pickup.AddComponent<AutumnItemClick>().kind = AutumnItemClick.ItemKind.Hammer;
+        return pickup;
     }
 
     private static void AttachNpcDialogue()

@@ -62,17 +62,10 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
     public static void ShowChapterInterlude(WorkshopSeason completed, WorkshopSeason next,
         Action onEnter, Action onStay)
     {
-        PlaySeasonReview(completed, () =>
-        {
-            if (completed == WorkshopSeason.Spring && next == WorkshopSeason.Summer)
-            {
-                onEnter?.Invoke();
-                return;
-            }
-
-            var view = Open("Workshop Time Passage", 17500, onStay);
-            view.BuildInterlude(completed, next, onEnter);
-        });
+        // 四季统一省略深绿色章节转场，继续原有的下一季入口。
+        if (active != null) active.DestroyOverlay();
+        if (onEnter != null) onEnter();
+        else onStay?.Invoke();
     }
 
     internal static void PlaySeasonReview(WorkshopSeason season, Action onFinished = null)
@@ -90,21 +83,11 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
 
     public static void ShowFinale(Action onFinished)
     {
-        PlaySeasonReview(WorkshopSeason.Winter, () =>
-            WorkshopDialoguePresenter.PlayOnce("dialogue.finale.display", WorkshopDialogueScripts.FinaleBeforeDisplay,
-                () => WorkshopCraftRecordView.ShowChapterRecord(WorkshopSeason.Winter, () => ShowFinaleRecap(onFinished)),
-                WorkshopSeason.Winter));
-    }
-
-    private static void ShowFinaleRecap(Action onFinished)
-    {
-        var view = Open("Workshop Finale", 17500, () =>
-            WorkshopDialoguePresenter.PlayOnce("dialogue.finale.ending", WorkshopDialogueScripts.FinaleAfterDisplay, () =>
-            {
-                WorkshopProgress.MarkStep("finale.seen");
-                onFinished?.Invoke();
-            }, WorkshopSeason.Winter));
-        view.BuildFinale();
+        // 成衣后同样跳过深绿色结算页，直接进入试衣。
+        if (active != null) active.DestroyOverlay();
+        WorkshopProgress.MarkStep("finale.seen");
+        WorkshopProgress.MarkStep("dialogue.finale.ending");
+        onFinished?.Invoke();
     }
 
     private static WorkshopNarrativeView Open(string name, int order, Action closed)
@@ -150,13 +133,17 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
         BuildBase();
         var closed = WorkshopNarrativeData.For(completed);
         var opened = WorkshopNarrativeData.For(next);
-        Label(page, "Interlude Chapter", new Rect(98, 56, 620, 40),
-            WorkshopProgress.SeasonName(completed) + "章完成", 30, Gold);
+        Label(page, "Interlude Kicker", new Rect(98, 56, 620, 40),
+            "章节流转 · 时间推进", 27, Gold);
+        Label(page, "Interlude Issue", new Rect(1000, 58, 318, 38),
+            WorkshopProgress.SeasonName(completed) + "章已入库", 24, Muted, TextAnchor.MiddleRight);
         WorkshopUi.Fill(page, "Interlude Line", new Rect(98, 112, 1220, 2), new Color32(214, 174, 103, 160));
 
-        Label(page, "Interlude Title", new Rect(96, 164, 1190, 80),
+        Label(page, "Interlude Chapter", new Rect(98, 154, 1180, 54),
+            WorkshopProgress.SeasonName(completed) + "章完成", 31, Muted);
+        Label(page, "Interlude Title", new Rect(96, 207, 1190, 80),
             closed.ClosingTitle, 54, Cream);
-        Label(page, "Interlude Body", new Rect(100, 253, 1178, 128),
+        Label(page, "Interlude Body", new Rect(100, 296, 1178, 150),
             closed.ClosingBody, 30, Cream);
 
         WorkshopUi.Fill(page, "Season Progress Rail", new Rect(100, 470, 402, 3),
@@ -178,10 +165,13 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
                 WorkshopNarrativeData.SeasonTime((WorkshopSeason)i), 24, text, TextAnchor.UpperCenter);
         }
 
-        WorkshopUi.Fill(page, "Interlude Next Rule", new Rect(100, 637, 1218, 2),
+        Label(page, "Interlude Time", new Rect(525, 611, 820, 42),
+            closed.TransitionLabel, 30, Gold, TextAnchor.MiddleCenter);
+        WorkshopUi.Fill(page, "Interlude Next Rule", new Rect(100, 670, 1218, 2),
             new Color32(214, 174, 103, 130));
-        Label(page, "Next Announcement", new Rect(100, 665, 1218, 70),
-            "下一章 · " + opened.AnnouncementTitle, 30, Cream, TextAnchor.MiddleCenter);
+        Label(page, "Next Announcement", new Rect(100, 690, 1218, 80),
+            WorkshopProgress.SeasonName(next) + "季 · " + opened.AnnouncementTitle +
+            "\n" + opened.TimeLabel + " · " + opened.Craft, 28, Cream, TextAnchor.UpperCenter);
 
         ready = false;
         if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null);
@@ -230,12 +220,17 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
     private void BuildFinale()
     {
         BuildBase();
-        Label(page, "Finale Title", new Rect(96, 78, 1228, 88),
-            "冬至 · 贺冬交衣", 57, Cream, TextAnchor.MiddleCenter);
-        WorkshopUi.Fill(page, "Finale Line", new Rect(98, 184, 1220, 2), new Color32(214, 174, 103, 160));
-        Label(page, "Finale Body", new Rect(147, 233, 1126, 250),
-            "清明采桑喂蚕，备下蚕种。芒种择茧理丝，合成生丝。寒露织绸，染色成秋色布。小雪按样裁衣，大雪合缝翻衣。\n\n冬至试衣合身，师傅把贺冬的新衣挂上展架。",
-            30, Cream, TextAnchor.MiddleCenter);
+        Label(page, "Finale Kicker", new Rect(98, 58, 650, 40),
+            "小雪 · 成衣留念", 28, Gold);
+        Label(page, "Finale Time", new Rect(976, 58, 342, 40),
+            "四季工序 · 已完成", 24, Muted, TextAnchor.MiddleRight);
+        WorkshopUi.Fill(page, "Finale Line", new Rect(98, 112, 1220, 2), new Color32(214, 174, 103, 160));
+
+        Label(page, "Finale Title", new Rect(96, 167, 1190, 88),
+            "成衣完成，晋升大织将", 57, Cream, TextAnchor.MiddleCenter);
+        Label(page, "Finale Body", new Rect(147, 277, 1090, 220),
+            "春天采桑、浴蚕、喂蚕；夏天下簇、寻轴、缫丝、接水管备料；秋天采材、修机织造、研磨染色、秋社与攀花；冬天剪帛、拖纸样、选款缝衣。\n\n从桑叶到成衣，四季工序已经完成。所有道具仍然保留，现在去锦衣堂试穿自己缝好的衣服吧。",
+            30, Cream, TextAnchor.UpperCenter);
 
         for (int i = 0; i < 4; i++)
         {
@@ -255,7 +250,7 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
             30, Gold, TextAnchor.UpperCenter);
 
         var finish = WorkshopUi.Button(page, "Finale Continue", new Rect(1028, 786, 292, 58),
-            "继续", () => BeginClose(onClose), Rust, size: 30, font: WorkshopArt.WorkshopFont);
+            "去锦衣堂试衣", () => BeginClose(onClose), Rust, size: 30, font: WorkshopArt.WorkshopFont);
         WorkshopUi.Button(page, "Finale Production Record", new Rect(98, 786, 251, 58), "看制作记录",
             () => WorkshopCraftRecordView.ShowProductionRecord(), Jade, size: 28, font: WorkshopArt.WorkshopFont);
         WorkshopUi.Button(page, "Finale Winter Record", new Rect(371, 786, 245, 58), "回看冬章成果",

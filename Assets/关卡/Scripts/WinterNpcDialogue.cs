@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// 冬天关卡 NPC 对话，按裁衣进度播放；采染对话由秋季复用。
+/// 冬季只提示裁衣进度；染材和研磨对话供秋季工位复用。
 /// 由 WinterLevelInteractions 在运行时挂到 NPC 上，不改场景。
 /// </summary>
 public class WinterNpcDialogue : MonoBehaviour
@@ -13,6 +13,14 @@ public class WinterNpcDialogue : MonoBehaviour
 
     public void Talk()
     {
+        if (gameObject.scene.name == "Level3_Autumn")
+        {
+            WorkshopProgress.UnlockSolarTerms(WorkshopSeason.Autumn);
+            WorkshopDialoguePresenter.Play(new[] {
+                new WorkshopDialogueLine("染整师傅", "立秋采染材，秋分研磨和染色。先拾锄头去染材园，再找研磨棒和研钵。"),
+                new WorkshopDialogueLine("染整师傅", "白露织出的生坯绸可以用来染色。选好喜欢的颜色，寒露再去织造坊攀花。道具都会保留。") });
+            return;
+        }
         if (WorkshopProgress.IsComplete(WorkshopSeason.Winter))
         {
             WorkshopDialoguePresenter.Play(WorkshopDialogueScripts.WinterDone);
@@ -26,7 +34,15 @@ public class WinterNpcDialogue : MonoBehaviour
             return;
         }
 
-        WorkshopDialoguePresenter.Play(WorkshopDialogueScripts.WinterInProgress);
+        string next;
+        switch (WorkshopWordRules.WinterStage)
+        {
+            case WorkshopWinterStage.Cutting: next = "带秋季染布到裁衣台，沿虚线剪出前衣、后衣和衣袖。"; break;
+            case WorkshopWinterStage.Fitting: next = "衣片已经剪好。再点裁衣台，将三张纸样拖到同名轮廓，确认版型。"; break;
+            case WorkshopWinterStage.Needle: next = "版型已经确认。收下缝素堂里发光的缝衣针，回裁衣台选款缝衣。"; break;
+            default: next = "材料与版型都备齐了。直接在裁衣台选择喜欢的款式，拼合三块衣片，缝好后去试衣。"; break;
+        }
+        WorkshopDialoguePresenter.Play(new[] { new WorkshopDialogueLine("缝衣师傅", next) });
     }
 
     internal static void IntroduceDyeMaterials(Action onFinished = null)

@@ -30,8 +30,9 @@ namespace JiangnanDye
             MinigameUiPresentation.Action(startButton);
             if (introText != null)
             {
-                introText.text = "用 WASD 或方向键走到植物旁，点击右下角的锄头采集。\n"
-                    + "可以丢弃坏损染料，收下五件完好的染料即可完成。";
+                introText.text = "秋日染坊需要五份健康的天然染料。\n\n"
+                    + "用 WASD 或方向键走到植物旁，点击右下角的锄头采集。\n"
+                    + "坏损染料可以丢弃，收下五件健康染料即可完成。";
                 introText.lineSpacing = 1.25f;
             }
 

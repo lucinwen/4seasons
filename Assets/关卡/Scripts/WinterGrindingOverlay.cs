@@ -189,7 +189,7 @@ public class WinterGrindingOverlay : MonoBehaviour
 
     public bool AcceptMaterial(WinterGrindingRawCard card)
     {
-        if (WorkshopMinigameMenu.BlocksGameplayInput || !CanAcceptMaterial || card == null || card.Material == null) return false;
+        if (!CanAcceptMaterial || card == null || card.Material == null) return false;
 
         _selectedCard = card;
         _selectedMaterial = card.Material;
@@ -206,7 +206,7 @@ public class WinterGrindingOverlay : MonoBehaviour
 
     public void AddGrind(float localDistance)
     {
-        if (WorkshopMinigameMenu.BlocksGameplayInput || !HasMaterial) return;
+        if (!HasMaterial) return;
 
         _grindProgress += localDistance;
         ShowProgress(Mathf.Clamp01(_grindProgress / GrindDistanceRequired));
@@ -235,7 +235,7 @@ public class WinterGrindingOverlay : MonoBehaviour
         bool producedDye = WinterLevelState.MarkDyeProduced(material.Color);
 
         HighlightMortar(false);
-        _statusText.text = "可收下染料";
+        _statusText.text = "研磨完成！获得【" + material.Name + "】";
         SimplePopup.Show("研磨完成", "获得【" + material.Name + "】", "收下", () =>
         {
             ResetBowl();

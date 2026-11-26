@@ -41,7 +41,7 @@ public static class XiazhiBuild
         }
         var summer = WorkshopProgress.Items(WorkshopSeason.Summer);
         Check(summer.SequenceEqual(new[] {WorkshopItem.Salt, WorkshopItem.Suoxu, WorkshopItem.Spool}), "original three-item recipe");
-        Check(WorkshopProgress.ProductName(WorkshopSeason.Summer) == "生丝", "original product");
+        Check(WorkshopProgress.ProductName(WorkshopSeason.Summer) == "丝束", "original product");
         Debug.Log("[XiazhiVerify] PASS: 3 boards, prototype parity, 300 recovery states, hints, undo, reset and original summer recipe.");
     }
     private static void Check(bool value, string message) { if (!value) throw new Exception("Xiazhi verification failed: " + message); }
@@ -50,6 +50,7 @@ public static class XiazhiBuild
     public static void BuildSpringReview() { SpringCollectionChecks.Verify(); Build(true, true); }
     public static void BuildSeasonReview()
     {
+        GameWorkflowMaintenance.FinalizeSpringCleanup();
         SeasonWorkflowChecks.Verify();
         GameWorkflowMaintenance.ValidateScenes();
         Build(true, false, true);

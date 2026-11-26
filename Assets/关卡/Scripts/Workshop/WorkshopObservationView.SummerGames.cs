@@ -9,9 +9,7 @@ internal sealed partial class WorkshopObservationView
 
     private void ResetSummerChallenge()
     {
-        showCocoonBatches = false;
         if (observation == WorkshopObservation.MangzhongCocoon) ResetXiazhiPuzzle();
-        if (observation == WorkshopObservation.MangzhongCocoonHarvest) ResetCocoonRun();
     }
 
     private static WorkshopProgress.ChallengeWork WorkshopUpstreamWork(WorkshopObservation previous, int order)

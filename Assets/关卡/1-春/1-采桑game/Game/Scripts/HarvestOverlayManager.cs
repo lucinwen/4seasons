@@ -546,6 +546,7 @@ public class HarvestOverlayManager : MonoBehaviour
         // ------- 开场面板 -------
         var intro = CreateUIObj("IntroPanel", canvas);
         FullRect(intro);
+        intro.SetActive(false); // 旧场景引用保留；采桑现在直接开始。
 
         var introDim = CreateUIObj("Dim", intro.transform);
         FullRect(introDim);

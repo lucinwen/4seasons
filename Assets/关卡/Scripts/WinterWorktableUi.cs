@@ -10,24 +10,21 @@ internal static class WinterWorktableUi
     {
         WorkshopUi.Block(frame, MinigameUiPresentation.BackgroundVeil);
         WorkshopUi.Picture(frame, "Dye Workbench Artwork", new Rect(0, 0, 1920, 1080),
+            Resources.Load<Sprite>("WordRevision/AutumnDyeWorkbench") ??
             Resources.Load<Sprite>("WorkshopFinish/DyeWorkbench"), stretch: true);
-        Nameplate(frame, "Heading", new Rect(46, 40, titleWidth, 70), title, 39);
-        WorkshopUi.PixelButton(frame, "CloseButton", new Rect(1718, 45, 154, 60),
-            "关闭", close, true, 27, Ink);
+        WorkshopImmersive.Button(frame, "CloseButton", new Rect(1718, 35, 154, 60), "返回", close);
     }
 
     internal static RectTransform Footer(RectTransform frame)
     {
-        return WorkshopUi.PixelCard(frame, "Workbench Instructions", new Rect(46, 958, 1828, 81),
-            Ink, WorkshopUi.PixelSeam);
+        return WorkshopUi.Rect(frame, "Workbench Hint", new Rect(46, 35, 1550, 64));
     }
 
     internal static UnityEngine.UI.Text Nameplate(Transform parent, string name, Rect bounds, string label, int size)
     {
-        var plate = WorkshopUi.Fill(parent, name, bounds, Ink);
-        WorkshopUi.ApplyPixelShape(plate);
-        return WorkshopUi.Label(plate.transform, "Label", new Rect(0, 0, bounds.width, bounds.height),
-            label, size, WorkshopUi.Cream, TextAnchor.MiddleCenter);
+        var plate = WorkshopUi.Rect(parent, name, bounds);
+        return WorkshopImmersive.Text(plate, "Label", new Rect(0, 0, bounds.width, bounds.height),
+            label, size, TextAnchor.MiddleCenter);
     }
 
     internal static Rect MaterialBounds(int index, int count)

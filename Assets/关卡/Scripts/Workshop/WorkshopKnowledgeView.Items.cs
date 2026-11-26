@@ -51,19 +51,69 @@ public sealed partial class WorkshopKnowledgeView
         var card = WorkshopUi.Picture(parent, "Item Card Illustration",
             new Rect(bounds.center - size * 0.5f, size), art, stretch: true).rectTransform;
 
+        if (WorkshopArt.ItemCardHasPrintedCopy(item)) return; // Reviewed HD/Word cards already carry their original copy.
         var copy = ItemCopy[(int)item];
         var season = (WorkshopSeason)((int)item / 3);
         bool lightTitle = season == WorkshopSeason.Spring || season == WorkshopSeason.Autumn;
         var titleBox = new Rect((copy.TitleCenter - new Vector2(210, 60)) * scale, new Vector2(420, 120) * scale);
-        WorkshopUi.Label(card, "Item Card Title", titleBox, WorkshopProgress.ItemName(item),
+        var title = WorkshopUi.Label(card, "Item Card Title", titleBox,
+            item == WorkshopItem.Statue ? "土地公" : WorkshopProgress.ItemName(item),
             Mathf.RoundToInt((lightTitle ? 75 : 60) * scale),
-            lightTitle ? WorkshopUi.Cream : WorkshopUi.Ink, TextAnchor.MiddleCenter);
+            lightTitle ? WorkshopUi.Cream : WorkshopUi.Ink, TextAnchor.MiddleCenter,
+            WorkshopArt.ReadingFont);
 
-        var bodyBox = new Rect(copy.BodyTopLeft * scale, new Vector2(520, 310) * scale);
+        var bodyBox = new Rect(copy.BodyTopLeft * scale,
+            new Vector2(520, 310) * scale);
         var body = WorkshopUi.Label(card, "Item Card Description", bodyBox, copy.Body,
-            Mathf.RoundToInt(48 * scale), WorkshopUi.Ink, TextAnchor.UpperLeft);
+            Mathf.RoundToInt(44 * scale), WorkshopUi.Ink, TextAnchor.UpperLeft,
+            WorkshopArt.ReadingFont);
         body.horizontalOverflow = HorizontalWrapMode.Overflow;
-        body.verticalOverflow = VerticalWrapMode.Overflow;
-        body.lineSpacing = 1.15f;
+        body.verticalOverflow = VerticalWrapMode.Truncate;
+        body.lineSpacing = 1f;
+        // Reading fonts have taller Chinese line metrics than the old pixel font.
+        // Fit the unchanged original copy into the original printed text area.
+        body.resizeTextForBestFit = true;
+        body.resizeTextMinSize = 20;
+        body.resizeTextMaxSize = body.fontSize;
+        FitCardLettering(body, 20, body.fontSize);
+    }
+
+    private static void FitCardLettering(UnityEngine.UI.Text label, int minimum, int maximum)
+    {
+        // Unity's built-in best fit uses line metrics; some Chinese glyphs extend
+        // below those metrics. Measure the complete glyph geometry as well.
+        Rect rect = label.rectTransform.rect;
+        var settings = label.GetGenerationSettings(rect.size);
+        settings.resizeTextForBestFit = false;
+        settings.verticalOverflow = VerticalWrapMode.Overflow;
+        settings.generateOutOfBounds = true;
+        float unit = 1f / label.pixelsPerUnit;
+        using (var generator = new TextGenerator())
+        {
+            for (int size = maximum; size >= minimum; size--)
+            {
+                settings.fontSize = size;
+                label.font.RequestCharactersInTexture(label.text, size, label.fontStyle);
+                bool fits = generator.Populate(label.text, settings);
+                var vertices = generator.verts;
+                for (int start = 0; fits && start + 3 < vertices.Count; start += 4)
+                {
+                    if (vertices[start].position == vertices[start + 1].position &&
+                        vertices[start].position == vertices[start + 2].position &&
+                        vertices[start].position == vertices[start + 3].position) continue;
+                    for (int corner = 0; corner < 4; corner++)
+                    {
+                        var point = vertices[start + corner].position * unit;
+                        const float pixelRounding = 2f;
+                        if (point.x < rect.xMin - pixelRounding || point.x > rect.xMax + pixelRounding ||
+                            point.y < rect.yMin - pixelRounding || point.y > rect.yMax + pixelRounding) { fits = false; break; }
+                    }
+                }
+                if (!fits && size != minimum) continue;
+                label.resizeTextForBestFit = false;
+                label.fontSize = size;
+                return;
+            }
+        }
     }
 }

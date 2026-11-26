@@ -19,11 +19,11 @@ public static class WorkshopProgress
 
     private static readonly string[] Scenes = { "Level1_Spring", "Level2_Summer", "Level3_Autumn", "Level4_Winter" };
     private static readonly string[] Seasons = { "春", "夏", "秋", "冬" };
-    private static readonly string[] Products = { "蚕茧", "生丝", "素绸", "成衣" };
+    private static readonly string[] Products = { "蚕茧", "丝束", "素绸", "成衣" };
     private static readonly string[] Names =
     {
         "桑叶", "蚕种", "蚕宝宝", "盐", "索绪", "线轴",
-        "梭子", "生坯绸", "土地公", "染布", "衣片", "缝衣针"
+        "梭子", "生坯绸", "土地公雕像", "染布", "衣片", "缝衣针"
     };
     private static readonly WorkshopItem[][] Recipes =
     {
@@ -54,15 +54,6 @@ public static class WorkshopProgress
         public int groundDyes;
         public string dyedColor;
         public string garmentId;
-        public int garmentSize;
-        public string garmentCutSample;
-        public int garmentLiningAllowance;
-        public bool garmentSewn;
-        public int garmentSleeveAllowance;
-        public int garmentTurningOpening;
-        public bool garmentFitted;
-        public int garmentAlterations;
-        public int garmentClaspStyle;
         public bool seasonalOrder;
         public List<string> steps = new List<string>();
         public List<string> observations = new List<string>();
@@ -90,16 +81,8 @@ public static class WorkshopProgress
             if (save.observations == null) save.observations = new List<string>();
             if (save.challengeWorks == null) save.challengeWorks = new List<ChallengeWork>();
             if (save.orderWorks == null) save.orderWorks = new List<ChallengeWork>();
-            // Older saves may record harvesting without the corresponding leaf item.
-            bool harvested = save.steps.Contains("spring.qingming.harvested")
-                || save.observations.Contains("observation.spring.qingming");
             bool migrated = false;
-            int leafItem = 1 << (int)WorkshopItem.MulberryLeaf;
-            if (harvested && (save.items & leafItem) == 0)
-            {
-                save.items |= leafItem;
-                migrated = true;
-            }
+            // Keep all previously earned inventory. Harvesting alone no longer grants a silkworm.
             // The old Mangzhong id belongs to the removed cocoon inspection game.
             // Only the former thread puzzle's records transfer to its new station.
             const string oldThread = "observation.summer.dashu.reeling";
@@ -127,31 +110,12 @@ public static class WorkshopProgress
                 save.observations.Add(newThread);
                 migrated = true;
             }
-            // The local falling-cocoon build used the inspection ID but wrote a distinct result description.
-            const string oldCocoon = "observation.summer.mangzhong";
-            const string harvestId = "observation.summer.mangzhong.harvest";
-            foreach (var work in save.challengeWorks.FindAll(work => work != null && work.id == oldCocoon &&
-                         work.sample?.Length == 9 && work.description?.StartsWith("连收 ", StringComparison.Ordinal) == true))
-            {
-                if (save.challengeWorks.Exists(current => current != null && current.id == harvestId &&
-                    current.order == work.order)) continue;
-                save.challengeWorks.Add(new ChallengeWork
-                {
-                    id = harvestId, order = work.order, score = work.score,
-                    description = work.description, sample = work.sample
-                });
-                migrated = true;
-            }
-            if (!save.observations.Contains(harvestId) && save.challengeWorks.Exists(work => work != null && work.id == harvestId))
-            {
-                save.observations.Add(harvestId);
-                migrated = true;
-            }
             if (migrated)
             {
                 PlayerPrefs.SetString(SaveKey, JsonUtility.ToJson(save));
                 PlayerPrefs.Save();
             }
+            WorkshopRewardCards.Rebase();
             return save;
         }
     }
@@ -163,6 +127,7 @@ public static class WorkshopProgress
         nextSceneCard = null;
         save = null;
         Changed = null;
+        WorkshopRewardCards.Reset();
     }
 
     public static bool HasSavedGame => !string.IsNullOrEmpty(PlayerPrefs.GetString(SaveKey, ""));
@@ -172,6 +137,7 @@ public static class WorkshopProgress
         SceneManager.sceneLoaded -= ShowQueuedCard;
         nextSceneCard = null;
         save = new SaveData { seasonalOrder = true };
+        WorkshopRewardCards.Rebase();
         WinterLevelState.PendingGrindingPrompt = false;
         WinterLevelState.HasReturnPosition = false;
         Commit();
@@ -250,44 +216,6 @@ public static class WorkshopProgress
     }
     public static string DyedColor => State.dyedColor ?? "";
     public static string GarmentId => State.garmentId ?? "";
-    internal const string SeasonalGarmentId = "4_02";
-    internal static int GarmentSize => Mathf.Clamp(State.garmentSize, 0, 2);
-    internal static string GarmentCutSample => !string.IsNullOrEmpty(State.garmentCutSample)
-        ? State.garmentCutSample : SeasonalOrderWork("observation.winter.xiaoxue")?.sample;
-    internal static int GarmentLiningAllowance => Mathf.Clamp(State.garmentLiningAllowance, 1, 2);
-    internal static bool GarmentSewn => State.garmentSewn;
-    internal static int GarmentSleeveAllowance => Mathf.Clamp(State.garmentSleeveAllowance, 0, 2);
-    internal static int GarmentTurningOpening => State.garmentTurningOpening;
-    internal static bool GarmentFitted => State.garmentFitted;
-    internal static int GarmentAlterations => State.garmentAlterations;
-    internal static int GarmentClaspStyle => State.garmentClaspStyle;
-
-    internal static void SaveGarmentCut(int size, string sample, int liningAllowance)
-    {
-        if (!SeasonalOrderEnabled || Has(WorkshopItem.CutPieces) || size < 1 || size > 2 || string.IsNullOrEmpty(sample)) return;
-        State.garmentSize = size;
-        State.garmentCutSample = sample;
-        State.garmentLiningAllowance = Mathf.Clamp(liningAllowance, 1, 2);
-        Commit();
-    }
-
-    internal static void SaveGarmentSewing(int sleeveAllowance, int turningOpening)
-    {
-        if (!SeasonalOrderEnabled || !Has(WorkshopItem.CutPieces) || State.garmentSewn) return;
-        State.garmentSleeveAllowance = Mathf.Clamp(sleeveAllowance, 0, 2);
-        State.garmentTurningOpening = turningOpening;
-        State.garmentSewn = true;
-        Commit();
-    }
-
-    internal static void SaveGarmentFitting(int alterations, int claspStyle)
-    {
-        if (!SeasonalOrderEnabled || !State.garmentSewn || State.garmentFitted) return;
-        State.garmentAlterations = Mathf.Max(0, alterations);
-        State.garmentClaspStyle = Mathf.Max(0, claspStyle);
-        State.garmentFitted = true;
-        Commit();
-    }
 
     public static bool Award(WorkshopItem item)
     {
@@ -317,9 +245,7 @@ public static class WorkshopProgress
     public static bool CanSubmit(WorkshopSeason season)
     {
         if (!IsUnlocked(season) || IsComplete(season)) return false;
-        if (season == WorkshopSeason.Autumn && !Has(WorkshopItem.DyedCloth)) return false;
-        return Array.TrueForAll(Recipes[(int)season], Has) &&
-            (!SeasonalOrderEnabled || WorkshopObservationView.HasSeasonOrderDeliveries(season));
+        return Array.TrueForAll(Recipes[(int)season], Has) && WorkshopWordRules.HasDelivery(season);
     }
 
     public static bool Submit(WorkshopSeason season)
@@ -335,8 +261,6 @@ public static class WorkshopProgress
     public static bool CompleteWinter(string garmentId)
     {
         if (!CanSubmit(WorkshopSeason.Winter) || !WorkshopTailor.IsGarmentAvailable(garmentId, DyedColor)) return false;
-        if (SeasonalOrderEnabled && (garmentId != SeasonalGarmentId || !GarmentSewn || !GarmentFitted ||
-            !WorkshopObservationView.HasGarmentWorkshopDeliveries())) return false;
 
         State.garmentId = garmentId;
         State.chapters |= 1 << (int)WorkshopSeason.Winter;
@@ -417,8 +341,22 @@ public static class WorkshopProgress
 
     private static void Commit()
     {
+        WorkshopRewardCards.Synchronize();
         Save();
         Changed?.Invoke();
+    }
+
+    // Card receipts are saved as existing step ids without recursively publishing Changed.
+    internal static void RecordRewardReceipts(IEnumerable<string> receipts)
+    {
+        bool changed = false;
+        foreach (string receipt in receipts)
+        {
+            if (State.steps.Contains(receipt)) continue;
+            State.steps.Add(receipt);
+            changed = true;
+        }
+        if (changed) Save();
     }
 
     private static void Save()

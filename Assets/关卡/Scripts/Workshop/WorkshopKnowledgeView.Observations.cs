@@ -13,7 +13,9 @@ public sealed partial class WorkshopKnowledgeView
         StartPage(RenderItems);
         var panel = WorkshopUi.PixelCard(page, "Observation Gallery", new Rect(107, 123, 1706, 833),
             WorkshopUi.Paper, WorkshopUi.Bronze);
-        Label(panel, "Title", new Rect(52, 42, 1200, 80), "四季观察", 51, Jade);
+        Label(panel, "Title", new Rect(52, 42, 1200, 80), "工艺观察回看", 51, Jade);
+        Label(panel, "Hint", new Rect(55, 123, 1500, 42),
+            "主线工序请查看公告栏；已完成的工艺观察保留在这里，随时回看。", 28, WorkshopUi.Ink);
         var back = WorkshopUi.PixelButton(panel, "Back", new Rect(1456, 63, 196, 58), "返回织录", RenderItems, false, 28);
 
         for (int i = 0; i < ObservationCoverPaths.Length; i++)
@@ -29,15 +31,12 @@ public sealed partial class WorkshopKnowledgeView
             Label(card, "Season", new Rect(16, 301, 352, 49), WorkshopProgress.SeasonName(chapter) + "章", 38,
                 Jade, TextAnchor.MiddleCenter);
             int recorded = 0;
-            int total = 0;
             foreach (var id in WorkshopObservationView.ObservationsFor(chapter))
             {
-                if (!WorkshopObservationView.IsSeasonGame(id)) continue;
-                total++;
                 if (WorkshopObservationView.HasRecord(id)) recorded++;
             }
             Label(card, "Count", new Rect(16, 359, 352, 51),
-                unlocked ? $"节气残页 {recorded} / {total}" : "本章尚未开放", 27, WorkshopUi.Ink, TextAnchor.MiddleCenter);
+                unlocked ? $"已存观察 {recorded} 项" : "本章尚未开放", 27, WorkshopUi.Ink, TextAnchor.MiddleCenter);
             var read = WorkshopUi.PixelButton(card, "Open season " + chapter, new Rect(63, 426, 258, 58), "查看记录",
                 () => RenderSeasonObservations(chapter), true, 28, Jade);
             read.interactable = unlocked;
@@ -68,19 +67,21 @@ public sealed partial class WorkshopKnowledgeView
             var id = item;
             bool recorded = WorkshopObservationView.HasRecord(id);
             bool game = WorkshopObservationView.IsSeasonGame(id);
-            if (!game && !recorded) continue;
-            bool practice = WorkshopObservationView.CanPracticeGarmentWorkshop(id);
-            float y = 153 + index * 111f;
-            string status = !game ? "工艺观察" : recorded ? "已收录" :
-                practice ? "可试玩" : "完成工位挑战后收录";
+            if (!recorded) continue;
+            float y = 158 + index * 127f;
+            string status = game ? (recorded ? "已通关 · 残页已收集" : "未通关 · 前往关卡工位") : "已记录 · 工艺观察";
             Label(panel, "Record Status " + id, new Rect(835, y, 690, 37), status,
                 24, WorkshopUi.Ink);
             var read = WorkshopUi.PixelButton(panel, "Read " + id, new Rect(828, y + 44, 702, 62),
                 game ? WorkshopObservationView.SeasonGameTitle(id) : WorkshopObservationView.RecordTitle(id),
-                () => WorkshopObservationView.OpenRecordOrGarmentPractice(id), true, 29, Jade);
-            read.interactable = recorded || practice;
+                () => WorkshopObservationView.ShowRecord(id), true, 29, Jade);
+            read.interactable = recorded;
             index++;
         }
+
+        if (index == 0)
+            Label(panel, "No Stored Observations", new Rect(835, 180, 690, 120),
+                "尚无观察记录。\n本章主线与完成情况请查看公告栏。", 29, WorkshopUi.Ink);
 
         WorkshopUi.PixelButton(panel, "Regional Context", new Rect(828, 620, 702, 62), "地方工艺与来源",
             () => WorkshopHeritageBrief.ShowSeason(chapter), true, 29, Jade);

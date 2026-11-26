@@ -36,17 +36,17 @@ internal static class SpringSummerNpcDialogue
         || WorkshopObservationView.HasRecord(WorkshopObservation.QingmingMulberry)
         || WorkshopProgress.IsComplete(WorkshopSeason.Spring);
 
-    internal static bool CanWash => WorkshopProgress.Has(WorkshopItem.Silkworm)
+    internal static bool CanWash => HasHarvestedLeaves
         || WorkshopProgress.Has(WorkshopItem.SilkwormEgg);
 
     internal static string HarvestOrchardName => WorkshopProgress.HasStep(ShadedOrchardStep) ? ShadedOrchardName
         : WorkshopProgress.HasStep(SunnyOrchardStep) ? SunnyOrchardName : "桑园";
 
-    internal static void RecordHarvestedLeaves(bool? shaded = null)
+    internal static void RecordHarvestedLeaves(bool shaded)
     {
-        if (shaded.HasValue && !WorkshopProgress.HasStep(SunnyOrchardStep) && !WorkshopProgress.HasStep(ShadedOrchardStep) &&
+        if (!WorkshopProgress.HasStep(SunnyOrchardStep) && !WorkshopProgress.HasStep(ShadedOrchardStep) &&
             !HasHarvestedLeaves)
-            WorkshopProgress.MarkStep(shaded.Value ? ShadedOrchardStep : SunnyOrchardStep);
+            WorkshopProgress.MarkStep(shaded ? ShadedOrchardStep : SunnyOrchardStep);
         WorkshopProgress.MarkStep(HarvestedLeavesStep);
         WorkshopProgress.Award(WorkshopItem.MulberryLeaf);
         SpringPrompt.HasMulberryLeaves = true;
@@ -55,7 +55,7 @@ internal static class SpringSummerNpcDialogue
     internal static bool RequireMulberryBriefing()
     {
         if (HasMulberryBriefing) return true;
-        SimplePopup.Show("采桑任务未领取", "去找蚕房师傅交谈。", "知道了", null);
+        SimplePopup.Show("先去找蚕房师傅", "请先与春章的蚕房师傅交谈，领到今天的采桑任务。", "知道了", null);
         return false;
     }
 
@@ -81,12 +81,10 @@ internal static class SpringSummerNpcDialogue
             WorkshopDialoguePresenter.PlayOnce(MulberryIntroStep, WorkshopDialogueScripts.SpringMulberryIntro);
         else if (!HasHarvestedLeaves)
             WorkshopDialoguePresenter.Play(WorkshopDialogueScripts.SpringInProgress);
-        else if (!CanWash)
-            WorkshopDialoguePresenter.Play(WorkshopDialogueScripts.SpringFeedingReminder);
         else if (!WorkshopProgress.Has(WorkshopItem.SilkwormEgg) && !WorkshopProgress.HasStep(BathIntroStep))
             BeforeBath();
         else
-            WorkshopDialoguePresenter.Play(WorkshopDialogueScripts.SpringDone);
+            ShowNextTask(WorkshopSeason.Spring, "蚕房师傅");
     }
 
     private static void TalkSummer()
@@ -98,8 +96,15 @@ internal static class SpringSummerNpcDialogue
         else if (hasSuoxu && !hasSpool && !WorkshopProgress.HasStep(BoilingIntroStep))
             BeforeBoiling();
         else
-            WorkshopDialoguePresenter.Play(hasSuoxu && hasSpool ? WorkshopDialogueScripts.SummerDone :
-                WorkshopDialogueScripts.SummerInProgress);
+            ShowNextTask(WorkshopSeason.Summer, "缫丝师傅");
+    }
+
+    private static void ShowNextTask(WorkshopSeason season, string speaker)
+    {
+        var next = WorkshopQuests.NextReady(season);
+        WorkshopDialoguePresenter.Play(new[] { new WorkshopDialogueLine(speaker, next != null
+            ? next.Title + "：" + next.Instructions
+            : "本季成果已登记，可以从工坊前往下一季。已经获得的道具会一直保留。") });
     }
 
     private static void Introduce(WorkshopItem reward, string step, WorkshopDialogueLine[] script,

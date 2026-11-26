@@ -58,13 +58,8 @@ namespace JiangnanDye.LoomRepair
                 var readout = progressText.rectTransform;
                 readout.anchoredPosition = new Vector2(0f, 66f);
                 readout.sizeDelta = new Vector2(236f, 42f);
-                var plate = MinigameUiPresentation.InsertFill(readout.parent, "Progress Readout", MinigameUiPresentation.Pine);
-                var plateRect = plate.rectTransform;
-                plateRect.anchorMin = plateRect.anchorMax = new Vector2(0.5f, 0.5f);
-                plateRect.anchoredPosition = readout.anchoredPosition;
-                plateRect.sizeDelta = readout.sizeDelta;
-                MinigameUiPresentation.Surface(plate, MinigameUiPresentation.Pine, true);
                 MinigameUiPresentation.Label(progressText, MinigameUiPresentation.Paper, 27);
+                WorkshopImmersive.QuietText(progressText);
             }
 
             if (startHint != null)

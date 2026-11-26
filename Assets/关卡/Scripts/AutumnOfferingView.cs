@@ -53,7 +53,7 @@ internal sealed class AutumnOfferingView : MonoBehaviour
         DrawOffering(table, 108, "蚕花酒", FindWineIcon(), AutumnLevelState.HasWine, completed, "点击附近的蚕花酒罐");
         DrawOffering(table, 259, "香蕉", icons?.banana, AutumnLevelState.HasBanana, completed, "点击香蕉果篮领取");
         DrawOffering(table, 410, "糕点", icons?.cake, AutumnLevelState.HasCake, completed,
-            AutumnLevelState.HasHammer ? "向织造师傅领取" : "先向师傅借锤子，再与他对话领糕点");
+            "第一次与织造师傅交谈时获得");
 
         bool canSubmit = collected == 3 && !completed;
         var back = WorkshopUi.PixelButton(table, "Return From Offering Table", new Rect(34, 576, 192, 58),
@@ -95,11 +95,10 @@ internal sealed class AutumnOfferingView : MonoBehaviour
             ready ? ReadyPaper : RowPaper, ready ? WorkshopUi.Green : WorkshopUi.Bronze);
         WorkshopUi.Picture(row, "Offering Icon", new Rect(20, 25, 88, 88), icon,
             ready ? Color.white : new Color(1f, 1f, 1f, 0.73f));
-        float labelTop = ready ? 48 : 19;
-        WorkshopUi.Label(row, "Offering Name", new Rect(124, labelTop, 240, 43), name, 32);
-        if (!completed)
-            WorkshopUi.Label(row, "Offering Status", new Rect(390, labelTop, 164, 43),
-                ready ? "已备齐" : "待收集", 26, ready ? WorkshopUi.Green : FrameEdge, TextAnchor.MiddleRight);
+        WorkshopUi.Label(row, "Offering Name", new Rect(124, 19, 240, 43), name, 32);
+        WorkshopUi.Label(row, "Offering Status", new Rect(390, 20, 164, 42),
+            completed ? "已献上" : ready ? "已备齐" : "待收集", 26,
+            ready ? WorkshopUi.Green : FrameEdge, TextAnchor.MiddleRight);
         if (!ready)
             WorkshopUi.Label(row, "Offering Source", new Rect(124, 68, 426, 61), source, 27, WorkshopUi.Ink,
                 TextAnchor.UpperLeft);

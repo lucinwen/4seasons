@@ -5,26 +5,36 @@ using UnityEngine.UI;
 
 internal sealed class WorkshopChapterGuide : MonoBehaviour
 {
-    private static readonly string[] Places =
+    internal static readonly string[] Titles =
     {
-        "春｜桐乡桑园与蚕房",
-        "夏｜南浔缫丝坊",
-        "秋｜苏州织造工坊",
-        "冬｜江南织坊"
+        "春季·采桑育蚕",
+        "夏季·寻轴缫丝",
+        "秋季·织染攀花",
+        "冬季·剪帛成衣"
+    };
+
+    private static readonly string[] Process =
+    {
+        "清明采桑 · 谷雨浴蚕与喂蚕",
+        "立夏下簇 · 小满缫丝 · 芒种夏至备料",
+        "立秋采材 · 白露织造与秋社 · 秋分染色 · 寒露攀花",
+        "立冬、小雪剪帛 · 量体裁衣 · 小雪成衣"
     };
 
     private static readonly string[] Tips =
     {
-        "先向蚕房师傅领任务，带篮采桑，再到蚕架喂蚕。喂饱后收下蚕种纸，前往浴蚕桶。",
-        "到蚕茧簇架择茧、接通丝路。备好水和木柴，再从煮茧锅进入迷宫寻找线轴。",
-        "修好织机、拿到梭子后，参照行和列的目标数字织出生坯绸。",
-        "到染缸选好颜色，调整清水与原液的比例染整绸。带染好的布到小雪裁衣台，沿样板裁出衣片。"
+        "春气渐暖，桑芽初展。拾篮采桑、清洗蚕种，\n再用桑叶喂养蚕宝宝，开启桑织之旅。",
+        "到择茧草堂下簇收茧，备水拾柴后穿过迷宫寻得线轴。\n控制松紧完成缫丝，再接通水管备料。",
+        "采集天然染材，拾槌修机、取梭织坯，再研磨染色。\n首次交谈收下糕点，备齐贡品参加秋社，最后织出攀花纹样。",
+        "带上秋季染布，沿虚线剪出衣片，拖放衣样纸确认版型。\n找到缝衣针后选择款式、拼片缝衣，最后试衣留念。"
     };
 
-    private static readonly string[] RegionalBoards = { "B01", "B02", "B03" };
-    private static readonly Vector2[] RegionalBoardTitles =
+    private static readonly string[] Delivery =
     {
-        new Vector2(0.49f, 0.53f), new Vector2(0.37f, 0.54f), new Vector2(0.51f, 0.52f)
+        "本章交付：蚕种、桑叶、蚕宝宝　｜　完成奖励：蚕茧",
+        "本章交付：盐、线轴、索绪　｜　完成奖励：丝束",
+        "本章交付：土地公雕像、梭子、生坯绸　｜　完成奖励：素绸",
+        "本章交付：缝衣针、染布、衣片　｜　完成奖励：成衣"
     };
 
     private static WorkshopChapterGuide active;
@@ -58,56 +68,23 @@ internal sealed class WorkshopChapterGuide : MonoBehaviour
 
     private void Build(WorkshopSeason season, Action onEnter)
     {
-        const float contentTop = 174f;
-        WorkshopUi.Block(layout, WorkshopUi.Veil);
-        var page = WorkshopUi.PixelCard(layout, "Chapter Guide", new Rect(185, 105, 1550, 870),
-            WorkshopUi.Paper, WorkshopUi.Bronze);
+        WorkshopUi.Block(layout, new Color32(24, 18, 13, 172));
         int index = (int)season;
-        WorkshopUi.Label(page, "Chapter Location", new Rect(48, 32, 1340, 70), Places[index], 49, font: WorkshopArt.ReadingFont);
-        WorkshopUi.Fill(page, "Guide Rule", new Rect(48, 112, 1455, 2), WorkshopUi.Bronze);
-        var guide = Resources.Load<Sprite>("WorkshopGuides/" + season + "_ChapterGuide");
-        WorkshopUi.PixelCard(page, "Chapter Artwork Border", new Rect(48, contentTop, 919, 520), WorkshopUi.Cream, WorkshopUi.Bronze);
-        WorkshopUi.Picture(page, "Chapter Artwork", new Rect(54, contentTop + 6, 907, 508), guide);
+        var page = WorkshopUi.Rect(layout, "Chapter Guide", new Rect(70, 39, 1780, 1001.25f));
+        var frame = Resources.Load<Sprite>("WorkshopChapterFrames/Blank/" + season + "_Frame");
+        WorkshopUi.Picture(page, "Seasonal Wood Frame", new Rect(0, 0, 1780, 1001.25f), frame);
+        // The chapter name is metadata only. The illustrated plaque and all UI copy stay blank.
+        page.gameObject.name = "Chapter Guide · " + Titles[index];
+        // Preserve the three native buttons for the team's later typography pass.
 
-        var field = WorkshopNarrativeData.FieldNote(season);
-        var board = index < RegionalBoards.Length ? Resources.Load<Sprite>("WorkshopDelivery/" + RegionalBoards[index]) : null;
-        float textTop = contentTop;
-        if (board != null)
-        {
-            var boardBounds = new Rect(1016, contentTop, 474, 267);
-            var boardTitle = RegionalBoardTitles[index];
-            var center = boardBounds.position + Vector2.Scale(boardBounds.size, boardTitle);
-            WorkshopUi.Picture(page, "Illustrated Regional Board", boardBounds, board);
-            WorkshopUi.Label(page, "Chapter Region", new Rect(center.x - 118, center.y - 53, 236, 38),
-                "地点原型", 24, WorkshopUi.Green, TextAnchor.MiddleCenter, WorkshopArt.ReadingFont);
-            WorkshopUi.Label(page, "Illustrated Region Name", new Rect(center.x - 118, center.y - 13, 236, 57),
-                field.Region, 37, WorkshopUi.Green, TextAnchor.MiddleCenter, WorkshopArt.ReadingFont);
-            textTop = boardBounds.yMax + 11;
-        }
-        else if (season != WorkshopSeason.Winter)
-        {
-            WorkshopUi.Label(page, "Chapter Region", new Rect(1016, 210, 474, 49),
-                "地点原型 · " + field.Region, 31, WorkshopUi.Green);
-            textTop = 281;
-        }
-
-        var textBounds = new Rect(1016, textTop, 470, board != null ? 197 : 265);
-        var overview = WorkshopUi.Label(page, "Chapter Context", textBounds, Tips[index], board != null ? 28 : 32,
-            WorkshopUi.Ink, TextAnchor.UpperLeft, WorkshopArt.ReadingFont);
-        overview.horizontalOverflow = HorizontalWrapMode.Wrap;
-        overview.lineSpacing = 1.2f;
-
-        var source = WorkshopUi.PixelButton(page, "Chapter Sources", new Rect(1016, textBounds.yMax + 12, 272, 61),
-            "阅读相关资料", () => WorkshopHeritageBrief.ShowSeason(season), false, 28);
-        var back = WorkshopUi.PixelButton(page, "Close Chapter Guide", new Rect(1016, 752, 199, 62),
-            "返回", () => Close(dismissed), false, 29);
-        if (onEnter != null)
-        {
-            var enter = WorkshopUi.PixelButton(page, "Enter Chapter", new Rect(1230, 752, 272, 62),
-                "进入关卡", () => Close(onEnter), true, 29);
-            actions = new[] { enter, back, source };
-        }
-        else actions = new[] { back, source };
+        var source = ChapterButton(page, "Chapter Sources", new Rect(440, 618, 330, 70),
+            string.Empty, () => WorkshopHeritageBrief.ShowSeason(season), false);
+        var back = ChapterButton(page, "Close Chapter Guide", new Rect(800, 618, 200, 70),
+            string.Empty, () => Close(dismissed), false);
+        var enter = ChapterButton(page, "Enter Chapter", new Rect(1030, 618, 310, 70),
+            string.Empty, () => Close(onEnter), true);
+        enter.interactable = onEnter != null;
+        actions = onEnter != null ? new[] { enter, back, source } : new[] { back, source };
 
         foreach (var label in page.GetComponentsInChildren<Text>(true)) label.font = WorkshopArt.ReadingFont;
 
@@ -124,6 +101,19 @@ internal sealed class WorkshopChapterGuide : MonoBehaviour
 
         if (EventSystem.current != null)
             EventSystem.current.SetSelectedGameObject(actions[0].gameObject);
+    }
+
+    private static Button ChapterButton(Transform parent, string name, Rect bounds, string text, Action clicked, bool primary)
+    {
+        var button = WorkshopUi.PixelButton(parent, name, bounds, text, clicked, primary, 35,
+            new Color32(130, 57, 27, 255));
+        var colors = button.colors;
+        colors.highlightedColor = new Color32(255, 235, 195, 255);
+        colors.selectedColor = colors.highlightedColor;
+        colors.pressedColor = new Color32(224, 186, 122, 255);
+        button.colors = colors;
+        if (!primary) button.GetComponentInChildren<Text>().color = new Color32(84, 43, 24, 255);
+        return button;
     }
 
     private void Update()

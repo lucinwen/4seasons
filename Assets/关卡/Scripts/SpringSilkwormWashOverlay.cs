@@ -1,334 +1,188 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+/// <summary>A wet cloth locally cleans one continuous heap of large eggs.</summary>
 internal sealed class SpringSilkwormWashOverlay : MonoBehaviour
 {
-    private enum WashPhase { Load, Rinse, Skim, Complete }
-
-    private static readonly Rect Basin = new Rect(302, 182, 552, 193);
-    private static readonly Vector2 TrayRest = new Vector2(137, 284);
-    private static readonly Vector2[] RinsePositions =
-    {
-        new Vector2(369, 286), new Vector2(578, 214), new Vector2(787, 286), new Vector2(578, 346)
-    };
-    private static readonly Vector2[] DebrisPositions =
-    {
-        new Vector2(429, 245), new Vector2(521, 353), new Vector2(687, 245), new Vector2(731, 354)
-    };
-    private static readonly Color32 DeepWater = new Color32(34, 89, 95, 255);
-    private static readonly Color32 Lit = new Color32(251, 223, 131, 255);
-    private const string ArtPath = "WorkshopGameArt/";
-    private const int RinseTarget = 8;
-
+    private sealed class Egg { internal Vector2 point; internal Image image, dust; internal float dirt=1f,coverage=1f; }
+    private const int Columns=6,Rows=4,AlphaSamples=16;
+    private const float StrokeStep=14f,CleanRadius=112f,CleanTolerance=.12f;
     private static SpringSilkwormWashOverlay current;
-    private RectTransform frame;
-    private RectTransform work;
-    private RectTransform tray;
-    private Image trayImage;
-    private Text title;
+    private readonly List<Egg> eggs=new List<Egg>();
+    private readonly List<Sprite> heapTiles=new List<Sprite>();
+    private RectTransform frame,cloth;
+    private Image clothArt;
     private Text hint;
-    private Text goal;
-    private Button action;
-    private Image progress;
-    private readonly Image[] rings = new Image[RinsePositions.Length];
-    private readonly Text[] ringNumbers = new Text[RinsePositions.Length];
-    private readonly GameObject[] scraps = new GameObject[DebrisPositions.Length];
-    private Sprite cleanEggs;
+    private Button collect;
     private Action<bool> onClose;
-    private GameObject priorSelection;
-    private float priorTimeScale;
-    private WashPhase phase;
-    private int rinsed;
-    private int skimmed;
-    private bool dragging;
-    private Vector2 lastPoint;
+    private float priorTimeScale,wetness;
+    private bool dragging,complete;
+    private Vector2 previous;
+    private static readonly Rect Water=new Rect(65,665,360,205);
+    private static readonly Vector2 Rest=new Vector2(1590,800);
+    internal static bool IsOpen=>current!=null;
+    internal float CleanFraction {get{float sum=0,area=0;foreach(var e in eggs){sum+=(1-e.dirt)*e.coverage;area+=e.coverage;}return area>0?sum/area:0;}}
+    internal bool IsComplete=>complete;
 
-    internal static bool IsOpen => current != null;
-
-    internal static bool Show(Sprite bucket, Sprite eggs, Sprite cleaned, Action<bool> close)
+    internal static bool Show(Sprite bucket,Sprite before,Sprite cleaned,Action<bool> close)
     {
-        if (IsOpen) return false;
-        RectTransform canvas = WorkshopUi.NewCanvas("SpringSilkwormWashOverlay", 23000);
-        WorkshopUi.Block(canvas, WorkshopUi.Veil);
-        current = canvas.parent.gameObject.AddComponent<SpringSilkwormWashOverlay>();
-        current.frame = canvas;
-        current.onClose = close;
-        current.priorTimeScale = Time.timeScale;
-        current.priorSelection = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
-        Time.timeScale = 0f;
-        current.Build(bucket, eggs, cleaned);
-        return true;
+        if(IsOpen)return false;
+        var frame=WorkshopUi.NewCanvas("SpringSilkwormWashOverlay",23000);
+        current=frame.gameObject.AddComponent<SpringSilkwormWashOverlay>();
+        current.frame=frame;current.onClose=close;current.priorTimeScale=Time.timeScale;Time.timeScale=0;
+        current.Build(bucket,cleaned);return true;
     }
-
-    private void Build(Sprite bucket, Sprite eggs, Sprite cleaned)
+    private void Build(Sprite bucket,Sprite cleaned)
     {
-        cleanEggs = cleaned;
-        var tubArt = Resources.Load<Sprite>(ArtPath + "BathTub");
-        var sieveArt = Resources.Load<Sprite>(ArtPath + "BathSieve");
-        var debrisArt = Resources.Load<Sprite>(ArtPath + "BathDebris");
-        var rippleArt = Resources.Load<Sprite>(ArtPath + "WaterRipple");
-        var page = WorkshopUi.WorkbenchCard(frame, "Bath Panel", new Rect(88, 77, 1744, 926),
-            WorkshopUi.Paper, WorkshopUi.Bronze);
-        WorkshopUi.Label(page, "Bath Title", new Rect(29, 42, 750, 77), "浴蚕", 54);
-        WorkshopUi.Fill(page, "Heading Rule", new Rect(28, 145, 1688, 2), WorkshopUi.Line);
-        work = WorkshopUi.PixelCard(page, "Bath Worktable", new Rect(28, 163, 1172, 665),
-            new Color32(117, 78, 51, 255), WorkshopUi.Bronze);
-        WorkshopUi.Picture(work, "Spring Worktable", new Rect(5, 5, 1162, 655),
-            Resources.Load<Sprite>("WorkshopObservation/Spring_LeafDesk"), stretch: true);
-        WorkshopUi.Fill(work, "Table Shade", new Rect(5, 5, 1162, 655), new Color32(43, 34, 26, 58));
-        WorkshopUi.Picture(work, "Bath Tub", new Rect(220, 96, 720, 505), tubArt ?? bucket, stretch: tubArt != null);
-
-        for (int i = 0; i < RinsePositions.Length; i++)
+        WorkshopImmersive.Background(frame,WorkshopSeason.Spring);
+        hint=WorkshopImmersive.Text(frame,"Wash Hint",new Rect(45,34,1480,62),"拿起右侧的布，蘸水后轻轻擦拭蚕种。");
+        WorkshopImmersive.Button(frame,"Leave Bath",new Rect(1735,35,140,62),"返回",Close);
+        WorkshopUi.Picture(frame,"Water Basin",new Rect(22,615,440,310),Resources.Load<Sprite>("WorkshopGameArt/BathTub")??bucket);
+        WorkshopImmersive.Text(frame,"Water Label",new Rect(97,920,275,48),"清水",24,TextAnchor.MiddleCenter);
+        var seed=Resources.Load<Sprite>("WordRevision/SpringEggHeap");
+        if(seed==null)seed=cleaned;
+        // Adjacent crops reconstruct one bitmap; each crop can lose its dirt locally.
+        var heap=new Rect(630,370,660,440);
+        var alpha=SampleHeapAlpha(seed);
+        for(int row=0;row<Rows;row++)for(int col=0;col<Columns;col++)
         {
-            var point = RinsePositions[i];
-            var ring = DrawRipple(work, "Rinse Guide " + i, Around(point, 83, 70), rippleArt);
-            ringNumbers[i] = WorkshopUi.Label(ring.transform, "Guide Number", new Rect(0, 0, 83, 68), (i + 1).ToString(),
-                27, WorkshopUi.Cream, TextAnchor.MiddleCenter);
-            rings[i] = ring;
-        }
-
-        var input = WorkshopUi.Fill(work, "Bath Gesture Surface", new Rect(5, 5, 1162, 655), Color.clear);
-        input.raycastTarget = true;
-        var trigger = input.gameObject.AddComponent<EventTrigger>();
-        Register(trigger, EventTriggerType.BeginDrag, BeginDrag);
-        Register(trigger, EventTriggerType.Drag, Drag);
-        Register(trigger, EventTriggerType.EndDrag, EndDrag);
-
-        tray = WorkshopUi.Rect(work, "Silkworm Egg Sieve", Around(TrayRest, 174, 125));
-        WorkshopUi.Picture(tray, "Bamboo Sieve", new Rect(3, 12, 168, 104),
-            sieveArt ?? WorkshopObservationArt.Current?.SilkwormTray, stretch: sieveArt != null);
-        trayImage = WorkshopUi.Picture(tray, "Eggs on Sieve", new Rect(29, 11, 115, 85), eggs);
-
-        for (int i = 0; i < DebrisPositions.Length; i++)
-        {
-            int scrap = i;
-            var spot = WorkshopUi.Button(work, "Floating Debris " + i, Around(DebrisPositions[i], 70, 70),
-                "", () => Skim(scrap), Color.clear);
-            DrawRipple(spot.transform, "Debris Ripple", new Rect(6, 7, 58, 55), rippleArt);
-            var leaf = WorkshopUi.Picture(spot.transform, "Debris", new Rect(16, 20, 38, 29),
-                debrisArt ?? WorkshopObservationArt.Current?.Leaf);
-            leaf.rectTransform.localEulerAngles = new Vector3(0, 0, i % 2 == 0 ? 29 : -23);
-            scraps[i] = spot.gameObject;
-        }
-
-        var counter = WorkshopUi.PixelCard(work, "Bath Progress", new Rect(266, 551, 640, 72),
-            WorkshopUi.Ink, WorkshopUi.Bronze);
-        goal = WorkshopUi.Label(counter, "Bath Stage Progress", new Rect(22, 5, 592, 42), "", 27,
-            WorkshopUi.Cream, TextAnchor.MiddleCenter);
-        WorkshopUi.Fill(counter, "Progress Track", new Rect(28, 53, 584, 7), DeepWater);
-        progress = WorkshopUi.Fill(counter, "Progress Fill", new Rect(28, 53, 0, 7), Lit);
-
-        var instructions = WorkshopUi.WorkbenchCard(page, "Bath Instructions", new Rect(1218, 163, 498, 665),
-            WorkshopUi.Cream, WorkshopUi.Line);
-        title = WorkshopUi.Label(instructions, "Bath Phase", new Rect(27, 28, 444, 62), "", 36, WorkshopUi.Green);
-        hint = WorkshopUi.Label(instructions, "Bath Hint", new Rect(27, 112, 440, 225), "", 31,
-            WorkshopUi.Ink, TextAnchor.UpperLeft);
-        hint.lineSpacing = 1.20f;
-        WorkshopUi.Fill(instructions, "Instruction Rule", new Rect(27, 341, 444, 2), WorkshopUi.Line);
-        action = WorkshopUi.PixelButton(instructions, "Bath Action", new Rect(27, 386, 444, 64),
-            "放入蚕种筛", () => EnterRinse(), true, 28);
-        WorkshopUi.PixelButton(page, "Leave Bath", new Rect(1473, 848, 243, 58), "返回", Close, false, 27);
-        foreach (var label in page.GetComponentsInChildren<Text>(true))
-            label.font = WorkshopArt.ReadingFont;
-        RefreshPhase();
-    }
-
-    private static void Register(EventTrigger trigger, EventTriggerType type, Action<PointerEventData> callback)
-    {
-        var entry = new EventTrigger.Entry { eventID = type };
-        entry.callback.AddListener(data => callback((PointerEventData)data));
-        trigger.triggers.Add(entry);
-    }
-
-    private void BeginDrag(PointerEventData pointer)
-    {
-        if (WorkshopMinigameMenu.BlocksGameplayInput ||
-            pointer.button != PointerEventData.InputButton.Left || phase > WashPhase.Rinse) return;
-        var start = WorkPoint(pointer.pressPosition, pointer.pressEventCamera);
-        dragging = phase == WashPhase.Load ? Around(TrayRest, 204, 148).Contains(start) : OverWater(start);
-        lastPoint = start;
-    }
-
-    private void Drag(PointerEventData pointer)
-    {
-        if (!dragging) return;
-        if (WorkshopMinigameMenu.BlocksGameplayInput)
-        {
-            lastPoint = WorkPoint(pointer.position, pointer.pressEventCamera);
-            return;
-        }
-        Vector2 point = WorkPoint(pointer.position, pointer.pressEventCamera);
-        if (phase == WashPhase.Load)
-        {
-            MoveTray(point);
-        }
-        else if (phase == WashPhase.Rinse && OverWater(point))
-        {
-            MoveTray(point);
-            Vector2 target = RinsePositions[rinsed % RinsePositions.Length];
-            Vector2 span = point - lastPoint;
-            float t = Mathf.Clamp01(Vector2.Dot(target - lastPoint, span) / Mathf.Max(span.sqrMagnitude, 1f));
-            if (OverWater(lastPoint) && span.sqrMagnitude >= 4f &&
-                Vector2.Distance(target, lastPoint + span * t) < 49f)
-                AdvanceRinse();
-        }
-        lastPoint = point;
-    }
-
-    private void EndDrag(PointerEventData pointer)
-    {
-        if (!dragging) return;
-        dragging = false;
-        if (phase != WashPhase.Load) return;
-        if (WorkshopMinigameMenu.BlocksGameplayInput)
-        {
-            MoveTray(TrayRest);
-            return;
-        }
-        Vector2 point = WorkPoint(pointer.position, pointer.pressEventCamera);
-        if (OverWater(point)) EnterRinse();
-        else MoveTray(TrayRest);
-    }
-
-    private static bool OverWater(Vector2 point)
-    {
-        Vector2 distance = point - Basin.center;
-        distance.x /= Basin.width * 0.5f;
-        distance.y /= Basin.height * 0.5f;
-        return distance.sqrMagnitude <= 1f;
-    }
-
-    private Vector2 WorkPoint(Vector2 screen, Camera eventCamera)
-    {
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(work, screen, eventCamera, out Vector2 local);
-        return new Vector2(local.x, -local.y);
-    }
-
-    private void MoveTray(Vector2 center)
-    {
-        tray.anchoredPosition = new Vector2(center.x - 87, -center.y + 62.5f);
-    }
-
-    private void EnterRinse()
-    {
-        if (phase != WashPhase.Load) return;
-        phase = WashPhase.Rinse;
-        MoveTray(Basin.center);
-        WorkshopAudioFeedback.Click();
-        RefreshPhase();
-    }
-
-    private void AdvanceRinse()
-    {
-        rinsed++;
-        WorkshopAudioFeedback.Click();
-        if (rinsed == RinseTarget)
-        {
-            phase = WashPhase.Skim;
-            dragging = false;
-            MoveTray(TrayRest);
-        }
-        RefreshPhase();
-    }
-
-    private void Skim(int index)
-    {
-        if (phase != WashPhase.Skim || !scraps[index].activeSelf) return;
-        scraps[index].SetActive(false);
-        skimmed++;
-        if (skimmed == scraps.Length)
-        {
-            phase = WashPhase.Complete;
-            if (cleanEggs != null)
+            var source=seed.rect;
+            var crop=new Rect(source.x+source.width*col/Columns,source.y+source.height*(Rows-row-1)/Rows,source.width/Columns,source.height/Rows);
+            var tile=Sprite.Create(seed.texture,crop,new Vector2(.5f,.5f),100,0,SpriteMeshType.FullRect);
+            heapTiles.Add(tile);
+            var bounds=new Rect(heap.x+col*heap.width/Columns,heap.y+row*heap.height/Rows,heap.width/Columns,heap.height/Rows);
+            var image=WorkshopUi.Picture(frame,"Heap Surface "+eggs.Count,bounds,tile,new Color(.49f,.43f,.27f),stretch:true);
+            var dust=WorkshopUi.Picture(frame,"Heap Dirt "+eggs.Count,bounds,tile,new Color(.37f,.26f,.12f,.32f),stretch:true);
+            // Transparent corners have no work to do; the wiping target follows the visible seeds.
+            float amount=0;var center=Vector2.zero;
+            for(int y=0;y<AlphaSamples;y++)for(int x=0;x<AlphaSamples;x++)
             {
-                trayImage.sprite = cleanEggs;
-                trayImage.enabled = true;
+                int sx=col*AlphaSamples+x,sy=(Rows-row-1)*AlphaSamples+y;
+                float a=alpha[sy*Columns*AlphaSamples+sx].a/255f;
+                amount+=a;
+                center+=new Vector2(heap.x+(sx+.5f)*heap.width/(Columns*AlphaSamples),
+                    heap.y+(1-(sy+.5f)/(Rows*AlphaSamples))*heap.height)*a;
             }
-            WorkshopAudioFeedback.Confirm();
+            var egg=new Egg{point=amount>0?center/amount:bounds.center,image=image,dust=dust,
+                coverage=amount/(AlphaSamples*AlphaSamples),dirt=amount>0?1f:0f};
+            eggs.Add(egg);PaintEgg(egg);
         }
-        else WorkshopAudioFeedback.Click();
-        RefreshPhase();
+        var dyeing=Resources.Load<WinterDyeingConfig>("WinterDyeingConfig");
+        cloth=WorkshopUi.Rect(frame,"Damp Wiping Cloth",new Rect(Rest.x-110,Rest.y-90,220,180));
+        clothArt=WorkshopUi.Picture(cloth,"Cloth",new Rect(0,0,220,180),dyeing!=null?dyeing.silk:Resources.Load<Sprite>("WorkshopGameArt/CuttingCloth"));
+        clothArt.raycastTarget=true;clothArt.gameObject.AddComponent<SpringWashClothInput>().owner=this;
+        clothArt.gameObject.AddComponent<Shadow>().effectDistance=new Vector2(5,-6);
+        WorkshopImmersive.Text(frame,"Cloth Label",new Rect(1470,900,260,42),"擦拭布",24,TextAnchor.MiddleCenter);
+        collect=WorkshopImmersive.Button(frame,"Collect Clean Eggs",new Rect(788,885,340,68),"收下蚕种",()=>Close(true));
+        collect.gameObject.SetActive(false);
     }
-
-    private void RefreshPhase()
+    private static Color32[] SampleHeapAlpha(Sprite seed)
     {
-        for (int i = 0; i < rings.Length; i++)
+        // Imported game sprites are not CPU-readable. A tiny temporary copy also avoids
+        // counting empty pixels around the heap as invisible, compulsory cleaning targets.
+        int width=Columns*AlphaSamples,height=Rows*AlphaSamples;
+        var previousTarget=RenderTexture.active;
+        var target=RenderTexture.GetTemporary(width,height,0,RenderTextureFormat.ARGB32);
+        Texture2D sample=null;
+        try
         {
-            rings[i].gameObject.SetActive(phase == WashPhase.Rinse);
-            bool next = i == rinsed % rings.Length;
-            rings[i].color = next ? Color.white : new Color32(123, 179, 169, 255);
-            ringNumbers[i].color = next ? Lit : WorkshopUi.Cream;
-            ringNumbers[i].fontStyle = next ? FontStyle.Bold : FontStyle.Normal;
+            var rect=seed.rect;var texture=seed.texture;
+            Graphics.Blit(texture,target,new Vector2(rect.width/texture.width,rect.height/texture.height),
+                new Vector2(rect.x/texture.width,rect.y/texture.height));
+            RenderTexture.active=target;
+            sample=new Texture2D(width,height,TextureFormat.RGBA32,false);
+            sample.ReadPixels(new Rect(0,0,width,height),0,0);sample.Apply();
+            return sample.GetPixels32();
         }
-        action.transform.parent.gameObject.SetActive(phase == WashPhase.Load || phase == WashPhase.Complete);
-        switch (phase)
+        finally
         {
-            case WashPhase.Load:
-                title.text = "入水";
-                hint.text = "把左边的竹筛拖进水里，或点下方按钮。";
-                goal.text = "入水 → 漂洗 → 捞杂质";
-                break;
-            case WashPhase.Rinse:
-                title.text = "漂洗";
-                hint.text = "在桶里按住鼠标，拖着竹筛依次经过 1 至 4 号亮圈，绕行两圈。";
-                goal.text = $"漂洗 {rinsed} / {RinseTarget}";
-                break;
-            case WashPhase.Skim:
-                title.text = "捞杂质";
-                hint.text = "点击水面上泛着金圈的碎屑。";
-                goal.text = $"捞出杂质 {skimmed} / {scraps.Length}";
-                if (skimmed == 0)
-                    foreach (GameObject scrap in scraps) scrap.SetActive(true);
-                break;
-            case WashPhase.Complete:
-                title.text = "蚕种已备好";
-                hint.text = "带着蚕种和春季其余材料返回织坊交付。";
-                goal.text = $"杂质已捞出 {skimmed} / {scraps.Length}";
-                action.onClick.RemoveAllListeners();
-                action.onClick.AddListener(Close);
-                action.GetComponentInChildren<Text>().text = "收好蚕种";
-                break;
+            RenderTexture.active=previousTarget;
+            RenderTexture.ReleaseTemporary(target);
+            if(sample!=null)Destroy(sample);
         }
-        progress.rectTransform.sizeDelta = new Vector2(584f * (rinsed + skimmed) / (RinseTarget + scraps.Length), 7);
-        if (phase == WashPhase.Load)
-            foreach (GameObject scrap in scraps) scrap.SetActive(false);
     }
-
-    private static Image DrawRipple(Transform parent, string name, Rect bounds, Sprite art)
+    private Vector2 Point(PointerEventData data)
+        =>Point(data.position,data.pressEventCamera);
+    private Vector2 Point(Vector2 screen,Camera camera)
     {
-        if (art != null) return WorkshopUi.Picture(parent, name, bounds, art, Lit, stretch: true);
-        var marker = WorkshopUi.Fill(parent, name, bounds, Lit);
-        WorkshopUi.ApplyPixelShape(marker);
-        return marker;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(frame,screen,camera,out var p);
+        return new Vector2(p.x+960,540-p.y);
     }
-
-    private static Rect Around(Vector2 center, float width, float height) =>
-        new Rect(center.x - width / 2, center.y - height / 2, width, height);
-
-    private void Close()
+    internal void BeginDrag(PointerEventData data)
     {
-        if (current != this) return;
-        Restore();
-        WorkshopUi.CloseCanvas(frame);
-        onClose?.Invoke(phase == WashPhase.Complete);
+        if(complete||data.button!=PointerEventData.InputButton.Left)return;
+        dragging=true;
+        previous=data.pointerPressRaycast.gameObject!=null?Point(data.pressPosition,data.pressEventCamera):Point(data);
+        cloth.SetAsLastSibling();
     }
-
-    private void Restore()
+    internal void Drag(PointerEventData data)
     {
-        current = null;
-        Time.timeScale = priorTimeScale;
-        if (EventSystem.current != null)
-            EventSystem.current.SetSelectedGameObject(priorSelection != null && priorSelection.activeInHierarchy ? priorSelection : null);
-    }
-
-    private void OnDestroy()
-    {
-        if (current == this)
+        if(!dragging||complete)return;
+        var p=Point(data);MoveCloth(p);
+        float distance=Vector2.Distance(previous,p);
+        if(distance>.01f)
         {
-            Restore();
-            SilkwormWashingController.washingStarted = false;
+            // Integrate the entire stroke, rather than capping each mouse event. Fast
+            // movements and sparse events now clean the same path as slow movements.
+            int steps=Mathf.Max(1,Mathf.CeilToInt(distance/StrokeStep));
+            float travel=distance/steps;
+            for(int step=1;step<=steps;step++)
+            {
+                var point=Vector2.Lerp(previous,p,step/(float)steps);
+                if(Water.Contains(point)) { wetness=1f;continue; }
+                if(wetness<=0)continue;
+                foreach(var egg in eggs)
+                {
+                    if(egg.dirt<=0||egg.coverage<=0)continue;
+                    float reach=Vector2.Distance(egg.point,point);if(reach>CleanRadius)continue;
+                    egg.dirt=Mathf.Max(0,egg.dirt-travel*.014f*(1-reach/(CleanRadius+30)));
+                    if(egg.dirt<=CleanTolerance)egg.dirt=0;
+                    PaintEgg(egg);
+                }
+                wetness=Mathf.Max(0,wetness-travel/17000f);
+            }
         }
+        else if(Water.Contains(p))wetness=1f;
+        previous=p;
+        clothArt.color=wetness>0?new Color(.72f,.88f,.95f):Color.white;
+        CheckClean();
+        if(!complete)hint.text=wetness>0
+            ? "湿布擦过哪里，哪里就变干净。已清洁 "+Mathf.FloorToInt(CleanFraction*100)+"%"
+            : "先把布蘸一点清水，再擦拭蚕种。";
     }
+    private static void PaintEgg(Egg egg)
+    {
+        egg.image.color=Color.Lerp(Color.white,new Color(.49f,.43f,.27f),egg.dirt);
+        egg.dust.color=new Color(.37f,.26f,.12f,egg.dirt*.32f);
+    }
+    internal void EndDrag(PointerEventData data){if(dragging&&!complete)Drag(data);dragging=false;MoveCloth(Rest);}
+    private void MoveCloth(Vector2 p)=>cloth.anchoredPosition=new Vector2(p.x-110,-p.y+90);
+    private void CheckClean()
+    {
+        if(complete)return;
+        if(CleanFraction<.975f)return;
+        foreach(var egg in eggs)if(egg.coverage>.08f&&egg.dirt>CleanTolerance)return;
+        complete=true;dragging=false;
+        foreach(var e in eggs){e.dirt=0;PaintEgg(e);}
+        MoveCloth(Rest);hint.text="蚕种干净了，收好吧。";collect.gameObject.SetActive(true);WorkshopAudioFeedback.Confirm();
+    }
+    private void Update(){if(Input.GetKeyDown(KeyCode.Escape))Close();}
+    private void Close()=>Close(false);
+    private void Close(bool collected)
+    {
+        if(current!=this)return;current=null;Time.timeScale=priorTimeScale;
+        WorkshopUi.CloseCanvas(frame);onClose?.Invoke(complete&&collected);
+    }
+    private void OnDestroy(){foreach(var tile in heapTiles)Destroy(tile);if(current==this){current=null;Time.timeScale=priorTimeScale;SilkwormWashingController.washingStarted=false;}}
+}
+internal sealed class SpringWashClothInput:MonoBehaviour,IInitializePotentialDragHandler,IBeginDragHandler,IDragHandler,IEndDragHandler
+{
+    internal SpringSilkwormWashOverlay owner;
+    public void OnInitializePotentialDrag(PointerEventData e)=>e.useDragThreshold=false;
+    public void OnBeginDrag(PointerEventData e)=>owner.BeginDrag(e);
+    public void OnDrag(PointerEventData e)=>owner.Drag(e);
+    public void OnEndDrag(PointerEventData e)=>owner.EndDrag(e);
 }

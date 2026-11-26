@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 using Qingming.LevelBackground;
 
 /// <summary>
-/// 秋天关卡中可点击获取的道具（酒 / 水稻 / 香蕉 / 工具箱）。
+/// 秋天关卡中可点击获取的道具（酒 / 水稻 / 香蕉 / 工具箱 / 修机锤）。
 /// 挂载后鼠标点击道具图像即可触发，不创建任何悬浮提示或标签。
 /// 弹窗与春天场景共用 SimplePopup，尺寸/字体完全一致。
 /// </summary>
@@ -14,7 +14,8 @@ public class AutumnItemClick : MonoBehaviour
         Wine,       // 蚕花酒：知识卡片 + 获取弹窗
         Rice,       // 水稻：直接获取
         Toolbox,    // 工具箱：梭子知识卡片 + 获取
-        Banana     // 香蕉果篮：领取供桌贡品
+        Banana,     // 香蕉果篮：领取供桌贡品
+        Hammer      // 场景地面上的修机锤
     }
 
     public ItemKind kind = ItemKind.Wine;
@@ -38,6 +39,11 @@ public class AutumnItemClick : MonoBehaviour
 
     private void Start()
     {
+        if (kind == ItemKind.Hammer && AutumnLevelState.HasHammer)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
         if (kind != ItemKind.Rice) WorkshopPickupGlow.Bind(gameObject, IsUncollectedTarget);
     }
 
@@ -52,6 +58,8 @@ public class AutumnItemClick : MonoBehaviour
             case ItemKind.Toolbox:
                 return AutumnLevelState.HasHammer && AutumnLevelState.HasLoomRepaired &&
                     !AutumnLevelState.HasShuttle && !WorkshopProgress.Has(WorkshopItem.Shuttle);
+            case ItemKind.Hammer:
+                return !AutumnLevelState.HasHammer;
             default:
                 return false;
         }
@@ -59,13 +67,12 @@ public class AutumnItemClick : MonoBehaviour
 
     private void Update()
     {
-        bool pressed = Input.GetMouseButtonDown(0);
-        if (WorkshopQuestGuide.BlocksWorldInput || (!pressed && !WorkshopPointer.CanShowWorldHint)) return;
+        if (WorkshopQuestGuide.BlocksWorldInput || !Input.GetMouseButtonDown(0)) return;
 
         // 小游戏/弹窗进行中不响应
         if (MiniGameOverlay.IsActive) return;
         if (HarvestOverlayManager.IsHarvestActive) return;
-        if (WorkshopKnowledgeView.IsOpen) return;
+        if (WorkshopKnowledgeView.IsOpen || FindObjectOfType<SimplePopup>() != null) return;
 
         // 点击 UI 时不响应
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
@@ -81,7 +88,7 @@ public class AutumnItemClick : MonoBehaviour
             hasEnabledCollider = true;
             if (col.OverlapPoint(world))
             {
-                HandlePointerHit(pressed);
+                OnClicked();
                 return;
             }
         }
@@ -93,15 +100,8 @@ public class AutumnItemClick : MonoBehaviour
             Bounds hitArea = _sr.sprite.bounds;
             if (kind == ItemKind.Banana) hitArea.Expand(new Vector3(1.2f, 1.2f, 0f));
             if (hitArea.Contains(new Vector3(local.x, local.y, 0f)))
-                HandlePointerHit(pressed);
+                OnClicked();
         }
-    }
-
-    private void HandlePointerHit(bool pressed)
-    {
-        if (FindObjectOfType<SimplePopup>() != null) return;
-        if (kind != ItemKind.Rice || !AutumnLevelState.HasRice) WorkshopPointer.PointAtWorldTarget();
-        if (pressed) OnClicked();
     }
 
     private void OnClicked()
@@ -122,7 +122,20 @@ public class AutumnItemClick : MonoBehaviour
                 if (AutumnLevelState.HasRitualDone) ShowBanana();
                 else AutumnNpcDialogue.IntroduceRitual(ShowBanana);
                 break;
+            case ItemKind.Hammer:
+                if (!TryCollectHammer()) return;
+                gameObject.SetActive(false);
+                ShowGain("修机锤", _sr != null ? _sr.sprite : AutumnItemIcons.Load()?.hammer);
+                break;
         }
+    }
+
+    internal static bool TryCollectHammer()
+    {
+        if (AutumnLevelState.HasHammer || WorkshopProgress.HasStep("autumn.hammer")) return false;
+        AutumnLevelState.HasHammer = true;
+        WorkshopProgress.MarkStep("autumn.hammer");
+        return true;
     }
 
     // ==================== 蚕花酒 ====================
@@ -184,14 +197,9 @@ public class AutumnItemClick : MonoBehaviour
             return;
         }
 
-        if (!AutumnLevelState.HasHammer)
+        if (!AutumnLevelState.HasHammer || !AutumnLevelState.HasLoomRepaired)
         {
-            SimplePopup.Show("尚未领取木锤", "先与织造师傅对话领取木锤。", "知道了", null);
-            return;
-        }
-        if (!AutumnLevelState.HasLoomRepaired)
-        {
-            SimplePopup.Show("织机尚未修复", "先点击织机，使用木锤完成修复小游戏。", "知道了", null);
+            SimplePopup.Show("先修复织机", "拾取织机左侧地上的修机锤，修好织机后再来领取梭子。", "知道了");
             return;
         }
 

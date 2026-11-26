@@ -148,7 +148,7 @@ internal sealed class WorkshopNoticeBoard : MonoBehaviour
         emptyMessage = Label(transform, "Empty Notice Board", new Rect(445, 544, 1030, 104),
             "本季告示已全部取下", 40, Ink, TextAnchor.MiddleCenter);
         scrollHint = Label(transform, "Scroll Hint", new Rect(1095, 868, 369, 26),
-            "滚动或拖动查看", 20, Ink, TextAnchor.MiddleRight);
+            "滚动或拖动查看其余告示", 20, Ink, TextAnchor.MiddleRight);
     }
 
     private void BuildScroll()
@@ -261,7 +261,7 @@ internal sealed class WorkshopNoticeBoard : MonoBehaviour
     {
         bool unlocked = WorkshopProgress.IsUnlocked(season);
         bool complete = WorkshopProgress.IsComplete(season);
-        chapter.text = unlocked ? "" : "完成上一季后开放";
+        chapter.text = unlocked ? WorkshopNarrativeData.For(season).Craft : "完成上一季后开放";
         for (int i = 0; i < tabs.Length; i++)
         {
             var image = (UnityEngine.UI.Image)tabs[i].targetGraphic;

@@ -21,10 +21,7 @@ internal sealed partial class WorkshopObservationView
         ("生丝验收签", "WorkshopGameArt/SilkBobbin"),
         ("平纹织样", "WorkshopFinish/PlainSilk"),
         ("双染试色布头", "WorkshopObservation/Winter_DyedSwatch"),
-        ("节用裁衣纸样", null),
-        ("夹衣缝样", "WorkshopGameArt/WeftTile"),
-        ("冬至验衣签", "WorkshopGameArt/SuccessSeal"),
-        ("完整蚕茧", "WorkshopObservation/Summer_CocoonIntact")
+        ("节用裁衣纸样", null)
     };
 
     internal static string RewardName(WorkshopObservation id) => ChallengeRewards[(int)id].name;
@@ -82,17 +79,14 @@ internal sealed partial class WorkshopObservationView
     private void PrepareActivity(WorkshopObservation id)
     {
         observation = id;
+        showSongJin = false;
         challengePhase = ChallengePhase.None;
         stage = readOnly ? CompletionStage(id) : 0;
         runResult = null;
         earnedRewardThisRun = false;
         stampCurrentResult = false;
-        if (!readOnly && IsSeasonGame(id))
-        {
-            bool hasFirstOrder = WorkshopProgress.SeasonalOrderEnabled && id != WorkshopObservation.MangzhongCocoonHarvest
-                ? HasOrderWork(id) : BestWork(id, 0) != null;
-            PrepareChallenge(!IsFormalGarmentOrder && hasFirstOrder ? 1 : 0);
-        }
+        if (!readOnly && (IsSeasonGame(id) || IsDirectDyeing))
+            PrepareChallenge((WorkshopProgress.SeasonalOrderEnabled ? HasOrderWork(id) : BestWork(id, 0) != null) ? 1 : 0);
     }
 
     private void PrepareChallenge(int order)
@@ -100,26 +94,21 @@ internal sealed partial class WorkshopObservationView
         ChallengeVariant = order;
         challengePhase = ChallengePhase.Playing;
         stage = 0;
+        showSongJin = false;
         earnedRewardThisRun = false;
         runResult = null;
         stampCurrentResult = false;
         ResetSummerChallenge();
+        ResetAutumnChallenge();
         ResetWinterChallenge();
-        if (observation == WorkshopObservation.DaxueSewing) ResetSewingChallenge();
-        if (observation == WorkshopObservation.DongzhiFitting) ResetFittingChallenge();
     }
 
     private void DrawChallengeStatus(Color accent)
     {
-        string suffix = GameComplete ? "已完成" : HasRecord(observation) ? " · 残页已收集" : " · 残页待收集";
+        string pageStatus = HasRecord(observation) ? "残页已收集" : "残页待收集";
         WorkshopUi.Label(page, GameComplete ? "Challenge Completed" : "Challenge Playing", new Rect(1140, 68, 566, 39),
-            ChallengeOrderLabel() + suffix, 30, accent, TextAnchor.MiddleRight);
+            OrderTitle(ChallengeVariant) + (GameComplete ? "已完成 · " : " · ") + pageStatus, 30, accent, TextAnchor.MiddleRight);
     }
-
-    private bool IsGarmentProductionRun => IsFormalGarmentOrder;
-
-    private string ChallengeOrderLabel() => IsDirectDyeing ? "比例染色" :
-        IsGarmentProductionRun ? "贺冬工单" : OrderTitle(ChallengeVariant);
 
     private void DrawChallengeReward()
     {
@@ -133,7 +122,8 @@ internal sealed partial class WorkshopObservationView
             if (first != null || extra != null)
             {
                 DrawArchivedOrder(0, first, delivery != null ? "主线工单" : null);
-                DrawArchivedOrder(1, extra);
+                if (extra != null || observation != WorkshopObservation.QingmingMulberry)
+                    DrawArchivedOrder(1, extra);
                 return;
             }
         }
@@ -151,12 +141,9 @@ internal sealed partial class WorkshopObservationView
             return;
         }
 
-        if (earnedRewardThisRun)
-            WorkshopUi.Label(reward, "Work Order Result", new Rect(94, 1, 945, 28), result, 23, WorkshopUi.Ink);
-        else
-            contents += " · 残页已收藏";
-        WorkshopUi.Label(reward, "Reward Contents", new Rect(94, earnedRewardThisRun ? 28 : 0, 945, earnedRewardThisRun ? 30 : 60),
-            contents, 23, WorkshopUi.Green);
+        string receiptHeading = earnedRewardThisRun ? result : OrderTitle(ChallengeVariant) + "已完成 · 残页已收藏";
+        WorkshopUi.Label(reward, "Work Order Result", new Rect(94, 1, 945, 28), receiptHeading, 23, WorkshopUi.Ink);
+        WorkshopUi.Label(reward, "Reward Contents", new Rect(94, 28, 945, 30), contents, 23, WorkshopUi.Green);
         var seal = WorkshopUi.Picture(reward, "Workshop Success Seal", new Rect(1095, 6, 48, 48),
             Resources.Load<Sprite>("WorkshopGameArt/SuccessSeal"));
         var stamp = seal.rectTransform;
@@ -212,26 +199,10 @@ internal sealed partial class WorkshopObservationView
 
     private Button DrawChallengeControls()
     {
-        if (GameComplete && IsFormalGarmentOrder)
-        {
-            var deliver = WorkshopUi.PixelButton(page, "Deliver Garment Stage", new Rect(1218, 848, 237, 58),
-                observation == WorkshopObservation.DaxueSewing ? "去试衣 →" : "交付成衣 →", () =>
-                {
-                    var nextStage = onGarmentDelivery;
-                    onClosed = null;
-                    Close();
-                    nextStage?.Invoke();
-                }, true, 27, Accents[(int)Season(observation)]);
-            RegisterButton(deliver);
-            return deliver;
-        }
-        if (observation == WorkshopObservation.MangzhongCocoon)
-        {
-            if (!GameComplete) DrawXiazhiOrderSelectors();
+        if (observation == WorkshopObservation.MangzhongCocoon || IsDirectDyeing)
             return null;
-        }
         int next = 1 - ChallengeVariant;
-        bool canSwitch = !IsDirectDyeing && (!IsGarmentProductionRun || GameComplete) && BestWork(observation, 0) != null;
+        bool canSwitch = BestWork(observation, 0) != null;
         if (GameComplete)
             return DrawOrderAction("Challenge Replay", canSwitch ? "去玩" + OrderTitle(next) : "重做本单",
                 new Rect(1218, 848, 237, 58), canSwitch ? next : ChallengeVariant, true);
@@ -263,8 +234,7 @@ internal sealed partial class WorkshopObservationView
         stampCurrentResult = true;
         earnedRewardThisRun = WorkshopProgress.RecordChallenge(Definitions[(int)observation].Id,
             ChallengeVariant, score, result, sample);
-        if (observation != WorkshopObservation.MangzhongCocoonHarvest && WorkshopProgress.SeasonalOrderEnabled &&
-            (IsGarmentWorkshop(observation) ? IsFormalGarmentOrder : IsAtOwnWorkshop(observation)))
+        if (WorkshopProgress.SeasonalOrderEnabled && IsAtOwnWorkshop(observation))
             WorkshopProgress.RecordSeasonalOrderWork(Definitions[(int)observation].Id, ChallengeVariant, score, result, sample);
         WorkshopAudioFeedback.Confirm();
         Step(CompletionStage(observation));

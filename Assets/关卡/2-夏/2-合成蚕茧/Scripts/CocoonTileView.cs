@@ -30,7 +30,9 @@ namespace ShiXu.CocoonMatch
             button.interactable = exposed && !inTray && !busy;
             // Blocked cards still intercept rays: their exposed corners cannot click through.
             frame.raycastTarget = true;
-            frame.color = exposed || inTray ? Color.white : new Color(.58f, .64f, .59f, 1);
+            frame.color = exposed || inTray ? Color.white : new Color(.68f,.72f,.65f,1f);
+            var shadow = frame.GetComponent<Shadow>();
+            if (shadow != null) shadow.enabled = true;
             icon.color = exposed || inTray ? Color.white : new Color(.55f, .61f, .55f, 1);
         }
     }

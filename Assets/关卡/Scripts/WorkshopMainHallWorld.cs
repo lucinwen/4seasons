@@ -89,9 +89,6 @@ public sealed class WorkshopMainHallWorld : MonoBehaviour
         BuildHud();
         BuildInteractions();
         RefreshHud();
-        WorkshopQuestArrow.AttachMainHall(player,
-            () => recommendedDestination != null ? recommendedDestination.transform : null,
-            () => InputBlocked);
 
         WorkshopProgress.Changed += RefreshHud;
         if (!WorkshopProgress.HasStep("announcement.Spring") &&
@@ -228,9 +225,13 @@ public sealed class WorkshopMainHallWorld : MonoBehaviour
     private void BuildHud()
     {
         var frame = WorkshopUi.NewCanvas("Main Hall HUD", 80);
-        var location = WorkshopUi.Card(frame, "Location", new Rect(36, 32, 188, 58), WorkshopUi.Paper);
-        Label(location, "Hall Name", new Rect(0, 0, 188, 58), "工坊主厅", 30,
-            WorkshopUi.Ink, TextAnchor.MiddleCenter);
+        var location = WorkshopUi.Card(frame, "Location", new Rect(36, 32, 335, 100), WorkshopUi.Paper);
+        var seal = WorkshopUi.Fill(location, "Workshop Seal", new Rect(18, 21, 58, 58), WorkshopUi.Clay);
+        WorkshopUi.ApplyPixelShape(seal);
+        Label(seal.transform, "Seal Text", new Rect(0, 0, 58, 58), "织", 32,
+            WorkshopUi.Paper, TextAnchor.MiddleCenter);
+        Label(location, "Workshop Name", new Rect(94, 16, 218, 39), "四时合作社", 35, WorkshopUi.Ink);
+        Label(location, "Hall Name", new Rect(95, 59, 218, 25), "中央主厅", 22, WorkshopUi.Faded);
 
         var status = WorkshopUi.Card(frame, "Hall Progress", new Rect(1184, 32, 520, 128), WorkshopUi.Paper);
         seasonSeal = WorkshopUi.Fill(status, "Season Accent", new Rect(20, 13, 81, 38), SeasonAccents[0]);
@@ -438,7 +439,7 @@ public sealed class WorkshopMainHallWorld : MonoBehaviour
     }
 
     private bool InputBlocked =>
-        modalOpen || WorkshopMinigameMenu.BlocksGameplayInput || WorkshopQuestGuide.IsWorldOverlayActive || WorkshopDialoguePresenter.BlocksWorldInput ||
+        modalOpen || WorkshopQuestGuide.IsWorldOverlayActive || WorkshopDialoguePresenter.BlocksWorldInput ||
         WorkshopKnowledgeView.IsOpen || WorkshopStorageView.IsOpen ||
         WorkshopNarrativeView.IsOpen || WorkshopChapterGuide.IsOpen || WorkshopHeritageBrief.IsOpen ||
         WorkshopCraftRecordView.BlocksWorldInput;
@@ -548,7 +549,7 @@ public sealed class WorkshopMainHallWorld : MonoBehaviour
         else if (WorkshopProgress.CanSubmit(focusSeason))
         {
             recommendedDestination = storageDestination;
-            nextTaskText.text = focusSeason == WorkshopSeason.Winter ? "去储物屋 · " + WorkshopTailor.NextOrderActionLabel() :
+            nextTaskText.text = focusSeason == WorkshopSeason.Winter ? "去储物屋 · 选款缝制" :
                 "去储物屋 · 合成" + WorkshopProgress.ProductName(focusSeason);
         }
         else

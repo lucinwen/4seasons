@@ -62,6 +62,8 @@ namespace Qingming.LevelBackground
         private Image _iconImage;
         private Image _chevron;
         private Text _label;
+        private Text _caption;
+        private RectTransform _captionRt;
 
         private bool _visible;
         private bool _interactable = true;
@@ -77,6 +79,7 @@ namespace Qingming.LevelBackground
         private static Sprite _cardIcon;
         private static Sprite _actionIcon;
         private static Sprite _chevronIcon;
+        private Vector2 _hitPadding;
 
         private void Awake()
         {
@@ -162,6 +165,17 @@ namespace Qingming.LevelBackground
             _chevron.sprite = ChevronIcon;
             _chevron.preserveAspect = true;
 
+            _captionRt = NewRect(_visualRoot, "Action Caption", new Vector2(14f, 13f),
+                new Vector2(buttonSize.x - 92f, 17f));
+            _caption = _captionRt.gameObject.AddComponent<Text>();
+            _caption.font = WorkshopArt.WorkshopFont;
+            _caption.fontSize = 17;
+            _caption.alignment = TextAnchor.MiddleLeft;
+            _caption.color = new Color32(209, 168, 90, 255);
+            _caption.horizontalOverflow = HorizontalWrapMode.Overflow;
+            _caption.verticalOverflow = VerticalWrapMode.Overflow;
+            _caption.raycastTarget = false;
+
             if (FindObjectOfType<EventSystem>() == null)
             {
                 var eventSystem = new GameObject("EventSystem", typeof(EventSystem), typeof(StandaloneInputModule));
@@ -223,6 +237,7 @@ namespace Qingming.LevelBackground
                 ? (visualStyle == VisualStyle.PaperTag ? new Color32(230, 220, 195, 255) : new Color32(65, 91, 70, 255))
                 : disabledTextColor;
             _iconImage.color = _interactable && visualStyle == VisualStyle.InkPlaque ? Cream : Ink;
+            _caption.color = visualStyle == VisualStyle.PaperTag ? DeepBrass : new Color32(231, 196, 139, 255);
             _chevron.color = _interactable ? Brass : disabledTextColor;
 
             _chevron.rectTransform.anchoredPosition = new Vector2(buttonSize.x * 0.5f - 24f + _hoverBlend * 3f, 0f);
@@ -329,6 +344,19 @@ namespace Qingming.LevelBackground
             opacity = Mathf.Clamp01(alpha);
         }
 
+        /// <summary>Enlarge a particular action without changing every world tag.</summary>
+        public void SetSize(Vector2 size, Vector2 hitPadding)
+        {
+            buttonSize = new Vector2(Mathf.Max(180f, size.x), Mathf.Max(58f, size.y));
+            _hitPadding = new Vector2(Mathf.Max(0f, hitPadding.x), Mathf.Max(0f, hitPadding.y));
+            if (_buttonRt == null || _visualRoot == null) return;
+            _buttonRt.sizeDelta = buttonSize + _hitPadding * 2f;
+            _visualRoot.sizeDelta = buttonSize;
+            _iconPlate.rectTransform.anchoredPosition = new Vector2(34f - buttonSize.x * .5f, 0f);
+            _captionRt.sizeDelta = new Vector2(buttonSize.x - 92f, 17f);
+            ApplyStyle();
+        }
+
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (!_interactable) return;
@@ -381,11 +409,26 @@ namespace Qingming.LevelBackground
             if (_label == null) return;
 
             bool solarCard = buttonText.Contains("节气");
-            _label.text = buttonText;
+            _label.text = solarCard ? "节气卡" : buttonText;
             _label.fontSize = fontSize;
             _label.resizeTextMinSize = Mathf.Min(17, fontSize);
             _label.resizeTextMaxSize = fontSize;
             _iconImage.sprite = solarCard ? CardIcon : buttonText.Contains("对话") ? TalkIcon : ActionIcon;
+
+            bool useCaption = solarCard && (buttonText.StartsWith("领取") || buttonText.StartsWith("读"));
+            _caption.gameObject.SetActive(useCaption);
+            _caption.text = buttonText.StartsWith("领取") ? "解锁" : "阅览";
+            if (useCaption)
+            {
+                _label.rectTransform.anchoredPosition = new Vector2(14f, -8f);
+                _label.rectTransform.sizeDelta = new Vector2(buttonSize.x - 92f, 30f);
+                _captionRt.anchoredPosition = new Vector2(14f, 13f);
+            }
+            else
+            {
+                _label.rectTransform.anchoredPosition = new Vector2(14f, 0f);
+                _label.rectTransform.sizeDelta = new Vector2(buttonSize.x - 92f, 50f);
+            }
         }
 
         private void OnDisable()

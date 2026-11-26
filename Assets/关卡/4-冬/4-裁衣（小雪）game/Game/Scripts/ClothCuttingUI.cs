@@ -66,6 +66,11 @@ namespace JiangnanDye.ClothCutting
                 if (background != null) background.color = new Color32(26, 50, 48, 255);
                 MinigameUiPresentation.Label(MinigameUiPresentation.Find<UnityEngine.UI.Text>(canvas.transform, "Title"),
                     MinigameUiPresentation.Paper, 48);
+                var title = canvas.transform.Find("Title");
+                if (title != null) title.gameObject.SetActive(false);
+                if (collectionBg != null) collectionBg.color = Color.clear;
+                WorkshopImmersive.QuietText(progressText);
+                WorkshopImmersive.QuietText(collectionCountText);
             }
 
             if (completePanel != null) completePanel.SetActive(false);

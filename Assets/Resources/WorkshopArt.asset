@@ -54,11 +54,11 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 2c54e2601c884844381b12fbe3396a61, type: 3}
   - {fileID: 21300000, guid: e703a295c0d040042b809f00fdca82b7, type: 3}
   - {fileID: 21300000, guid: 63347af9ebb480945b558a676f672ab3, type: 3}
-  - {fileID: 21300000, guid: b643c3821730ba64d8e72e4742954974, type: 3}
+  - {fileID: 21300000, guid: 1ecbb2ca401ced2468418cc85f0a4b54, type: 3}
   - {fileID: 21300000, guid: 036a3efecb8ae244189e04713b6bc582, type: 3}
   - {fileID: 21300000, guid: 36d1ae2030ec6fd409045468ad7f7d6e, type: 3}
   - {fileID: 21300000, guid: b68c9411f106a4242961e0a813cf1a96, type: 3}
-  taskIconAtlas: {fileID: 2800000, guid: faf50e83efd95ec98907f7a627ca33a0, type: 3}
+  taskIconAtlas: {fileID: 2800000, guid: 7bff0c04558bcab4baaf4224760880e0, type: 3}
   solarCards:
   - {fileID: 21300000, guid: a42274f1b452ecf4fa735d971acda586, type: 3}
   - {fileID: 21300000, guid: c970de9615fad674baad98c4f468275b, type: 3}

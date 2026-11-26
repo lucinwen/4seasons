@@ -19,7 +19,7 @@ public class SilkwormWashingController : MonoBehaviour
     [Header("浴蚕桶介绍")]
     public Sprite introImage;
     [TextArea]
-    public string introText = "这只木桶用来处理下一批蚕种。把蚕种筛浸入水中，轻轻漂洗，再捞去浮起的杂质。";
+    public string introText = "这只木桶用来处理蚕种。把蚕种筛浸入水中，轻轻漂洗，再捞去浮起的杂质。";
     public string startWashButtonText = "开始清洗";
 
     [Header("浴蚕桶悬浮按钮")]
@@ -76,22 +76,23 @@ public class SilkwormWashingController : MonoBehaviour
         if (role != RoleType.Bucket || WorkshopQuestGuide.BlocksWorldInput || washingStarted) return;
         if (!SpringSummerNpcDialogue.CanWash)
         {
-            SimplePopup.Show("先采桑喂蚕", "带桑叶到蚕架喂饱小蚕，再回来准备下一批蚕种。", "知道了");
+            SimplePopup.Show("先去采桑", "先按师傅的交代完成接桑叶，再准备蚕种。",
+                "知道了", null);
             return;
         }
 
         if (!SpringPrompt.HasEggPaper && !washingCompleted)
         {
-            SimplePopup.Show("缺少蚕种纸", "请先拾取下一批的蚕种纸，再到浴蚕桶漂洗。", "知道了", null);
+            SimplePopup.Show("缺少蚕种纸", "请先拾取蚕种纸，再到浴蚕桶漂洗。", "知道了", null);
             return;
         }
 
-        SpringSummerNpcDialogue.BeforeBath(ShowIntroPanel);
+        BeginWashing();
     }
 
     private void ShowIntroPanel()
     {
-        const string instructions = "把下一批的蚕种筛浸入木桶，沿桶口轻晃漂洗，把漂起来的杂质捞出去。";
+        const string instructions = "把蚕种筛浸入木桶，沿桶口轻晃漂洗，把漂起来的杂质捞出去。";
         SimplePopup.Show("浴蚕桶", washingCompleted ? "已完成蚕种漂洗。可以再练习一遍。" : instructions,
             washingCompleted ? "再练一次" : startWashButtonText, BeginWashing, true, "返回", null, introImage);
     }
@@ -126,12 +127,10 @@ public class SilkwormWashingController : MonoBehaviour
                 if (candidate.role == RoleType.Egg && candidate.gameObject.scene == gameObject.scene)
                     candidate.ShowCleanedEgg();
             WorkshopProgress.Award(WorkshopItem.SilkwormEgg);
-            if (bucketButton != null) bucketButton.SetText("已漂洗 · 再练");
+            if (bucketButton != null) bucketButton.SetText("已清洗 · 再练");
 
-            MiniGameCompletionAnimation.PlayThen(MiniGameCompletionId.SilkwormEgg, () =>
-                WorkshopDialoguePresenter.Play(WorkshopDialogueScripts.SpringBathComplete, () =>
-                    SimplePopup.ShowItem(WorkshopItem.SilkwormEgg, "蚕种已漂洗完毕。",
-                        null, fallbackIcon: eggs != null ? eggs.cleanedSprite : null)));
+            WorkshopAudioFeedback.Milestone();
+            SimplePopup.Show("浴蚕完成", "蚕种已经擦洗干净，获得干净蚕种。\n带上桑叶，到石阶旁的高蚕架喂蚕。", "知道了");
         }
         if (playerInRange && bucketButton != null) bucketButton.Show();
     }

@@ -1,4 +1,3 @@
-using Qingming.LevelBackground;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -24,8 +23,8 @@ public sealed class WorkshopHub : MonoBehaviour
     private RectTransform _page;
     private RawImage _backdrop;
     private GameObject _returnButton;
+    private GameObject _summerStorageButton;
     private bool _returnOnly;
-    private bool _chapterCompletionPromptShown;
     private bool _finishModalOpen;
     private bool _dirty;
     private bool _leaving;
@@ -70,8 +69,11 @@ public sealed class WorkshopHub : MonoBehaviour
         hub._returnButton = WorkshopUi.Button(frame, "Return to Workshop", new Rect(46f, 978f, 228f, 64f),
             "返回工坊", hub.ReturnToWorkshop, WorkshopUi.Ink, size: 28,
             font: WorkshopArt.WorkshopFont).gameObject;
+        if (season == WorkshopSeason.Summer)
+            hub._summerStorageButton = WorkshopUi.Button(frame, "Summer Storage Handoff", new Rect(292, 978, 284, 64),
+                "储物屋 · 合成", hub.OpenSummerStorage, WorkshopUi.Ink, size: 28,
+                font: WorkshopArt.WorkshopFont).gameObject;
         WorkshopQuestGuide.Attach(season);
-        WorkshopQuestArrow.Attach(season);
     }
 
     private static WorkshopSeason RecommendedSeason()
@@ -89,20 +91,38 @@ public sealed class WorkshopHub : MonoBehaviour
     {
         if (_returnOnly)
         {
-            bool available = !_leaving && !WorkshopQuestGuide.IsWorldOverlayActive &&
-                !WorkshopQuestGuide.BlocksWorldInput;
-            if (available && !_chapterCompletionPromptShown && WorkshopProgress.CanSubmit(_season))
-            {
-                var popup = SimplePopup.ShowChapterCompletion(_season, ReturnToWorkshop);
-                _chapterCompletionPromptShown = popup != null;
-                available = !_chapterCompletionPromptShown;
-            }
+            bool available = !_leaving && !_finishModalOpen && !WorkshopStorageView.IsOpen &&
+                !WorkshopRewardCards.IsBusy && !WorkshopQuestGuide.IsWorldOverlayActive && !WorkshopQuestGuide.BlocksWorldInput;
             if (_returnButton != null && _returnButton.activeSelf != available) _returnButton.SetActive(available);
+            bool summerReady = _season == WorkshopSeason.Summer &&
+                (WorkshopProgress.CanSubmit(WorkshopSeason.Summer) || WorkshopProgress.IsComplete(WorkshopSeason.Summer));
+            if (_summerStorageButton != null) _summerStorageButton.SetActive(available && summerReady);
+            if (available && summerReady && !WorkshopProgress.IsComplete(WorkshopSeason.Summer) &&
+                !WorkshopProgress.HasStep("summer.storage.offered")) OpenSummerStorage();
             return;
         }
 
         bool availableInHub = UpdateHubInput();
         if (_dirty && availableInHub) RenderWorkshop();
+    }
+
+    private void OpenSummerStorage()
+    {
+        if (_leaving || _finishModalOpen || WorkshopStorageView.IsOpen || WorkshopRewardCards.IsBusy) return;
+        if (!WorkshopProgress.CanSubmit(WorkshopSeason.Summer) && !WorkshopProgress.IsComplete(WorkshopSeason.Summer)) return;
+        _finishModalOpen = true;
+        WorkshopStorageView.ShowSummerHandoff(() => _finishModalOpen = false, (_, next) =>
+        {
+            if (_leaving) return;
+            _finishModalOpen = true;
+            WorkshopNarrativeView.PlaySeasonBriefing(next, () =>
+            {
+                _leaving = true;
+                SceneManager.LoadScene(WorkshopProgress.SceneName(next));
+            });
+        });
+        // Returning from this offer stays in summer; the persistent button can reopen it.
+        WorkshopProgress.MarkStep("summer.storage.offered");
     }
 
     private bool UpdateHubInput()

@@ -14,10 +14,10 @@ internal static class WorkshopObjectives
         string goal;
         switch (season)
         {
-            case WorkshopSeason.Spring: goal = "先找蚕房师傅，采摘桑叶喂蚕，再备好蚕种。"; break;
-            case WorkshopSeason.Summer: goal = "在场景里取盐、择茧和找线轴。"; break;
-            case WorkshopSeason.Autumn: goal = "修机并纺织生坯绸，再采集、研磨染材并完成秋色染布；备齐贡品酬蚕后交付秋季成果。"; break;
-            case WorkshopSeason.Winter: goal = "使用秋季染好的布裁衣，再找缝衣针缝制成衣。"; break;
+            case WorkshopSeason.Spring: goal = "清明拿篮采桑，谷雨浴蚕，再拖叶喂蚕。"; break;
+            case WorkshopSeason.Summer: goal = "立夏下簇，小满寻线轴并缫丝，芒种夏至接水管备料。"; break;
+            case WorkshopSeason.Autumn: goal = "立秋采染材，白露织造，秋分染色与秋社，寒露攀花。"; break;
+            case WorkshopSeason.Winter: goal = "用秋季染布剪帛、量体裁衣，找到针后选款缝衣。"; break;
             default: goal = "收集本季的三件关键道具。"; break;
         }
 
@@ -29,14 +29,14 @@ internal static class WorkshopObjectives
         switch (item)
         {
             case WorkshopItem.MulberryLeaf:
-                return ("采摘桑叶", "先找蚕房师傅，再带采桑篮到桑树前。",
-                    "到桑树前点击「采摘桑叶」或按 O，收下嫩叶。");
+                return ("清明采桑", "先找蚕房师傅，再带采桑篮到桑树前。",
+                    "到桑树前点「清明采桑」即可直接开始。用 A / D 或方向键左右移篮，接满 8 片干爽嫩叶。");
             case WorkshopItem.SilkwormEgg:
-                return ("浴蚕", "喂蚕后捡蚕种纸，到浴蚕桶漂洗。",
-                    "把蚕种筛放入水面，沿桶口轻晃漂洗，捞起杂质，给下一批备好蚕种。");
+                return ("浴蚕", "采桑后捡蚕种纸，到浴蚕桶清洗。",
+                    "拿起布蘸水，轻轻擦去蚕种表面的污渍，再收好干净蚕种。");
             case WorkshopItem.Silkworm:
-                return ("喂蚕宝宝", "采桑后，带桑叶到蚕架前。",
-                    "把四片桑叶逐片拖进蚕匾，喂饱小蚕后收下蚕宝宝。");
+                return ("谷雨喂蚕", "备好桑叶与干净蚕种，到养蚕区拖叶喂蚕。",
+                    "在清明采桑、谷雨浴蚕后，前往蚕匾架，将三份桑叶拖给小蚕，完成后获得蚕宝宝。");
             case WorkshopItem.Salt:
                 return ("取盐", "点击盐窖，获取盐。",
                     "点击场景中的盐窖，点「获取盐」，再点「收下」。");
@@ -45,19 +45,19 @@ internal static class WorkshopObjectives
                     "走近蚕茧簇架，点「开始择茧」。点击亮起的图块，凑齐三个相同图案，完成后领取索绪。");
             case WorkshopItem.Spool:
                 return ("找线轴", "取水、拾柴后，到煮茧锅进入迷宫。",
-                    "点击水源取水，拾取木柴。走近煮茧锅点「寻找线轴」，在迷宫里找到线轴。");
+                    "点击水源取水，拾取木柴。走近煮茧锅点「寻找线轴」，在迷宫里找到线轴。锅旁可完成匀丝排线，右侧缫丝车点「绕丝上轴」进入丝路接接乐。");
             case WorkshopItem.Shuttle:
                 return ("取梭", "点击织机附近的工具箱，领取梭子。",
                     "找到织机附近的工具箱，点击查看并获取梭子。织造时会用到它。");
             case WorkshopItem.RawSilkCloth:
-                return ("寒露纺织", "找师傅拿锤子，修好织机，再用梭子纺织。",
-                    "找师傅领取锤子，走近织机点「修复织机」。修好并拿到梭子后，点「开始织造」，收下生坯绸。");
+                return ("织造", "拾起地上的锤子，修好织机，再用梭子织造。",
+                    "点击拾取织机左侧地上的修机锤，走近织机点「修复织机」。修好并拿到梭子后，点「开始织造」。");
             case WorkshopItem.Statue:
-                return ("酬蚕", "带酒、香蕉和糕点到供桌提交。",
-                    "点击蚕花酒和香蕉果篮。向师傅领过锤子后，再对话领取糕点。把三件贡品交给供桌。");
+                return ("酬蚕", "白露秋分带酒、香蕉、糕点到灵桑阙参加秋社。",
+                    "第一次与织造师傅交谈即获得糕点，再点击蚕花酒和香蕉果篮。把三件贡品交给供桌。");
             case WorkshopItem.DyedCloth:
-                return ("秋色染布", "采集并研磨染材，选色后调整比例染布。",
-                    "拾锄头进染料园找染材，回来拾研磨棒并研磨染料。到染缸选择颜色，调整清水与染料原液的比例，把生坯绸染成秋色布。");
+                return ("染布", "秋季采染材并研磨，再到染缸选择颜色。",
+                    "拾锄头进染料园找染材，回来研磨。选好染料，把一块素绸拖进染缸，染好后带回织机攀花。");
             case WorkshopItem.CutPieces:
                 return ("裁衣", "染好布后，在裁衣台剪出三片衣料。",
                     "染好布后，走近裁衣台点「开始裁衣」。点击剪刀，沿布上的线拖动，剪出三片衣料。");

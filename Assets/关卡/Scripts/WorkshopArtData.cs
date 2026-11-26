@@ -63,11 +63,19 @@ public static class WorkshopArt
     public static Sprite WorkshopChapterRail => Data != null ? Data.workshopChapterRail : null;
     public static Sprite JournalFrame => Data != null ? Data.journalFrame : null;
     public static Sprite RawSilk => Data != null ? Data.rawSilk : null;
-    public static Sprite ItemCard(WorkshopItem item) => Get(Data?.itemCards, (int)item);
+    public static Sprite ItemCard(WorkshopItem item) => RestoredItemCard(item) ?? Get(Data?.itemCards, (int)item);
+    private static Sprite RestoredItemCard(WorkshopItem item) => item == WorkshopItem.Suoxu
+        ? Resources.Load<Sprite>("WorkshopCardHD/Suoxu") : item == WorkshopItem.Spool
+        ? Resources.Load<Sprite>("WorkshopCardHD/Spool") : item == WorkshopItem.Statue
+        ? Resources.Load<Sprite>("WorkshopCardHD/Statue") : null;
+    internal static bool ItemCardHasPrintedCopy(WorkshopItem item) => item == WorkshopItem.Suoxu || item == WorkshopItem.Spool;
     internal static bool TryIdentifyItemCard(Sprite sprite, out WorkshopItem item)
     {
         var cards = Data?.itemCards;
         int index = sprite != null && cards != null ? System.Array.IndexOf(cards, sprite) : -1;
+        if (index < 0 && sprite != null && cards != null)
+            for (int i = 0; i < cards.Length; i++)
+                if (sprite == ItemCard((WorkshopItem)i)) { index = i; break; }
         item = (WorkshopItem)index;
         return index >= 0;
     }

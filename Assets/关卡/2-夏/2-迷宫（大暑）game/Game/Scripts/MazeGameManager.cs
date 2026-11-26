@@ -55,6 +55,7 @@ namespace JiangnanDye.MazeGame
                 spawnPosition = player.transform.position;
                 player.ControlEnabled = false;
             }
+            OnStartClicked();
         }
 
         private void OnStartClicked()

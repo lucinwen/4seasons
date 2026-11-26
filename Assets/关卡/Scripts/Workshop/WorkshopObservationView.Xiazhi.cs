@@ -1,229 +1,264 @@
-using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 internal sealed partial class WorkshopObservationView
 {
+    private const float XiazhiSceneWidth = 1584f, XiazhiSceneHeight = 892f;
+    private const float XiazhiBoardLeft = 484f, XiazhiBoardTop = 136f;
+    private const float XiazhiCellPitch = 148f, XiazhiCellSize = 144f;
     private XiazhiPuzzle xiazhiPuzzle;
     private readonly Button[] xiazhiTiles = new Button[XiazhiPuzzle.CellCount];
     private readonly XiazhiThreadGraphic[] xiazhiThreads = new XiazhiThreadGraphic[XiazhiPuzzle.CellCount];
-    private Button xiazhiUndo, xiazhiHint;
-    private Text xiazhiTally, xiazhiFeedback;
-    private int xiazhiHintIndex = -1, xiazhiGeneration;
-    private Image xiazhiHintMarker;
+    private readonly Image[] xiazhiProgress = new Image[XiazhiPuzzle.LevelCount];
+    private Image xiazhiWheel;
+    private Text xiazhiProgressCount;
+    private int xiazhiCompletedRounds, xiazhiTotalMoves, xiazhiTotalTarget, xiazhiGeneration;
+    private bool xiazhiAdvancing;
+    private Coroutine xiazhiRoundRoutine;
+    private bool CanReturnFromXiazhi => GameComplete &&
+        xiazhiCompletedRounds == XiazhiPuzzle.LevelCount && !xiazhiAdvancing;
 
     private void ResetXiazhiPuzzle()
     {
+        CancelXiazhiRound();
+        xiazhiCompletedRounds = xiazhiTotalMoves = xiazhiTotalTarget = 0;
+        // Every visit starts with the simplest board, including visits from older completed saves.
+        xiazhiPuzzle = new XiazhiPuzzle(0);
+    }
+
+    private void CancelXiazhiRound()
+    {
         xiazhiGeneration++;
-        xiazhiHintIndex = -1;
-        xiazhiPuzzle = new XiazhiPuzzle(ChallengeVariant == 0 ? 0 : 1);
+        if (xiazhiRoundRoutine != null) StopCoroutine(xiazhiRoundRoutine);
+        xiazhiRoundRoutine = null;
+        xiazhiAdvancing = false;
+    }
+
+    private void DrawImmersiveXiazhi()
+    {
+        page = WorkshopUi.Rect(frame, "Xiazhi Immersive Scene", new Rect(168,94,XiazhiSceneWidth,XiazhiSceneHeight));
+        art = page;
+        infoPanel = null;
+        // Keep this container transparent: the dimmed, paused summer scene is the only backdrop.
+        DrawXiazhiProgress();
+        DrawXiazhiPuzzle();
+
+        var wheelFrame = DrawXiazhiDisplayFrame("Xiazhi Reeling Wheel Frame", new Rect(1280,584,288,288));
+        WorkshopUi.Label(wheelFrame, "Xiazhi Wheel Name", new Rect(16,10,256,32), "缫丝转盘", 28,
+            WorkshopUi.Cream, TextAnchor.MiddleCenter, WorkshopArt.PixelFont);
+        WorkshopUi.Label(wheelFrame, "Xiazhi Wheel Hint", new Rect(16,256,256,24), "转动即成功接通", 22,
+            WorkshopUi.Cream, TextAnchor.MiddleCenter, WorkshopArt.PixelFont);
+        xiazhiWheel = WorkshopUi.Picture(page, "Xiazhi Reeling Wheel", new Rect(1318,626,212,212),
+            SpringSummerArt("ReelingWheel"));
+        // Rotate around the axle rather than the top-left corner used by layout rectangles.
+        xiazhiWheel.rectTransform.pivot = new Vector2(.5f,.5f);
+        xiazhiWheel.rectTransform.anchoredPosition = new Vector2(1424,-732);
+
+        if (CanReturnFromXiazhi)
+        {
+            var leave = WorkshopUi.PixelButton(page, "Xiazhi Return To Summer", new Rect(638,796,308,64),
+                "返回夏季", ReturnFromXiazhi, true, 30, SummerJade);
+            RegisterButton(leave);
+            BindNavigation(leave);
+        }
+        else
+        {
+            BindNavigation();
+            // Keep the board visually quiet until the player uses keyboard navigation.
+            Select(null);
+        }
+    }
+
+    private void ReturnFromXiazhi()
+    {
+        if (!CanReturnFromXiazhi) return;
+        WorkshopAudioFeedback.Click();
+        Close();
+    }
+
+    private void DrawXiazhiProgress()
+    {
+        var hud = WorkshopUi.Rect(page, "Xiazhi Progress", new Rect(36,28,336,94));
+        WorkshopUi.Fill(hud, "Progress Shade", new Rect(0,0,336,94), new Color32(46,32,21,211));
+        WorkshopUi.Picture(hud, "Progress Silk", new Rect(16,22,48,48), SpringSummerArt("SilkBobbin"));
+        WorkshopUi.Label(hud, "Progress Label", new Rect(80,8,156,30), "接丝进度", 24, WorkshopUi.Cream,
+            TextAnchor.MiddleLeft, WorkshopArt.PixelFont);
+        xiazhiProgressCount = WorkshopUi.Label(hud, "Progress Count", new Rect(245,8,76,30), "", 24,
+            WorkshopUi.Cream, TextAnchor.MiddleRight, WorkshopArt.PixelFont);
+        for (int i = 0; i < xiazhiProgress.Length; i++)
+        {
+            var slot = WorkshopUi.Rect(hud, "Xiazhi Progress Slot " + i, new Rect(80+i*80,48,70,26));
+            WorkshopUi.Fill(slot, "Slot", new Rect(0,0,70,26), new Color32(149,118,74,255));
+            xiazhiProgress[i] = WorkshopUi.Fill(slot, "Fill", new Rect(3,3,64,20), Color.clear);
+        }
+        RefreshXiazhiProgress();
+    }
+
+    private void RefreshXiazhiProgress()
+    {
+        for (int i = 0; i < xiazhiProgress.Length; i++)
+            if (xiazhiProgress[i] != null)
+                xiazhiProgress[i].color = i < xiazhiCompletedRounds ? SummerGold : new Color32(63,48,32,255);
+        if (xiazhiProgressCount != null) xiazhiProgressCount.text = xiazhiCompletedRounds + " / 3";
     }
 
     private void DrawXiazhiPuzzle()
     {
-        Layer("Summer_CocoonBench");
-        WorkshopUi.Fill(art, "Xiazhi Workbench Shade", ArtBounds, new Color32(29,35,25,75));
-        if (GameComplete)
-        {
-            DrawXiazhiCompleted();
-            return;
-        }
         if (xiazhiPuzzle == null) ResetXiazhiPuzzle();
-        var board = WorkshopUi.PixelCard(art, "Xiazhi Silk Board", new Rect(275,65,610,486),
-            new Color32(156,112,64,255), new Color32(105,76,48,255));
-        WorkshopUi.Label(art, "Xiazhi Board Title", new Rect(35,9,1090,45),
-            xiazhiPuzzle.Title, 28, WorkshopUi.Cream, TextAnchor.MiddleCenter);
+        // A restrained wooden rim and soft shadow lift the board above the actual summer scene.
+        var board = WorkshopUi.Rect(art, "Xiazhi Silk Board", new Rect(XiazhiBoardLeft,XiazhiBoardTop,616,616));
+        DrawXiazhiSoftShadow(board, "Board Shadow", new Rect(0,0,616,616));
+        WorkshopUi.Fill(board, "Board Wood", new Rect(0,0,616,616), new Color32(93,64,41,255));
+        WorkshopUi.Fill(board, "Board Upper Rim", new Rect(5,3,606,3), new Color32(186,151,98,110));
         for (int i = 0; i < XiazhiPuzzle.CellCount; i++)
         {
             int index = i;
-            float left = 86 + i % 4 * 110, top = 23 + i / 4 * 110;
-            var tile = WorkshopUi.Button(board, "Xiazhi Tile " + i, new Rect(left,top,104,104), "",
+            var tile = WorkshopUi.Button(board, "Xiazhi Tile " + i,
+                new Rect(14+i%4*XiazhiCellPitch,14+i/4*XiazhiCellPitch,XiazhiCellSize,XiazhiCellSize), "",
                 () => RotateXiazhiTile(index), new Color32(222,192,138,255));
             xiazhiTiles[i] = tile;
-            if (xiazhiPuzzle.Mask(i) != 0 && !xiazhiPuzzle.IsLocked(i)) RegisterButton(tile);
-            xiazhiThreads[i] = WorkshopUi.Rect(tile.transform, "Pixel Silk", new Rect(2,2,100,100))
+            var colors = tile.colors;
+            colors.disabledColor = Color.white;
+            tile.colors = colors;
+            if (xiazhiPuzzle.Mask(i) != 0 && !xiazhiPuzzle.IsLocked(i) && !GameComplete) RegisterButton(tile);
+            xiazhiThreads[i] = WorkshopUi.Rect(tile.transform, "Pixel Silk", new Rect(0,0,XiazhiCellSize,XiazhiCellSize))
                 .gameObject.AddComponent<XiazhiThreadGraphic>();
             if (xiazhiPuzzle.IsLocked(i))
-                WorkshopUi.Fill(tile.transform, "Fixed Pin", new Rect(91,6,6,6), SummerJade);
+                WorkshopUi.Fill(tile.transform, "Fixed Pin", new Rect(130,8,6,6), SummerJade);
         }
-        DrawXiazhiEndpoint(board, "Silk Entrance", 11, 23 + xiazhiPuzzle.Start / 4 * 110, "丝头",
-            SpringSprite("WorkshopObservation/Summer_CocoonIntact"));
-        DrawXiazhiEndpoint(board, "Silk Exit", 535, 23 + xiazhiPuzzle.End / 4 * 110, "丝轴",
-            SpringSummerArt("SilkBobbin"));
-        xiazhiUndo = XiazhiAction("Xiazhi Undo", "撤回一步", new Rect(244,575,210,56), () =>
-        {
-            if (!xiazhiPuzzle.Undo()) return;
-            ClearXiazhiHint();
-            RefreshXiazhiBoard("退回上一步，换个方向再试试。");
-        });
-        xiazhiHint = XiazhiAction("Xiazhi Hint", "给点提示", new Rect(475,575,210,56), HintXiazhi);
-        XiazhiAction("Xiazhi Restart", "重新理线", new Rect(706,575,210,56), () => LoadXiazhiBoard(xiazhiPuzzle.LevelIndex));
-        Copy("接通丝路", "点击线段，顺时针转动一格，把左侧丝头接到右侧丝轴。\n接通一张即可完成工单。不计时，不限步数。");
-        var wheel = WorkshopUi.Picture(infoPanel, "Xiazhi Reeling Wheel", new Rect(169,322,160,160),
-            SpringSummerArt("ReelingWheel"));
-        xiazhiTally = WorkshopUi.Label(infoPanel, "Xiazhi Tally", new Rect(20,490,458,52), "", 28,
-            SummerDark, TextAnchor.MiddleCenter);
-        xiazhiFeedback = WorkshopUi.Label(infoPanel, "Xiazhi Feedback", new Rect(27,552,444,84), "", 25,
-            SummerDark, TextAnchor.UpperLeft);
-        xiazhiFeedback.lineSpacing = 1.2f;
-        RefreshXiazhiBoard("让相邻线段的开口彼此对齐。想再挑战？试试" + xiazhiPuzzle.Target + "次以内接通。");
-        if (wheel != null) wheel.raycastTarget = false;
+        DrawXiazhiEndpoint("Silk Entrance", XiazhiBoardLeft-168,
+            XiazhiBoardTop+14+xiazhiPuzzle.Start/4*XiazhiCellPitch,
+            SpringSprite("WorkshopObservation/Summer_CocoonIntact"), true);
+        DrawXiazhiEndpoint("Silk Exit", XiazhiBoardLeft+640,
+            XiazhiBoardTop+14+xiazhiPuzzle.End/4*XiazhiCellPitch, SpringSummerArt("SilkBobbin"), false);
+        RefreshXiazhiBoard();
     }
 
-    private void DrawXiazhiEndpoint(Transform parent, string name, float x, float y, string caption, Sprite sprite)
+    private RectTransform DrawXiazhiSoftShadow(Transform parent, string name, Rect bounds)
     {
-        WorkshopUi.Label(parent, name + " Label", new Rect(x,y+4,62,28), caption, 21,
-            WorkshopUi.Cream, TextAnchor.MiddleCenter);
-        WorkshopUi.Picture(parent, name + " Icon", new Rect(x+5,y+33,52,48), sprite);
-        WorkshopUi.Label(parent, name + " Arrow", new Rect(x+18,y+78,30,24), "→", 24,
-            SummerGold, TextAnchor.MiddleCenter);
+        var shadow = WorkshopUi.Rect(parent, name, bounds);
+        var ambient = WorkshopUi.Fill(shadow, "Ambient", new Rect(-6,-3,bounds.width+16,bounds.height+18),
+            new Color32(43,28,18,18));
+        var feather = WorkshopUi.Fill(shadow, "Feather", new Rect(-2,2,bounds.width+12,bounds.height+14),
+            new Color32(43,28,18,26));
+        var contact = WorkshopUi.Fill(shadow, "Contact", new Rect(3,7,bounds.width+4,bounds.height+4),
+            new Color32(43,28,18,58));
+        WorkshopUi.ApplyPixelShape(ambient);
+        WorkshopUi.ApplyPixelShape(feather);
+        WorkshopUi.ApplyPixelShape(contact);
+        return shadow;
     }
 
-    private Button XiazhiAction(string name, string caption, Rect bounds, Action action, bool primary = false)
+    private RectTransform DrawXiazhiDisplayFrame(string name, Rect bounds)
     {
-        var button = WorkshopUi.PixelButton(art, name, bounds, caption, () =>
-        {
-            if (WorkshopMinigameMenu.BlocksGameplayInput) return;
-            WorkshopAudioFeedback.Click();
-            action();
-        }, primary, 27, SummerJade);
-        RegisterButton(button);
-        return button;
+        var display = WorkshopUi.PixelCard(page, name, bounds,
+            new Color32(145,101,56,255), new Color32(79,51,29,255));
+        display.Find("Shadow").GetComponent<Image>().color = new Color32(43,28,18,58);
+        DrawXiazhiSoftShadow(display, "Display Soft Shadow", new Rect(0,0,bounds.width,bounds.height))
+            .SetAsFirstSibling();
+        WorkshopUi.Fill(display, "Inset Border", new Rect(7,7,bounds.width-14,bounds.height-14),
+            new Color32(94,62,35,255));
+        WorkshopUi.Fill(display, "Inset Surface", new Rect(11,11,bounds.width-22,bounds.height-22),
+            new Color32(72,101,84,255));
+        return display;
     }
 
-    private void RefreshXiazhiBoard(string message)
+    private void DrawXiazhiEndpoint(string name, float x, float y, Sprite sprite, bool entrance)
     {
-        if (GameComplete || xiazhiPuzzle == null) return;
+        // The short lead meets the corresponding fixed cell at its horizontal centre.
+        WorkshopUi.Fill(page, name + " Thread", new Rect(entrance ? x+144 : x-38,y+69,38,6), SummerGold);
+        var display = DrawXiazhiDisplayFrame(name + " Frame", new Rect(x,y,144,144));
+        WorkshopUi.Picture(display, name + " Icon", new Rect(12,12,120,120), sprite);
+        var nameplate = WorkshopUi.PixelCard(display, name + " Nameplate", new Rect(0,144,144,38),
+            new Color32(42,65,51,255), new Color32(145,101,56,255));
+        WorkshopUi.Label(nameplate, "Object Name", new Rect(8,2,128,34), entrance ? "蚕茧" : "丝轴", 28,
+            WorkshopUi.Cream, TextAnchor.MiddleCenter, WorkshopArt.PixelFont);
+    }
+
+    private void RefreshXiazhiBoard()
+    {
+        if (xiazhiPuzzle == null) return;
         for (int i = 0; i < XiazhiPuzzle.CellCount; i++)
         {
             Button tile = xiazhiTiles[i];
             if (tile == null) continue;
             bool empty = xiazhiPuzzle.Mask(i) == 0;
-            tile.interactable = !empty && !xiazhiPuzzle.IsLocked(i) && !xiazhiPuzzle.Solved;
-            ((Image)tile.targetGraphic).color = empty ? new Color32(173,134,87,255) :
-                xiazhiPuzzle.IsLocked(i) ? new Color32(204,206,156,255) :
+            tile.interactable = !GameComplete && !xiazhiAdvancing && !empty &&
+                !xiazhiPuzzle.IsLocked(i) && !xiazhiPuzzle.Solved;
+            ((Image)tile.targetGraphic).color = empty ? new Color32(143,109,69,255) :
+                xiazhiPuzzle.IsLocked(i) ? new Color32(184,191,142,255) :
                 xiazhiPuzzle.IsConnected(i) ? new Color32(224,211,154,255) : new Color32(222,192,138,255);
             xiazhiThreads[i].SetThread(xiazhiPuzzle.Mask(i), xiazhiPuzzle.IsConnected(i));
         }
-        xiazhiUndo.interactable = xiazhiPuzzle.CanUndo;
-        xiazhiHint.interactable = !xiazhiPuzzle.Solved;
-        xiazhiTally.text = "转动 " + xiazhiPuzzle.Moves + " 次　已接 " + xiazhiPuzzle.ConnectedCount + " 段";
-        xiazhiFeedback.text = message;
     }
 
     private void RotateXiazhiTile(int index)
     {
-        if (WorkshopMinigameMenu.BlocksGameplayInput || GameComplete || readOnly || !xiazhiPuzzle.Rotate(index)) return;
+        if (GameComplete || readOnly || xiazhiAdvancing || xiazhiPuzzle == null || !xiazhiPuzzle.Rotate(index)) return;
         WorkshopAudioFeedback.Click();
-        ClearXiazhiHint();
-        if (xiazhiPuzzle.Solved)
+        RefreshXiazhiBoard();
+        if (!xiazhiPuzzle.Solved) return;
+        xiazhiAdvancing = true;
+        xiazhiCompletedRounds++;
+        xiazhiTotalMoves += xiazhiPuzzle.Moves;
+        xiazhiTotalTarget += xiazhiPuzzle.Target;
+        RefreshXiazhiProgress();
+        Select(null);
+        xiazhiRoundRoutine = StartCoroutine(AdvanceXiazhiRound(xiazhiGeneration));
+    }
+
+    private IEnumerator AdvanceXiazhiRound(int generation)
+    {
+        WorkshopAudioFeedback.Confirm();
+        const float duration = .68f;
+        float elapsed = 0f;
+        while (current == this && generation == xiazhiGeneration && xiazhiWheel != null && elapsed < duration)
         {
-            int score = Mathf.Max(1, 1000 - Mathf.Max(0, xiazhiPuzzle.Moves - xiazhiPuzzle.Target) * 5);
-            FinishChallenge(score, "丝路接通 · 转动" + xiazhiPuzzle.Moves + "次 · 提示" + xiazhiPuzzle.Hints + "次",
-                CaptureThreadSample());
-            return;
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed/duration);
+            float eased = 1f-Mathf.Pow(1f-t,3f);
+            xiazhiWheel.rectTransform.localRotation = Quaternion.Euler(0,0,-720f*eased);
+            xiazhiWheel.rectTransform.localScale = Vector3.one*(1f+.045f*Mathf.Sin(t*Mathf.PI));
+            yield return null;
         }
-        RefreshXiazhiBoard(xiazhiPuzzle.ConnectedCount > 1 ? "丝头又往前走了一段，继续接下去。" : "试着转动弯线，让两个开口彼此对齐。");
+        if (current != this || generation != xiazhiGeneration) yield break;
+        if (xiazhiWheel != null)
+        {
+            xiazhiWheel.rectTransform.localRotation = Quaternion.identity;
+            xiazhiWheel.rectTransform.localScale = Vector3.one;
+        }
+        yield return new WaitForSecondsRealtime(.18f);
+        if (current != this || generation != xiazhiGeneration) yield break;
+        xiazhiRoundRoutine = null;
+        xiazhiAdvancing = false;
+        if (xiazhiCompletedRounds < XiazhiPuzzle.LevelCount)
+        {
+            xiazhiPuzzle.Load(xiazhiCompletedRounds);
+            Render();
+            yield break;
+        }
+        // Keep the legacy record ID/order and sample format; never stamp the whole activity after just one round.
+        int score = Mathf.Max(1,1000-Mathf.Max(0,xiazhiTotalMoves-xiazhiTotalTarget)*5);
+        FinishChallenge(score,"三关接丝完成 · 转动" + xiazhiTotalMoves + "次",CaptureThreadSample());
+        // FinishChallenge renders the completed scene with one explicit return button.
     }
 
     // Three-band silk sample, including one join, consumed by autumn light inspection.
     private string CaptureThreadSample()
     {
         int width = ChallengeVariant == 0 ? 10 : 12;
-        string warp = new string('1', width);
-        var joins = new string('9', width).ToCharArray();
+        string warp = new string('1',width);
+        var joins = new string('9',width).ToCharArray();
         joins[4] = '4';
         return warp + "/" + new string(joins) + "/" + warp;
     }
 
-    private void ClearXiazhiHint()
-    {
-        xiazhiGeneration++; xiazhiHintIndex = -1;
-        if (xiazhiHintMarker != null) Destroy(xiazhiHintMarker.gameObject);
-        xiazhiHintMarker = null;
-    }
-
-    private void HintXiazhi()
-    {
-        if (!xiazhiPuzzle.Hint(out int index, out int turns)) return;
-        ClearXiazhiHint(); xiazhiHintIndex = index;
-        xiazhiHintMarker = WorkshopUi.Fill(xiazhiTiles[index].transform, "Hint Edge", new Rect(4,4,96,5), SummerGold);
-        RefreshXiazhiBoard("试试发亮的这一格：再顺时针转" + turns + "次。");
-        StartCoroutine(FadeXiazhiHint(xiazhiGeneration, xiazhiHintMarker));
-    }
-
-    private IEnumerator FadeXiazhiHint(int generation, Image marker)
-    {
-        float elapsed = 0;
-        while (generation == xiazhiGeneration && marker != null && elapsed < 5)
-        {
-            if (WorkshopMinigameMenu.BlocksGameplayInput)
-            {
-                yield return null;
-                continue;
-            }
-            elapsed += Time.unscaledDeltaTime;
-            marker.color = Mathf.FloorToInt(elapsed * 3) % 2 == 0 ? SummerGold : WorkshopUi.Cream;
-            yield return null;
-        }
-        if (generation == xiazhiGeneration) ClearXiazhiHint();
-    }
-
-    private void LoadXiazhiBoard(int level)
-    {
-        ClearXiazhiHint();
-        // The legacy save format has practice/challenge orders. All optional challenge
-        // boards continue writing order 1 rather than creating incompatible order IDs.
-        PrepareChallenge(level == 0 ? 0 : 1);
-        xiazhiPuzzle.Load(level);
-        Render();
-    }
-
-    private void DrawXiazhiCompleted()
-    {
-        var card = WorkshopUi.PixelCard(art, "Xiazhi Completed Work", new Rect(125,106,910,441),
-            SummerNeutral, SummerGold);
-        WorkshopUi.Label(card, "Xiazhi Complete Heading", new Rect(25,34,860,65), "丝路已接通", 38,
-            SummerDark, TextAnchor.MiddleCenter);
-        var wheel = WorkshopUi.Picture(card, "Xiazhi Winding Wheel", new Rect(201,144,186,186), SpringSummerArt("ReelingWheel"));
-        WorkshopUi.Picture(card, "Xiazhi Reward Silk", new Rect(526,150,174,174), RewardIcon(observation));
-        Copy("接下来", "回夏季择茧、找线轴。集齐盐、索绪和线轴后，回织坊合成生丝。");
-        Act("Xiazhi Return To Summer", "返回夏季", Close, true);
-        Act("Xiazhi Next Order", "下一张工单", () => LoadXiazhiBoard((xiazhiPuzzle.LevelIndex + 1) % XiazhiPuzzle.LevelCount));
-        Act("Xiazhi Replay Order", "再理一回", () => LoadXiazhiBoard(xiazhiPuzzle.LevelIndex));
-        StartCoroutine(AnimateXiazhiWheel(wheel));
-    }
-
-    private IEnumerator AnimateXiazhiWheel(Image wheel)
-    {
-        float elapsed = 0;
-        while (wheel != null && wheel.gameObject.activeInHierarchy && elapsed < .85f)
-        {
-            if (WorkshopMinigameMenu.BlocksGameplayInput)
-            {
-                yield return null;
-                continue;
-            }
-            elapsed += Time.unscaledDeltaTime;
-            wheel.rectTransform.localRotation = Quaternion.Euler(0,0,-Mathf.Floor(elapsed * 24) * 15);
-            yield return null;
-        }
-        if (wheel != null) wheel.rectTransform.localRotation = Quaternion.identity;
-    }
-
-    private void DrawXiazhiOrderSelectors()
-    {
-        for (int i = 0; i < XiazhiPuzzle.LevelCount; i++)
-        {
-            int level = i;
-            var button = WorkshopUi.PixelButton(page, "Xiazhi Select " + i, new Rect(28+i*198,848,184,58),
-                i == 0 ? "初试" : i == 1 ? "熟手" : "巧匠", () => LoadXiazhiBoard(level),
-                xiazhiPuzzle.LevelIndex == i, 26, SummerJade);
-            RegisterButton(button);
-        }
-        WorkshopUi.Label(page, "Xiazhi Optional Note", new Rect(640,848,560,58),
-            "接通任一工单即可完成芒种", 25, SummerDark, TextAnchor.MiddleCenter);
-    }
+#if UNITY_EDITOR
+    internal int XiazhiReviewLevel => xiazhiPuzzle != null ? xiazhiPuzzle.LevelIndex : -1;
+    internal int XiazhiReviewProgress => xiazhiCompletedRounds;
+    internal bool XiazhiReviewAdvancing => xiazhiAdvancing;
+    internal bool XiazhiReviewCanReturn => CanReturnFromXiazhi;
+    internal void ExitXiazhiReview() => Close();
+#endif
 }

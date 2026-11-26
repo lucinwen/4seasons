@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
 namespace Qingming.LevelBackground
@@ -8,29 +7,30 @@ namespace Qingming.LevelBackground
     public class SimplePopup : MonoBehaviour
     {
         private static readonly Color Dim = new Color32(17, 32, 28, 174);
-        private static readonly Color[] ChapterAccents =
-        {
-            new Color32(43, 72, 43, 255),
-            new Color32(27, 78, 78, 255),
-            new Color32(125, 52, 38, 255),
-            new Color32(45, 61, 96, 255)
-        };
         private static int openCount;
         internal static bool IsOpen => openCount > 0;
         private Action _onConfirm;
         private Action _onCancel;
+        private WorkshopItem? _rewardItem;
 
         public static SimplePopup ShowItem(WorkshopItem item, string fallbackMessage, Action onConfirm,
             bool showCancel = false, string cancelText = "取消", Action onCancel = null,
             Sprite fallbackIcon = null, Color? fallbackTint = null, Material fallbackMaterial = null,
             Action playSound = null)
         {
+            if (!WorkshopRewardCards.TryBeginItemCard(item))
+            {
+                onConfirm?.Invoke();
+                return null;
+            }
             var art = WorkshopArt.ItemCard(item);
-            return art != null
+            var popup = art != null
                 ? ShowCard(item, art, "收下", onConfirm, showCancel, cancelText, onCancel, playSound)
                 : ShowMessage("获得" + WorkshopProgress.ItemName(item), fallbackMessage, "收下",
                     onConfirm, showCancel, cancelText, onCancel, fallbackIcon, fallbackTint, fallbackMaterial,
                     playSound);
+            popup._rewardItem = item;
+            return popup;
         }
 
         public static SimplePopup Show(string title, string message,
@@ -44,63 +44,6 @@ namespace Qingming.LevelBackground
             if (HarvestOverlayManager.IsHarvestActive) return null;
             return ShowMessage(title, message, confirmText, onConfirm, showCancel, cancelText,
                 onCancel, icon, iconColor, iconMaterial);
-        }
-
-        internal static SimplePopup ShowChapterCompletion(WorkshopSeason season, Action onConfirm)
-        {
-            if (HarvestOverlayManager.IsHarvestActive) return null;
-
-            const string title = "章节任务达成";
-            const string confirmText = "去合成";
-            const string cancelText = "稍后";
-            string product = WorkshopProgress.ProductName(season);
-            var atlas = Resources.Load<Texture2D>("WorkshopFinish/ChapterCompletionPixelCards");
-            if (atlas == null)
-                return Show(WorkshopProgress.SeasonName(season) + "季任务达成", "待合成「" + product + "」", confirmText, onConfirm,
-                    showCancel: true, cancelText: cancelText);
-
-            var popup = Create(out var frame, onConfirm, null);
-            int index = (int)season;
-            var accent = ChapterAccents[index];
-            var card = WorkshopUi.Rect(frame, "Popup Frame", new Rect(288, 162, 1344, 756));
-            var illustration = WorkshopUi.Rect(card, "Chapter Completion Illustration", new Rect(0, 0, 1344, 756))
-                .gameObject.AddComponent<UnityEngine.UI.RawImage>();
-            illustration.texture = atlas;
-            illustration.raycastTarget = false;
-            // The atlas reads from top left, while texture coordinates start at the bottom left.
-            var tile = new Rect(index % 2 * 0.5f, (1 - index / 2) * 0.5f, 0.5f, 0.5f);
-            float insetX = 1f / atlas.width;
-            float insetY = 1f / atlas.height;
-            illustration.uvRect = new Rect(tile.x + insetX, tile.y + insetY,
-                tile.width - insetX * 2, tile.height - insetY * 2);
-
-            WorkshopUi.Label(card, "Title", new Rect(490, 91, 364, 86),
-                title, 46, WorkshopUi.Cream, TextAnchor.MiddleCenter).fontStyle = FontStyle.Bold;
-            WorkshopUi.Label(card, "Chapter Season", new Rect(1230, 296, 64, 105),
-                WorkshopProgress.SeasonName(season), 47, accent, TextAnchor.MiddleCenter).fontStyle = FontStyle.Bold;
-            WorkshopUi.Label(card, "Chapter Product", new Rect(165, 364, 480, 64),
-                product, 42, accent, TextAnchor.MiddleCenter).fontStyle = FontStyle.Bold;
-
-            var cancel = WorkshopUi.PixelButton(card, "Cancel", new Rect(181, 484, 152, 67),
-                cancelText, popup.OnCancel, primary: false, size: 29);
-            var confirm = WorkshopUi.Button(card, "Confirm", new Rect(349, 484, 280, 67),
-                confirmText, popup.OnConfirm, accent, size: 33);
-            ApplySeasonButtonArt(confirm, season);
-            cancel.GetComponentInChildren<UnityEngine.UI.Text>().fontStyle = FontStyle.Bold;
-            confirm.GetComponentInChildren<UnityEngine.UI.Text>().fontStyle = FontStyle.Bold;
-            cancel.navigation = new UnityEngine.UI.Navigation
-            {
-                mode = UnityEngine.UI.Navigation.Mode.Explicit,
-                selectOnRight = confirm
-            };
-            confirm.navigation = new UnityEngine.UI.Navigation
-            {
-                mode = UnityEngine.UI.Navigation.Mode.Explicit,
-                selectOnLeft = cancel
-            };
-            if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(confirm.gameObject);
-            WorkshopAudioFeedback.Notice();
-            return popup;
         }
 
         private static SimplePopup ShowMessage(string title, string message, string confirmText,
@@ -171,20 +114,17 @@ namespace Qingming.LevelBackground
             float left = showCancel ? centerX - 8f : centerX - buttonWidth * 0.5f;
             var confirm = WorkshopUi.Button(parent, "Confirm", new Rect(left, top, buttonWidth, buttonHeight),
                 confirmText, popup.OnConfirm, size: 29);
-            ApplySeasonButtonArt(confirm, season);
+            var buttonArt = WorkshopArt.SeasonButton(season);
+            if (buttonArt != null)
+            {
+                var image = (UnityEngine.UI.Image)confirm.targetGraphic;
+                image.sprite = buttonArt;
+                image.type = buttonArt.border.sqrMagnitude > 0f
+                    ? UnityEngine.UI.Image.Type.Sliced : UnityEngine.UI.Image.Type.Simple;
+                image.color = Color.white;
+            }
             (playSound ?? WorkshopAudioFeedback.Notice)();
             return popup;
-        }
-
-        private static void ApplySeasonButtonArt(UnityEngine.UI.Button button, WorkshopSeason season)
-        {
-            var buttonArt = WorkshopArt.SeasonButton(season);
-            if (buttonArt == null) return;
-            var image = (UnityEngine.UI.Image)button.targetGraphic;
-            image.sprite = buttonArt;
-            image.type = buttonArt.border.sqrMagnitude > 0f
-                ? UnityEngine.UI.Image.Type.Sliced : UnityEngine.UI.Image.Type.Simple;
-            image.color = Color.white;
         }
 
         private static WorkshopSeason CurrentSeason() =>
@@ -227,9 +167,29 @@ namespace Qingming.LevelBackground
         private void OnEnable() => openCount++;
         private void OnDisable() => openCount--;
 
-        public void OnConfirm() => Close(_onConfirm);
+        public void OnConfirm()
+        {
+            if (_rewardItem.HasValue)
+            {
+                WorkshopRewardCards.FinishItemCard(_rewardItem.Value);
+                _rewardItem = null;
+            }
+            Close(_onConfirm);
+        }
 
-        public void OnCancel() => Close(_onCancel);
+        public void OnCancel()
+        {
+            ReleaseReward();
+            Close(_onCancel);
+        }
+
+        private void ReleaseReward()
+        {
+            if (_rewardItem.HasValue) WorkshopRewardCards.ReleaseItemCard(_rewardItem.Value);
+            _rewardItem = null;
+        }
+
+        private void OnDestroy() => ReleaseReward();
 
         private void Close(Action action)
         {

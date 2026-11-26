@@ -4,7 +4,7 @@ using JiangnanDye;
 using Qingming.LevelBackground;
 using UnityEngine;
 
-/// <summary>Opens the final garment order and preserves the original route for older journeys.</summary>
+/// <summary>Winter's final task, from choosing a garment to sewing the three cut pieces.</summary>
 public sealed class WorkshopTailor : MonoBehaviour
 {
     private sealed class GarmentStyle
@@ -83,49 +83,27 @@ public sealed class WorkshopTailor : MonoBehaviour
     private Material fabricMaterial;
     private int piecesPlaced;
     private bool submitting;
-    private bool liningFitted;
     private UnityEngine.UI.Text sewingStatus;
     private UnityEngine.UI.Button sewButton;
-    private UnityEngine.UI.Button liningButton;
 
-    private const string XiaoxueLiningStep = "winter.xiaoxue.lining";
-    private bool UsesLining => WorkshopProgress.HasStep(XiaoxueLiningStep);
-
-    internal static bool IsOpen => active != null || (WorkshopObservationView.ActiveGame is WorkshopObservation game &&
-        WorkshopObservationView.IsGarmentWorkshop(game));
-
-    internal static string NextOrderActionLabel()
-    {
-        if (!WorkshopProgress.SeasonalOrderEnabled) return "选款缝制";
-        if (!WorkshopProgress.GarmentSewn || !WorkshopObservationView.HasOrderWork(WorkshopObservation.DaxueSewing))
-            return "大雪 · 缝夹衣";
-        if (!WorkshopProgress.GarmentFitted || !WorkshopObservationView.HasOrderWork(WorkshopObservation.DongzhiFitting))
-            return "冬至 · 试衣";
-        return "交付成衣";
-    }
+    internal static bool IsOpen => active != null;
 
     internal static void Show(Action back, Action completed)
     {
-        if (IsOpen) return;
+        if (active != null) return;
         if (!WorkshopProgress.CanSubmit(WorkshopSeason.Winter))
         {
-            if (SimplePopup.Show("制作成衣", "准备好染布、三块衣片和缝衣针后，就可以制作成衣。",
-                    "返回合成台", back) == null)
+            if (SimplePopup.Show("制作成衣", "先剪出衣片并拖纸样确认版型，再备好染布和缝衣针，就可以选款缝衣。",
+                    "返回", back) == null)
                 back?.Invoke();
             return;
         }
 
         if (!TryResolveDye(WorkshopProgress.DyedColor, out DyeColor dye))
         {
-            if (SimplePopup.Show("制作成衣", "请在冬季染坊确认布料颜色，再回来做衣。",
-                    "返回合成台", back) == null)
+            if (SimplePopup.Show("制作成衣", "请先在秋季青染轩确认染布颜色，再回来选款。",
+                    "返回", back) == null)
                 back?.Invoke();
-            return;
-        }
-
-        if (WorkshopProgress.SeasonalOrderEnabled)
-        {
-            ContinueSeasonGarment(back, completed);
             return;
         }
 
@@ -133,29 +111,6 @@ public sealed class WorkshopTailor : MonoBehaviour
         WorkshopUi.Block(frame, MinigameUiPresentation.BackgroundVeil);
         active = frame.gameObject.AddComponent<WorkshopTailor>();
         active.Open(frame, dye, back, completed);
-    }
-
-    private static void ContinueSeasonGarment(Action back, Action completed)
-    {
-        if (!WorkshopObservationView.HasOrderWork(WorkshopObservation.DaxueSewing) || !WorkshopProgress.GarmentSewn)
-        {
-            if (!WorkshopObservationView.ShowGarmentOrder(WorkshopObservation.DaxueSewing, back,
-                () => ContinueSeasonGarment(back, completed))) back?.Invoke();
-            return;
-        }
-        if (!WorkshopObservationView.HasOrderWork(WorkshopObservation.DongzhiFitting) || !WorkshopProgress.GarmentFitted)
-        {
-            if (!WorkshopObservationView.ShowGarmentOrder(WorkshopObservation.DongzhiFitting, back,
-                () => ContinueSeasonGarment(back, completed))) back?.Invoke();
-            return;
-        }
-        if (WorkshopProgress.CompleteWinter(WorkshopProgress.SeasonalGarmentId))
-        {
-            ShowCompletedGarment(completed);
-            return;
-        }
-        if (SimplePopup.Show("交付夹衣", "请备齐原工单的栀黄染布、衣片和缝衣针。", "返回合成台", back) == null)
-            back?.Invoke();
     }
 
     public static bool IsGarmentAvailable(string id, string color)
@@ -229,7 +184,7 @@ public sealed class WorkshopTailor : MonoBehaviour
 
         if (!haveAllPieces || available.Count == 0)
         {
-            if (SimplePopup.Show("制作成衣", "衣片或衣样素材无法读取。", "返回合成台", Close) == null)
+            if (SimplePopup.Show("制作成衣", "衣片或衣样素材无法读取。", "返回", Close) == null)
                 Close();
             return;
         }
@@ -237,7 +192,7 @@ public sealed class WorkshopTailor : MonoBehaviour
         BuildChooser();
     }
 
-    private void BuildPanel(string title, string backLabel, Action back)
+    private void BuildPanel(string title, string prompt, string backLabel, Action back)
     {
         backAction = back;
         if (panel != null)
@@ -246,12 +201,10 @@ public sealed class WorkshopTailor : MonoBehaviour
             Destroy(panel.gameObject);
         }
 
-        panel = WorkshopUi.Rect(frame, title, new Rect(46, 30, 1828, 1020));
-        WorkshopUi.Panel(panel, "Embroidered Tailor Frame", new Rect(0, 0, 1828, 1020),
-            Resources.Load<Sprite>("WorkshopDelivery/B04") ?? WorkshopArt.WorkshopTaskBoard);
-        Label(panel, "Title", new Rect(689, 93, 450, 85), title, 45, Accent, TextAnchor.MiddleCenter);
-        if (back != null)
-            WorkshopUi.PixelButton(panel, "Back", new Rect(1114, 262, 187, 56), backLabel, back, true, 27, Accent);
+        panel = WorkshopUi.Rect(frame, title, new Rect(0, 0, 1920, 1080));
+        WorkshopImmersive.Background(panel,WorkshopSeason.Winter);
+        WorkshopImmersive.Text(panel,"Prompt",new Rect(45,35,1450,62),prompt);
+        if(back!=null)WorkshopImmersive.Button(panel,"Back",new Rect(1680,35,195,62),backLabel,back);
     }
 
     private static UnityEngine.UI.Text Label(Transform parent, string name, Rect bounds, string text, int size,
@@ -259,93 +212,48 @@ public sealed class WorkshopTailor : MonoBehaviour
     {
         var label = WorkshopUi.Label(parent, name, bounds, text, size, color, anchor, WorkshopArt.WorkshopFont);
         label.verticalOverflow = VerticalWrapMode.Overflow;
+        WorkshopImmersive.QuietText(label);
         return label;
     }
 
     private void BuildChooser()
     {
-        BuildPanel(UsesLining ? "小雪 · 夹衣选样" : "缝素堂 · 选衣样", "返回合成台", Close);
-        Sprite winterFrame = WorkshopArt.SeasonPanel(WorkshopSeason.Winter);
-        WorkshopUi.Panel(panel, "PreviewPanel", new Rect(866, 377, 454, 363), winterFrame);
-        var swatch = WorkshopUi.Fill(panel, "FabricSwatch", new Rect(906, 410, 25, 25), fabricTint);
-        WorkshopUi.ApplyPixelShape(swatch);
-        string cloth = dye == DyeColor.Yellow && WorkshopObservationView.HasOrderWork(WorkshopObservation.LidongDye)
-            ? "立冬栀黄染绸" : DyeColorUtil.ChineseName(dye) + "染布";
-        Label(panel, "FabricColor", new Rect(943, 399, 305, 43), cloth, 27, Accent);
-
-        var previewClip = WorkshopWardrobe.Clip(panel, "Garment Preview Cutout");
-        var preview = WorkshopUi.Picture(previewClip, "GarmentPreview", new Rect(), null, stretch: true);
-        var previewName = Label(panel, "GarmentName", new Rect(887, 672, 410, 51), "", 32,
-            Accent, TextAnchor.MiddleCenter);
-        var next = WorkshopUi.Button(panel, "ConfirmStyle", new Rect(906, 833, 378, 61),
-            "确认衣样", BuildSewing, Accent, enabled: false, size: 32, font: WorkshopArt.WorkshopFont);
-
-        var optionSurfaces = new UnityEngine.UI.Image[available.Count];
-        var optionSelections = new UnityEngine.UI.Image[available.Count];
-        var buttons = new UnityEngine.UI.Button[available.Count];
-        bool threeRows = available.Count > 4;
-        float cardHeight = threeRows ? 126f : 161f;
-        float artworkTop = threeRows ? 9f : 17f;
-        float artworkHeight = threeRows ? 81f : 102f;
-        float captionTop = threeRows ? 88f : 116f;
-        for (int i = 0; i < available.Count; i++)
+        BuildPanel("选衣样","挑一件喜欢的衣样。","返回工位",Close);
+        var previewClip=WorkshopWardrobe.Clip(panel,"Garment Preview Cutout");
+        var preview=WorkshopUi.Picture(previewClip,"GarmentPreview",new Rect(),null,stretch:true);
+        var previewName=WorkshopImmersive.Text(panel,"GarmentName",new Rect(1180,880,570,48),"",30,TextAnchor.MiddleCenter);
+        var next=WorkshopImmersive.Button(panel,"ConfirmStyle",new Rect(1280,955,370,64),"开始缝制",BuildSewing);
+        next.interactable=false;
+        var buttons=new UnityEngine.UI.Button[available.Count];
+        var marks=new UnityEngine.UI.Text[available.Count];
+        for(int i=0;i<available.Count;i++)
         {
-            int index = i;
-            GarmentStyle style = available[i];
-            var bounds = new Rect(253 + 299 * (i % 2), 378 + (cardHeight + 13f) * (i / 2), 278, cardHeight);
-            var button = WorkshopUi.Button(panel, "Option-" + style.Id, bounds, "", null, Color.clear);
-            var face = (UnityEngine.UI.Image)button.targetGraphic;
-            face.sprite = winterFrame;
-            face.color = winterFrame == null ? WorkshopUi.Cream : Unselected;
-            var selectedMark = WorkshopUi.Fill(button.transform, "Selected ribbon", new Rect(28, 16, 18, 20),
-                Accent);
-            WorkshopUi.ApplyPixelShape(selectedMark);
-            selectedMark.enabled = false;
-            var clip = WorkshopWardrobe.Clip(button.transform, "Garment Cutout");
-            var image = WorkshopUi.Picture(clip, "Garment", new Rect(), null, stretch: true);
-            WorkshopWardrobe.PlaceInBox(clip, image, style.Id, new Rect(26, artworkTop, 226, artworkHeight));
-            Label(button.transform, "Style", new Rect(14, captionTop, 250, 37), style.Name, 26,
-                Accent, TextAnchor.MiddleCenter);
-            optionSurfaces[i] = face;
-            optionSelections[i] = selectedMark;
-            buttons[i] = button;
-            button.onClick.AddListener(() =>
+            int index=i;var style=available[i];
+            float x=115+(i%3)*320,y=290+(i/3)*330;
+            var button=WorkshopUi.Button(panel,"Option-"+style.Id,new Rect(x,y,270,300),"",null,new Color(0,0,0,.002f));
+            var clip=WorkshopWardrobe.Clip(button.transform,"Garment Cutout");
+            var image=WorkshopUi.Picture(clip,"Garment",new Rect(),null,stretch:true);
+            WorkshopWardrobe.PlaceInBox(clip,image,style.Id,new Rect(10,0,250,245));
+            marks[i]=WorkshopImmersive.Text(button.transform,"Style",new Rect(0,250,270,46),style.Name,24,TextAnchor.MiddleCenter);
+            buttons[i]=button;
+            button.onClick.AddListener(()=>
             {
-                selected = style;
-                WorkshopWardrobe.PlaceInBox(previewClip, preview, style.Id, new Rect(915, 448, 370, 221));
-                previewName.text = style.Name;
-                next.interactable = true;
-                for (int j = 0; j < optionSurfaces.Length; j++)
-                {
-                    optionSurfaces[j].color = j == index ? Color.white : Unselected;
-                    optionSelections[j].enabled = j == index;
-                }
+                selected=style;next.interactable=true;
+                WorkshopWardrobe.PlaceInBox(previewClip,preview,style.Id,new Rect(1170,270,600,590));
+                previewName.text=style.Name;
+                for(int j=0;j<marks.Length;j++)if(marks[j]!=null)marks[j].color=j==index?new Color32(255,218,132,255):WorkshopUi.Cream;
             });
         }
-
-        int current = available.IndexOf(selected);
-        if (current < 0 && UsesLining && dye == DyeColor.Yellow)
-            current = available.FindIndex(style => style.Id == "4_02");
-        buttons[Mathf.Max(0, current)].onClick.Invoke();
+        buttons[Mathf.Max(0,available.IndexOf(selected))].onClick.Invoke();
     }
 
     private void BuildSewing()
     {
-        bool winterLining = UsesLining;
-        BuildPanel(winterLining ? "小雪 · 拼缝夹衣" : "缝素堂 · 拼合衣片", "重新选款", BuildChooser);
-        Label(panel, "Prompt", new Rect(252, 323, 1085, 49), "把衣片拖到对应样板上。", 31, Accent);
+        BuildPanel("缝素堂 · 拼合衣片", "把三块衣片拼合在布面上。",
+            "重新选款", BuildChooser);
         submitting = false;
-        liningFitted = false;
-        liningButton = null;
         piecesPlaced = 0;
-        Sprite winterFrame = WorkshopArt.SeasonPanel(WorkshopSeason.Winter);
-        WorkshopUi.Panel(panel, "Tray", new Rect(251, 378, 325, 356), winterFrame);
-        WorkshopUi.Panel(panel, "Workbench", new Rect(563, 378, 786, 455),
-            WorkshopArt.CuttingWorkbench ?? winterFrame);
-        Label(panel, "TrayTitle", new Rect(281, 398, 265, 43), "已裁衣片", 29, Accent);
-        Label(panel, "PatternTitle", new Rect(640, 382, 615, 42), selected.Name + "样板", 30, Accent,
-            TextAnchor.MiddleCenter);
-
+        WorkshopUi.Picture(panel,"Workbench",new Rect(575,400,900,470),Resources.Load<Sprite>("WorkshopGameArt/CuttingCloth"),fabricTint,true);
         var targetCells = new[]
         {
             new Rect(980, 455, 252, 122),
@@ -359,23 +267,13 @@ public sealed class WorkshopTailor : MonoBehaviour
             new Rect(282, 617, 262, 82)
         };
 
-        var progress = WorkshopUi.Panel(panel, "Sewing Progress Plaque", new Rect(682, 789, 546, 46),
-            WorkshopArt.SeasonButton(WorkshopSeason.Winter));
+        var progress = WorkshopUi.Fill(panel, "Sewing Progress Plaque", new Rect(682, 789, 546, 46), Color.clear);
         sewingStatus = Label(progress.transform, "Progress", new Rect(12, 0, 522, 46),
             "衣片归位 0 / 3", 25, progress.sprite == null ? Accent : WorkshopUi.Cream,
             TextAnchor.MiddleCenter);
-        var resetBounds = winterLining ? new Rect(317, 755, 215, 59) : new Rect(684, 840, 215, 59);
-        WorkshopUi.PixelButton(panel, "ResetPieces", resetBounds,
-            "重新摆放", BuildSewing, false, 26);
-        if (winterLining)
-        {
-            WorkshopUi.Picture(panel, "Xiaoxue Reserved Lining", new Rect(588, 728, 73, 52),
-                WorkshopArt.CutPiece(0), Color.Lerp(fabricTint, Color.white, .40f));
-            liningButton = WorkshopUi.Button(panel, "XiaoxueFitLining", new Rect(684, 840, 215, 59),
-                "贴合里襟", FitLining, Accent, enabled: false, size: 25, font: WorkshopArt.WorkshopFont);
-        }
-        sewButton = WorkshopUi.Button(panel, "FinishGarment", new Rect(927, 840, 360, 59), "缝制成衣", Finish,
-            Accent, enabled: false, size: 30, font: WorkshopArt.WorkshopFont);
+        WorkshopImmersive.Button(panel, "ResetPieces", new Rect(684, 900, 215, 59), "重新摆放", BuildSewing);
+        sewButton = WorkshopImmersive.Button(panel, "FinishGarment", new Rect(927, 900, 360, 59), "缝制成衣", Finish);
+        sewButton.interactable = false;
 
         for (int i = 0; i < PieceNames.Length; i++)
         {
@@ -388,7 +286,7 @@ public sealed class WorkshopTailor : MonoBehaviour
                 WorkshopUi.Cream, TextAnchor.MiddleCenter);
 
             cell = sourceCells[i];
-            WorkshopUi.Panel(panel, PieceNames[i] + "-Tray", cell, winterFrame);
+            // Loose cut pieces rest directly on the worktable.
             Label(panel, PieceNames[i] + "-TrayLabel",
                 new Rect(cell.x + 138, cell.y, 108, cell.height), PieceNames[i], 26, Accent, TextAnchor.MiddleCenter);
             var piece = WorkshopUi.Picture(panel, PieceNames[i] + "-Piece",
@@ -408,16 +306,8 @@ public sealed class WorkshopTailor : MonoBehaviour
             sewingStatus.text = $"衣片归位 {piecesPlaced} / {PieceNames.Length}";
             if (piecesPlaced != PieceNames.Length) return;
 
-            if (liningButton != null)
-            {
-                sewingStatus.text = "请贴合里襟";
-                liningButton.interactable = true;
-            }
-            else
-            {
-                sewButton.interactable = true;
-                WorkshopDialoguePresenter.PlayOnce("dialogue.winter.piecesFitted", WorkshopDialogueScripts.WinterCuttingComplete);
-            }
+            sewButton.interactable = true;
+            sewingStatus.text = "三片已归位 · 点击缝制成衣";
         }
         else
         {
@@ -426,41 +316,22 @@ public sealed class WorkshopTailor : MonoBehaviour
         }
     }
 
-    private void FitLining()
-    {
-        if (liningButton == null || piecesPlaced != PieceNames.Length || liningFitted) return;
-
-        liningFitted = true;
-        liningButton.interactable = false;
-        var lining = panel.Find("Xiaoxue Reserved Lining") as RectTransform;
-        if (lining != null) lining.anchoredPosition += new Vector2(209, 38);
-        sewingStatus.text = "外片和里襟已对齐";
-        sewButton.interactable = true;
-        WorkshopAudioFeedback.Fabric();
-    }
-
     private void Finish()
     {
-        if (submitting || piecesPlaced != PieceNames.Length || (UsesLining && !liningFitted)) return;
+        if (submitting || piecesPlaced != PieceNames.Length) return;
         submitting = true;
         sewButton.interactable = false;
         if (!WorkshopProgress.CompleteWinter(selected.Id))
         {
-            if (SimplePopup.Show("制作成衣", "任务材料或布色已变更，请返回合成台重新选择。",
-                    "返回合成台", Close) == null)
+            if (SimplePopup.Show("制作成衣", "任务材料或布色已变更，请返回重新选择。",
+                    "返回", Close) == null)
                 Close();
             return;
         }
 
         var finished = onCompleted;
         CloseFrame();
-        ShowCompletedGarment(finished);
-    }
-
-    private static void ShowCompletedGarment(Action finished)
-    {
-        WorkshopDialoguePresenter.PlayOnce("dialogue.winter.garmentSewn", WorkshopDialogueScripts.WinterTailoringComplete,
-            () => WorkshopNarrativeView.ShowFinale(() => WorkshopWardrobe.Show(finished)));
+        WorkshopNarrativeView.ShowFinale(() => WorkshopWardrobe.Show(finished));
     }
 
     private void Update()

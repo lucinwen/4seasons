@@ -18,6 +18,7 @@ public class SummerItemInteraction : MonoBehaviour
     public const string WaterObjectName = "2-水源";
     public const string CookerObjectName = "2-煮茧锅";
     public const string CocoonRackObjectName = "2-蚕茧簇架";
+    public const string WindingWheelObjectName = "2-缫丝车";
 
     /// <summary>是否已获取盐</summary>
     public static bool SaltCollected { get; private set; }
@@ -100,6 +101,12 @@ public class SummerItemInteraction : MonoBehaviour
         {
             rack.AddComponent<SummerCocoonRackTrigger>();
         }
+
+        var wheel = GameObject.Find(WindingWheelObjectName);
+        if (wheel != null && wheel.GetComponent<SummerWindingTrigger>() == null)
+        {
+            wheel.AddComponent<SummerWindingTrigger>();
+        }
     }
 
     private void Start()
@@ -169,11 +176,11 @@ public class SummerItemInteraction : MonoBehaviour
 
     private void Update()
     {
-        bool pressed = Input.GetMouseButtonDown(0);
-        if (WorkshopQuestGuide.BlocksWorldInput || (!pressed && !WorkshopPointer.CanShowWorldHint)) return;
+        if (WorkshopQuestGuide.BlocksWorldInput || !Input.GetMouseButtonDown(0)) return;
 
         // 小游戏/其它弹窗进行中不响应
         if (HarvestOverlayManager.IsHarvestActive) return;
+        if (FindObjectOfType<SimplePopup>() != null) return;
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
 
         if (_cam == null) _cam = Camera.main;
@@ -182,17 +189,22 @@ public class SummerItemInteraction : MonoBehaviour
         Vector3 world = _cam.ScreenToWorldPoint(Input.mousePosition);
         Vector2 point = new Vector2(world.x, world.y);
 
-        Collider2D hit;
-        if (_saltCol != null && _saltCol.OverlapPoint(point)) hit = _saltCol;
-        else if (_woodCol != null && _woodCol.OverlapPoint(point)) hit = _woodCol;
-        else if (_waterCol != null && _waterCol.OverlapPoint(point)) hit = _waterCol;
-        else return;
-        if (FindObjectOfType<SimplePopup>() != null) return;
-        WorkshopPointer.PointAtWorldTarget();
-        if (!pressed) return;
-        if (hit == _saltCol) OnSaltClicked();
-        else if (hit == _woodCol) OnWoodClicked();
-        else OnWaterClicked();
+        if (_saltCol != null && _saltCol.OverlapPoint(point))
+        {
+            OnSaltClicked();
+            return;
+        }
+
+        if (_woodCol != null && _woodCol.OverlapPoint(point))
+        {
+            OnWoodClicked();
+            return;
+        }
+
+        if (_waterCol != null && _waterCol.OverlapPoint(point))
+        {
+            OnWaterClicked();
+        }
     }
 
     private void OnSaltClicked()

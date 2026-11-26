@@ -29,79 +29,47 @@ internal static class WorkshopQuests
 
     private static readonly Entry[][] Chapters =
     {
-        new[]
-        {
-            new Entry("SpringBriefing", "领采桑任务", "与蚕房师傅交谈",
-                "到蚕房找师傅，领清明的采桑任务，听他讲幼蚕需要什么叶。",
-                () => SpringSummerNpcDialogue.HasMulberryBriefing),
-            new Entry("Basket", "拾采桑篮", "找发光的采桑篮", "收下篮子，带到桑树前采桑。",
-                () => SpringSummerNpcDialogue.HasHarvestBasket, () => SpringSummerNpcDialogue.HasMulberryBriefing),
-            new Entry(nameof(WorkshopItem.MulberryLeaf), "采摘桑叶", "带篮子到桑树前",
-                "到桑树前点击「采摘桑叶」或按 O，收下桑叶。",
-                () => SpringSummerNpcDialogue.HasHarvestedLeaves,
-                () => SpringSummerNpcDialogue.HasMulberryBriefing && SpringSummerNpcDialogue.HasHarvestBasket),
-            Item(WorkshopItem.Silkworm, "喂蚕宝宝", "带桑叶到蚕架前",
-                "点击「喂蚕宝宝」或按 O，逐片把四片桑叶拖进蚕匾。",
-                () => SpringSummerNpcDialogue.HasHarvestedLeaves),
-            new Entry("EggPaper", "拾蚕种纸", "找发光的蚕种纸",
-                "喂饱蚕宝宝后，点击并收下蚕种纸。",
-                HasEggPaper, () => SpringSummerNpcDialogue.CanWash),
-            Item(WorkshopItem.SilkwormEgg, "浴蚕", "带蚕种纸去浴蚕桶",
-                "把蚕种筛放入水面，沿桶口轻晃漂洗，捞起杂质。",
-                () => SpringSummerNpcDialogue.CanWash && HasEggPaper()),
-            Handoff(WorkshopSeason.Spring, "登记春蚕批次", "带春章记录回工坊，登记这批蚕后续长大、上蔟和结茧的过程。")
+        new[] {
+            new Entry("SpringBriefing", "领采桑任务", "蚕房师傅", "与师傅交谈，了解清明采桑、谷雨浴蚕与喂蚕。", () => SpringSummerNpcDialogue.HasMulberryBriefing),
+            new Entry("Basket", "拾采桑篮", "发光的采桑篮", "收下篮子，再进桑园。", () => SpringSummerNpcDialogue.HasHarvestBasket, () => SpringSummerNpcDialogue.HasMulberryBriefing),
+            Item(WorkshopItem.MulberryLeaf, "清明采桑", "春日桑园", "左右移动接住桑叶。通关仅获得桑叶。", () => SpringSummerNpcDialogue.HasHarvestBasket),
+            new Entry("EggPaper", "拾蚕种纸", "浴蚕平台旁", "采桑后收下蚕种纸。", HasEggPaper, () => SpringSummerNpcDialogue.CanWash),
+            Item(WorkshopItem.SilkwormEgg, "谷雨浴蚕", "浴蚕平台", "拿起擦拭布蘸水，逐处擦净中央的蚕种，收好干净蚕种。", HasEggPaper),
+            new Entry("Feed", "谷雨喂蚕", "养蚕区蚕匾架", "备好桑叶与干净蚕种，将三份叶子拖入蚕匾，获得蚕宝宝。", () => WorkshopWordRules.HasDelivery(WorkshopSeason.Spring), () => WorkshopWordRules.CanFeed),
+            Handoff(WorkshopSeason.Spring, "交付春季成果", "提交蚕种、桑叶、蚕宝宝，获得蚕茧，开启夏章。")
         },
-        new[]
-        {
-            Item(WorkshopItem.Salt, "取盐", "点击盐窖", "点击盐窖，选择「获取盐」，再点击「收下」。"),
-            Item(WorkshopItem.Suoxu, "择茧", "到蚕茧簇架", "到蚕茧簇架开始择茧，凑齐三张相同图案，领取索绪。"),
-            new Entry("MangzhongOrder", "芒种理线", "到蚕茧簇架按 O 打开丝路接接乐",
-                "转动线段，把左侧丝头接到右侧丝轴。接通一张即可完成。",
-                () => OrderReady(WorkshopObservation.MangzhongCocoon)),
-            new Entry("Water", "到水源取水", "点击发光的水源", "点击水源，取一份水备着煮茧。",
-                HasWater),
-            new Entry("Firewood", "拾木柴", "找发光的木柴", "找到场景中的木柴，点击并收下，备着煮茧。",
-                HasFirewood),
-            Item(WorkshopItem.Spool, "寻找线轴", "从煮茧锅进入迷宫", "备好水和木柴，在煮茧锅旁进入迷宫，找到线轴。",
-                () => HasWater() && HasFirewood()),
-            Handoff(WorkshopSeason.Summer, "交付夏季成果", "带盐、索绪和线轴返回工坊，合成生丝。")
+        new[] {
+            Item(WorkshopItem.Salt, "取盐", "盐窖", "获取并收下盐。"),
+            Item(WorkshopItem.Suoxu, "立夏下簇", "择茧草堂", "完成原有蚕茧合成消除小游戏，领取索绪。"),
+            new Entry("WhiteTiles", "立夏择茧", "蚕茧簇架", "取得索绪后，回到簇架，从最下行开始点选深色茧块，避开白块。完成择茧领取立夏卡。", () => Step(WorkshopWordRules.Sorted), () => Has(WorkshopItem.Suoxu)),
+            new Entry("Water", "取水", "水源", "为煮茧备水。", HasWater),
+            new Entry("Firewood", "拾木材", "发光木柴", "收下木材，带到练丝坊。", HasFirewood),
+            Item(WorkshopItem.Spool, "小满寻找线轴", "练丝坊煮茧锅", "备水拾柴后走通原有迷宫，找到线轴。", () => HasWater() && HasFirewood()),
+            new Entry("Reeling", "小满缫丝", "找到线轴后再点煮茧锅", "左右拖动导丝环，把丝均匀绕满线轴；绕厚的地方换到薄处。", () => Step(WorkshopWordRules.Reeled), () => Has(WorkshopItem.Spool)),
+            new Entry("MangzhongOrder", "芒种夏至绕丝上轴", "练丝坊右侧缫丝车", "找到线轴后，走近缫丝车点「绕丝上轴」。在丝路接接乐中转动线段，把左侧丝头接到右侧丝轴。", () => WorkshopObservationView.HasRecord(WorkshopObservation.MangzhongCocoon), () => Has(WorkshopItem.Spool)),
+            Handoff(WorkshopSeason.Summer, "交付夏季成果", "提交盐、线轴、索绪，获得丝束，开启秋章。")
         },
-        new[]
-        {
-            new Entry("Hammer", "向师傅借锤", "与秋季师傅对话", "与秋季师傅对话，点「收下锤子」领取修理工具。",
-                HasHammer),
-            new Entry("LoomRepair", "修复织机", "带锤子去织机旁", "带上锤子到织机旁，点击「修复织机」并完成修理。",
-                LoomRepaired, HasHammer),
-            Item(WorkshopItem.Shuttle, "取梭", "打开织机旁的工具箱", "织机修复后，点击工具箱收下梭子，再回织机推梭。",
-                () => HasHammer() && LoomRepaired()),
-            Item(WorkshopItem.RawSilkCloth, "寒露纺织", "到修好的织机旁开始纺织", "参照每行和每列的目标数字，用梭子织出图案，收下生坯绸，供后续染色和寒露攀花使用。",
-                () => LoomRepaired() && Has(WorkshopItem.Shuttle)),
-            new Entry("Offerings", "备齐贡品", "找酒和果篮，再找师傅", "找到蚕花酒和香蕉果篮，再与师傅对话领糕点。",
-                OfferingsReady),
-            Item(WorkshopItem.Statue, "酬蚕", "带贡品到供桌", "带三样贡品到供桌，开启酬蚕仪式，收下土地公。",
-                OfferingsReady),
-            new Entry("Hoe", "拾挖染料锄头", "找发光的锄头", "找到场景里的锄头，点击并收下。",
-                HasHoe),
-            new Entry("DyeGather", "采集染材", "带锄头去染料园", "带锄头进入染料园，采到染材后带回秋季场景。",
-                HasDyeMaterials, HasHoe),
-            new Entry("GrindingRod", "拾研磨棒", "找发光的研磨棒", "找到场景里的研磨棒，点击并收下。",
-                HasGrindingRod),
-            new Entry("Grind", "研磨染料", "带染材去研磨钵", "带染材和研磨棒到研磨钵，选择染材并至少研磨出一种染料。",
-                HasGroundDye, () => HasDyeMaterials() && HasGrindingRod()),
-            new Entry("LidongOrder", "染色", "到染缸选择已研磨的颜色",
-                "确认心仪颜色后，调整清水与染料原液的比例，完成深浅两阶染色。",
-                () => OrderReady(WorkshopObservation.LidongDye),
-                () => HasGroundDye() && Has(WorkshopItem.RawSilkCloth)),
-            Item(WorkshopItem.DyedCloth, "秋色染布", "到染缸给整幅生坯绸上色", "选择已研磨的颜色，调整清水与原液比例并完成染色，收下秋色染布。",
-                () => HasGroundDye() && OrderReady(WorkshopObservation.LidongDye) && Has(WorkshopItem.RawSilkCloth)),
-            Handoff(WorkshopSeason.Autumn, "交付秋季成果", "完成纺织、酬蚕和秋色染布，带梭子、生坯绸、土地公与染布返回工坊，在储物屋交付秋季成果。")
+        new[] {
+            new Entry("Hoe", "立秋取锄头", "染材园门口", "向师傅了解天然染材，拾起锄头。", HasHoe),
+            new Entry("DyeGather", "立秋采集染材", "染材园", "挥锄采集，选择收下或丢弃正常、损坏染材。", HasDyeMaterials, HasHoe),
+            new Entry("Hammer", "白露拾木槌", "织机左侧地面", "点击发光的修机木槌拾取。", HasHammer),
+            new Entry("LoomRepair", "白露修复织机", "织造坊", "在黄色区域内完成三次击打。", LoomRepaired, HasHammer),
+            Item(WorkshopItem.Shuttle, "取得梭子", "织机附近工具箱", "修机后打开工具箱，收下梭子。", LoomRepaired),
+            Item(WorkshopItem.RawSilkCloth, "白露经纬织造", "修好的织机", "用梭子织入、拔子取消，满足每行每列的目标数字，获得生坯绸。", () => LoomRepaired() && Has(WorkshopItem.Shuttle)),
+            new Entry("GrindingRod", "寻找研磨棒与研钵", "青染轩", "拾研磨棒，点击研钵收下，准备研磨。", () => HasGrindingRod() && Step("autumn.mortar")),
+            new Entry("Grind", "秋分研磨染材", "青染轩研钵", "把天然染材研磨成染料。", HasGroundDye, () => HasDyeMaterials() && HasGrindingRod() && Step("autumn.mortar")),
+            Item(WorkshopItem.DyedCloth, "秋分染色", "青染轩染缸", "选择已研磨的染料，把一块素绸拖入染缸，染好后收下。道具不消耗。", () => HasGroundDye() && Has(WorkshopItem.RawSilkCloth)),
+            new Entry("Offerings", "备齐秋社贡品", "灵桑阙与师傅处", "收集香蕉、蚕花酒；第一次与师傅交谈即获得糕点。", OfferingsReady),
+            Item(WorkshopItem.Statue, "白露秋分秋社", "灵桑阙", "登上灵桑阙提交贡品，领取土地公雕像。", OfferingsReady),
+            new Entry("Panhua", "寒露攀花", "染好布后回到织机", "用梭子和拔子，按行列数字推演纹样。染布保留。", () => Step(WorkshopWordRules.Patterned), () => WorkshopWordRules.CanPattern),
+            Handoff(WorkshopSeason.Autumn, "交付秋季成果", "提交土地公雕像、梭子、生坯绸，获得素绸。染布带入冬章。")
         },
-        new[]
-        {
-            Item(WorkshopItem.CutPieces, "小雪裁衣", "带染布去裁衣台", "点「开始裁衣」，选中剪刀，沿样板裁出前片、后片和袖片。",
-                () => Has(WorkshopItem.DyedCloth)),
-            Item(WorkshopItem.Needle, "拾缝衣针", "找发光的缝衣针", "在冬季场景找到缝衣针，点击并收下。"),
-            Handoff(WorkshopSeason.Winter, "缝制成衣", "使用秋季染布裁好衣片，带衣片和缝衣针返回主厅。大雪合缝翻衣，冬至试身交衣。")
+        new[] {
+            Item(WorkshopItem.CutPieces, "立冬小雪剪帛", "缝素堂裁衣台", "带秋季染布，沿虚线剪出前衣、后衣和衣袖。", () => Has(WorkshopItem.DyedCloth)),
+            new Entry("Fitting", "小雪量体裁衣", "剪帛后再点裁衣台", "把三张衣样纸拖到右侧布面的同名轮廓。", () => Step(WorkshopWordRules.Fitted), () => Has(WorkshopItem.CutPieces)),
+            Item(WorkshopItem.Needle, "取得缝衣针", "缝素堂", "点击并收下缝衣针。"),
+            new Entry("WinterHandoff", "小雪选款缝衣", "缝素堂裁衣台", "版型确认、缝衣针备好后，在裁衣台选款，拼合三块衣片并缝制。道具保留，也可回工坊交件。", () => WorkshopProgress.IsComplete(WorkshopSeason.Winter), () => WorkshopProgress.CanSubmit(WorkshopSeason.Winter)),
+            new Entry("TryOn", "锦衣堂试衣", "成衣完成后直接进入", "穿上刚缝好的衣服，试衣留念。", () => Step("winter.tryOn"), () => WorkshopProgress.IsComplete(WorkshopSeason.Winter))
         }
     };
 
@@ -138,7 +106,7 @@ internal static class WorkshopQuests
     private static bool LoomRepaired() => Step("autumn.loom") || Has(WorkshopItem.RawSilkCloth);
     private static bool OfferingsReady() => Has(WorkshopItem.Statue) ||
         (Step("autumn.wine") && Step("autumn.banana") && Step("autumn.cake"));
-    private static bool HasHoe() => Step("autumn.hoe");
+    private static bool HasHoe() => Step("autumn.hoe") || Step("winter.hoe") || HasDyeMaterials();
     private static bool HasDyeMaterials() => Step("winter.dyes") || HasGroundDye();
     private static bool HasGrindingRod() => Step("winter.rod") || HasGroundDye();
     private static bool HasGroundDye() => Step("winter.ground") || Has(WorkshopItem.DyedCloth);

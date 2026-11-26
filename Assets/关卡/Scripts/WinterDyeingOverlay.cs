@@ -1,58 +1,51 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using JiangnanDye;
 using Qingming.LevelBackground;
 
-/// <summary>
-/// 冬季染色台。选定已研磨的染料后，将素绸拖进染缸。
-/// </summary>
+/// <summary>秋季染色台：选染料，将一块素绸拖入染缸，染好后收下。</summary>
 public class WinterDyeingOverlay : MonoBehaviour
 {
     public static bool IsActive { get; private set; }
-
     private static WinterDyeingOverlay _runner;
-    private static readonly Color ConfirmDisabled = new Color32(106, 112, 94, 255);
-    private static readonly Rect VatBounds = new Rect(714, 311, 506, 480);
-    private static readonly Rect SilkBounds = new Rect(1384, 511, 338, 250);
+    private static readonly Rect VatBounds = new Rect(714, 335, 506, 470);
+    private static readonly Rect SilkBounds = new Rect(1380, 560, 338, 250);
 
     private WinterDyeingConfig _config;
-    private WinterGrindingConfig _grindingConfig;
     private RectTransform _frame;
     private RectTransform _vatDropArea;
     private Image _vatImage;
+    private Image _silkImage;
     private Outline _vatHighlight;
-    private Text _vatLabel;
     private Text _statusText;
-    private Button _confirmButton;
-    private Text _confirmLabel;
-
+    private Text _silkLabel;
+    private Button _collectButton;
     private readonly Dictionary<DyeColor, Outline> _dyeSelections = new Dictionary<DyeColor, Outline>();
+    private readonly List<Button> _dyeButtons = new List<Button>();
     private DyeColor? _selectedColor;
-    private bool _colorConfirmed;
-
+    private bool _dyeing;
+    private bool _finished;
+    private float _priorTimeScale;
+    private bool _timeCaptured;
     private LevelPlayerController _player;
     private bool _playerWasEnabled;
 
-    public bool CanDragSilk
-    {
-        get { return _selectedColor.HasValue && _colorConfirmed; }
-    }
+    public bool CanDragSilk => _selectedColor.HasValue && !_dyeing && !_finished && !WorkshopMinigameMenu.IsPaused;
+    internal bool IsDyeing => _dyeing;
+    internal bool HasFinishedCloth => _finished;
 
     public static void Show()
     {
         if (IsActive) return;
-
-        // 同一时间只保留一个界面，避免研磨界面上残留染色的「关闭」按钮
         WinterGrindingOverlay.Close();
-
         var config = Resources.Load<WinterDyeingConfig>("WinterDyeingConfig");
         if (config == null || config.clearWaterVat == null || config.silk == null)
         {
-            SimplePopup.Show("染色", "染色界面素材缺失，请检查 Resources/WinterDyeingConfig。", "知道了", null);
+            SimplePopup.Show("染色", "染色界面素材缺失，请检查 Resources/WinterDyeingConfig。", "知道了");
             return;
         }
-
         var frame = WorkshopUi.NewCanvas("WinterDyeingOverlay", 600);
         _runner = frame.parent.gameObject.AddComponent<WinterDyeingOverlay>();
         _runner.Build(frame, config);
@@ -62,52 +55,58 @@ public class WinterDyeingOverlay : MonoBehaviour
     {
         _frame = frame;
         _config = config;
-        _grindingConfig = Resources.Load<WinterGrindingConfig>("WinterGrindingConfig");
         IsActive = true;
         FreezePlayer();
-
-        WinterWorktableUi.Build(_frame, "染色", 264, CloseInternal);
-
+        WorkshopUi.Block(frame, Color.black);
+        WorkshopUi.Picture(frame, "Autumn Dye Workbench", new Rect(0, 0, 1920, 1080),
+            Resources.Load<Sprite>("WordRevision/AutumnDyeWorkbench"), stretch: true);
+        _statusText = TableLabel(frame, "Dye Hint", new Rect(60, 48, 1300, 55),
+            "选染料，把素绸拖入染缸。", 29, TextAnchor.MiddleLeft);
+        WorkshopUi.PixelButton(frame, "CloseButton", new Rect(1720, 45, 150, 58),
+            "返回", CloseInternal, true, 26);
         CreateDyeList();
         CreateVat();
         CreateSilk();
+        _collectButton = WorkshopUi.PixelButton(frame, "Collect Dyed Cloth", new Rect(1435, 875, 230, 62),
+            "收好染布", CollectFinishedCloth, true, 27);
+        _collectButton.transform.parent.gameObject.SetActive(false);
+    }
 
-        var footer = WinterWorktableUi.Footer(_frame);
-        _statusText = WorkshopUi.Label(footer, "Worktable Status", new Rect(25, 4, 1470, 71),
-            "选择左侧已研磨的染料。", 29, WorkshopUi.Cream);
-        CreateConfirmButton(footer);
+    private static Text TableLabel(Transform parent, string name, Rect bounds, string text, int size,
+        TextAnchor alignment = TextAnchor.MiddleCenter)
+    {
+        var label = WorkshopUi.Label(parent, name, bounds, text, size, WorkshopUi.Cream, alignment);
+        var shadow = label.gameObject.AddComponent<Shadow>();
+        shadow.effectColor = new Color32(48, 28, 17, 230);
+        shadow.effectDistance = new Vector2(2, -2);
+        return label;
     }
 
     private void CreateDyeList()
     {
         var colors = new List<DyeColor>(WinterLevelState.ProducedDyeColors);
         colors.Sort();
-        WinterWorktableUi.Nameplate(_frame, "Dyes Heading", new Rect(274, 477, 226, 41), "已研磨染料", 24);
-
+        var grinding = Resources.Load<WinterGrindingConfig>("WinterGrindingConfig");
+        int firstRow = Mathf.Min(colors.Count, 3);
         for (int i = 0; i < colors.Count; i++)
         {
-            var color = colors[i];
-            var icon = _grindingConfig != null ? _grindingConfig.GetDye(color) : null;
-            icon = icon ?? _config.GetVat(color) ?? _config.clearWaterVat;
-
-            var button = WorkshopUi.Button(_frame, "Dye_" + color, WinterWorktableUi.MaterialBounds(i, colors.Count),
-                "", () => SelectColor(color), Color.clear);
-            var bowl = WorkshopUi.Picture(button.transform, "Dye Bowl", new Rect(0, 0, 174, 122), icon);
+            DyeColor color = colors[i];
+            bool top = i < firstRow;
+            int column = top ? i : i - firstRow;
+            int columns = top ? firstRow : colors.Count - firstRow;
+            float x = 390f + (column - (columns - 1) * .5f) * 185f - 87f;
+            var button = WorkshopUi.Button(_frame, "Dye_" + color,
+                new Rect(x, top ? 560 : 755, 174, 160), "", () => SelectColor(color), Color.clear);
+            var icon = grinding != null ? grinding.GetDye(color) : null;
+            var bowl = WorkshopUi.Picture(button.transform, "Dye Bowl", new Rect(0, 0, 174, 122),
+                icon ?? _config.GetVat(color) ?? _config.clearWaterVat);
             bowl.gameObject.AddComponent<Shadow>().effectDistance = new Vector2(4, -5);
             _dyeSelections[color] = WinterWorktableUi.FocusOutline(bowl);
-            WinterWorktableUi.Nameplate(button.transform, "Dye Name", new Rect(34, 124, 106, 34),
-                DyeColorUtil.ChineseName(color), 22);
+            TableLabel(button.transform, "Dye Name", new Rect(0, 124, 174, 34), DyeColorUtil.ChineseName(color), 24);
             button.targetGraphic = bowl;
-            var tones = button.colors;
-            tones.normalColor = new Color32(240, 226, 206, 255);
-            tones.highlightedColor = tones.selectedColor = Color.white;
-            tones.pressedColor = new Color32(204, 183, 153, 255);
-            tones.disabledColor = tones.normalColor;
-            button.colors = tones;
+            _dyeButtons.Add(button);
         }
-
-        if (colors.Count == 0)
-            WinterWorktableUi.Nameplate(_frame, "Empty", new Rect(274, 600, 226, 52), "还没有染料", 24);
+        if (colors.Count == 0) SetStatus("先把采来的染材研磨成染料。");
     }
 
     private void CreateVat()
@@ -115,95 +114,35 @@ public class WinterDyeingOverlay : MonoBehaviour
         _vatImage = WorkshopUi.Picture(_frame, "Vat", VatBounds, _config.clearWaterVat);
         _vatImage.gameObject.AddComponent<Shadow>().effectDistance = new Vector2(6, -7);
         _vatHighlight = WinterWorktableUi.FocusOutline(_vatImage);
-        _vatDropArea = WorkshopUi.Rect(_frame, "VatDropArea", new Rect(774, 378, 390, 166));
-        _vatLabel = WinterWorktableUi.Nameplate(_frame, "VatLabel", new Rect(852, 252, 230, 46), "清水缸", 25);
-    }
-
-    private void CreateConfirmButton(RectTransform footer)
-    {
-        _confirmButton = WorkshopUi.PixelButton(footer, "ConfirmButton", new Rect(1569, 10, 245, 61),
-            "确定颜色", ConfirmColor, true, 27);
-        _confirmLabel = _confirmButton.GetComponentInChildren<UnityEngine.UI.Text>();
-        SetConfirmAvailable(false);
-    }
-
-    private void SetConfirmAvailable(bool available)
-    {
-        _confirmButton.interactable = available;
-        _confirmButton.targetGraphic.color = available ? WorkshopUi.PixelInk : ConfirmDisabled;
+        _vatDropArea = WorkshopUi.Rect(_frame, "VatDropArea", new Rect(770, 385, 390, 180));
     }
 
     private void CreateSilk()
     {
-        var image = WorkshopUi.Picture(_frame, "Silk", SilkBounds, _config.silk);
-        image.raycastTarget = false;
-        WinterWorktableUi.Nameplate(_frame, "Silk Label", new Rect(1487, 812, 132, 40), "素绸", 24);
+        _silkImage = WorkshopUi.Picture(_frame, "Silk", SilkBounds, _config.silk);
+        _silkImage.raycastTarget = true;
+        _silkImage.gameObject.AddComponent<WinterDyeingSilk>().Init(this);
+        _silkLabel = TableLabel(_frame, "Silk Name", new Rect(1420, 810, 260, 42), "素绸", 25);
     }
 
     private void SelectColor(DyeColor color)
     {
-        if (_colorConfirmed) return;
-
+        if (_dyeing || _finished) return;
         _selectedColor = color;
         _vatImage.sprite = _config.GetVat(color) ?? _config.clearWaterVat;
-        _vatLabel.text = DyeColorUtil.ChineseName(color) + "染缸";
-
-        foreach (var selection in _dyeSelections)
-            selection.Value.enabled = selection.Key == color;
-
-        SetConfirmAvailable(true);
-        SetStatus("已选" + DyeColorUtil.ChineseName(color) + "。请确定颜色。");
-    }
-
-    private void ConfirmColor()
-    {
-        if (!_selectedColor.HasValue || _colorConfirmed) return;
-
-        _colorConfirmed = true;
-        SetConfirmAvailable(false);
-        _confirmLabel.text = "已确定";
-        foreach (var selection in _dyeSelections.Values)
-            selection.GetComponentInParent<Button>().interactable = false;
-
-        OpenDirectDye();
-    }
-
-    private void OpenDirectDye()
-    {
-        if (!_selectedColor.HasValue) return;
-        var color = _selectedColor.Value;
-        var config = _config;
-        CloseInternal();
-        WorkshopObservationView.ShowDirectDye(color, completedColor =>
-        {
-            if (completedColor.HasValue) AwardDirectDye(completedColor.Value, config);
-        });
-    }
-
-    private static void AwardDirectDye(DyeColor color, WinterDyeingConfig config)
-    {
-        string clothName = DyeColorUtil.ChineseName(color) + "布";
-        var dedicated = config != null ? config.GetCloth(color) : null;
-        var clothSprite = dedicated != null ? dedicated : config != null ? config.silk : null;
-        var tint = dedicated != null ? Color.white : config != null ? config.GetClothTint(color) : DyeColorUtil.Tint(color);
-
-        WinterLevelState.SetDyedCloth(clothName);
-        bool firstDyeing = WorkshopProgress.RecordDyedCloth(color);
-        SimplePopup.ShowItem(WorkshopItem.DyedCloth, "获得【" + clothName + "】", () =>
-        {
-            if (firstDyeing) WorkshopDialoguePresenter.Play(WorkshopDialogueScripts.WinterDyeingComplete);
-        }, fallbackIcon: clothSprite, fallbackTint: tint, playSound: WorkshopAudioFeedback.DyeDip);
+        foreach (var selection in _dyeSelections) selection.Value.enabled = selection.Key == color;
+        SetStatus("把右侧素绸拖入染缸，染成" + DyeColorUtil.ChineseName(color) + "。");
     }
 
     public bool IsOverVat(Vector2 screenPosition)
     {
         return _vatDropArea != null &&
-               RectTransformUtility.RectangleContainsScreenPoint(_vatDropArea, screenPosition, null);
+            RectTransformUtility.RectangleContainsScreenPoint(_vatDropArea, screenPosition, null);
     }
 
     internal void HighlightDropTarget(bool highlighted)
     {
-        if (_vatHighlight != null) _vatHighlight.enabled = highlighted;
+        if (_vatHighlight != null) _vatHighlight.enabled = highlighted && CanDragSilk;
     }
 
     public void SetStatus(string text)
@@ -213,12 +152,64 @@ public class WinterDyeingOverlay : MonoBehaviour
 
     public bool TryDyeCloth()
     {
-        if (WorkshopMinigameMenu.BlocksGameplayInput || !CanDragSilk) return false;
-        OpenDirectDye();
+        if (!CanDragSilk || !WorkshopProgress.Has(WorkshopItem.RawSilkCloth)) return false;
+        _dyeing = true;
+        _silkImage.raycastTarget = false;
+        _silkLabel.text = "";
+        foreach (var button in _dyeButtons) button.interactable = false;
+        SetStatus("素绸正在上色……");
+        WorkshopAudioFeedback.DyeDip();
+        StartCoroutine(DyeOneCloth(_selectedColor.Value));
         return true;
     }
 
-    /// <summary>关闭当前打开的染色界面（用于打开研磨界面前清理）。</summary>
+    private IEnumerator DyeOneCloth(DyeColor color)
+    {
+        var rect = _silkImage.rectTransform;
+        Vector2 from = rect.anchoredPosition;
+        Vector2 dip = new Vector2(796, -370);
+        Vector2 home = new Vector2(SilkBounds.x, -SilkBounds.y);
+        Color dyedTint = _config.GetClothTint(color);
+        float elapsed = 0f;
+        const float duration = 2.2f;
+        while (elapsed < duration)
+        {
+            if (WorkshopMinigameMenu.IsPaused) { yield return null; continue; }
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            float enter = Mathf.SmoothStep(0, 1, Mathf.Clamp01(t / .24f));
+            float lift = Mathf.SmoothStep(0, 1, Mathf.Clamp01((t - .67f) / .33f));
+            rect.anchoredPosition = Vector2.Lerp(Vector2.Lerp(from, dip, enter), home, lift);
+            rect.localScale = Vector3.one * Mathf.Lerp(Mathf.Lerp(1, .65f, enter), 1, lift);
+            _silkImage.color = Color.Lerp(Color.white, dyedTint, Mathf.Clamp01((t - .18f) / .48f));
+            yield return null;
+        }
+        rect.anchoredPosition = home;
+        rect.localScale = Vector3.one;
+        var dedicated = _config.GetCloth(color);
+        _silkImage.sprite = dedicated != null ? dedicated : _config.silk;
+        _silkImage.color = dedicated != null ? Color.white : dyedTint;
+        _silkImage.raycastTarget = true;
+        _silkLabel.text = DyeColorUtil.ChineseName(color) + "布";
+        WinterLevelState.SetDyedCloth(_silkLabel.text);
+        WorkshopProgress.RecordDyedCloth(color);
+        _dyeing = false;
+        _finished = true;
+        _collectButton.transform.parent.gameObject.SetActive(true);
+        SetStatus("染好了，收好这块布。");
+    }
+
+    internal void CollectFinishedCloth()
+    {
+        if (!_finished || WorkshopMinigameMenu.IsPaused) return;
+        CloseInternal();
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape) && !WorkshopMinigameMenu.IsPaused) CloseInternal();
+    }
+
     public static void CloseAny()
     {
         if (_runner != null) _runner.CloseInternal();
@@ -227,7 +218,7 @@ public class WinterDyeingOverlay : MonoBehaviour
     private void CloseInternal()
     {
         if (_runner != this) return;
-
+        StopAllCoroutines();
         IsActive = false;
         RestorePlayer();
         _runner = null;
@@ -244,26 +235,20 @@ public class WinterDyeingOverlay : MonoBehaviour
 
     private void FreezePlayer()
     {
+        _priorTimeScale = Time.timeScale;
+        _timeCaptured = true;
+        Time.timeScale = 0f;
         var playerGo = GameObject.Find("Player");
         if (playerGo == null) return;
-
         _player = playerGo.GetComponent<LevelPlayerController>();
-        if (_player != null)
-        {
-            _playerWasEnabled = _player.enabled;
-            _player.enabled = false;
-        }
-
+        if (_player != null) { _playerWasEnabled = _player.enabled; _player.enabled = false; }
         var rb = playerGo.GetComponent<Rigidbody2D>();
         if (rb != null) rb.velocity = Vector2.zero;
     }
 
     private void RestorePlayer()
     {
-        if (_player != null)
-        {
-            _player.enabled = _playerWasEnabled;
-            _player = null;
-        }
+        if (_timeCaptured) { Time.timeScale = _priorTimeScale; _timeCaptured = false; }
+        if (_player != null) { _player.enabled = _playerWasEnabled; _player = null; }
     }
 }

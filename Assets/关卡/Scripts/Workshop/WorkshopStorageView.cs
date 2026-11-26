@@ -36,6 +36,7 @@ public sealed class WorkshopStorageView : MonoBehaviour
     private Action<WorkshopSeason, WorkshopSeason> onContinue;
     private Action onTailoringComplete;
     private int resumedFrame = -1;
+    private bool arrangeSummerMaterials;
 
     public static bool IsOpen => current != null;
 
@@ -44,8 +45,14 @@ public sealed class WorkshopStorageView : MonoBehaviour
 
     public static void Show(WorkshopSeason selected) => Show(selected, null, null);
 
+    internal static void ShowSummerHandoff(Action closed, Action<WorkshopSeason, WorkshopSeason> continued)
+    {
+        if (current != null) return;
+        Show(WorkshopSeason.Summer, closed, continued, arrangeSummer: true);
+    }
+
     internal static void Show(WorkshopSeason selected, Action closed,
-        Action<WorkshopSeason, WorkshopSeason> continued, Action tailoringComplete = null)
+        Action<WorkshopSeason, WorkshopSeason> continued, Action tailoringComplete = null, bool arrangeSummer = false)
     {
         if (current != null) return;
 
@@ -58,6 +65,7 @@ public sealed class WorkshopStorageView : MonoBehaviour
         current.onClose = closed;
         current.onContinue = continued;
         current.onTailoringComplete = tailoringComplete;
+        current.arrangeSummerMaterials = arrangeSummer;
         current.Render();
         WorkshopAudioFeedback.Notice();
     }
@@ -77,7 +85,8 @@ public sealed class WorkshopStorageView : MonoBehaviour
         var title = Label(page, "Storage Title", new Rect(704, 139, 440, 69), "储物屋", 48,
             WorkshopUi.Ink, TextAnchor.MiddleCenter);
         title.fontStyle = FontStyle.Bold;
-        WorkshopUi.PixelButton(page, "Storage Close", new Rect(1020, 139, 202, 69), "返回工坊", Close, true, 34);
+        WorkshopUi.PixelButton(page, "Storage Close", new Rect(1020, 139, 202, 69),
+            arrangeSummerMaterials ? "返回夏季" : "返回工坊", Close, true, 34);
         WorkshopUi.PixelButton(page, "Open Challenge Collections", new Rect(1240, 139, 224, 69),
             "节气收藏", ShowCollections, false, 30);
 
@@ -97,6 +106,7 @@ public sealed class WorkshopStorageView : MonoBehaviour
 
         workbench = page.gameObject.AddComponent<WorkshopSynthesis>();
         workbench.Build(page, season, inventory, sources, artwork, NextSeason, Tailor);
+        if (arrangeSummerMaterials && season == WorkshopSeason.Summer) workbench.ArrangeReadyMaterials();
 
         if (EventSystem.current != null)
             EventSystem.current.SetSelectedGameObject(null);
@@ -125,36 +135,36 @@ public sealed class WorkshopStorageView : MonoBehaviour
                 var challenge = id;
                 bool earned = WorkshopObservationView.HasRecord(id);
                 if (earned) count++;
-                float x = 39 + total % 5 * 305;
-                float y = 169 + total / 5 * 323;
+                float x = 55 + total % 4 * 376;
+                float y = 169 + total / 4 * 323;
                 total++;
-                var card = WorkshopUi.PixelCard(board, "Collected Item " + id, new Rect(x, y, 298, 307),
+                var card = WorkshopUi.PixelCard(board, "Collected Item " + id, new Rect(x, y, 358, 307),
                     earned ? FilledPocket : EmptyPocket, SeasonAccents[(int)chapter]);
                 string term = WorkshopObservationView.RecordTerm(id);
-                Label(card, "Term", new Rect(8, 10, 282, 47), term + " · " + WorkshopObservationView.SeasonGameTitle(id),
-                    24, WorkshopUi.Green, TextAnchor.MiddleCenter);
+                Label(card, "Term", new Rect(8, 10, 342, 47), term + " · " + WorkshopObservationView.SeasonGameTitle(id),
+                    26, WorkshopUi.Green, TextAnchor.MiddleCenter);
                 var best = WorkshopObservationView.BestWork(id, 1) ?? WorkshopObservationView.BestWork(id, 0);
-                var preview = new Rect(79, 61, 140, best != null ? 90 : 112);
+                var preview = new Rect(109, 61, 140, best != null ? 90 : 112);
                 if (!WorkshopObservationView.DrawWorkSample(card, preview, best?.sample))
                     WorkshopUi.Picture(card, "Collectible", preview, WorkshopObservationView.RewardIcon(id),
                         earned ? Color.white : new Color32(74, 89, 58, 97));
-                Label(card, "Item", new Rect(6, best != null ? 149 : 175, 286, 35), WorkshopObservationView.RewardName(id) + (earned ? " ×1" : ""),
-                    24, WorkshopUi.Ink, TextAnchor.MiddleCenter);
+                Label(card, "Item", new Rect(6, best != null ? 149 : 175, 346, 35), WorkshopObservationView.RewardName(id) + (earned ? " ×1" : ""),
+                    26, WorkshopUi.Ink, TextAnchor.MiddleCenter);
                 if (best != null)
                 {
-                    var note = Label(card, "Best Work", new Rect(9, 182, 280, 47), best.description, 20,
+                    var note = Label(card, "Best Work", new Rect(9, 182, 340, 47), best.description, 20,
                         WorkshopUi.Green, TextAnchor.MiddleCenter);
                     note.verticalOverflow = UnityEngine.VerticalWrapMode.Truncate;
                 }
-                var record = WorkshopUi.PixelButton(card, "Read collected page " + id, new Rect(17, 233, 264, 57),
-                    earned ? "查看残页" : "待通关", () => WorkshopObservationView.ShowRecord(challenge), earned, 23);
+                var record = WorkshopUi.PixelButton(card, "Read collected page " + id, new Rect(37, 233, 284, 57),
+                    earned ? term + "残页 ×1 · 查看" : "待通关 · 残页未收集", () => WorkshopObservationView.ShowRecord(challenge), earned, 23);
                 record.interactable = earned;
             }
         }
 
         Label(board, "Collection Heading", new Rect(55, 45, 688, 67), $"节气收藏　{count} / {total}", 47, WorkshopUi.Green);
         if (WorkshopProgress.HasStep("autumn.loom"))
-            Label(board, "Loom Repair Ticket", new Rect(811, 50, 458, 61), "修机工票 ×1", 27,
+            Label(board, "Loom Repair Ticket", new Rect(811, 50, 458, 61), "工坊凭证 · 修机工票 ×1", 27,
                 WorkshopUi.Green, TextAnchor.MiddleRight);
         var back = WorkshopUi.PixelButton(board, "Close Collections", new Rect(1303, 48, 238, 64),
             "返回背包", CloseCollections, true, 31);
@@ -176,7 +186,8 @@ public sealed class WorkshopStorageView : MonoBehaviour
         var inventory = WorkshopUi.Rect(page, "Illustrated Backpack", InventoryBounds);
         Label(page, "Inventory Title", new Rect(176, 313, 156, 42), "背包", 34, WorkshopUi.Ink);
         bool canArrange = WorkshopProgress.IsUnlocked(season) && !WorkshopProgress.IsComplete(season);
-        Label(page, "Inventory Help", new Rect(315, 317, 368, 38), "点击材料查看图鉴", 24, WorkshopUi.Ink);
+        string help = canArrange ? "拖动金边材料 · 点击看图鉴" : "点击材料查看图鉴";
+        Label(page, "Inventory Help", new Rect(315, 317, 368, 38), help, 24, WorkshopUi.Ink);
 
         int total = 0;
         int ownedCount = 0;
@@ -294,7 +305,6 @@ public sealed class WorkshopStorageView : MonoBehaviour
         WorkshopTailor.Show(() =>
         {
             if (current != this) return;
-            workbench.Refresh();
             SetWorkbenchVisible(true);
             resumedFrame = Time.frameCount;
             if (events != null && selected != null) events.SetSelectedGameObject(selected);

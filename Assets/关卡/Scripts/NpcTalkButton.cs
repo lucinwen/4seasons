@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Qingming.LevelBackground;
@@ -69,8 +70,13 @@ public class NpcTalkButton : MonoBehaviour
         npc.AddComponent<NpcTalkButton>();
     }
 
-    private void Start()
+    private IEnumerator Start()
     {
+        // Winter's scene installer turns the authored trigger floors solid in
+        // Start. Wait for every scene Start (and the first sprite pose) before
+        // finding the supporting floor, independent of component start order.
+        yield return null;
+        MoveNearEntrance();
         float offsetY = 1.8f;
         var sr = GetComponent<SpriteRenderer>();
         if (sr != null && sr.sprite != null)
@@ -96,11 +102,59 @@ public class NpcTalkButton : MonoBehaviour
         _solarBtn.SetOpacity(buttonOpacity);
     }
 
+    /// <summary>Keep the guide within a short walk of the authored entrance.</summary>
+    private void MoveNearEntrance()
+    {
+        var player = FindScenePlayer(gameObject.scene);
+        if (player == null) return;
+        _player = player;
+        const float entranceDistance = 4.2f;
+        float horizontalGap = transform.position.x - player.position.x;
+        if (Mathf.Abs(horizontalGap) <= entranceDistance) return;
+
+        Vector3 position = transform.position;
+        position.x = player.position.x + Mathf.Sign(horizontalGap) * entranceDistance;
+        var sprite = GetComponent<SpriteRenderer>();
+        float footOffset = sprite != null ? sprite.bounds.min.y - transform.position.y : -1f;
+        // Floor colliders have no renderer; decorated props and the player must not
+        // become an accidental perch for a relocated guide.
+        Physics2D.SyncTransforms();
+        var hits = Physics2D.RaycastAll(new Vector2(position.x, player.position.y + 3f), Vector2.down, 30f);
+        float floor = float.NegativeInfinity;
+        foreach (var hit in hits)
+        {
+            var collider = hit.collider;
+            if (collider == null || collider.isTrigger || collider.gameObject.scene != gameObject.scene ||
+                collider.attachedRigidbody != null || collider.GetComponent<Renderer>() != null ||
+                hit.normal.y < .45f || hit.point.y > player.position.y + 2f) continue;
+            floor = Mathf.Max(floor, hit.point.y);
+        }
+        if (!float.IsNegativeInfinity(floor)) position.y = floor - footOffset + .03f;
+        else
+        {
+            var playerSprite = player.GetComponentInChildren<SpriteRenderer>();
+            float playerFeet = playerSprite != null ? playerSprite.bounds.min.y : player.position.y - .5f;
+            position.y = playerFeet - footOffset;
+        }
+        transform.position = position;
+    }
+
+    private static Transform FindScenePlayer(Scene scene)
+    {
+        foreach (var root in scene.GetRootGameObjects())
+        {
+            var player = root.GetComponentInChildren<LevelPlayerController>(true);
+            if (player != null) return player.transform;
+        }
+        return null;
+    }
+
     private void Update()
     {
         if (_floatBtn == null) return;
 
-        if (WorkshopDialoguePresenter.IsOpen || MiniGameOverlay.IsActive || HarvestOverlayManager.IsHarvestActive ||
+        if (WorkshopQuestGuide.BlocksWorldInput || WorkshopQuestGuide.IsWorldOverlayActive ||
+            WorkshopDialoguePresenter.IsOpen || MiniGameOverlay.IsActive || HarvestOverlayManager.IsHarvestActive ||
             WinterDyeingOverlay.IsActive || WinterGrindingOverlay.IsActive || WorkshopKnowledgeView.IsOpen ||
             AutumnOfferingView.IsOpen)
         {
@@ -153,6 +207,7 @@ public class NpcTalkButton : MonoBehaviour
 
     private void OnSolarClicked()
     {
+        if (WorkshopQuestGuide.BlocksWorldInput || WorkshopQuestGuide.IsWorldOverlayActive) return;
         if (!WorkshopProgress.TryGetSeason(gameObject.scene.name, out var season)) return;
         bool first = !WorkshopProgress.HasSolarTerms(season);
         WorkshopProgress.UnlockSolarTerms(season);
@@ -164,7 +219,7 @@ public class NpcTalkButton : MonoBehaviour
     {
         if (WorkshopQuestGuide.BlocksWorldInput) return;
 
-        // 秋天关卡使用正式对话：锤子、糕点通过对话获得
+        // 秋天关卡首次交谈即送糕点；修机锤在场景中单独拾取
         var autumnDialogue = GetComponent<AutumnNpcDialogue>();
         if (autumnDialogue != null)
         {

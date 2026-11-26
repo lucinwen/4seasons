@@ -48,6 +48,10 @@ namespace Qingming.LevelBackground
         private float _lastGroundedTime = -10f;
         private bool _controlEnabled = true;
         private float? _walkTargetX;
+        private readonly ContactPoint2D[] _groundContacts = new ContactPoint2D[16];
+#if UNITY_EDITOR
+        internal string StepUpDiagnostic { get; private set; }
+#endif
 
         /// <summary>攀爬/上下台阶期间由外部置为 true，避免动画切到 Jump。</summary>
         public bool IsClimbing { get; set; }
@@ -211,70 +215,110 @@ namespace Qingming.LevelBackground
         /// 检测前进方向是否有不超过 stepHeight 的小台阶，若有则把玩家抬上去。
         /// 场景里的地面由多个矩形碰撞盒拼成，边缘会形成看不见的小台阶；
         /// 这里统一处理，避免玩家在平地上被卡住。
-        /// 采用「脚前方向下探测地面高度」而不是水平射线：
-        /// 台阶顶面可能只比脚底高 1~2cm，水平射线很容易贴着顶面漏检。
+        /// 用脚尖检测带寻找实际踏面，再从踏面边缘向下检测顶面。
+        /// 薄台阶之间的间隙不会漏检，抬升前也会检查头部净空。
         /// </summary>
         private void TryStepUp(float h)
         {
             if (_rb == null || _col == null || stepHeight <= 0f || Mathf.Abs(h) < 0.01f) return;
-            if (!IsGrounded()) return;
+            if (!IsGrounded()) { TraceStepUp("not grounded"); return; }
 
             float footY = _col.bounds.min.y;
             float dir = Mathf.Sign(h);
 
-            // 1) 先确认脚踝高度确实被前方障碍物挡住（可能是只有 1~2cm 高的隐形台阶边缘）
-            Vector2 sideOrigin = new Vector2(_col.bounds.center.x, footY + 0.005f);
-            float sideDistance = _col.bounds.extents.x + 0.12f;
-            bool blocked = false;
-            foreach (var hit in Physics2D.RaycastAll(sideOrigin, Vector2.right * dir, sideDistance))
+            // A single ankle ray can pass under a thin bridge tread: the authored
+            // slabs have small vertical gaps. Search the full step band at the toe.
+            // Box2D can also hold the foot just above a tread's corner by its
+            // contact skin. Include that small band below the geometric sole.
+            float skin = Mathf.Max(0.04f, Physics2D.defaultContactOffset * 2f);
+            float frontX = dir > 0 ? _col.bounds.max.x : _col.bounds.min.x;
+            Vector2 toeCenter = new Vector2(frontX + dir * 0.045f, footY + (stepHeight - skin) * 0.5f);
+            var obstacles = Physics2D.OverlapBoxAll(toeCenter, new Vector2(0.18f, stepHeight + skin), 0f);
+            TraceStepUp("no higher tread in toe band; front=" + frontX + " foot=" + footY);
+            foreach (var obstacle in obstacles)
             {
-                if (hit.collider == null || hit.collider.isTrigger) continue;
-                if (hit.collider == _col || hit.collider.transform.IsChildOf(transform)) continue;
-                blocked = true;
-                break;
-            }
-            if (!blocked) return;
+                if (obstacle == null || obstacle.isTrigger || IsBodyCollider(obstacle)) continue;
+                float topRise = obstacle.bounds.max.y - footY;
+                if (topRise < -skin || topRise > stepHeight) continue;
 
-            // 2) 探测障碍物顶面高度：脚前一点向下打射线，避免贴着薄台阶顶面漏检
-            float probeX = _col.bounds.center.x + dir * (_col.bounds.extents.x + 0.28f);
-            Vector2 origin = new Vector2(probeX, footY + stepHeight + 0.05f);
-            float rayLength = stepHeight + 0.15f;
-            var hits = Physics2D.RaycastAll(origin, Vector2.down, rayLength);
+                float edgeX = dir > 0 ? obstacle.bounds.min.x : obstacle.bounds.max.x;
+                float edgeGap = (edgeX - frontX) * dir;
+                // Only lift at an approaching vertical edge, never repeatedly
+                // over the interior of a floor which is already supporting us.
+                if (edgeGap < -skin || edgeGap > 0.14f) continue;
+                if (topRise <= 0.01f && edgeGap > skin) continue;
+                float probeX = edgeX + dir * Mathf.Min(0.035f, obstacle.bounds.size.x * 0.25f);
+                var origin = new Vector2(probeX, footY + stepHeight + 0.05f);
+                TraceStepUp("no top hit for " + obstacle.name + " rise=" + topRise + " probe=" + origin);
+                foreach (var top in Physics2D.RaycastAll(origin, Vector2.down, stepHeight + 0.15f))
+                {
+                    if (top.collider != obstacle || top.fraction <= 0f || top.normal.y < 0.45f) continue;
+                    float step = top.point.y - footY;
+                    if (step < -skin || step > stepHeight) continue;
 
-            foreach (var hit in hits)
-            {
-                if (hit.collider == null || hit.collider.isTrigger) continue;
-                if (hit.collider == _col || hit.collider.transform.IsChildOf(transform)) continue;
+                    float lift = Mathf.Max(0.005f, step + skin);
+                    Vector2 raisedCenter = (Vector2)_col.bounds.center + Vector2.up * lift;
+                    Vector2 clearance = (Vector2)_col.bounds.size - Vector2.one * 0.04f;
+                    bool clear = true;
+                    foreach (var other in Physics2D.OverlapBoxAll(raisedCenter, clearance, 0f))
+                        if (other != null && !other.isTrigger && !IsBodyCollider(other))
+                        {
+                            TraceStepUp("clearance blocked by " + other.name + " bounds=" + other.bounds +
+                                " raising for=" + obstacle.name + " step=" + step);
+                            clear = false;
+                            break;
+                        }
+                    if (!clear) continue;
 
-                float step = hit.point.y - footY;
-                if (step <= 0.01f || step > stepHeight) continue;
-
-                Vector2 pos = _rb.position;
-                pos.y += step + 0.02f;
-                _rb.position = pos;
-                return;
+                    TraceStepUp("stepped " + obstacle.name + " rise=" + step);
+                    _rb.position += Vector2.up * lift;
+                    return;
+                }
             }
         }
 
+        [System.Diagnostics.Conditional("UNITY_EDITOR")]
+        private void TraceStepUp(string detail)
+        {
+#if UNITY_EDITOR
+            StepUpDiagnostic = detail;
+#endif
+        }
+
+        private bool IsBodyCollider(Collider2D collider) => collider == _col ||
+            collider.attachedRigidbody == _rb || collider.transform.IsChildOf(transform);
+
         /// <summary>
         /// 检测玩家是否站在地面/平台上。
-        /// 从碰撞体底部向下发射短射线，碰到非 Trigger 碰撞体即为落地。
+        /// 先读取脚底真实接触，再检测双脚；宽碰撞盒登桥时支撑点常在前脚。
         /// </summary>
         private bool IsGrounded()
         {
             if (_col == null) return false;
 
             float footY = _col.bounds.min.y;
-            Vector2 rayOrigin = new Vector2(_col.bounds.center.x, footY - 0.05f);
-            var hits = Physics2D.RaycastAll(rayOrigin, Vector2.down, groundCheckDistance);
-
-            foreach (var hit in hits)
+            if (_rb != null)
             {
-                if (hit.collider == null) continue;
-                if (hit.collider.isTrigger) continue;
-                if (hit.collider.gameObject == gameObject) continue;
-                return true;
+                int count = _rb.GetContacts(_groundContacts);
+                for (int i = 0; i < count; i++)
+                    if (_groundContacts[i].normal.y >= 0.45f && _groundContacts[i].point.y <= footY + 0.1f)
+                        return true;
             }
+
+            Bounds bounds = _col.bounds;
+            float inset = Mathf.Min(0.04f, bounds.extents.x * 0.25f);
+            return HasGroundAt(bounds.min.x + inset, footY) || HasGroundAt(bounds.center.x, footY) ||
+                HasGroundAt(bounds.max.x - inset, footY);
+        }
+
+        private bool HasGroundAt(float x, float footY)
+        {
+            // Start above the sole so a thin bridge tread is hit from outside.
+            var origin = new Vector2(x, footY + 0.025f);
+            foreach (var hit in Physics2D.RaycastAll(origin, Vector2.down, groundCheckDistance + 0.025f))
+                if (hit.collider != null && !hit.collider.isTrigger && !IsBodyCollider(hit.collider) &&
+                    hit.fraction > 0f && hit.normal.y >= 0.45f)
+                    return true;
             return false;
         }
 

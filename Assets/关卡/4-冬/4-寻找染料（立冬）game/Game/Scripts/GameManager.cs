@@ -84,8 +84,8 @@ namespace JiangnanDye
             }
 
             WinterLevelState.HasHoe = true;
-            if (introUI != null) introUI.Show();
-            else StartRound();
+            if (introUI != null) introUI.Hide();
+            StartRound();
         }
 
         /// <summary>开场介绍的"开始探索"按钮回调，正式进入游戏。</summary>

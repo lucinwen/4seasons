@@ -7,7 +7,7 @@ using static WorkshopWardrobe;
 
 internal sealed class WorkshopWardrobeMirror : MonoBehaviour
 {
-    private enum CameraMode { Character, Starting, Calibrating, Tracking, Manual }
+    private enum CameraMode { Character, Starting, Calibrating, Tracking }
 
     private static readonly Rect PageBounds = new Rect(0f, 0f, 1920f, 1080f);
     private static readonly Rect ViewBounds = new Rect(0f, 0f, 1160f, 750f);
@@ -24,7 +24,6 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
     private const float CameraDropTimeout = 1.7f;
     private const float CalibrationTime = 3f;
     private const float TrackingInterval = 1f / 18f;
-    private const float PoseLossDelay = 0.5f;
     private const int StableFrames = 3;
 
     private readonly WorkshopWardrobeCameraTracking tracking = new WorkshopWardrobeCameraTracking();
@@ -49,13 +48,10 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
     private Text detailCaption;
     private Text materialButtonLabel;
     private Text cameraButtonLabel;
-    private Text calibrationButtonLabel;
-    private Text stageHint;
     private Text cameraStatus;
     private Text instruction;
     private UnityEngine.UI.Button materialButton;
     private UnityEngine.UI.Button calibrationButton;
-    private RectTransform sizeControls;
     private Action<int> cycle;
     private Action onClose;
     private Action<RectTransform, UnityEngine.UI.Image, float> drawLiveOutfit;
@@ -71,7 +67,6 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
     private int stableFrames;
     private int calibrationSeconds;
     private float lastFrame;
-    private float lastPose;
     private float calibrationEnd;
     private float nextSample;
     private float shoulderWidth;
@@ -125,14 +120,13 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
 
         var swipe = WorkshopUi.Fill(stage, "Mirror Swipe Area", ViewBounds, Color.clear);
         swipe.raycastTarget = true;
-        swipe.gameObject.AddComponent<WorkshopWardrobeSwipe>().Configure(cycle,
-            () => cameraContent.gameObject.activeSelf, MoveGarment);
+        swipe.gameObject.AddComponent<WorkshopWardrobeSwipe>().Configure(cycle);
         WardrobeButton(page, "Mirror Previous Garment", new Rect(83f, 922f, 229f, 55f),
             "← 上一款", () => cycle(-1));
         WardrobeButton(page, "Mirror Next Garment", new Rect(1018f, 922f, 229f, 55f),
             "下一款 →", () => cycle(1));
-        stageHint = Label(page, "Mirror Swap Help", new Rect(328f, 921f, 669f, 56f),
-            "拖动或按 ← / → 换款", 27, Mist, TextAnchor.MiddleCenter);
+        Label(page, "Mirror Swap Help", new Rect(328f, 921f, 669f, 56f),
+            "← / → 键、拖动或按钮换款", 27, Mist, TextAnchor.MiddleCenter);
 
         var info = WorkshopUi.PixelCard(page, "Mirror Controls",
             new Rect(1275f, 134f, 562f, 842f), Night, Brass);
@@ -149,7 +143,6 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
         cameraButtonLabel = cameraButton.GetComponentInChildren<Text>();
         calibrationButton = WardrobeButton(info, "Mirror Recalibrate", new Rect(282f, 202f, 253f, 55f),
             "重新校准", BeginCalibration);
-        calibrationButtonLabel = calibrationButton.GetComponentInChildren<Text>();
         calibrationButton.interactable = false;
         cameraStatus = Label(info, "Mirror Camera Status", new Rect(27f, 278f, 508f, 43f), "", 28, Gold);
         instruction = Label(info, "Mirror Camera Instruction", new Rect(27f, 326f, 508f, 96f),
@@ -158,11 +151,6 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
         raiseGuide = Resources.Load<Sprite>("WorkshopMirrorGuides/MirrorPoseReady");
         waveGuide = Resources.Load<Sprite>("WorkshopMirrorGuides/MirrorPoseWaveRight");
         poseGuide = WorkshopUi.Picture(info, "Mirror Pose Guide", new Rect(399f, 319f, 142f, 108f), null);
-        sizeControls = WorkshopUi.Rect(info, "Mirror Garment Size", new Rect(26f, 424f, 509f, 40f));
-        WardrobeButton(sizeControls, "Mirror Reduce Garment", new Rect(0f, 0f, 241f, 40f),
-            "- 缩小衣服", () => ResizeGarment(1f / 1.12f));
-        WardrobeButton(sizeControls, "Mirror Enlarge Garment", new Rect(256f, 0f, 253f, 40f),
-            "+ 放大衣服", () => ResizeGarment(1.12f));
 
         detailCard = WorkshopUi.PixelCard(info, "Mirror Fabric Card", new Rect(3f, 468f, 556f, 365f), Ink, Brass);
         Label(detailCard, "Mirror Fabric Title", new Rect(24f, 11f, 508f, 45f), "布料特写", 30, Ivory);
@@ -171,7 +159,7 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
         detailImage = WorkshopUi.Picture(detailClip, "Mirror Fabric Artwork", new Rect(), null, stretch: true);
         detailCaption = Label(detailCard, "Mirror Fabric Note", new Rect(24f, 320f, 508f, 34f), "", 23, Mist);
         detailCard.gameObject.SetActive(false);
-        ShowCharacter("角色试衣", "当前衣样与材质会带入拍照。");
+        ShowCharacter("角色试衣", "使用摄像头可开启镜面。选中的衣样和材质会带入拍照。");
         if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(back.gameObject);
     }
 
@@ -196,7 +184,7 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
     private void ToggleCamera()
     {
         if (mode == CameraMode.Character) StartCamera();
-        else ShowCharacter("角色试衣", "摄像头已关闭。");
+        else ShowCharacter("角色试衣", "摄像头已关闭。选中的衣样和材质仍可试穿。");
     }
 
     private void StartCamera()
@@ -285,13 +273,12 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
         if (mode == CameraMode.Starting || webcam.width != cameraWidth || webcam.height != cameraHeight ||
             rotation != cameraRotation || webcam.videoVerticallyMirrored != verticallyMirrored)
         {
-            bool manual = mode == CameraMode.Manual;
             cameraWidth = webcam.width;
             cameraHeight = webcam.height;
             cameraRotation = rotation;
             verticallyMirrored = webcam.videoVerticallyMirrored;
             ConfigureFeed();
-            if (!manual) BeginCalibration();
+            BeginCalibration();
         }
 
         if (mode == CameraMode.Calibrating)
@@ -300,14 +287,12 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
             if (seconds != calibrationSeconds && seconds > 0)
             {
                 calibrationSeconds = seconds;
-                ShowCalibrationStatus(seconds);
+                SetStatus("校准空画面 · " + seconds, "请暂时让出画面。校准后再回到镜头中央。");
             }
             if (now < calibrationEnd || !TryReadFrame()) return;
             tracking.CaptureBackground();
             mode = CameraMode.Tracking;
-            lastPose = now;
-            nextSample = now;
-            SetStatus("请站到镜头中央", "正对镜头，让双肩进入画面。也可直接拖动衣服。", guide: shoulderGuide);
+            SetStatus("请站到镜头中央", "正对镜头，让双肩进入画面。", guide: shoulderGuide);
             return;
         }
 
@@ -320,8 +305,6 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
 
     private void ConfigureFeed()
     {
-        Rect previous = cameraRect;
-        bool firstFrame = !cameraContent.gameObject.activeSelf;
         bool swapped = (cameraRotation & 1) != 0;
         float aspect = swapped ? (float)cameraHeight / cameraWidth : (float)cameraWidth / cameraHeight;
         float width = Mathf.Min(ViewBounds.width, ViewBounds.height * aspect);
@@ -336,29 +319,20 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
         feed.uvRect = new Rect(flipX ? 1f : 0f, flipY ? 1f : 0f, flipX ? -1f : 1f, flipY ? -1f : 1f);
         cameraContent.gameObject.SetActive(true);
         avatar.gameObject.SetActive(false);
-        sizeControls.gameObject.SetActive(true);
-        calibrationButton.interactable = true;
-        stageHint.text = "拖动衣服对齐 · 按 ← / → 换款";
-        Vector2 position = firstFrame ? new Vector2(0.5f, 0.39f) : Rect.PointToNormalized(previous, shoulderMidpoint);
-        float widthFraction = firstFrame ? 0.25f : shoulderWidth / previous.width;
-        if (firstFrame) shoulderAngle = 0f;
-        PlaceLiveGarment(Rect.NormalizedToPoint(cameraRect, position), widthFraction * width, shoulderAngle);
     }
 
     private void BeginCalibration()
     {
         if (webcam == null || !cameraContent.gameObject.activeSelf) return;
         mode = CameraMode.Calibrating;
-        calibrationButtonLabel.text = "重新校准";
+        calibrationButton.interactable = true;
         calibrationEnd = Time.realtimeSinceStartup + CalibrationTime;
-        calibrationSeconds = Mathf.CeilToInt(CalibrationTime);
+        calibrationSeconds = -1;
         stableFrames = 0;
         gesture.Reset();
-        ShowCalibrationStatus(calibrationSeconds);
+        garmentOrigin.gameObject.SetActive(false);
+        SetStatus("校准空画面 · 3", "请暂时让出画面。校准后再回到镜头中央。");
     }
-
-    private void ShowCalibrationStatus(int seconds) =>
-        SetStatus("自动校准 · " + seconds, "请暂时离开镜头，倒数结束后回来。也可直接拖动衣服。", guide: shoulderGuide);
 
     private bool TryReadFrame()
     {
@@ -383,21 +357,24 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
         {
             stableFrames = 0;
             gesture.Sample(false, 0f, now);
-            if (now - lastPose >= PoseLossDelay)
-                SetStatus("正在寻找肩线", "可拖动衣服对齐，用右侧按钮调整大小。", guide: shoulderGuide);
+            garmentOrigin.gameObject.SetActive(false);
+            SetStatus("请站到镜头中央", "正对镜头，让双肩进入画面，识别稳定后会恢复衣片。", guide: shoulderGuide);
             return;
         }
 
-        if (stableFrames < StableFrames) stableFrames++;
+        stableFrames = Mathf.Min(stableFrames + 1, StableFrames);
         if (stableFrames < StableFrames) return;
-        bool following = now - lastPose < PoseLossDelay;
-        lastPose = now;
         Vector2 center = cameraRect.position + Vector2.Scale(pose.ShoulderMidpoint, cameraRect.size);
-        float width = ClampShoulderWidth(pose.ShoulderWidth * cameraRect.width);
+        float width = Mathf.Clamp(pose.ShoulderWidth * cameraRect.width, 82f, cameraRect.width * 0.58f);
         float angle = Mathf.Clamp(Mathf.Atan2(pose.ShoulderSlope * cameraRect.height, width) * Mathf.Rad2Deg, -16f, 16f);
-        PlaceLiveGarment(following ? Vector2.Lerp(shoulderMidpoint, center, 0.32f) : center,
-            following ? Mathf.Lerp(shoulderWidth, width, 0.24f) : width,
-            following ? Mathf.Lerp(shoulderAngle, angle, 0.24f) : angle);
+        bool wasVisible = garmentOrigin.gameObject.activeSelf;
+        shoulderMidpoint = wasVisible ? Vector2.Lerp(shoulderMidpoint, center, 0.32f) : center;
+        shoulderWidth = wasVisible ? Mathf.Lerp(shoulderWidth, width, 0.24f) : width;
+        shoulderAngle = wasVisible ? Mathf.Lerp(shoulderAngle, angle, 0.24f) : angle;
+        garmentOrigin.anchoredPosition = new Vector2(shoulderMidpoint.x, -shoulderMidpoint.y);
+        garmentOrigin.localEulerAngles = new Vector3(0f, 0f, -shoulderAngle);
+        drawLiveOutfit?.Invoke(cameraClip, cameraImage, shoulderWidth);
+        garmentOrigin.gameObject.SetActive(true);
 
         int direction = gesture.Sample(pose.HandRaised, pose.HandOffset, now);
         if (direction != 0) cycle(direction);
@@ -409,53 +386,12 @@ internal sealed class WorkshopWardrobeMirror : MonoBehaviour
             SetStatus("已对准肩线", "抬起一只手至肩侧，出现就绪提示后再向左或右挥。", guide: raiseGuide);
     }
 
-    private float ClampShoulderWidth(float width) =>
-        Mathf.Clamp(width, cameraRect.width * 0.10f, cameraRect.width * 0.65f);
-
-    private void PlaceLiveGarment(Vector2 center, float width, float angle)
-    {
-        shoulderMidpoint = new Vector2(Mathf.Clamp(center.x, cameraRect.xMin, cameraRect.xMax),
-            Mathf.Clamp(center.y, cameraRect.yMin, cameraRect.yMax));
-        shoulderWidth = ClampShoulderWidth(width);
-        shoulderAngle = angle;
-        garmentOrigin.anchoredPosition = new Vector2(shoulderMidpoint.x, -shoulderMidpoint.y);
-        garmentOrigin.localEulerAngles = new Vector3(0f, 0f, -shoulderAngle);
-        drawLiveOutfit?.Invoke(cameraClip, cameraImage, shoulderWidth);
-        garmentOrigin.gameObject.SetActive(true);
-    }
-
-    private void MoveGarment(Vector2 delta)
-    {
-        if (!cameraContent.gameObject.activeSelf) return;
-        UseManualAlignment();
-        PlaceLiveGarment(shoulderMidpoint + new Vector2(delta.x, -delta.y), shoulderWidth, 0f);
-    }
-
-    private void ResizeGarment(float multiplier)
-    {
-        if (!cameraContent.gameObject.activeSelf) return;
-        UseManualAlignment();
-        PlaceLiveGarment(shoulderMidpoint, shoulderWidth * multiplier, shoulderAngle);
-    }
-
-    private void UseManualAlignment()
-    {
-        if (mode == CameraMode.Manual) return;
-        mode = CameraMode.Manual;
-        gesture.Reset();
-        calibrationButtonLabel.text = "自动跟随";
-        SetStatus("手动对齐", "把衣服拖到肩上，用右侧按钮调整大小。");
-    }
-
     private void ShowCharacter(string title, string hint)
     {
         StopCamera();
         mode = CameraMode.Character;
         cameraButtonLabel.text = "使用摄像头";
         calibrationButton.interactable = false;
-        calibrationButtonLabel.text = "重新校准";
-        sizeControls.gameObject.SetActive(false);
-        stageHint.text = "拖动或按 ← / → 换款";
         cameraContent.gameObject.SetActive(false);
         avatar.gameObject.SetActive(true);
         garmentOrigin.gameObject.SetActive(false);

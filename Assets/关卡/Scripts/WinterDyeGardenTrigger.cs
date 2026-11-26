@@ -88,6 +88,7 @@ public class WinterDyeGardenTrigger : MonoBehaviour
         _floatBtn.Hide();
         _shown = false;
 
+        WorkshopProgress.UnlockSolarTerms(WorkshopSeason.Autumn);
         if (WorkshopProgress.HasStep("winter.dyes") || WinterLevelState.HasDyedCloth)
             MiniGameOverlay.ShowMap(dyeGameSceneName);
         else

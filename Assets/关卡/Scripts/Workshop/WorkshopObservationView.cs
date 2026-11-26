@@ -1,7 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using JiangnanDye;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -13,12 +12,10 @@ internal enum WorkshopObservation
     QingmingMulberry,
     MangzhongCocoon,
     DashuVentilation,
+    QiufenOffering,
     HanluLoom,
     LidongDye,
-    XiaoxueTailoring,
-    DaxueSewing,
-    DongzhiFitting,
-    MangzhongCocoonHarvest
+    XiaoxueTailoring
 }
 
 internal sealed partial class WorkshopObservationView : MonoBehaviour
@@ -52,25 +49,24 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
     private static readonly Definition[] Definitions =
     {
-        new Definition(WorkshopSeason.Spring, "spring.qingming", "清明", "桑园里的新叶", "桑园"),
-        new Definition(WorkshopSeason.Summer, "summer.mangzhong.thread", "芒种", "簇架上的丝路", "络纬整经", "丝路接接乐",
-            "芒种时节，簇架上的蚕茧已收好。", "蚕茧簇架 → 接通丝路 → 整理丝样",
-            "点击线段，连接左侧丝头与右侧丝轴。接通一张即可完成工单。"),
+        new Definition(WorkshopSeason.Spring, "spring.qingming", "清明", "桑园里的新叶", "清明采桑", "移篮接桑",
+            "清明前后桑树陆续展叶。舒展开、叶面干的嫩叶适合取用。", "移篮接桑 → 师傅照料小蚕"),
+        new Definition(WorkshopSeason.Summer, "summer.mangzhong.thread", "芒种夏至", "练丝坊的备料丝路", "绕丝上轴", "丝路接接乐",
+            "芒种、夏至时蚕事转入治丝备料。转动管段，把丝头接到丝轴。", "练丝坊缫丝 → 接水管 → 络丝理经备料",
+            "点击线段，连接左侧丝头与右侧丝轴。连续接通三关，完成后点击返回。"),
         new Definition(WorkshopSeason.Summer, "summer.dashu.vent", "大暑", "蔟房的通风窗", "暑热观察"),
-        new Definition(WorkshopSeason.Autumn, "autumn.hanlu", "寒露", "织造", "织机"),
-        new Definition(WorkshopSeason.Autumn, "winter.lidong", "立冬", "染坊里的色样", "看色样", "两单一缸",
-            "立冬这班收到浙南十一月一批栀子果料。熟果的黄色素更适合这张工单。", "寒露素绸 → 栀黄试色与染布 → 小雪裁衣",
-            "① 点红黄色熟果，再点石臼研料。\n② 短蘸上色，晾看干样。\n③ 对照左侧色样，完成深浅两块。"),
-        new Definition(WorkshopSeason.Winter, "winter.xiaoxue", "小雪", "按样裁衣", "裁衣台"),
-        new Definition(WorkshopSeason.Winter, "winter.daxue.sewing", "大雪", "拼缝夹衣", "主厅针线台", "合缝翻衣",
-            "大雪后天气更冷，夹衣要能叠穿。表里缝牢，袖下也要留出抬手的余量。", "小雪衣片＋素里绢 → 合缝翻面 → 冬至验衣",
-            "① 找到成对的布边记号。\n② 直边走长针，弯处收短针。\n③ 留口翻衣，翻正后补针。"),
-        new Definition(WorkshopSeason.Winter, "winter.dongzhi.fitting", "冬至", "冬至交衣", "主厅试衣台", "试衣改合身",
-            "冬至贺冬要穿着出门见客。衣襟得合得严，抬手行礼时袖根也不能勒。", "大雪夹衣 → 叠穿试衣与返修 → 新衣上架",
-            "① 拖衣袖向上，试试能抬多高。\n② 绷紧处可松一点缝份，再抬手。\n③ 扣好衣襟，交付新衣。"),
-        new Definition(WorkshopSeason.Summer, "summer.mangzhong.harvest", "芒种", "春茧收存记录", "采收干茧", "落茧快收",
-            "芒种前后有江南产区采收春茧。挑选成熟、干爽且完整的茧，分批收存。", "四轨收茧 → 干茧配批",
-            "① 开始后蚕茧会沿四轨落下。\n② 从最下方一排开始，点深色篮或按轨道键。\n③ 避开浅色篮，在金线前收齐好茧。")
+        new Definition(WorkshopSeason.Autumn, "autumn.qiufen", "秋分", "窗光下的丝样", "借光验丝", "借光验丝",
+            "秋分后白昼渐短。织坊在夜织前，用剩下的窗光检查生丝的粗节和结头。", "夏季丝样 → 对光验丝 → 寒露上机",
+            "把真实丝样放到后排，再切侧窗找光。天暗时点灯补光。"),
+        new Definition(WorkshopSeason.Autumn, "autumn.hanlu", "寒露", "看经线", "看经线", "双色走梭",
+            "寒露晨凉，窗沿可能结露。丝轴沾了露，要整备妥当才能上机。", "验过的丝 → 理经走梭织绸 → 立冬试染",
+            "先取状态合适的丝轴，再看样带抬经线、走梭。"),
+        new Definition(WorkshopSeason.Autumn, "winter.lidong", "秋分", "染坊里的色样", "染色", "两阶染色",
+            "先采集天然染材并研磨，选好染料，将一块素绸拖入染缸。", "生坯绸 → 研磨与染色 → 寒露攀花",
+            "调节染缸浓度，轻蘸或浸染，对上两阶颜色后确认。"),
+        new Definition(WorkshopSeason.Winter, "winter.xiaoxue", "小雪", "从试染到成衣", "看成衣工序", "排料留布",
+            "小雪时冷空气更活跃。逢冷雨先避雨晾布，做夹衣还得留里襟料。", "染绸晾干 → 裁面片与里襟 → 主厅缝衣",
+            "先找避雨又通风的晾架。布干后再顺纹摆衣样，给里襟留一块整布。")
     };
 
     private static readonly Color[] Accents =
@@ -102,15 +98,11 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     private RectTransform infoPanel;
     private WorkshopObservation observation;
     private Action onClosed;
-    private Action onGarmentDelivery;
     private GameObject priorSelection;
     private float priorTimeScale;
     private bool readOnly;
     private bool showBriefing;
-    private bool resumeFromBriefing;
-    private string briefingCheckpoint;
-    private Button preferredAction;
-    private int navigationStamp;
+    private bool showSongJin;
     private bool earnedRewardThisRun;
     private int stage;
     private int rows;
@@ -119,70 +111,29 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     internal static bool BlocksWorldInput => IsOpen || lastClosedFrame == Time.frameCount;
     internal static WorkshopObservation? ActiveGame => current != null && !current.readOnly &&
         IsSeasonGame(current.observation) ? current.observation : (WorkshopObservation?)null;
-    internal static bool CanPauseGameplay => ActiveGame.HasValue && !current.showBriefing;
 
     internal static WorkshopSeason Season(WorkshopObservation id) => Definitions[(int)id].Season;
     internal static string RecordTitle(WorkshopObservation id) => Definitions[(int)id].Title;
     internal static string StationLabel(WorkshopObservation id) => Definitions[(int)id].Station;
     internal static string SeasonGameTitle(WorkshopObservation id) => Definitions[(int)id].ChallengeName;
-    internal static bool IsSeasonGame(WorkshopObservation id) => !string.IsNullOrEmpty(SeasonGameTitle(id));
+    internal static bool IsSeasonGame(WorkshopObservation id) => id == WorkshopObservation.QingmingMulberry || id == WorkshopObservation.MangzhongCocoon;
     internal static bool HasRecord(WorkshopObservation id) => WorkshopProgress.HasObservation(Definitions[(int)id].Id);
-    private static bool IsRetiredObservation(WorkshopObservation id) =>
-        id == WorkshopObservation.QingmingMulberry || id == WorkshopObservation.HanluLoom ||
-        id == WorkshopObservation.XiaoxueTailoring;
-
-    internal static bool IsGarmentWorkshop(WorkshopObservation id) =>
-        id == WorkshopObservation.DaxueSewing || id == WorkshopObservation.DongzhiFitting;
-
-    internal static bool CanPracticeGarmentWorkshop(WorkshopObservation id) =>
-        IsGarmentWorkshop(id) && WorkshopProgress.IsComplete(WorkshopSeason.Winter);
-
-    internal static void OpenRecordOrGarmentPractice(WorkshopObservation id, Action onClosed = null)
-    {
-        if (!IsRetiredObservation(id) && HasRecord(id)) ShowRecord(id, onClosed);
-        else if (CanPracticeGarmentWorkshop(id)) Show(id, onClosed);
-        else onClosed?.Invoke();
-    }
-
-    private bool IsFormalGarmentOrder => onGarmentDelivery != null;
-
-    internal static bool HasGarmentWorkshopDeliveries() =>
-        HasOrderWork(WorkshopObservation.DaxueSewing) && HasOrderWork(WorkshopObservation.DongzhiFitting);
-
-    internal static bool ShowGarmentOrder(WorkshopObservation id, Action back, Action deliver)
-    {
-        if (!IsGarmentWorkshop(id) || IsOpen || deliver == null || !WorkshopProgress.CanSubmit(WorkshopSeason.Winter)) return false;
-        if (id == WorkshopObservation.DongzhiFitting && (!HasOrderWork(WorkshopObservation.DaxueSewing) || !WorkshopProgress.GarmentSewn))
-            return false;
-        Open(id, back, false, deliver);
-        return true;
-    }
-
-    private void SaveGarmentSewingResult(int sleeveAllowance, int turningOpening)
-    {
-        if (IsFormalGarmentOrder && observation == WorkshopObservation.DaxueSewing && !HasOrderWork(observation))
-            WorkshopProgress.SaveGarmentSewing(sleeveAllowance, turningOpening);
-    }
-
-    private void SaveGarmentFittingResult(int alterations, int claspStyle)
-    {
-        if (IsFormalGarmentOrder && observation == WorkshopObservation.DongzhiFitting && !HasOrderWork(observation))
-            WorkshopProgress.SaveGarmentFitting(alterations, claspStyle);
-    }
 
     internal static IEnumerable<WorkshopObservation> ObservationsFor(WorkshopSeason season)
     {
         for (int i = 0; i < Definitions.Length; i++)
-        {
-            var id = (WorkshopObservation)i;
-            if (Definitions[i].Season == season && !IsRetiredObservation(id))
-                yield return id;
-        }
+            if (Definitions[i].Season == season)
+                yield return (WorkshopObservation)i;
     }
 
     internal static void Show(WorkshopObservation id, Action onClosed = null)
     {
-        if (IsRetiredObservation(id) || IsOpen) return;
+        if (id != WorkshopObservation.MangzhongCocoon || IsOpen) return;
+        if (!WorkshopProgress.Has(WorkshopItem.Spool))
+        {
+            SimplePopup.Show("先找到线轴", "先备水拾柴，到煮茧锅寻找线轴，再回右侧缫丝车绕丝上轴。", "知道了");
+            return;
+        }
         if (WorkshopProgress.SeasonalOrderEnabled && IsAtOwnWorkshop(id) && MissingOrderInput(id) is string guide)
         {
             SimplePopup.Show("先备齐这道工序", guide, "知道了");
@@ -196,17 +147,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
     internal static bool HasOrderWork(WorkshopObservation id) => OrderWork(id) != null;
 
-    internal static bool HasSeasonOrderDeliveries(WorkshopSeason season)
-    {
-        switch (season)
-        {
-            case WorkshopSeason.Spring: return SpringSummerNpcDialogue.HasHarvestedLeaves;
-            case WorkshopSeason.Summer: return HasOrderWork(WorkshopObservation.MangzhongCocoon);
-            case WorkshopSeason.Autumn: return HasOrderWork(WorkshopObservation.LidongDye);
-            case WorkshopSeason.Winter: return true;
-            default: return true;
-        }
-    }
+    internal static bool HasSeasonOrderDeliveries(WorkshopSeason season) => WorkshopWordRules.HasDelivery(season);
 
     private static bool IsAtOwnWorkshop(WorkshopObservation id) =>
         SceneManager.GetActiveScene().name == WorkshopProgress.SceneName(Season(id));
@@ -215,11 +156,16 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     {
         switch (id)
         {
-            case WorkshopObservation.LidongDye when WinterLevelState.ProducedDyeColors.Count == 0 &&
-                !WorkshopProgress.Has(WorkshopItem.DyedCloth):
-                return "先采集染材，并在研磨钵完成至少一种染料。";
-            case WorkshopObservation.LidongDye when !WorkshopProgress.Has(WorkshopItem.RawSilkCloth):
-                return "先在秋季织成生坯绸，再进行染色。";
+            case WorkshopObservation.QiufenOffering when !HasOrderWork(WorkshopObservation.MangzhongCocoon):
+                return "先到夏季练丝坊右侧缫丝车接通丝路，再带丝样到秋分验丝。";
+            case WorkshopObservation.HanluLoom when !HasOrderWork(WorkshopObservation.QiufenOffering):
+                return "先到秋分窗台验生丝，把验过的丝轴带回织机。";
+            case WorkshopObservation.HanluLoom when !AutumnLevelState.HasLoomRepaired || !AutumnLevelState.HasShuttle:
+                return "先修好织机并取得梭子，再把寒露整理过的丝织成绸。";
+            case WorkshopObservation.LidongDye when !HasOrderWork(WorkshopObservation.HanluLoom) || !WorkshopProgress.Has(WorkshopItem.RawSilkCloth):
+                return "寒露织样和正式整绸都备好后，才能在立冬试色。";
+            case WorkshopObservation.XiaoxueTailoring when !WorkshopProgress.Has(WorkshopItem.DyedCloth):
+                return "先完成立冬试色和正式染整幅，再到小雪裁衣台。";
             default:
                 return null;
         }
@@ -238,7 +184,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
     internal static void ShowRecord(WorkshopObservation id, Action onClosed = null)
     {
-        if (!IsRetiredObservation(id) && HasRecord(id))
+        if (HasRecord(id))
             Open(id, onClosed, true);
     }
 
@@ -249,11 +195,11 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
         var selection = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
         var root = WorkshopUi.NewCanvas("Workshop Observation", 23000);
-        WorkshopUi.Block(root, new Color32(21, 34, 29, 219));
+        WorkshopUi.Block(root, id == WorkshopObservation.MangzhongCocoon && !readOnly
+            ? new Color32(0,0,0,168) : new Color32(21,34,29,219));
         current = root.gameObject.AddComponent<WorkshopObservationView>();
         current.frame = root;
         current.onClosed = onClosed;
-        current.onGarmentDelivery = garmentDelivery;
         current.directDyeColor = directColor;
         current.directDyeRun = directRun;
         current.readOnly = readOnly;
@@ -261,6 +207,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         current.priorTimeScale = Time.timeScale;
         Time.timeScale = 0f;
         current.PrepareActivity(id);
+        current.showBriefing = !current.IsDirectDyeing && !readOnly && id != WorkshopObservation.MangzhongCocoon && IsSeasonGame(id) && !HasRecord(id);
         current.Render();
     }
 
@@ -273,31 +220,25 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
     private void Update()
     {
-        if (WorkshopMinigameMenu.BlocksGameplayInput) return;
-        if (!CanPauseGameplay && Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
-            if (showBriefing && resumeFromBriefing) ResumeWorkbench();
-            else Close();
+            Close();
             return;
         }
 
-        if (showBriefing) return;
-        TickCocoonRun();
         if (!Input.GetKeyDown(KeyCode.Tab) || EventSystem.current == null || navigation.Count == 0) return;
-        var available = navigation.FindAll(button => button != null && button.IsActive() && button.IsInteractable());
-        if (available.Count == 0) return;
         var selected = EventSystem.current.currentSelectedGameObject;
-        int index = available.FindIndex(button => button.gameObject == selected);
+        int index = navigation.FindIndex(button => button.gameObject == selected);
         int step = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? -1 : 1;
         if (index < 0)
-            index = step == 1 ? available.Count - 1 : 0;
-        Select(available[(index + step + available.Count) % available.Count].gameObject);
+            index = step == 1 ? navigation.Count - 1 : 0;
+        Select(navigation[(index + step + navigation.Count) % navigation.Count].gameObject);
     }
 
     private void Close()
     {
         if (current != this) return;
-        if (observation == WorkshopObservation.MangzhongCocoon) ClearXiazhiHint();
+        if (observation == WorkshopObservation.MangzhongCocoon) CancelXiazhiRound();
         bool direct = IsDirectDyeing;
         var completedColor = directDyeSucceeded ? directDyeColor : null;
         RestoreTime();
@@ -338,7 +279,11 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         navigation.Clear();
         focusMarks.Clear();
         rows = 0;
-        preferredAction = null;
+        if (observation == WorkshopObservation.MangzhongCocoon && !readOnly)
+        {
+            DrawImmersiveXiazhi();
+            return;
+        }
         var definition = Definitions[(int)observation];
         Color accent = Accents[(int)definition.Season];
         page = DrawWorkshopPaper(frame, "Observation Panel", new Rect(88, 77, 1744, 926),
@@ -346,6 +291,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
         WorkshopUi.Label(page, "Season and Solar Term", new Rect(28, 19, 560, 40),
             WorkshopProgress.SeasonName(definition.Season) + " · " + definition.Term, 28, accent);
+        if (IsSeasonGame(observation)) DrawSeasonalHandoff(definition, accent);
         WorkshopUi.Label(page, "Observation Title", new Rect(28, 61, 1320, 78),
             IsDirectDyeing ? "染色" : ChallengeIsActive ? definition.ChallengeName : definition.Title, 54, WorkshopUi.Ink);
         if (readOnly)
@@ -356,7 +302,6 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         WorkshopUi.Fill(page, "Heading Rule", new Rect(28, 144, 1688, 2), WorkshopUi.Line);
         if (showBriefing)
         {
-            DrawSeasonalHandoff(definition, accent);
             DrawWorkbenchBriefing(definition, accent);
             return;
         }
@@ -370,63 +315,17 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
         DrawActivity();
         if (IsSeasonGame(observation)) DrawChallengeReward();
-        if (ChallengeIsActive &&
-            (observation == WorkshopObservation.MangzhongCocoon || observation == WorkshopObservation.MangzhongCocoonHarvest))
-            DrawSummerGameSwitch(accent);
 
-        bool summerGame = ChallengeIsActive &&
-            (observation == WorkshopObservation.MangzhongCocoon || observation == WorkshopObservation.MangzhongCocoonHarvest);
-        string exitLabel = summerGame ? "返回夏季" : onClosed == null && !readOnly && !ChallengeIsActive ? "返回关卡" : "返回";
-        if (!CanPauseGameplay) exitLabel += " · Esc";
+        bool xiazhiGame = observation == WorkshopObservation.MangzhongCocoon && ChallengeIsActive;
+        var exit = WorkshopUi.PixelButton(page, "Return From Observation", new Rect(1473, 848, 243, 58),
+            xiazhiGame ? "返回夏季 · Esc" : ChallengeIsActive ? "退出小游戏 · Esc" : onClosed == null && !readOnly ? "返回关卡 · Esc" : "返回 · Esc",
+            Close, false, 27);
         Button replay = ChallengeIsActive ? DrawChallengeControls() : null;
-        if (ChallengeIsActive && !GameComplete && !readOnly && !IsDirectDyeing)
-        {
-            var help = WorkshopUi.PixelButton(page, "Workbench Help", new Rect(1015, 848, 185, 58),
-                "节气工单", ReviewWorkbenchBriefing, false, 26);
-            RegisterButton(help);
-        }
-        if (!(ChallengeIsActive && GameComplete && observation == WorkshopObservation.MangzhongCocoon))
-        {
-            var exit = WorkshopUi.PixelButton(page, "Return From Observation", new Rect(1473, 848, 243, 58),
-                exitLabel, Close, false, 27);
-            RegisterButton(exit);
-        }
+        RegisterButton(exit);
         if (ChallengeIsActive)
             ApplyWorkbenchReadingFont();
         var prior = previousFocus != null ? page.Find(previousFocus) : null;
-        BindNavigation(replay ?? preferredAction ?? prior?.GetComponent<Button>());
-    }
-
-    private void DrawSummerGameSwitch(Color accent)
-    {
-        bool threadGame = observation == WorkshopObservation.MangzhongCocoon;
-        var button = WorkshopUi.PixelButton(page, "Switch Mangzhong Game", new Rect(1402, 19, 314, 44),
-            threadGame ? "落茧快收 · 试玩" : "返回芒种理线", () =>
-            {
-                if (WorkshopMinigameMenu.BlocksGameplayInput) return;
-                WorkshopAudioFeedback.Click();
-                if (threadGame) ClearXiazhiHint();
-                Link(threadGame ? WorkshopObservation.MangzhongCocoonHarvest : WorkshopObservation.MangzhongCocoon);
-            }, false, 25, accent);
-        RegisterButton(button);
-    }
-
-    private void ReviewWorkbenchBriefing()
-    {
-        var heading = infoPanel.Find("Instruction Heading")?.GetComponent<Text>();
-        briefingCheckpoint = heading != null ? heading.text : null;
-        resumeFromBriefing = true;
-        showBriefing = true;
-        WorkshopAudioFeedback.Click();
-        Render();
-    }
-
-    private void ResumeWorkbench()
-    {
-        WorkshopAudioFeedback.Click();
-        showBriefing = false;
-        resumeFromBriefing = false;
-        Render();
+        BindNavigation(replay ?? prior?.GetComponent<Button>());
     }
 
     private void DrawSeasonalHandoff(Definition definition, Color accent)
@@ -436,6 +335,9 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         if (position >= 0)
             WorkshopUi.Label(page, "Solar Year Position", new Rect(161, 20, 242, 39),
                 $"二十四节气 {((int)definition.Season * terms.Length + position + 1):00}/24", 21, accent);
+        if (!showBriefing)
+            WorkshopUi.Label(page, "Seasonal Work Cue", new Rect(414, 19, 1293, 41), definition.SeasonCue, 23,
+                WorkshopUi.Ink, TextAnchor.MiddleRight, WorkshopArt.ReadingFont);
         WorkshopUi.Label(page, "Production Handoff", new Rect(621, 111, 1086, 31), definition.MaterialRoute, 22,
             accent, TextAnchor.MiddleRight, WorkshopArt.ReadingFont);
     }
@@ -444,7 +346,9 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     {
         var bounds = new Rect(28, 163, 1688, 660);
         var scene = DrawWorkshopPaper(page, "Season Work Briefing", bounds, accent, WorkshopUi.Bronze);
-        string backdrop = "WorkshopGuides/" + definition.Season + "_ChapterGuide";
+        string backdrop = observation == WorkshopObservation.XiaoxueTailoring
+            ? "WorkshopGameArt/XiaoxueRainCourtyard"
+            : "WorkshopGuides/" + definition.Season + "_ChapterGuide";
         var place = Resources.Load<Sprite>(backdrop);
         WorkshopUi.Picture(scene, "Workshop Region", new Rect(8, 8, 854, 644), place, stretch: true);
         var card = DrawWorkshopPaper(scene, "Season Work Card", new Rect(878, 26, 782, 602),
@@ -457,14 +361,10 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         WorkshopUi.Fill(card, "Work Card Rule", new Rect(42, 278, 691, 2), WorkshopUi.Line);
         WorkshopUi.Label(card, "Season Work First Move", new Rect(42, 308, 689, 142), definition.FirstMove,
             30, WorkshopUi.Ink, TextAnchor.UpperLeft, font);
-        if (resumeFromBriefing && !string.IsNullOrEmpty(briefingCheckpoint))
-            WorkshopUi.Label(card, "Season Work Checkpoint", new Rect(42, 449, 689, 37),
-                "当前进度 · " + briefingCheckpoint, 24, accent, TextAnchor.MiddleLeft, font);
         var begin = WorkshopUi.PixelButton(card, "Start Season Work", new Rect(42, 493, 691, 68),
-            resumeFromBriefing ? "继续刚才的步骤" : "开工", ResumeWorkbench, true, 33, accent);
+            "开工", () => { showBriefing = false; Render(); }, true, 33, accent);
         var leave = WorkshopUi.PixelButton(page, "Return From Observation", new Rect(1473, 848, 243, 58),
-            resumeFromBriefing ? "继续游戏 · Esc" : "返回 · Esc",
-            resumeFromBriefing ? (Action)ResumeWorkbench : Close, false, 27);
+            "返回 · Esc", Close, false, 27);
         RegisterButton(begin);
         RegisterButton(leave);
         ApplyWorkbenchReadingFont();
@@ -498,12 +398,11 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
 
     private void BindNavigation(Button initial = null)
     {
-        var available = navigation.FindAll(button => button != null && button.IsActive() && button.IsInteractable());
-        for (int i = 0; i < available.Count; i++)
+        for (int i = 0; i < navigation.Count; i++)
         {
-            Button previous = available[(i + available.Count - 1) % available.Count];
-            Button next = available[(i + 1) % available.Count];
-            available[i].navigation = new Navigation
+            Button previous = navigation[(i + navigation.Count - 1) % navigation.Count];
+            Button next = navigation[(i + 1) % navigation.Count];
+            navigation[i].navigation = new Navigation
             {
                 mode = Navigation.Mode.Explicit,
                 selectOnUp = previous,
@@ -512,27 +411,17 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
                 selectOnRight = next
             };
         }
-        Button focus = initial != null && available.Contains(initial) ? initial : available.Find(button => button.IsInteractable());
+        Button focus = initial != null && initial.IsInteractable() ? initial : navigation.Find(button => button.IsInteractable());
         Select(focus != null ? focus.gameObject : null);
     }
 
     private void LateUpdate()
     {
-        if (WorkshopMinigameMenu.BlocksGameplayInput || EventSystem.current == null) return;
+        if (EventSystem.current == null) return;
         var selected = EventSystem.current.currentSelectedGameObject;
-        int stamp = 17;
-        foreach (var button in navigation)
-            stamp = unchecked(stamp * 31 + (button.IsActive() && button.IsInteractable() ? 1 : 0));
-        if (stamp != navigationStamp)
-        {
-            navigationStamp = stamp;
-            BindNavigation(selected != null ? selected.GetComponent<Button>() : preferredAction);
-            selected = EventSystem.current.currentSelectedGameObject;
-        }
         for (int i = 0; i < navigation.Count; i++)
         {
-            bool visible = navigation[i].IsInteractable() && (navigation[i].gameObject == selected ||
-                RectTransformUtility.RectangleContainsScreenPoint(navigation[i].transform as RectTransform, Input.mousePosition));
+            bool visible = navigation[i].gameObject == selected;
             if (focusMarks[i].activeSelf != visible)
                 focusMarks[i].SetActive(visible);
         }
@@ -545,16 +434,9 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
             WorkshopUi.Picture(infoPanel, "Recovery Cue", new Rect(420, 20, 47, 53), recovery);
         WorkshopUi.Label(infoPanel, "Instruction Heading", new Rect(27, 28, recovery == null ? 444 : 384, 62),
             heading, 35, warning ? ErrorInk : Accents[(int)Season(observation)], TextAnchor.UpperLeft);
-        if (!string.IsNullOrEmpty(body))
-        {
-            var label = WorkshopUi.Label(infoPanel, "Instruction Body", new Rect(27, 102, 444, 195),
-                body, 30, WorkshopUi.Ink, TextAnchor.UpperLeft);
-            label.lineSpacing = 1.12f;
-            label.resizeTextForBestFit = true;
-            label.resizeTextMinSize = 24;
-            label.resizeTextMaxSize = 30;
-            if (ChallengeIsActive && !GameComplete && !warning) label.color = WorkshopUi.Faded;
-        }
+        var label = WorkshopUi.Label(infoPanel, "Instruction Body", new Rect(27, 102, 444, 195),
+            body, 30, WorkshopUi.Ink, TextAnchor.UpperLeft);
+        label.lineSpacing = 1.20f;
         WorkshopUi.Fill(infoPanel, "Instruction Rule", new Rect(27, 309, 444, 2), WorkshopUi.Line);
     }
 
@@ -568,7 +450,6 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
             }, primary, 28, Accents[(int)Season(observation)]);
         rows++;
         RegisterButton(button);
-        if (primary && preferredAction == null) preferredAction = button;
     }
 
     private void RegisterButton(Button button)
@@ -630,135 +511,6 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         new Rect((cx - width * 0.5f) * ArtWidth, (cy - height * 0.5f) * ArtHeight,
             width * ArtWidth, height * ArtHeight);
 
-    private enum WorkGesture { Tap, Move, Drag, Hold }
-
-    private static readonly Color GuideGold = new Color32(255, 214, 105, 255);
-    private static readonly Color GuideShadow = new Color32(34, 32, 24, 240);
-
-    private RectTransform VisualStep(RectTransform target, Color? color = null)
-    {
-        Vector2 size = target.rect.size;
-        var border = WorkshopUi.Rect(target, "Current Action Highlight", new Rect(0, 0, size.x, size.y));
-        float corner = Mathf.Clamp(Mathf.Min(size.x, size.y) * .27f, 16f, 39f);
-        for (int x = 0; x <= 1; x++)
-            for (int y = 0; y <= 1; y++)
-            {
-                float left = x == 0 ? -4f : size.x - corner + 4f;
-                float top = y == 0 ? -4f : size.y - corner + 4f;
-                float innerX = x == 0 ? left : size.x - 4f;
-                float innerY = y == 0 ? top : size.y - 4f;
-                WorkshopUi.Fill(border, "Corner Shadow", new Rect(left - 2, innerY - 2, corner + 4, 12), GuideShadow);
-                WorkshopUi.Fill(border, "Corner Shadow", new Rect(innerX - 2, top - 2, 12, corner + 4), GuideShadow);
-                WorkshopUi.Fill(border, "Corner Edge", new Rect(left, innerY, corner, 8), color ?? GuideGold);
-                WorkshopUi.Fill(border, "Corner Edge", new Rect(innerX, top, 8, corner), color ?? GuideGold);
-            }
-        var fade = border.gameObject.AddComponent<CanvasGroup>();
-        fade.blocksRaycasts = false;
-        fade.interactable = false;
-        StartCoroutine(PulseWorkbenchCue(fade));
-        return border;
-    }
-
-    private static IEnumerator PulseWorkbenchCue(CanvasGroup fade)
-    {
-        while (fade != null && fade.gameObject.activeInHierarchy)
-        {
-            fade.alpha = .77f + .23f * Mathf.Cos(Time.unscaledTime * 4f);
-            yield return null;
-        }
-        // Callers can show the same marker again without recreating it.
-        if (fade != null) fade.alpha = 1f;
-    }
-
-    private RectTransform ShowGesture(RectTransform parent, Vector2 from, Vector2 to, WorkGesture gesture = WorkGesture.Move)
-    {
-        var cue = WorkshopUi.Rect(parent, "Action Demonstration " + gesture, new Rect());
-        var surface = cue.gameObject.AddComponent<CanvasGroup>();
-        surface.blocksRaycasts = false;
-        surface.interactable = false;
-        bool moving = gesture == WorkGesture.Move || gesture == WorkGesture.Drag;
-        if (moving && (to - from).sqrMagnitude > 900f)
-        {
-            Vector2 direction = (to - from).normalized;
-            Vector2 start = from + direction * 28f;
-            Vector2 tip = to - direction * 25f;
-            float distance = Vector2.Distance(start, tip);
-            int dots = Mathf.Clamp(Mathf.RoundToInt(distance / 35f), 1, 12);
-            for (int i = 0; i < dots; i++)
-            {
-                Vector2 point = Vector2.Lerp(start, tip, i / (float)dots);
-                DrawCueStroke(cue, point, point + direction * 13f, 6f, GuideGold);
-            }
-            Vector2 cross = new Vector2(-direction.y, direction.x);
-            DrawCueStroke(cue, tip - direction * 26f + cross * 15f, tip, 8f, GuideGold);
-            DrawCueStroke(cue, tip - direction * 26f - cross * 15f, tip, 8f, GuideGold);
-        }
-
-        var mouse = WorkshopUi.Rect(cue, "Mouse Pointer", new Rect());
-        DrawCueStroke(mouse, new Vector2(0, 0), new Vector2(3, 34), 7f, WorkshopUi.Cream);
-        DrawCueStroke(mouse, new Vector2(0, 0), new Vector2(26, 18), 7f, WorkshopUi.Cream);
-        DrawCueStroke(mouse, new Vector2(26, 18), new Vector2(14, 21), 7f, WorkshopUi.Cream);
-        DrawCueStroke(mouse, new Vector2(14, 21), new Vector2(3, 34), 7f, WorkshopUi.Cream);
-        var press = WorkshopUi.Rect(mouse, "Mouse Press", new Rect());
-        DrawCueStroke(press, new Vector2(2, -8), new Vector2(2, -25), 6f, GuideGold);
-        DrawCueStroke(press, new Vector2(-7, -5), new Vector2(-20, -17), 6f, GuideGold);
-        DrawCueStroke(press, new Vector2(-9, 5), new Vector2(-26, 5), 6f, GuideGold);
-        var holdMarks = new Image[gesture == WorkGesture.Hold ? 10 : 0];
-        for (int i = 0; i < holdMarks.Length; i++)
-        {
-            float angle = -Mathf.PI * .5f + i * 2f * Mathf.PI / holdMarks.Length;
-            Vector2 direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
-            Vector2 start = direction * 46f;
-            var block = WorkshopUi.Fill(mouse, "Hold Progress Notch", new Rect(start.x - 5, start.y - 5, 11, 11), GuideGold);
-            WorkshopUi.ApplyPixelShape(block);
-            holdMarks[i] = block;
-        }
-        StartCoroutine(AnimateWorkbenchGesture(cue, mouse, press, holdMarks, from, to, gesture));
-        return cue;
-    }
-
-    private static void DrawCueStroke(Transform parent, Vector2 a, Vector2 b, float width, Color color)
-    {
-        float length = Vector2.Distance(a, b);
-        Vector2 delta = b - a;
-        float angle = -Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg;
-        var edge = WorkshopUi.Fill(parent, "Gesture Outline", new Rect(a.x, a.y, length, width + 5f), GuideShadow).rectTransform;
-        var line = WorkshopUi.Fill(parent, "Gesture Mark", new Rect(a.x, a.y, length, width), color).rectTransform;
-        edge.pivot = line.pivot = new Vector2(0f, .5f);
-        edge.localEulerAngles = line.localEulerAngles = new Vector3(0f, 0f, angle);
-    }
-
-    private static IEnumerator AnimateWorkbenchGesture(RectTransform cue, RectTransform mouse, RectTransform press,
-        Image[] holdMarks, Vector2 from, Vector2 to, WorkGesture gesture)
-    {
-        float elapsed = 0f;
-        while (cue != null && cue.gameObject.activeInHierarchy)
-        {
-            float t = Mathf.Repeat(elapsed, 2.15f);
-            float movement = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((t - .27f) / 1.1f));
-            if (gesture == WorkGesture.Move && t > 1.37f)
-                movement = 1f - Mathf.SmoothStep(0f, 1f, (t - 1.37f) / .78f);
-            bool moving = gesture == WorkGesture.Move || gesture == WorkGesture.Drag;
-            Vector2 at = moving ? Vector2.Lerp(from, to, movement) : from;
-            bool pressed = gesture == WorkGesture.Tap ? t < .32f :
-                gesture == WorkGesture.Drag || gesture == WorkGesture.Hold ? t < 1.36f : false;
-            if (!pressed && !moving) at += new Vector2(7, 8);
-            mouse.anchoredPosition = new Vector2(at.x, -at.y);
-            mouse.localScale = Vector3.one * (pressed ? .91f : 1f);
-            press.gameObject.SetActive(pressed);
-            for (int i = 0; i < holdMarks.Length; i++)
-                holdMarks[i].color = pressed && t >= i * .13f ? GuideGold : GuideShadow;
-            elapsed += Time.unscaledDeltaTime;
-            yield return null;
-        }
-    }
-
-    private static Vector2 WorkbenchPoint(RectTransform parent, RectTransform target)
-    {
-        Vector3 local = parent.InverseTransformPoint(target.TransformPoint(target.rect.center));
-        return new Vector2(local.x - parent.rect.xMin, parent.rect.yMax - local.y);
-    }
-
     private void Step(int value)
     {
         stage = value;
@@ -784,6 +536,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         {
             case WorkshopObservation.MangzhongCocoon:
             case WorkshopObservation.LidongDye:
+            case WorkshopObservation.XiaoxueTailoring:
                 return 3;
             default:
                 return 2;

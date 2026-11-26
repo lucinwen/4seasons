@@ -119,7 +119,7 @@ namespace JingweiWeave
             }
             if (parent == null) return;
 
-            var go = new GameObject("Weaving Instructions", typeof(RectTransform), typeof(UnityEngine.UI.Image));
+            var go = new GameObject("Weaving Hint", typeof(RectTransform));
             go.transform.SetParent(parent, false);
 
             var rt = go.GetComponent<RectTransform>();
@@ -128,25 +128,9 @@ namespace JingweiWeave
             rt.sizeDelta = new Vector2(960f, 64f);
             rt.anchoredPosition = new Vector2(-70f, 472f);
 
-            var plate = go.GetComponent<UnityEngine.UI.Image>();
-            plate.raycastTarget = false;
-            MinigameUiPresentation.Surface(plate, MinigameUiPresentation.Pine, true);
-            if (gm.IsHanluPattern)
-            {
-                rt.sizeDelta = new Vector2(1080f, 100f);
-                rt.anchoredPosition = new Vector2(-70f, 452f);
-                WorkshopUi.Label(rt, "Mode Title", new Rect(22f, 4f, 1036f, 40f),
-                    "寒露攀花", 31, MinigameUiPresentation.Paper, TextAnchor.MiddleCenter, WorkshopArt.WorkshopFont);
-                WorkshopUi.Label(rt, "Instruction", new Rect(22f, 46f, 1036f, 46f),
-                    "参照每行和每列的目标数字，用梭子在染布上织出花纹", 25,
-                    MinigameUiPresentation.Paper, TextAnchor.MiddleCenter, WorkshopArt.WorkshopFont);
-            }
-            else
-            {
-                WorkshopUi.Label(rt, "Instruction", new Rect(22f, 0f, 916f, 64f),
-                    "参照每行和每列的目标数字，用梭子织出图案", 27,
-                    MinigameUiPresentation.Paper, TextAnchor.MiddleCenter, WorkshopArt.WorkshopFont);
-            }
+            WorkshopImmersive.Text(rt, "Instruction", new Rect(22f, 0f, 916f, 64f),
+                gm.IsHanluPattern ? "照着行列数字，在染布上织出花纹。" : "用梭子织入，拔子拆回，对齐行列数字。",
+                27, TextAnchor.MiddleCenter);
         }
 
         /// <summary>重新统计并刷新 13 个数字提示的颜色。</summary>
@@ -201,7 +185,7 @@ namespace JingweiWeave
         {
             if (gm.IsHanluPattern)
             {
-                WorkshopProgress.MarkStep("autumn.hanlu.patterned");
+                WorkshopWordRules.CompletePattern();
                 SimplePopup.Show("寒露攀花", "攀花完成，染布上的花纹已经织好。", "完成", gm.CloseGame);
                 return;
             }
@@ -212,7 +196,9 @@ namespace JingweiWeave
                 "生坯绸是未经染整加工的丝织坯布，质地柔韧、色泽自然，\n还需经过精练、染色等工序，才能成为成品绸缎。",
                 () =>
                 {
-                    if (WorkshopProgress.Award(WorkshopItem.RawSilkCloth))
+                    bool first = !WorkshopProgress.Has(WorkshopItem.RawSilkCloth);
+                    WorkshopWordRules.CompleteWeaving();
+                    if (first)
                         WorkshopDialoguePresenter.Play(WorkshopDialogueScripts.AutumnWarpComplete, gm.CloseGame);
                     else
                         gm.CloseGame();

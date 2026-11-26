@@ -10,24 +10,24 @@ public sealed partial class WorkshopKnowledgeView
         "桐乡桑园 · 下过春雨，记一记叶面保持湿润的时间。",
         "桐乡桑园 · 留心天气回暖时，桑芽和小虫有什么变化。",
         "桐乡桑园 · 从早到晚，比较桥边和树下的日照。",
-        "清明江南新桑展叶 · 桑园采嫩叶，蚕房备蚕种。",
-        "谷雨江南春蚕渐忙 · 同垄新采，湿叶去水再喂。",
-        "南浔工坊 · 午后摸一摸阴凉处，感受暑热来临。",
-        "南浔蚕房 · 同地养蚕也可能分批，茧况要逐批看。",
-        "芒种前后有产区收春茧 · 看成熟度、过潮和破损。",
-        "夏至江南常逢梅雨 · 缫好的生丝须干妥才入库。",
+        "清明江南新桑展叶 · 看叶展、等露收，再选垄接桑。",
+        "谷雨蚕房 · 先浴蚕得到干净蚕种，再拖叶喂蚕。",
+        "立夏择茧草堂 · 完成蚕茧合成消除，取得索绪。",
+        "小满练丝坊 · 备水拾柴、迷宫寻轴，再控匀丝排线。",
+        "芒种练丝坊 · 旋转管段，连通丝路备料。",
+        "夏至练丝坊 · 接水管备料完成后，返回工坊交付丝束。",
         "南浔蚕蔟 · 走到窗边感受空气流动，再留意湿热。",
         "南浔工坊 · 大暑如遇闷热，观察蔟房怎样通风。",
-        "苏州织造 · 观察早晚光线，感受暑热怎样慢慢退去。",
+        "立秋染材园 · 拿锄头采集天然染材。",
         "苏州织造 · 比较窗边午后和傍晚的凉热。",
-        "苏州织造 · 看晨露，留心丝线放在干爽处。",
-        "秋分后天黑渐早 · 织坊借光验生丝，为夜织备料。",
-        "寒露织造 · 修好织机，备好梭子再上机织绸。",
+        "白露织造坊 · 拾槌修机、取梭，交替抬经穿梭织坯。",
+        "秋分青染轩 · 研磨染材、选色染布，再备贡品参加秋社。",
+        "寒露织造坊 · 带染布与梭子，按行列数字完成攀花。",
         "苏州织造 · 天凉后再回看桑园，留意叶色的变化。",
-        "立冬这班收到浙南熟栀子 · 试栀黄，再染整幅。",
-        "小雪裁衣 · 染好的绸布按样板裁成衣片。",
-        "大雪降温 · 主厅合缝表里，留一段口把夹衣翻正。",
-        "冬至贺冬 · 合襟抬臂都顺利，才把新衣交给客人。",
+        "立冬缝素堂 · 带秋季染布，沿虚线剪出衣片。",
+        "小雪缝素堂 · 拖纸样确认版型，再选款、缝衣与试衣。",
+        "江南工坊 · 看青瓦、树和河岸如何显出冬日气息。",
+        "冬至贺冬 · 织坊交衣试穿，回看一张工单。",
         "江南染坊 · 看存放染材的角落是否干燥。",
         "江南冬桑园 · 回看清园、修枝和来年备蚕。"
     };
@@ -57,13 +57,23 @@ public sealed partial class WorkshopKnowledgeView
     private void RenderSolarDetail(Sprite artwork, WorkshopSeason termSeason, int index, string title, Action goBack)
     {
         StartPage(goBack);
+        int ordinal = (int)termSeason * 6 + index;
+        if (DrawCraftSolar(page, SolarDetailBounds, ordinal))
+        {
+            var accept = WorkshopUi.Button(page, "Close Solar Detail", CraftSolarCloseBounds(SolarDetailBounds, ordinal),
+                "", goBack, Color.clear);
+            MarkPrintedButtonFocus(accept);
+            WorkshopCraftRecordView.KeepFocusIn(page, accept);
+            return;
+        }
         CenterArt(page, "Full Size Solar Card", SolarDetailBounds, artwork);
         var printed = SolarPrints[(int)termSeason * 6 + index];
         UnityEngine.UI.Button back = null;
         foreach (var region in printed)
         {
             bool acknowledgement = region.Text == "知道啦";
-            DrawSolarPrint(page, SolarDetailBounds, region, region.Text == null ? title : region.Text);
+            DrawSolarPrint(page, SolarDetailBounds, region,
+                acknowledgement ? "收下卡片" : region.Text == null ? title : region.Text);
             if (acknowledgement)
             {
                 Rect hitbox = region.Bounds;
@@ -76,7 +86,6 @@ public sealed partial class WorkshopKnowledgeView
                 MarkPrintedButtonFocus(back);
             }
         }
-        RenderSolarRecordLinks(termSeason, index);
         WorkshopCraftRecordView.KeepFocusIn(page, back);
     }
 
@@ -86,7 +95,9 @@ public sealed partial class WorkshopKnowledgeView
         var footer = WorkshopUi.PixelCard(page, "Solar Review Notes", new Rect(195, 949, 1530, 76),
             WorkshopUi.Paper, WorkshopUi.Bronze);
         var observation = SolarObservation(ordinal);
-        Label(footer, "Regional Observation", new Rect(24, 13, 770, 50), SolarReviewNotes[ordinal], 24, WorkshopUi.Ink);
+        Label(footer, "Solar Entry Kind", new Rect(24, 5, 770, 24),
+            SolarHasWork(ordinal) ? "工序体验 · 进度请查看公告栏" : "时令观察 · 翻阅节气卡", 19, Jade);
+        Label(footer, "Regional Observation", new Rect(24, 29, 770, 38), SolarReviewNotes[ordinal], 24, WorkshopUi.Ink);
         WorkshopUi.PixelButton(footer, "Regional Source", new Rect(1288, 13, 218, 50), "地方资料",
             () => WorkshopHeritageBrief.ShowSeason(season), false, 25);
 
@@ -104,24 +115,25 @@ public sealed partial class WorkshopKnowledgeView
     private static void DrawSolarObservationLink(Transform footer, WorkshopObservation id, float x, string caption)
     {
         bool recorded = WorkshopObservationView.HasRecord(id);
-        bool practice = WorkshopObservationView.CanPracticeGarmentWorkshop(id);
         var button = WorkshopUi.PixelButton(footer, "Open Solar Observation " + id, new Rect(x, 13, 218, 50),
-            recorded ? caption : practice ? "试玩工序" : "到工位体验后开放",
-            () => WorkshopObservationView.OpenRecordOrGarmentPractice(id), true, 23, Jade);
-        button.interactable = recorded || practice;
+            recorded ? caption : caption + " · 未记录", () => WorkshopObservationView.ShowRecord(id), true, 23, Jade);
+        button.interactable = recorded;
     }
 
     private static WorkshopObservation? SolarObservation(int ordinal)
     {
         switch (ordinal)
         {
+            case 4: return WorkshopObservation.QingmingMulberry;
             case 8: return WorkshopObservation.MangzhongCocoon;
-            case 18: return WorkshopObservation.LidongDye;
-            case 20: return WorkshopObservation.DaxueSewing;
-            case 21: return WorkshopObservation.DongzhiFitting;
+            case 9: return WorkshopObservation.MangzhongCocoon;
             default: return null;
         }
     }
+
+    private static bool SolarHasWork(int ordinal) => ordinal == 4 || ordinal == 5 ||
+        (ordinal >= 6 && ordinal <= 9) || ordinal == 12 || (ordinal >= 14 && ordinal <= 16) ||
+        ordinal == 18 || ordinal == 19;
 
     private static string SolarWorkSource(int ordinal)
     {
@@ -135,7 +147,6 @@ public sealed partial class WorkshopKnowledgeView
             case 16: return "https://www.weather.com.cn/neimenggu/sy/tqyw/10/2402929.shtml";
             case 18: return "https://www.cnipa.gov.cn/attach/0/20250826010509.pdf";
             case 19: return "https://paper.people.com.cn/rmrbwap/html/2023-11/23/nw.D110000renmrb_20231123_2-15.htm";
-            case 20: return "https://www.cma.gov.cn/ztbd/2023zt/jq/xz/202312/P020231207364754893893.pdf";
             case 21: return "https://www.shidianguji.com/book/HY6306/chapter/1mb9bu3uvrj0m";
             default: return null;
         }
@@ -151,12 +162,12 @@ public sealed partial class WorkshopKnowledgeView
                 DrawSolarPrint(parent, bounds, region, region.Text);
         }
         Label(parent, "Solar Workshop Legend", ScaleSolarRect(bounds, new Rect(859, 212, 470, 31)),
-            "标「工序」的节气可在工坊游玩", 20, Jade, TextAnchor.MiddleRight);
+            "标「工序」的节气对应公告栏主线", 20, Jade, TextAnchor.MiddleRight);
         for (int season = 0; season < SolarRows.Length; season++)
         {
             for (int index = 0; index < SolarColumns.Length; index++)
             {
-                if (!SolarObservation(season * 6 + index).HasValue) continue;
+                if (!SolarHasWork(season * 6 + index)) continue;
                 var marker = new Rect(SolarColumns[index] + 8, SolarRows[season] + 113, 84, 19);
                 Label(parent, "Solar Workshop Marker", ScaleSolarRect(bounds, marker), "工序", 19,
                     Jade, TextAnchor.MiddleCenter);
@@ -194,6 +205,7 @@ public sealed partial class WorkshopKnowledgeView
         label.resizeTextMinSize = Mathf.Max(12, size * 3 / 5);
         label.resizeTextMaxSize = size;
         label.verticalOverflow = VerticalWrapMode.Truncate;
+        FitCardLettering(label, 20, size);
     }
 
     private static Rect ScaleSolarRect(Rect art, Rect source) => new Rect(
@@ -403,7 +415,7 @@ public sealed partial class WorkshopKnowledgeView
             new SolarPrint(354, 395, 439, 51, "许多地方进入冷季，", 0xFCEBD7, 0x462B1E),
             new SolarPrint(354, 451, 480, 54, "衣物也更加讲究保暖。", 0xFCEBD7, 0x42281C),
             new SolarPrint(421, 544, 213, 52, "小织匠观察", 0xFAD3A9, 0x4F2631, true),
-            new SolarPrint(335, 613, 582, 61, "试染素绸，看看晾干后的颜色。", 0xFCEBD7, 0x442A1E),
+            new SolarPrint(335, 613, 582, 61, "带秋季染布，按虚线剪出衣片。", 0xFCEBD7, 0x442A1E),
             new SolarPrint(510, 730, 206, 67, "知道啦", 0xC24B43, 0xFDE9C8, true),
         },
         new[] // 小雪

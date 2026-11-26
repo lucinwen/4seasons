@@ -46,7 +46,7 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
 
     internal static void ShowTerm(WorkshopSeason season, int index, Action onClose = null)
     {
-        var art = WorkshopProgress.HasSolarTerms(season) ? WorkshopArt.SolarCard(season, index) : null;
+        var art = WorkshopRewardCards.HasTerm(season, index) ? WorkshopArt.SolarCard(season, index) : null;
         if (art == null)
         {
             onClose?.Invoke();
@@ -63,14 +63,14 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
         var art = WorkshopArt.ItemCard(item);
         if (art == null) return;
         var view = Open((WorkshopSeason)((int)item / 3));
-        view.RenderDetail(art, view.Close, "收下卡片");
+        view.RenderDetail(art, view.Close);
     }
 
     public static void ShowCard(Sprite art)
     {
         if (art == null) return;
         var view = Open(WorkshopSeason.Spring);
-        view.RenderDetail(art, view.Close, "关闭");
+        view.RenderDetail(art, view.Close);
     }
 
     private static WorkshopKnowledgeView Open(WorkshopSeason season, int order = 12000, bool preserveExisting = false)
@@ -79,7 +79,7 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
         var previous = preserveExisting ? current : null;
         var selection = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
         var frame = WorkshopUi.NewCanvas("Workshop Knowledge", order);
-        WorkshopUi.Block(frame, WorkshopUi.Veil);
+        WorkshopUi.Block(frame, new Color32(0, 0, 0, 170));
         current = frame.gameObject.AddComponent<WorkshopKnowledgeView>();
         current.frame = frame;
         current.season = season;
@@ -92,6 +92,7 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
     private void Update()
     {
         if (current != this || resumedFrame == Time.frameCount || WorkshopObservationView.BlocksWorldInput ||
+            (WorkshopRewardCardView.BlocksWorldInput && !WorkshopRewardCardView.HasTermOpen) ||
             WorkshopDialoguePresenter.BlocksWorldInput ||
             WorkshopHeritageBrief.IsOpen || WorkshopChapterGuide.IsOpen ||
             (sortingOrder < WorkshopCraftRecordView.CanvasOrder && WorkshopCraftRecordView.BlocksWorldInput)) return;
@@ -136,21 +137,23 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
         Label(journal, "Title", new Rect(589, 112, 631, 89), "四时织录", 54,
             Jade, TextAnchor.MiddleCenter);
         Label(journal, "Item Hint", new Rect(291, 288, 876, 49),
-            "获得关键道具后可点击卡片阅读。", 25, WorkshopUi.Faded);
+            "取得关键道具后，点选图鉴卡片阅读。", 25, WorkshopUi.Faded);
         var back = WorkshopUi.PixelButton(journal, "Close", new Rect(1337, 283, 160, 56),
             "返回", Close, false, 28);
 
         for (int i = 0; i < 4; i++)
         {
             var tab = (WorkshopSeason)i;
-            WorkshopUi.PixelButton(journal, "Season " + tab, new Rect(291 + i * 162, 352, 146, 54),
+            WorkshopUi.PixelButton(journal, "Season " + tab, new Rect(291 + i * 136, 352, 122, 54),
                 WorkshopProgress.SeasonName(tab) + "季", () => SelectSeason(tab),
                 tab == season, 27);
         }
-        WorkshopUi.PixelButton(journal, "Solar Cards", new Rect(1255, 352, 242, 54), "二十四节气",
+        WorkshopUi.PixelButton(journal, "Solar Cards", new Rect(1279, 352, 218, 54), "二十四节气",
             () => RenderSolarGallery(RenderItems), true, 28, WorkshopUi.Green);
-        WorkshopUi.PixelButton(journal, "Observation Records", new Rect(988, 352, 243, 54), "四季观察",
+        WorkshopUi.PixelButton(journal, "Observation Records", new Rect(1052, 352, 213, 54), "四季观察",
             RenderObservationGallery, true, 28, WorkshopUi.Green);
+        WorkshopUi.PixelButton(journal, "Craft Reward Cards", new Rect(825, 352, 213, 54), "工艺卡片",
+            () => WorkshopRewardCardView.ShowCollection(season), true, 28, WorkshopUi.Green);
         WorkshopUi.Fill(journal, "Rule", new Rect(291, 422, 1206, 2), WorkshopUi.Line);
 
         var items = WorkshopProgress.Items(season);
@@ -171,9 +174,12 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
         string title = WorkshopProgress.ItemName(item);
         bool acquired = WorkshopProgress.Has(item) && sprite != null;
         var surface = WorkshopUi.Button(parent, "Item Card " + item, rect, "",
-            () => RenderDetail(sprite, RenderItems, "返回图鉴"), Color.clear, acquired).transform;
+            () => RenderDetail(sprite, RenderItems), Color.clear, acquired).transform;
         if (acquired)
+        {
             DrawItemCard(surface, new Rect(14, 7, 350, 374), item, sprite);
+            Label(surface, "Card Open", new Rect(9, 381, 360, 42), "展开阅读", 27, Jade, TextAnchor.MiddleCenter);
+        }
         else
         {
             WorkshopUi.Panel(surface, "Uncollected Card Frame", new Rect(48, 61, 282, 306),
@@ -211,12 +217,11 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
         {
             var currentSeason = (WorkshopSeason)row;
             var names = WorkshopArt.SolarNames(currentSeason);
-            bool acquired = WorkshopProgress.HasSolarTerms(currentSeason);
             if (ledger == null)
                 Label(page, "Solar Season", FromAlmanac(345, SolarRows[row], 150, 122),
                     WorkshopProgress.SeasonName(currentSeason) + "季", 38, Jade, TextAnchor.MiddleCenter);
             for (int i = 0; i < names.Length; i++)
-                RenderTerm(currentSeason, i, names[i], acquired, goBack);
+                RenderTerm(currentSeason, i, names[i], WorkshopRewardCards.HasTerm(currentSeason, i), goBack);
         }
 
         var back = WorkshopUi.Button(page, "Solar Back", FromAlmanac(1152, 809, 272, 92),
@@ -227,8 +232,8 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
         else
             MarkPrintedButtonFocus(back);
         string guide = justReceived
-            ? "已收录" + WorkshopProgress.SeasonName(season) + "季节气卡。"
-            : "向各季师傅领取节气卡。";
+            ? "新的节气卡已收录。点选亮起的卡片阅读。"
+            : "完成节气小游戏与时令观察，逐张收集对应的节气卡。";
         Label(page, "Solar Guide", new Rect(210, 966, 1500, 54), guide, 29, Cream, TextAnchor.MiddleCenter);
         WorkshopCraftRecordView.KeepFocusIn(page, back);
     }
@@ -256,7 +261,7 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
             AlmanacBounds.y + y * (AlmanacBounds.height / 941f),
             width * (AlmanacBounds.width / 1672f), height * (AlmanacBounds.height / 941f));
 
-    private void RenderDetail(Sprite artwork, Action goBack, string label)
+    private void RenderDetail(Sprite artwork, Action goBack)
     {
         StartPage(goBack);
         bool landscape = artwork.rect.width >= artwork.rect.height;
@@ -265,7 +270,8 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
             DrawItemCard(page, bounds, item, artwork);
         else
             CenterArt(page, "Full Size Card", bounds, artwork);
-        Button(page, "Close Detail", new Rect(811, 943, 298, 69), label, goBack);
+        var done = Button(page, "Close Detail", new Rect(800, 943, 320, 76), "收下卡片", goBack);
+        WorkshopCraftRecordView.KeepFocusIn(page, done);
     }
 
     private static void CenterArt(Transform parent, string name, Rect rect, Sprite art)
@@ -289,12 +295,12 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
     private static UnityEngine.UI.Text Label(Transform parent, string name, Rect rect, string text,
         int size, Color? color = null, TextAnchor alignment = TextAnchor.MiddleLeft)
     {
-        var label = WorkshopUi.Label(parent, name, rect, text, size, color, alignment, WorkshopArt.WorkshopFont);
+        var label = WorkshopUi.Label(parent, name, rect, text, size, color, alignment, WorkshopArt.ReadingFont);
         label.verticalOverflow = VerticalWrapMode.Overflow;
         return label;
     }
 
     private static UnityEngine.UI.Button Button(Transform parent, string name, Rect rect, string text,
         Action click, Color? color = null) =>
-        WorkshopUi.Button(parent, name, rect, text, click, color ?? Jade, size: 29, font: WorkshopArt.WorkshopFont);
+        WorkshopUi.Button(parent, name, rect, text, click, color ?? Jade, size: 29, font: WorkshopArt.ReadingFont);
 }

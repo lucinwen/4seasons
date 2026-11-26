@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>以整数像素矩形绘制丝线；旋转只重建这一格的 UI 网格。</summary>
+[RequireComponent(typeof(CanvasRenderer))]
 public sealed class XiazhiThreadGraphic : MaskableGraphic
 {
     private int mask;
