@@ -3,8 +3,8 @@ using UnityEngine.EventSystems;
 using Qingming.LevelBackground;
 
 /// <summary>
-/// 挂在冬天场景的「4-染料空」（钵体）上：点击钵体打开研磨界面。
-/// 只要已经获得研磨棒即可研磨。
+/// 挂在研磨钵（钵体）上：点击打开研磨界面。
+/// 前置条件：已拾取研磨棒，且采集到染材。
 /// </summary>
 public class WinterGrindingClickTarget : MonoBehaviour
 {
@@ -49,6 +49,6 @@ public class WinterGrindingClickTarget : MonoBehaviour
         if (WinterLevelState.CollectedDyes.Count > 0)
             WinterNpcDialogue.IntroduceGrinding(WinterGrindingOverlay.Show);
         else
-            WinterGrindingOverlay.Show();
+            WinterGrindingOverlay.Show(); // 内部会提示先采集染材
     }
 }

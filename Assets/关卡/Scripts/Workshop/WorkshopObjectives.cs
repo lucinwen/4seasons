@@ -16,8 +16,8 @@ internal static class WorkshopObjectives
         {
             case WorkshopSeason.Spring: goal = "先找蚕房师傅，采摘桑叶喂蚕，再备好蚕种。"; break;
             case WorkshopSeason.Summer: goal = "在场景里取盐、择茧和找线轴。"; break;
-            case WorkshopSeason.Autumn: goal = "寻找织造工具，并为酬蚕备好贡品。"; break;
-            case WorkshopSeason.Winter: goal = "先染布再裁衣，也记得找缝衣针。"; break;
+            case WorkshopSeason.Autumn: goal = "修机并纺织生坯绸，再采集、研磨染材并完成秋色染布；备齐贡品酬蚕后交付秋季成果。"; break;
+            case WorkshopSeason.Winter: goal = "使用秋季染好的布裁衣，再找缝衣针缝制成衣。"; break;
             default: goal = "收集本季的三件关键道具。"; break;
         }
 
@@ -50,14 +50,14 @@ internal static class WorkshopObjectives
                 return ("取梭", "点击织机附近的工具箱，领取梭子。",
                     "找到织机附近的工具箱，点击查看并获取梭子。织造时会用到它。");
             case WorkshopItem.RawSilkCloth:
-                return ("织造", "找师傅拿锤子，修好织机，再用梭子织造。",
-                    "找师傅领取锤子，走近织机点「修复织机」。修好并拿到梭子后，点「开始织造」。");
+                return ("寒露纺织", "找师傅拿锤子，修好织机，再用梭子纺织。",
+                    "找师傅领取锤子，走近织机点「修复织机」。修好并拿到梭子后，点「开始织造」，收下生坯绸。");
             case WorkshopItem.Statue:
                 return ("酬蚕", "带酒、香蕉和糕点到供桌提交。",
                     "点击蚕花酒和香蕉果篮。向师傅领过锤子后，再对话领取糕点。把三件贡品交给供桌。");
             case WorkshopItem.DyedCloth:
-                return ("染布", "找染材并研磨，再把素绸拖入染缸。",
-                    "拾锄头进染料园找染材。回来拾研磨棒，点钵体研磨。到染缸选色，把素绸拖进去。");
+                return ("秋色染布", "采集并研磨染材，选色后调整比例染布。",
+                    "拾锄头进染料园找染材，回来拾研磨棒并研磨染料。到染缸选择颜色，调整清水与染料原液的比例，把生坯绸染成秋色布。");
             case WorkshopItem.CutPieces:
                 return ("裁衣", "染好布后，在裁衣台剪出三片衣料。",
                     "染好布后，走近裁衣台点「开始裁衣」。点击剪刀，沿布上的线拖动，剪出三片衣料。");

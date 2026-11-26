@@ -14,7 +14,6 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
     private static int closedFrame = -1;
     private RectTransform frame;
     private RectTransform page;
-    private UnityEngine.UI.Image backdrop;
     private WorkshopSeason season;
     private Action escape;
     private Action onClose;
@@ -80,9 +79,9 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
         var previous = preserveExisting ? current : null;
         var selection = EventSystem.current != null ? EventSystem.current.currentSelectedGameObject : null;
         var frame = WorkshopUi.NewCanvas("Workshop Knowledge", order);
+        WorkshopUi.Block(frame, WorkshopUi.Veil);
         current = frame.gameObject.AddComponent<WorkshopKnowledgeView>();
         current.frame = frame;
-        current.backdrop = WorkshopUi.Block(frame, WorkshopUi.Veil);
         current.season = season;
         current.sortingOrder = order;
         current.previousView = previous;
@@ -97,7 +96,6 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
             WorkshopHeritageBrief.IsOpen || WorkshopChapterGuide.IsOpen ||
             (sortingOrder < WorkshopCraftRecordView.CanvasOrder && WorkshopCraftRecordView.BlocksWorldInput)) return;
         if (Input.GetKeyDown(KeyCode.Escape)) escape?.Invoke();
-        else ReadProcessCardInput();
     }
 
     private void OnDestroy()
@@ -117,12 +115,9 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
         onClose?.Invoke();
     }
 
-    private void StartPage(Action goBack, Color? veil = null)
+    private void StartPage(Action goBack)
     {
         escape = goBack;
-        flipProcessCard = null;
-        processKeyboardEntry = null;
-        backdrop.color = veil ?? WorkshopUi.Veil;
         if (page != null)
         {
             page.gameObject.SetActive(false);
@@ -140,10 +135,8 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
             WorkshopArt.JournalFrame ?? WorkshopArt.WorkshopTaskBoard).rectTransform;
         Label(journal, "Title", new Rect(589, 112, 631, 89), "四时织录", 54,
             Jade, TextAnchor.MiddleCenter);
-        Label(journal, "Item Hint", new Rect(291, 288, 750, 49),
-            "获得关键道具后可查看对应的道具卡。", 25, WorkshopUi.Faded);
-        WorkshopUi.PixelButton(journal, "Process Cards", new Rect(1093, 283, 220, 56),
-            "工序卡", () => RenderProcessCardGallery(season), true, 28, Jade);
+        Label(journal, "Item Hint", new Rect(291, 288, 876, 49),
+            "获得关键道具后可点击卡片阅读。", 25, WorkshopUi.Faded);
         var back = WorkshopUi.PixelButton(journal, "Close", new Rect(1337, 283, 160, 56),
             "返回", Close, false, 28);
 
@@ -285,14 +278,12 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
     private static void MarkPrintedButtonFocus(UnityEngine.UI.Button button)
     {
         Rect bounds = ((RectTransform)button.transform).rect;
-        var mark = WorkshopUi.Fill(button.transform, "Keyboard Focus Line",
+        button.targetGraphic = WorkshopUi.Fill(button.transform, "Keyboard Focus Line",
             new Rect(bounds.width * 0.18f, bounds.height * 0.82f, bounds.width * 0.64f, 4f), WorkshopUi.Bronze);
         var colors = button.colors;
         colors.normalColor = Color.clear;
         colors.highlightedColor = colors.selectedColor = Color.white;
         button.colors = colors;
-        mark.canvasRenderer.SetColor(colors.normalColor);
-        button.targetGraphic = mark;
     }
 
     private static UnityEngine.UI.Text Label(Transform parent, string name, Rect rect, string text,

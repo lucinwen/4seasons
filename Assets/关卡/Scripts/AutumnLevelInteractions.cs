@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,6 +9,11 @@ using UnityEngine.SceneManagement;
 public class AutumnLevelInteractions : MonoBehaviour
 {
     private const string SceneName = "Level3_Autumn";
+    private const string DyeGardenPointName = "染料园触点";
+    private const string HoeObjectName = "4-挖掘染料锄头";
+    private const string GrindingBowlName = "4-染料空";
+    private const string GrindingRodName = "4-研磨棒";
+    private const string DyeVatName = "4-染料空缸";
 
     private static readonly string[] WineNames = { "3-酒", "3-酒 (1)", "3-酒 (2)", "3-酒 (3)" };
     private static readonly string[] RiceNames = { "3-水稻贡品", "3-水稻贡品 (1)", "3-水稻贡品2", "3-水稻贡品2 (1)" };
@@ -34,15 +40,22 @@ public class AutumnLevelInteractions : MonoBehaviour
 
     private void Start()
     {
+        WinterLevelState.RestoreWorkshopProgress();
         AttachItems(WineNames, AutumnItemClick.ItemKind.Wine);
         AttachItems(RiceNames, AutumnItemClick.ItemKind.Rice);
         AttachItem("3-香蕉果篮", AutumnItemClick.ItemKind.Banana);
         AttachItem("3-工具箱", AutumnItemClick.ItemKind.Toolbox);
         AttachLoom();
+        AttachDyeGardenTrigger();
+        AttachHoePickup();
+        AttachGrindingBowl();
+        AttachGrindingRod();
+        AttachDyeVat();
         FixBlockingPropColliders();
         AutumnPorchClimb.Setup();
         AttachNpcDialogue();
         CreateRitualPoint();
+        StartCoroutine(ShowPendingGrindingPromptNextFrame());
     }
 
     private static void AttachNpcDialogue()
@@ -115,6 +128,146 @@ public class AutumnLevelInteractions : MonoBehaviour
                 col.enabled = false;
             }
         }
+    }
+
+    private static void AttachDyeGardenTrigger()
+    {
+        var point = GameObject.Find(DyeGardenPointName);
+        if (point == null)
+        {
+            Debug.LogWarning("[AutumnLevelInteractions] 未找到染料园触点：" + DyeGardenPointName);
+            return;
+        }
+
+        foreach (var col in point.GetComponents<Collider2D>())
+        {
+            if (!col.isTrigger) col.enabled = false;
+        }
+
+        if (point.GetComponent<WinterDyeGardenTrigger>() == null)
+            point.AddComponent<WinterDyeGardenTrigger>();
+    }
+
+    private static void AttachHoePickup()
+    {
+        var hoe = GameObject.Find(HoeObjectName);
+        if (WinterLevelState.HasHoe)
+        {
+            if (hoe != null) hoe.SetActive(false);
+            return;
+        }
+        if (hoe == null)
+        {
+            Debug.LogWarning("[AutumnLevelInteractions] 未找到锄头：" + HoeObjectName);
+            return;
+        }
+        if (hoe.GetComponent<PickupItem>() != null) return;
+
+        var sr = hoe.GetComponent<SpriteRenderer>();
+        if (sr != null && sr.sprite != null)
+        {
+            var col = hoe.GetComponent<BoxCollider2D>();
+            if (col == null) col = hoe.AddComponent<BoxCollider2D>();
+            col.isTrigger = true;
+            col.size = sr.sprite.bounds.size * 1.6f;
+            col.offset = Vector2.zero;
+        }
+
+        var pickup = hoe.AddComponent<PickupItem>();
+        pickup.itemName = "锄头";
+        pickup.triggerDistance = 2.5f;
+        pickup.labelHeight = 3f;
+        pickup.pickupTitle = "锄头";
+        pickup.pickupMessage = "带去染料园挖取染材。";
+        pickup.pickupButtonText = "拾取";
+    }
+
+    private static void AttachGrindingBowl()
+    {
+        var bowl = GameObject.Find(GrindingBowlName);
+        if (bowl == null)
+        {
+            Debug.LogWarning("[AutumnLevelInteractions] 未找到钵体：" + GrindingBowlName);
+            return;
+        }
+
+        var col = bowl.GetComponent<Collider2D>();
+        if (col != null) col.enabled = true;
+        if (bowl.GetComponent<WinterGrindingClickTarget>() == null)
+            bowl.AddComponent<WinterGrindingClickTarget>();
+    }
+
+    private static void AttachGrindingRod()
+    {
+        var rod = GameObject.Find(GrindingRodName);
+        if (rod == null)
+        {
+            Debug.LogWarning("[AutumnLevelInteractions] 未找到研磨棒：" + GrindingRodName);
+            return;
+        }
+
+        if (WinterLevelState.HasGrindingRod)
+        {
+            rod.SetActive(false);
+            return;
+        }
+
+        var col = rod.GetComponent<Collider2D>();
+        if (col == null)
+        {
+            var box = rod.AddComponent<BoxCollider2D>();
+            box.isTrigger = true;
+            box.size = new Vector2(20f, 20f);
+            box.offset = Vector2.zero;
+        }
+        else
+        {
+            col.enabled = true;
+        }
+
+        if (rod.GetComponent<WinterRodClickTarget>() == null)
+            rod.AddComponent<WinterRodClickTarget>();
+    }
+
+    private static void AttachDyeVat()
+    {
+        var vat = GameObject.Find(DyeVatName);
+        if (vat == null)
+        {
+            Debug.LogWarning("[AutumnLevelInteractions] 未找到清水缸：" + DyeVatName);
+            return;
+        }
+
+        var col = vat.GetComponent<Collider2D>();
+        if (col == null)
+        {
+            var box = vat.AddComponent<BoxCollider2D>();
+            box.isTrigger = true;
+            box.size = new Vector2(8f, 8f);
+            box.offset = new Vector2(0f, 0.5f);
+        }
+        else
+        {
+            col.enabled = true;
+        }
+
+        if (vat.GetComponent<WinterDyeVatClickTarget>() == null)
+            vat.AddComponent<WinterDyeVatClickTarget>();
+    }
+
+    private static IEnumerator ShowPendingGrindingPromptNextFrame()
+    {
+        yield return null;
+        ShowPendingGrindingPrompt();
+    }
+
+    internal static void ShowPendingGrindingPrompt()
+    {
+        if (!WinterLevelState.PendingGrindingPrompt) return;
+        WinterLevelState.PendingGrindingPrompt = false;
+        if (WinterLevelState.CollectedDyes.Count > 0)
+            WorkshopDialoguePresenter.PlayOnce("dialogue.winter.materialsComplete",
+                WorkshopDialogueScripts.WinterDyeMaterialsComplete);
     }
 
     private static void AttachItems(string[] names, AutumnItemClick.ItemKind kind)

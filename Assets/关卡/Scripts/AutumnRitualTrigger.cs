@@ -14,14 +14,23 @@ public class AutumnRitualTrigger : MonoBehaviour
 
     private FloatingActionButton _floatBtn;
     private Transform _player;
+    private Collider2D _triggerCollider;
     private string _label;
     private bool _shown;
 
+    private Vector2 TriggerCenter => _triggerCollider != null
+        ? (Vector2)_triggerCollider.bounds.center
+        : (Vector2)transform.position;
+
+    private Vector3 ActionOffset =>
+        (Vector3)(TriggerCenter - (Vector2)transform.position) + new Vector3(0.5f, 2f, 0f);
+
     private void Awake()
     {
+        _triggerCollider = GetComponent<Collider2D>();
         _floatBtn = gameObject.AddComponent<FloatingActionButton>();
         _label = OfferingLabel();
-        _floatBtn.Configure(_label, new Vector3(0.5f, 2f, 0f), OnRitualClicked);
+        _floatBtn.Configure(_label, ActionOffset, OnRitualClicked);
         _floatBtn.SetOpacity(0.9f);
     }
 
@@ -35,9 +44,9 @@ public class AutumnRitualTrigger : MonoBehaviour
     {
         if (_player == null) return;
 
-        bool inRange = !WorkshopQuestGuide.BlocksWorldInput && !WorkshopQuestGuide.IsWorldOverlayActive && Vector2.Distance(
-            new Vector2(_player.position.x, _player.position.y),
-            new Vector2(transform.position.x, transform.position.y)) <= triggerDistance;
+        _floatBtn.offset = ActionOffset;
+        bool inRange = !WorkshopQuestGuide.BlocksWorldInput && !WorkshopQuestGuide.IsWorldOverlayActive &&
+            Vector2.Distance(_player.position, TriggerCenter) <= triggerDistance;
 
         if (inRange)
         {
@@ -77,7 +86,7 @@ public class AutumnRitualTrigger : MonoBehaviour
         WorkshopProgress.Award(WorkshopItem.Statue);
         MiniGameCompletionAnimation.PlayThen(MiniGameCompletionId.ThanksgivingRitual, () =>
             SimplePopup.ShowItem(WorkshopItem.Statue,
-                "嫘祖，黄帝元妃。相传她教民养蚕缫丝，被尊为“先蚕”“蚕神”，是中华蚕桑丝织业的始祖。",
+                "土地公是乡间守护神，寄托着蚕农祈求桑树繁茂、丰收与四时风调雨顺的美好愿望。",
                 null, fallbackIcon: AutumnItemIcons.Load()?.statue));
     }
 

@@ -116,7 +116,6 @@ public sealed partial class WorkshopKnowledgeView
         switch (ordinal)
         {
             case 8: return WorkshopObservation.MangzhongCocoon;
-            case 15: return WorkshopObservation.QiufenOffering;
             case 18: return WorkshopObservation.LidongDye;
             case 20: return WorkshopObservation.DaxueSewing;
             case 21: return WorkshopObservation.DongzhiFitting;

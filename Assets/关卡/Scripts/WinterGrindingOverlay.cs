@@ -52,6 +52,17 @@ public class WinterGrindingOverlay : MonoBehaviour
         // 同一时间只保留一个界面，避免染色界面残留在研磨画面上
         WinterDyeingOverlay.CloseAny();
 
+        WinterLevelState.RefreshDyes();
+        if (WinterLevelState.CollectedDyes.Count == 0)
+        {
+            // 区分两种情况：染材都已研磨过（直接去染色），或还没有采集染材
+            string message = WinterLevelState.ProducedDyeColors.Count > 0
+                ? "已采集的染材都研磨过了，可以直接到清水染缸选色染色。"
+                : "先进入染料园采集染材，再回来研磨。";
+            SimplePopup.Show("没有待研磨的染材", message, "知道了", null);
+            return;
+        }
+
         var config = Resources.Load<WinterGrindingConfig>("WinterGrindingConfig");
         if (config == null || config.mortar == null || config.rod == null)
         {
@@ -84,12 +95,6 @@ public class WinterGrindingOverlay : MonoBehaviour
         var footer = WinterWorktableUi.Footer(_frame);
         _statusText = WorkshopUi.Label(footer, "Worktable Status", new Rect(25, 4, 1776, 71),
             PlaceMaterialHint, 29, WorkshopUi.Cream);
-
-        if (WinterLevelState.CollectedDyes.Count == 0)
-        {
-            _statusText.text = "没有可研磨的染料原料";
-            Invoke(nameof(CloseInternal), 1.2f);
-        }
     }
 
     private void CreateRawMaterialList()

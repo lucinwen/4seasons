@@ -104,7 +104,6 @@ internal sealed partial class WorkshopObservationView
         runResult = null;
         stampCurrentResult = false;
         ResetSummerChallenge();
-        ResetAutumnChallenge();
         ResetWinterChallenge();
         if (observation == WorkshopObservation.DaxueSewing) ResetSewingChallenge();
         if (observation == WorkshopObservation.DongzhiFitting) ResetFittingChallenge();
@@ -119,7 +118,8 @@ internal sealed partial class WorkshopObservationView
 
     private bool IsGarmentProductionRun => IsFormalGarmentOrder;
 
-    private string ChallengeOrderLabel() => IsGarmentProductionRun ? "贺冬工单" : OrderTitle(ChallengeVariant);
+    private string ChallengeOrderLabel() => IsDirectDyeing ? "比例染色" :
+        IsGarmentProductionRun ? "贺冬工单" : OrderTitle(ChallengeVariant);
 
     private void DrawChallengeReward()
     {
@@ -231,7 +231,7 @@ internal sealed partial class WorkshopObservationView
             return null;
         }
         int next = 1 - ChallengeVariant;
-        bool canSwitch = (!IsGarmentProductionRun || GameComplete) && BestWork(observation, 0) != null;
+        bool canSwitch = !IsDirectDyeing && (!IsGarmentProductionRun || GameComplete) && BestWork(observation, 0) != null;
         if (GameComplete)
             return DrawOrderAction("Challenge Replay", canSwitch ? "去玩" + OrderTitle(next) : "重做本单",
                 new Rect(1218, 848, 237, 58), canSwitch ? next : ChallengeVariant, true);

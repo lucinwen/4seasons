@@ -227,8 +227,9 @@ public class PickupItem : MonoBehaviour
         // 如果拾取的是锄头，解锁染料园
         if (itemName.Contains("锄头"))
         {
+            WorkshopProgress.MarkStep("autumn.hoe");
             WinterLevelState.HasHoe = true;
-            Debug.Log("[PickupItem] ✅ 已拾取锄头，染料园已解锁");
+            Debug.Log("[PickupItem] ✅ 已在秋季拾取锄头，染料园已解锁");
         }
 
         if (destroyOnPickup) Destroy(gameObject);

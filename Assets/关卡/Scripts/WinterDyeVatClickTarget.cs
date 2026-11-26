@@ -12,8 +12,8 @@ public class WinterDyeVatClickTarget : MonoBehaviour
     private void Awake()
     {
         _collider = GetComponent<Collider2D>();
-        WorkshopPickupGlow.Bind(gameObject, () => WorkshopProgress.IsComplete(WorkshopSeason.Autumn) &&
-            (WorkshopProgress.SeasonalOrderEnabled || WinterLevelState.ProducedDyeColors.Count > 0) &&
+        WorkshopPickupGlow.Bind(gameObject, () => WorkshopProgress.Has(WorkshopItem.RawSilkCloth) &&
+            WinterLevelState.ProducedDyeColors.Count > 0 &&
             !WorkshopProgress.Has(WorkshopItem.DyedCloth));
     }
 
@@ -44,12 +44,12 @@ public class WinterDyeVatClickTarget : MonoBehaviour
             SimplePopup.Show("染色", "布料已经裁成衣片，请回工坊制衣。", "知道了", null);
             return;
         }
-        if (!WorkshopProgress.IsComplete(WorkshopSeason.Autumn))
+        if (!WorkshopProgress.Has(WorkshopItem.RawSilkCloth))
         {
-            SimplePopup.Show("缺少素绸", "提交秋季任务后，可把做好的素绸带来染色。", "知道了", null);
+            SimplePopup.Show("缺少素绸", "先在秋季织成生坯绸，再来染色。", "知道了", null);
             return;
         }
-        if (!WorkshopProgress.SeasonalOrderEnabled && WinterLevelState.ProducedDyeColors.Count == 0)
+        if (WinterLevelState.ProducedDyeColors.Count == 0)
         {
             SimplePopup.Show("染料未研磨", "点击研钵研磨染料。", "知道了", null);
             return;

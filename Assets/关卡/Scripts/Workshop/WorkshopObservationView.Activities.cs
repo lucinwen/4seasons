@@ -14,7 +14,6 @@ internal sealed partial class WorkshopObservationView
             case WorkshopObservation.MangzhongCocoon: DrawMangzhong(); break;
             case WorkshopObservation.MangzhongCocoonHarvest: DrawCocoonHarvestRecord(); break;
             case WorkshopObservation.DashuVentilation: DrawVentilation(); break;
-            case WorkshopObservation.QiufenOffering: DrawQiufen(); break;
             case WorkshopObservation.LidongDye: DrawDye(); break;
             case WorkshopObservation.DaxueSewing:
             case WorkshopObservation.DongzhiFitting:
@@ -51,7 +50,7 @@ internal sealed partial class WorkshopObservationView
         Layer("Summer_CocoonBench");
         var work = WorkshopUpstreamWork(WorkshopObservation.MangzhongCocoon, 0);
         DrawWorkSample(art, new Rect(180, 210, 800, 230), work?.sample);
-        Copy("丝样已保存", "秋季可在验丝位借光检查丝样。");
+        Copy("丝样已保存", "秋季纺织生坯绸时会用到这份丝样。");
     }
 
     private void DrawVentilation()
@@ -76,17 +75,6 @@ internal sealed partial class WorkshopObservationView
 
         if (!readOnly || HasRecord(WorkshopObservation.MangzhongCocoon))
             Act("Return To Thread Record", "回看芒种丝路", () => Link(WorkshopObservation.MangzhongCocoon));
-    }
-
-    private void DrawQiufen()
-    {
-        Texture("Offering Table and Tools", "WorkshopFinish/AutumnOfferingTable", ArtBounds);
-        var panel = WorkshopUi.PixelCard(art, "Accepted Silk Card", new Rect(184, 381, 792, 142),
-            LightSurface, WorkshopUi.Bronze);
-        var work = WorkshopUpstreamWork(WorkshopObservation.QiufenOffering, 0);
-        DrawWorkSample(panel, new Rect(24, 13, 744, 115), work?.sample);
-        Copy("夜织前验丝", "秋分后白昼渐短，织坊趁有窗光时查接头。验过的生丝留给寒露理经走梭。");
-        Act("Read Autumn Heritage", "看苏州织造资料", OpenAutumnHeritage, true);
     }
 
     private void DrawDye()
@@ -157,11 +145,5 @@ internal sealed partial class WorkshopObservationView
     {
         dyeWrong = true;
         Render();
-    }
-
-    private void OpenAutumnHeritage()
-    {
-        Close();
-        WorkshopHeritageBrief.ShowSeason(WorkshopSeason.Autumn);
     }
 }

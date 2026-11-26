@@ -30,12 +30,20 @@ public class WinterDyeGardenTrigger : MonoBehaviour
 
     private FloatingActionButton _floatBtn;
     private Transform _player;
+    private Collider2D _triggerCollider;
     private bool _shown;
+
+    private Vector2 TriggerCenter => _triggerCollider != null
+        ? (Vector2)_triggerCollider.bounds.center
+        : (Vector2)transform.position;
+
+    private Vector3 ActionOffset => buttonOffset + (Vector3)(TriggerCenter - (Vector2)transform.position);
 
     private void Awake()
     {
+        _triggerCollider = GetComponent<Collider2D>();
         _floatBtn = gameObject.AddComponent<FloatingActionButton>();
-        _floatBtn.Configure(buttonText, buttonOffset, OnEnterClicked);
+        _floatBtn.Configure(buttonText, ActionOffset, OnEnterClicked);
         _floatBtn.SetOpacity(buttonOpacity);
     }
 
@@ -59,7 +67,8 @@ public class WinterDyeGardenTrigger : MonoBehaviour
             return;
         }
 
-        bool inRange = Vector2.Distance(_player.position, transform.position) <= triggerDistance;
+        _floatBtn.offset = ActionOffset;
+        bool inRange = Vector2.Distance(_player.position, TriggerCenter) <= triggerDistance;
         if (inRange == _shown) return;
 
         _shown = inRange;
@@ -69,12 +78,13 @@ public class WinterDyeGardenTrigger : MonoBehaviour
 
     private void OnEnterClicked()
     {
-        if (!WinterLevelState.HasHoe)
+        if (!WinterLevelState.HasHoe && !WorkshopProgress.HasStep("autumn.hoe"))
         {
             SimplePopup.Show(noHoeTitle, noHoeMessage, "知道了", null);
             return;
         }
 
+        WinterLevelState.HasHoe = true;
         _floatBtn.Hide();
         _shown = false;
 

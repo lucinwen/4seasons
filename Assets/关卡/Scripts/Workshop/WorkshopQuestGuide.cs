@@ -523,7 +523,6 @@ internal sealed class WorkshopQuestArrow : MonoBehaviour
             case "LoomRepair":
             case "RawSilkCloth":
                 return FindComponent<AutumnLoomTrigger>() ?? FindObject("3-破损的织机", "3-织机");
-            case "QiufenOrder":
             case "Statue":
                 return FindComponent<AutumnRitualTrigger>() ?? FindObject("祭祀触发点", "AutumnRitualPoint");
             case "Offerings":

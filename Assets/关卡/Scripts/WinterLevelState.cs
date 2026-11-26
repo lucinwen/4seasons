@@ -63,9 +63,12 @@ public static class WinterLevelState
         RestoreDyes();
     }
 
+    /// <summary>按工坊存档重建待研磨染材与已研磨颜色（打开研磨/染色界面前刷新）。</summary>
+    public static void RefreshDyes() => RestoreDyes();
+
     public static void RestoreWorkshopProgress()
     {
-        HasHoe = WorkshopProgress.HasStep("winter.hoe");
+        HasHoe = WorkshopProgress.HasStep("autumn.hoe");
         HasGrindingRod = WorkshopProgress.HasStep("winter.rod");
         HasAskedGrindingMethod = WorkshopProgress.HasStep("winter.grindExplained");
         HasGrindingTask = WorkshopProgress.HasStep("winter.grindTask");

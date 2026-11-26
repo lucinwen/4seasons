@@ -1,5 +1,6 @@
 using UnityEngine;
 using Qingming.LevelBackground;
+using JingweiWeave;
 
 /// <summary>
 /// 秋天关卡「3-织机」触发器：玩家靠近时显示悬浮按钮。
@@ -33,8 +34,8 @@ public class AutumnLoomTrigger : MonoBehaviour
 
     private void Update()
     {
-        // 修复完成后按钮文字切换为「开始织造」
-        string desired = AutumnLevelState.HasLoomRepaired ? "开始织造" : "修复织机";
+        string desired = !AutumnLevelState.HasLoomRepaired ? "修复织机" :
+            WorkshopProgress.Has(WorkshopItem.DyedCloth) ? "寒露攀花" : "开始织造";
         if (_floatBtn.buttonText != desired) _floatBtn.SetText(desired);
 
         if (_player == null) return;
@@ -49,10 +50,11 @@ public class AutumnLoomTrigger : MonoBehaviour
 
     private void OnLoomClicked()
     {
-        if (AutumnLevelState.HasLoomRepaired && WorkshopProgress.Has(WorkshopItem.RawSilkCloth))
-            OpenLoom();
-        else
+        // 织机未修复时先播织造开场对话再进入修复；修复后直接进入对应小游戏
+        if (!AutumnLevelState.HasLoomRepaired)
             AutumnNpcDialogue.IntroduceWeaving(OpenLoom);
+        else
+            OpenLoom();
     }
 
     private void OpenLoom()
@@ -78,13 +80,14 @@ public class AutumnLoomTrigger : MonoBehaviour
             return;
         }
 
-        if (WorkshopProgress.SeasonalOrderEnabled && !WorkshopProgress.Has(WorkshopItem.RawSilkCloth) &&
-            !WorkshopObservationView.HasOrderWork(WorkshopObservation.QiufenOffering))
+        if (WorkshopProgress.Has(WorkshopItem.RawSilkCloth) && !WorkshopProgress.Has(WorkshopItem.DyedCloth))
         {
-            SimplePopup.Show("秋分验丝未完成", "走近窗台按 O，验好生丝再回来织造。", "知道了");
+            SimplePopup.Show("先完成染色", "生坯绸已经织好。先到染缸完成染色，再回来进行寒露攀花。", "知道了");
             return;
         }
 
+        EmbroideryGameManager.SetNextMode(WorkshopProgress.Has(WorkshopItem.DyedCloth)
+            ? EmbroideryPlayMode.HanluPattern : EmbroideryPlayMode.Weaving);
         _floatBtn.Hide();
         _shown = false;
         MiniGameOverlay.Show("EmbroideryScene");

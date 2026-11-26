@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 /// <summary>
-/// 冬天关卡 NPC 对话，按采染、研磨和裁衣进度播放。
+/// 冬天关卡 NPC 对话，按裁衣进度播放；采染对话由秋季复用。
 /// 由 WinterLevelInteractions 在运行时挂到 NPC 上，不改场景。
 /// </summary>
 public class WinterNpcDialogue : MonoBehaviour
@@ -23,20 +23,6 @@ public class WinterNpcDialogue : MonoBehaviour
             !WorkshopProgress.HasStep(TailoringIntro))
         {
             IntroduceTailoring();
-            return;
-        }
-
-        if (WinterLevelState.CollectedDyes.Count > 0 && !WinterLevelState.HasDyedCloth &&
-            !WorkshopProgress.HasStep(GrindingIntro))
-        {
-            IntroduceGrinding();
-            return;
-        }
-
-        if (!WorkshopProgress.HasStep("winter.dyes") && !WorkshopProgress.HasStep("winter.ground") &&
-            !WinterLevelState.HasDyedCloth && !WorkshopProgress.HasStep(DyeMaterialsIntro))
-        {
-            IntroduceDyeMaterials();
             return;
         }
 

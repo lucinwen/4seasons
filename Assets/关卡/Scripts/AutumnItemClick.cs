@@ -50,7 +50,8 @@ public class AutumnItemClick : MonoBehaviour
             case ItemKind.Banana:
                 return !AutumnLevelState.HasBanana && !WorkshopProgress.Has(WorkshopItem.Statue);
             case ItemKind.Toolbox:
-                return !AutumnLevelState.HasShuttle && !WorkshopProgress.Has(WorkshopItem.Shuttle);
+                return AutumnLevelState.HasHammer && AutumnLevelState.HasLoomRepaired &&
+                    !AutumnLevelState.HasShuttle && !WorkshopProgress.Has(WorkshopItem.Shuttle);
             default:
                 return false;
         }
@@ -180,6 +181,17 @@ public class AutumnItemClick : MonoBehaviour
         {
             SimplePopup.Show("梭子", ShuttleKnowledge, "知道了", null,
                 false, "取消", null, icon);
+            return;
+        }
+
+        if (!AutumnLevelState.HasHammer)
+        {
+            SimplePopup.Show("尚未领取木锤", "先与织造师傅对话领取木锤。", "知道了", null);
+            return;
+        }
+        if (!AutumnLevelState.HasLoomRepaired)
+        {
+            SimplePopup.Show("织机尚未修复", "先点击织机，使用木锤完成修复小游戏。", "知道了", null);
             return;
         }
 

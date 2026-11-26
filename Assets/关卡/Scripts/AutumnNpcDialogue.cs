@@ -14,7 +14,8 @@ public class AutumnNpcDialogue : MonoBehaviour
     internal static string ActionLabel => !AutumnLevelState.HasHammer ? "领取修机锤" :
         CanOfferCake ? "领取祭祀糕点" : null;
 
-    private static bool CanOfferCake => !AutumnLevelState.HasCake && !AutumnLevelState.HasRitualDone;
+    private static bool CanOfferCake => WorkshopProgress.Has(WorkshopItem.RawSilkCloth) &&
+        !AutumnLevelState.HasCake && !AutumnLevelState.HasRitualDone;
 
     public void Talk()
     {
@@ -24,13 +25,34 @@ public class AutumnNpcDialogue : MonoBehaviour
             return;
         }
 
+        // 保留秋季原顺序：先修机、取梭并完成推梭，再领取糕点。
+        if (!WorkshopProgress.Has(WorkshopItem.RawSilkCloth))
+        {
+            WorkshopDialoguePresenter.Play(WorkshopDialogueScripts.AutumnInProgress);
+            return;
+        }
+
         if (CanOfferCake)
         {
             IntroduceRitual(OfferCake);
             return;
         }
 
-        WorkshopDialoguePresenter.Play(WorkshopProgress.Has(WorkshopItem.RawSilkCloth)
+        if (WinterLevelState.CollectedDyes.Count > 0 && !WinterLevelState.HasDyedCloth &&
+            !WorkshopProgress.HasStep("dialogue.winter.grinding"))
+        {
+            WinterNpcDialogue.IntroduceGrinding();
+            return;
+        }
+
+        if (!WorkshopProgress.HasStep("winter.dyes") && !WorkshopProgress.HasStep("winter.ground") &&
+            !WinterLevelState.HasDyedCloth && !WorkshopProgress.HasStep("dialogue.winter.materials"))
+        {
+            WinterNpcDialogue.IntroduceDyeMaterials();
+            return;
+        }
+
+        WorkshopDialoguePresenter.Play(WorkshopProgress.Has(WorkshopItem.DyedCloth)
             ? WorkshopDialogueScripts.AutumnDone
             : WorkshopDialogueScripts.AutumnInProgress);
     }
@@ -43,8 +65,8 @@ public class AutumnNpcDialogue : MonoBehaviour
 
     internal static void IntroduceWeaving(Action onFinished)
     {
-        WorkshopDialoguePresenter.PlayOnce("dialogue.autumn.weaving", WorkshopDialogueScripts.AutumnWeavingIntro,
-            onFinished);
+        // 织造开场对话每次都播放，保证织机前的剧情与引导不因存档而消失
+        WorkshopDialoguePresenter.Play(WorkshopDialogueScripts.AutumnWeavingIntro, onFinished);
     }
 
     private static void OfferHammer()

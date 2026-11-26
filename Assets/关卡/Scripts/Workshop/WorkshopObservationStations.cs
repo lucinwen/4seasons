@@ -53,12 +53,6 @@ internal sealed class WorkshopObservationStations : MonoBehaviour
             case WorkshopSeason.Summer:
                 Register<SummerCocoonRackTrigger>(WorkshopObservation.MangzhongCocoon, 3.25f);
                 break;
-            case WorkshopSeason.Autumn:
-                Register<AutumnRitualTrigger>(WorkshopObservation.QiufenOffering, 2.85f);
-                break;
-            case WorkshopSeason.Winter:
-                Register<WinterGrindingClickTarget>(WorkshopObservation.LidongDye, 2.5f);
-                break;
         }
     }
 
@@ -96,6 +90,10 @@ internal sealed class WorkshopObservationStations : MonoBehaviour
         if (player == null)
             player = FindObjectOfType<LevelPlayerController>();
 
+        foreach (var station in stations)
+            if (station.Source != null)
+                station.Button.transform.position = station.Source.transform.position;
+
         ShowStation(Available() && player != null ? FindNearbyStation() : null);
         if (nearby != null && Input.GetKeyDown(KeyCode.O))
             Open(nearby);
@@ -110,7 +108,7 @@ internal sealed class WorkshopObservationStations : MonoBehaviour
         {
             if (station.Source == null || !station.Source.gameObject.activeInHierarchy) continue;
 
-            Vector2 stationPosition = station.Source.transform.position;
+            Vector2 stationPosition = station.Button.transform.position;
             var delta = playerPosition - stationPosition;
             if (Mathf.Abs(delta.x) > 2.7f || Mathf.Abs(delta.y) > 3.7f) continue;
             if (delta.sqrMagnitude >= bestDistance) continue;

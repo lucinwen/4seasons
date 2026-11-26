@@ -90,8 +90,26 @@ internal sealed partial class WorkshopObservationView
     private Coroutine winterDyeRippleMotion;
     private RectTransform winterDyeVatTarget;
     private WinterDyeingConfig winterDyeSprites;
+    private DyeColor? directDyeColor;
+    private DyeRun directDyeRun;
+    private Action<DyeColor?> onDirectDyeClosed;
+    private bool directDyeSucceeded;
 
-    private DyeRun CurrentDyeRun => WinterDyeRuns[ChallengeVariant];
+    private bool IsDirectDyeing => directDyeRun != null;
+    private DyeRun CurrentDyeRun => directDyeRun ?? WinterDyeRuns[ChallengeVariant];
+
+    internal static void ShowDirectDye(DyeColor color, Action<DyeColor?> onClosed)
+    {
+        if (IsOpen) return;
+
+        var config = Resources.Load<WinterDyeingConfig>("WinterDyeingConfig");
+        string name = DyeColorUtil.ChineseName(color);
+        var run = new DyeRun(new[] { "深" + name, "浅" + name },
+            new[] { new Vector2Int(4, 5), new Vector2Int(1, 2) },
+            config != null ? config.GetClothTint(color) : DyeColorUtil.Tint(color), 0, 2, 1, false);
+        Open(WorkshopObservation.LidongDye, null, false, null, color, run);
+        if (current != null) current.onDirectDyeClosed = onClosed;
+    }
 
     private void ResetWinterChallenge()
     {
@@ -101,8 +119,9 @@ internal sealed partial class WorkshopObservationView
                 Array.Clear(winterDyeDepth, 0, winterDyeDepth.Length);
                 Array.Clear(winterDyeAccepted, 0, winterDyeAccepted.Length);
                 for (int i = 0; i < winterDyePreviousDepth.Length; i++) winterDyePreviousDepth[i] = -1;
-                winterDyeSorted = false;
-                winterDyeGround = false;
+                winterDyeSorted = IsDirectDyeing;
+                winterDyeGround = IsDirectDyeing;
+                directDyeSucceeded = false;
                 winterDyeRejectedBatch = -1;
                 winterDyeOrder = winterDyeVatChanges = winterDyeReplacements = winterDyeRenewals = 0;
                 winterDyeDips = winterDyeBlots = 0;
@@ -252,14 +271,16 @@ internal sealed partial class WorkshopObservationView
             WorkshopUi.Fill(desk, "Vat Strength Paper", new Rect(325, 294, 386, 43), WinterWorktop);
             WorkshopUi.Fill(desk, "Vat Note Paper", new Rect(321, 414, 394, 80), WinterWorktop);
         }
-        WorkshopUi.Label(desk, "Orders Heading", new Rect(29, 20, 256, 47), "工单 · 干样色泽", 29);
+        WorkshopUi.Label(desk, "Orders Heading", new Rect(29, 20, 256, 47),
+            IsDirectDyeing ? "目标 · 深浅色泽" : "工单 · 干样色泽", 29);
         for (int i = 0; i < 2; i++) DrawWinterDyeOrder(desk, i);
 
         WorkshopUi.Label(desk, "Vat Heading", new Rect(320, 20, 396, 47), "共用染缸", 32, WorkshopUi.Ink, TextAnchor.MiddleCenter);
         winterDyeVatTarget = WorkshopUi.Rect(desk, "Lidong Vat Drop", new Rect(326, 77, 384, 216));
         Rect vatArt = new Rect(64, 0, 257, 216);
         WorkshopUi.Picture(winterDyeVatTarget, "Water Vat", vatArt, winterDyeSprites?.clearWaterVat);
-        Sprite vat = winterDyeSprites?.yellowVat;
+        Sprite vat = winterDyeSprites != null
+            ? winterDyeSprites.GetVat(directDyeColor ?? DyeColor.Yellow) : null;
         winterDyeLiquid = vat == null
             ? WorkshopUi.Fill(winterDyeVatTarget, "Vat Liquid", new Rect(65, 28, 254, 158), WinterVatRim)
             : WorkshopUi.Picture(winterDyeVatTarget, "Vat Liquid", vatArt, vat);
@@ -280,7 +301,8 @@ internal sealed partial class WorkshopObservationView
         WorkshopUi.Button(desk, "Pour Concentrate Icon", new Rect(560, 405, 114, 76), "", () => AdjustWinterVat(true), Color.clear);
 
         var hanger = WorkshopUi.PixelCard(desk, "Dye Hanger", new Rect(751, 79, 310, 416), LightSurface, WorkshopUi.Line);
-        WorkshopUi.Label(hanger, "Hanger Heading", new Rect(16, 3, 278, 34), "手上的布头", 24, WorkshopUi.Ink, TextAnchor.MiddleCenter);
+        WorkshopUi.Label(hanger, "Hanger Heading", new Rect(16, 3, 278, 34),
+            IsDirectDyeing ? "待染生坯绸" : "手上的布头", 24, WorkshopUi.Ink, TextAnchor.MiddleCenter);
         var dryRack = GameArtSprite("DyeDryRack");
         if (dryRack != null)
             WorkshopUi.Picture(hanger, "Dye Dry Rack", new Rect(28, 56, 254, 153), dryRack, stretch: true);
@@ -313,11 +335,11 @@ internal sealed partial class WorkshopObservationView
         winterDyeDrop = DrawWinterSwatch(art, "Lidong Dragged Swatch", new Rect(0, 0, 110, 83), 0);
         winterDyeDrop.gameObject.SetActive(false);
 
-        Copy("栀黄试色", WinterDyeSteps);
+        Copy(IsDirectDyeing ? "染色" : "栀黄试色", WinterDyeSteps);
         winterDyeGuide = infoPanel.Find("Instruction Body").GetComponent<Text>();
         Act("Lidong Blot", "吸回上一次染色", BlotWinterDye);
         winterDyeBlotButton = infoPanel.Find("Lidong Blot").GetComponentInChildren<Button>();
-        Act("Lidong New Swatch", "换这块布头", ReplaceWinterSwatch);
+        Act("Lidong New Swatch", IsDirectDyeing ? "换一块素绸" : "换这块布头", ReplaceWinterSwatch);
         winterDyeReplaceButton = infoPanel.Find("Lidong New Swatch").GetComponentInChildren<Button>();
         Act("Lidong Refill Vat", "补齐清水和原液", RenewWinterVat);
         winterDyeRefill = (RectTransform)infoPanel.Find("Lidong Refill Vat");
@@ -341,7 +363,7 @@ internal sealed partial class WorkshopObservationView
             ?? BestWork(WorkshopObservation.HanluLoom, 1 - ChallengeVariant);
         if (!DrawWorkSample(infoPanel, new Rect(27, 512, 168, 86), work?.sample)) return;
         WorkshopUi.Label(infoPanel, "Earlier Loom Sample", new Rect(214, 512, 250, 86),
-            "从寒露织好的布留样\n试色通过再染整幅", 23, WorkshopUi.Ink);
+            IsDirectDyeing ? "寒露织好的生坯绸\n调好比例完成染色" : "从寒露织好的布留样\n试色通过再染整幅", 23, WorkshopUi.Ink);
     }
 
     private void DrawWinterDyeOrder(RectTransform shelf, int index)
@@ -397,7 +419,8 @@ internal sealed partial class WorkshopObservationView
     {
         for (int i = 0; i < 2; i++)
         {
-            winterDyeOrderLabels[i].text = winterDyeAccepted[i] ? "已交 ✓" : "订单色     你的布";
+            winterDyeOrderLabels[i].text = winterDyeAccepted[i] ? (IsDirectDyeing ? "已完成 ✓" : "已交 ✓") :
+                IsDirectDyeing ? "目标色     当前色" : "订单色     你的布";
             winterDyeOrderEdges[i].color = winterDyeAccepted[i] ? WorkshopUi.Green :
                 i == winterDyeOrder ? GuideGold : WorkshopUi.Line;
             winterDyeOrderCloth[i].color = WinterDyeColor(winterDyeDepth[i]);
@@ -439,7 +462,8 @@ internal sealed partial class WorkshopObservationView
         winterDyeBlotButton.transform.parent.gameObject.SetActive(canBlot);
         winterDyeReplaceButton.interactable = depth > 0;
         winterDyeReplaceButton.transform.parent.gameObject.SetActive(depth > target.y && !canBlot);
-        winterDyeHangButton.transform.Find("Label").GetComponent<Text>().text = ready ? "晾干交样 ✓" : "晾看";
+        winterDyeHangButton.transform.Find("Label").GetComponent<Text>().text = ready
+            ? IsDirectDyeing ? "完成染色 ✓" : "晾干交样 ✓" : "晾看";
         winterDyeGuide.text = $"目标：{CurrentDyeRun.Names[winterDyeOrder]}\n{WinterDyeSteps}";
         var dryObject = winterDyeRackAction.Find("Dry This Swatch").GetComponent<Button>();
         dryObject.interactable = depth > 0;
@@ -528,7 +552,8 @@ internal sealed partial class WorkshopObservationView
         var target = CurrentDyeRun.Ranges[winterDyeOrder];
         if (lastDepth >= target.y)
         {
-            WinterDyeMessage(lastDepth == target.y ? "颜色已经到位，点「晾干交样」收好这块。"
+            WinterDyeMessage(lastDepth == target.y
+                ? IsDirectDyeing ? "颜色已经到位，点「完成染色」。" : "颜色已经到位，点「晾干交样」收好这块。"
                 : "这块颜色已过深。吸回最后一次染色，再试浅一些。", WorkshopAudioFeedback.Notice);
             return;
         }
@@ -547,7 +572,8 @@ internal sealed partial class WorkshopObservationView
         if (colored > target.y)
             WinterDyeMessage("颜色深了。吸回这一蘸，再选浅一点的预览色。", WorkshopAudioFeedback.Notice, true);
         else if (colored >= target.x)
-            WinterDyeMessage("颜色对上了。把这块小样晾干交单。", WorkshopAudioFeedback.Place);
+            WinterDyeMessage(IsDirectDyeing ? "颜色对上了。点「完成染色」确认这一阶。" : "颜色对上了。把这块小样晾干交单。",
+                WorkshopAudioFeedback.Place);
         else WinterDyeMessage("布头吃进了新颜色。再和左边的订单色比一比。", WorkshopAudioFeedback.DyeDip);
     }
 
@@ -570,12 +596,14 @@ internal sealed partial class WorkshopObservationView
         int depth = winterDyeDepth[winterDyeOrder];
         if (depth < range.x)
         {
-            WinterDyeMessage("干样偏浅，原布继续蘸。染劲不够时先添原液。", WorkshopAudioFeedback.Notice, true);
+            WinterDyeMessage(IsDirectDyeing ? "颜色还浅，继续蘸染。染劲不够时先添原液。" : "干样偏浅，原布继续蘸。染劲不够时先添原液。",
+                WorkshopAudioFeedback.Notice, true);
             return;
         }
         if (depth > range.y)
         {
-            WinterDyeMessage("干样偏深。先吸回上一次染色，或换这块布头。", WorkshopAudioFeedback.Notice, true);
+            WinterDyeMessage(IsDirectDyeing ? "颜色偏深。先吸回上一次染色，或换一块素绸。" : "干样偏深。先吸回上一次染色，或换这块布头。",
+                WorkshopAudioFeedback.Notice, true);
             return;
         }
 
@@ -587,15 +615,24 @@ internal sealed partial class WorkshopObservationView
                 - 5 * winterDyeVatChanges - 9 * winterDyeReplacements - 18 * winterDyeRenewals);
             const string palette = "1994444";
             string swatches = new string(palette[winterDyeDepth[0]], 3) + "0" + new string(palette[winterDyeDepth[1]], 3);
-            FinishChallenge(score, $"两色齐 · 上色 {winterDyeDips} 次 · 调缸 {winterDyeVatChanges} 次", $"{swatches}/{swatches}/{swatches}");
-            if (HasOrderWork(WorkshopObservation.LidongDye))
+            string result = IsDirectDyeing
+                ? $"{DyeColorUtil.ChineseName(directDyeColor.Value)}染色完成 · 上色 {winterDyeDips} 次 · 调缸 {winterDyeVatChanges} 次"
+                : $"两色齐 · 上色 {winterDyeDips} 次 · 调缸 {winterDyeVatChanges} 次";
+            FinishChallenge(score, result, $"{swatches}/{swatches}/{swatches}");
+            if (IsDirectDyeing)
+            {
+                directDyeSucceeded = true;
+                Close();
+            }
+            else if (HasOrderWork(WorkshopObservation.LidongDye))
                 WinterLevelState.MarkDyeProduced(DyeColor.Yellow);
             return;
         }
 
         StartCoroutine(SettleWinterDyeSwatch(winterDyeOrderCloth[winterDyeOrder]));
         winterDyeOrder = 1 - winterDyeOrder;
-        WinterDyeMessage("首块已验。取下一块布，使用同一缸染液。", WorkshopAudioFeedback.Progress);
+        WinterDyeMessage(IsDirectDyeing ? "第一阶已完成。调整染缸，再完成另一阶。" : "首块已验。取下一块布，使用同一缸染液。",
+            WorkshopAudioFeedback.Progress);
     }
 
     private void AdjustWinterVat(bool strengthen)
@@ -631,7 +668,8 @@ internal sealed partial class WorkshopObservationView
         winterDyeDepth[winterDyeOrder] = 0;
         winterDyePreviousDepth[winterDyeOrder] = -1;
         winterDyeReplacements++;
-        WinterDyeMessage("换上干净布头。上一块已验的小样留在工单上。", WorkshopAudioFeedback.Fabric);
+        WinterDyeMessage(IsDirectDyeing ? "换上干净素绸，已完成的颜色会保留。" : "换上干净布头。上一块已验的小样留在工单上。",
+            WorkshopAudioFeedback.Fabric);
     }
 
     private void RenewWinterVat()

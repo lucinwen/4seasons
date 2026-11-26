@@ -229,7 +229,6 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
         var terms = new[]
         {
             WorkshopObservation.MangzhongCocoon,
-            WorkshopObservation.QiufenOffering,
             WorkshopObservation.LidongDye,
             WorkshopObservation.DaxueSewing, WorkshopObservation.DongzhiFitting
         };

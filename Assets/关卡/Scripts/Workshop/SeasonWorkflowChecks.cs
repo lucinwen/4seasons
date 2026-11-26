@@ -81,17 +81,16 @@ public static class SeasonWorkflowChecks
 
             Load("{\"chapters\":3,\"seasonalOrder\":true}");
             foreach (var item in WorkshopProgress.Items(WorkshopSeason.Autumn)) WorkshopProgress.Award(item);
-            Require(!WorkshopProgress.CanSubmit(WorkshopSeason.Autumn), "autumn still requires Qiufen inspection");
-            WorkshopProgress.RecordSeasonalOrderWork("observation.autumn.qiufen", 0, 100, "验丝通过", null);
+            Require(!WorkshopProgress.CanSubmit(WorkshopSeason.Autumn), "autumn still requires Lidong dyeing");
+            WorkshopProgress.RecordSeasonalOrderWork("observation.winter.lidong", 0, 100, "染色完成", null);
             Require(!WorkshopObservationView.HasOrderWork(WorkshopObservation.HanluLoom) &&
-                WorkshopProgress.CanSubmit(WorkshopSeason.Autumn), "woven cloth submits without retired shuttle order");
+                WorkshopProgress.CanSubmit(WorkshopSeason.Autumn), "woven cloth submits without retired qiufen order");
             Require(WorkshopProgress.Submit(WorkshopSeason.Autumn), "winter unlock");
 
             foreach (var item in WorkshopProgress.Items(WorkshopSeason.Winter)) WorkshopProgress.Award(item);
-            Require(!WorkshopProgress.CanSubmit(WorkshopSeason.Winter), "winter still requires Lidong dye sample");
-            WorkshopProgress.RecordSeasonalOrderWork("observation.winter.lidong", 0, 100, "试色通过", null);
-            Require(!WorkshopObservationView.HasOrderWork(WorkshopObservation.XiaoxueTailoring) &&
-                WorkshopProgress.CanSubmit(WorkshopSeason.Winter), "cut pieces submit without retired layout order");
+            Require(WorkshopObservationView.HasOrderWork(WorkshopObservation.LidongDye) &&
+                WorkshopProgress.CanSubmit(WorkshopSeason.Winter),
+                "cut pieces submit after recorded dyeing without retired layout order");
             Debug.Log("[WorkflowVerify] PASS: spring handoff, summer thread order, autumn and winter delivery gates, legacy migration and reload.");
         }
         finally

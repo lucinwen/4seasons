@@ -33,7 +33,7 @@ public static class AutumnLevelState
     /// <summary>是否已完成酬蚕仪式</summary>
     public static bool HasRitualDone;
 
-    /// <summary>是否已获得嫘祖雕像</summary>
+    /// <summary>是否已获得土地公</summary>
     public static bool HasStatue;
 
     /// <summary>是否从秋天关卡进入修复织机小游戏（用于小游戏结束后返回关卡）</summary>

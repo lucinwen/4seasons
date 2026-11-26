@@ -22,7 +22,7 @@ namespace JingweiWeave
         private void Start()
         {
             shuttleCaption = CreateCaption(shuttleButton, "梭子");
-            beaterCaption = CreateCaption(beaterButton, "拨子");
+            beaterCaption = CreateCaption(beaterButton, "拔子");
             if (shuttleButton != null) shuttleButton.onClick.AddListener(SelectShuttle);
             if (beaterButton != null) beaterButton.onClick.AddListener(SelectBeater);
             Refresh();

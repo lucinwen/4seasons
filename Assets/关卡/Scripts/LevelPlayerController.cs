@@ -51,6 +51,7 @@ namespace Qingming.LevelBackground
 
         /// <summary>攀爬/上下台阶期间由外部置为 true，避免动画切到 Jump。</summary>
         public bool IsClimbing { get; set; }
+        public bool IsOnPorch { get; set; }
 
         private void Awake()
         {
@@ -100,13 +101,18 @@ namespace Qingming.LevelBackground
                 WorkshopQuestGuide.BlocksWorldInput || WorkshopQuestGuide.IsWorldOverlayActive)
             {
                 _rb.velocity = new Vector2(0f, _rb.velocity.y);
-                DriveAnimation(0f, false, IsGrounded() || IsClimbing);
+                DriveAnimation(0f, false, IsGrounded() || IsClimbing || IsOnPorch);
                 return;
             }
 
             float h = 0f;
             if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) h -= 1f;
             if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) h += 1f;
+            if (IsClimbing)
+            {
+                h = 0f;
+                _walkTargetX = null;
+            }
 
             if (clickToMoveEnabled && Input.GetMouseButtonDown(0) && !PointerIsOverUI())
             {
@@ -135,7 +141,7 @@ namespace Qingming.LevelBackground
             float speed = moveSpeed * (isRunning ? runMultiplier : 1f);
 
             // 小台阶自动迈步，避免被地面碰撞盒的竖直边缘卡住
-            TryStepUp(h);
+            if (!IsOnPorch) TryStepUp(h);
 
             // 水平速度
             Vector2 vel = _rb.velocity;
@@ -165,7 +171,7 @@ namespace Qingming.LevelBackground
             // 落地检测做短暂缓冲，避免站在地面时射线偶发丢失导致动画在 Idle/Jump 间抖动
             bool stableGrounded = grounded || (Time.time - _lastGroundedTime <= 0.1f);
 
-            if (Input.GetKeyDown(KeyCode.Space) && stableGrounded)
+            if (!IsClimbing && !IsOnPorch && Input.GetKeyDown(KeyCode.Space) && stableGrounded)
             {
                 // 根据跳跃高度反推初速度：v = sqrt(2 * g * h)
                 float g = Mathf.Abs(Physics2D.gravity.y) * _rb.gravityScale;
@@ -180,7 +186,7 @@ namespace Qingming.LevelBackground
                 _rb.position = spawnPoint;
             }
 
-            DriveAnimation(h, isRunning, stableGrounded || IsClimbing);
+            DriveAnimation(h, isRunning, stableGrounded || IsClimbing || IsOnPorch);
         }
 
         public void SetControlEnabled(bool enabled)

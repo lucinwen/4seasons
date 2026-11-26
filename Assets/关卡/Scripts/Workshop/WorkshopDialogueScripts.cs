@@ -6,7 +6,7 @@ internal static class WorkshopDialogueScripts
         new WorkshopDialogueLine("工坊掌事", "欢迎加入四时合作社。从今天起，你就和大家一起做桑蚕丝织的活儿啦。"),
         new WorkshopDialogueLine("玩家", "掌事好！我第一次来工坊，需要从哪里开始呢？"),
         new WorkshopDialogueLine("工坊掌事", "别着急，做丝织可不是一两天就能学会的事情。"),
-        new WorkshopDialogueLine("工坊掌事", "咱们的工坊讲究顺应四季。春天养蚕，夏天收茧缫丝，秋天织绸，冬天染色做衣裳。"),
+        new WorkshopDialogueLine("工坊掌事", "咱们的工坊讲究顺应四季。春天养蚕，夏天收茧缫丝，秋天纺织染布，冬天裁缝制衣。"),
         new WorkshopDialogueLine("工坊掌事", "从一片桑叶，到一件漂亮的丝衣，中间要经过许多道工序呢。"),
         new WorkshopDialogueLine("工坊掌事", "不过别担心，工坊里的师傅们都会教你。"),
         new WorkshopDialogueLine("工坊掌事", "你先去公告栏看看，今年春季合作社安排了什么任务。"),
@@ -123,10 +123,10 @@ internal static class WorkshopDialogueScripts
     // Autumn
     internal static readonly WorkshopDialogueLine[] AutumnBriefing =
     {
-        new WorkshopDialogueLine("工坊掌事", "秋天到了，工坊的蚕事也告一段落。"),
+        new WorkshopDialogueLine("工坊掌事", "秋天到了，这一季要完成纺织、染作和酬蚕。"),
         new WorkshopDialogueLine("工坊掌事", "过去，蚕乡的人们会在蚕事结束后举行酬蚕祀谢，感谢这一季的收成。"),
-        new WorkshopDialogueLine("玩家", "原来还有这样的习俗！我想去看看。"),
-        new WorkshopDialogueLine("工坊掌事", "那就先去灵桑阙，跟着织造师傅了解一下吧。"),
+        new WorkshopDialogueLine("玩家", "我们要先纺织生坯绸，再完成秋色染布吗？"),
+        new WorkshopDialogueLine("工坊掌事", "对。先修机、纺织生坯绸，再领取糕点、备齐贡品酬蚕；之后拾锄采集染材、研磨染料，选好颜色染色，就可以回工坊交付秋季成果了。"),
     };
 
     internal static readonly WorkshopDialogueLine[] AutumnRitualIntro =
@@ -150,17 +150,17 @@ internal static class WorkshopDialogueScripts
     internal static readonly WorkshopDialogueLine[] AutumnWarpComplete =
     {
         new WorkshopDialogueLine("织造师傅", "不错，经线和纬线交织成了这匹生坯绸。"),
-        new WorkshopDialogueLine("织造师傅", "把它带回工坊，留给冬季染色。"),
+        new WorkshopDialogueLine("织造师傅", "先备齐蚕花酒、香蕉和糕点完成酬蚕，再采集并研磨染材，立冬试栀黄后染成秋色布。"),
     };
 
     internal static readonly WorkshopDialogueLine[] AutumnReview =
     {
-        new WorkshopDialogueLine("工坊掌事", "小织匠，你手里拿着的就是刚织好的素绸吧？"),
-        new WorkshopDialogueLine("工坊掌事", "很好！从蚕茧到生丝，再到这匹素绸，每一步都离不开大家的劳动。"),
-        new WorkshopDialogueLine("玩家", "这匹素绸已经可以做衣服了吗？"),
-        new WorkshopDialogueLine("工坊掌事", "还差最后一道重要工序呢。"),
-        new WorkshopDialogueLine("工坊掌事", "素绸本身没有鲜艳的颜色。冬天，我们还要用天然染材为它染上颜色，再裁剪缝制成衣。"),
-        new WorkshopDialogueLine("工坊掌事", "去找染整师傅吧，他会带你完成最后的工作。"),
+        new WorkshopDialogueLine("工坊掌事", "小织匠，生坯绸和秋色染布都已经备好了吧？"),
+        new WorkshopDialogueLine("工坊掌事", "很好！从纺织、采集、研磨到立冬试色，每一步都离不开大家的劳动。"),
+        new WorkshopDialogueLine("玩家", "这些就是秋季要交付的成果了吗？"),
+        new WorkshopDialogueLine("工坊掌事", "还要完成酬蚕，并确认秋分和立冬的工序记录。"),
+        new WorkshopDialogueLine("工坊掌事", "梭子、生坯绸、土地公和秋色染布备齐后，就可以回主厅交付秋季成果。"),
+        new WorkshopDialogueLine("工坊掌事", "交付后，把秋色染布带到冬季裁衣台，再裁剪缝制成衣。"),
     };
 
     // Winter
@@ -168,8 +168,8 @@ internal static class WorkshopDialogueScripts
     {
         new WorkshopDialogueLine("工坊掌事", "小织匠，终于到最后一个季节了！"),
         new WorkshopDialogueLine("玩家", "我们终于可以做衣裳了吗？"),
-        new WorkshopDialogueLine("工坊掌事", "没错！不过织好的素绸还需要染色和裁制。"),
-        new WorkshopDialogueLine("工坊掌事", "这次你要去找染整师傅，他会教你认识天然染材。"),
+        new WorkshopDialogueLine("工坊掌事", "没错！秋季染好的秋色布已经备妥，接下来要按样板裁制。"),
+        new WorkshopDialogueLine("工坊掌事", "这次你要去裁衣台裁出衣片，再找缝衣针，把衣片缝制成衣。"),
         new WorkshopDialogueLine("玩家", "我已经迫不及待了！"),
         new WorkshopDialogueLine("工坊掌事", "哈哈，慢慢来，最后一步也要认真做好。"),
     };
@@ -244,7 +244,7 @@ internal static class WorkshopDialogueScripts
         new WorkshopDialogueLine("玩家", "掌事，你看！这是我亲手参与制作的桑蚕成衣！"),
         new WorkshopDialogueLine("工坊掌事", "好，好！真是一件漂亮的衣裳。"),
         new WorkshopDialogueLine("工坊掌事", "还记得你刚加入合作社时，我告诉你的话吗？"),
-        new WorkshopDialogueLine("玩家", "春天养蚕，夏天收茧缫丝，秋天织绸，冬天染色做衣裳！"),
+        new WorkshopDialogueLine("玩家", "春天养蚕，夏天收茧缫丝，秋天纺织染布，冬天裁缝制衣！"),
         new WorkshopDialogueLine("工坊掌事", "没错！你已经把四季的工作都体验了一遍。"),
         new WorkshopDialogueLine("工坊掌事", "不过，这件衣裳不只是你一个人的成果。它背后还有桑农、蚕农、缫丝师傅、织造师傅和染整师傅的共同努力。"),
         new WorkshopDialogueLine("玩家", "我明白了。每一件丝衣都来之不易。"),

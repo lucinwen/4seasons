@@ -9,6 +9,8 @@ UserSettings/
 .vs/
 .codex_backups/
 .codex_media_tmp/
+.screenshots/
+.trae/
 
 # Exported packages and archives
 *.unitypackage

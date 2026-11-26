@@ -234,7 +234,7 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
             "冬至 · 贺冬交衣", 57, Cream, TextAnchor.MiddleCenter);
         WorkshopUi.Fill(page, "Finale Line", new Rect(98, 184, 1220, 2), new Color32(214, 174, 103, 160));
         Label(page, "Finale Body", new Rect(147, 233, 1126, 250),
-            "清明采桑喂蚕，备下蚕种。芒种择茧理丝，合成生丝。秋分借光验丝，寒露织绸。立冬试色染绸，小雪按样裁衣，大雪合缝翻衣。\n\n冬至试衣合身，师傅把贺冬的新衣挂上展架。",
+            "清明采桑喂蚕，备下蚕种。芒种择茧理丝，合成生丝。寒露织绸，染色成秋色布。小雪按样裁衣，大雪合缝翻衣。\n\n冬至试衣合身，师傅把贺冬的新衣挂上展架。",
             30, Cream, TextAnchor.MiddleCenter);
 
         for (int i = 0; i < 4; i++)

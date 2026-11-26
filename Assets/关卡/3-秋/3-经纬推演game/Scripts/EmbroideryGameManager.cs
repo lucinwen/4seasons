@@ -4,8 +4,10 @@ using UnityEngine;
 
 namespace JingweiWeave
 {
-    /// <summary>工具类型：梭子=织入，拨子=取消。</summary>
+    /// <summary>工具类型：梭子=织入，拔子=取消。</summary>
     public enum EmbroideryTool { Shuttle, Beater }
+
+    public enum EmbroideryPlayMode { Weaving, HanluPattern }
 
     /// <summary>
     /// 经纬织纹 · 游戏主逻辑。
@@ -14,6 +16,15 @@ namespace JingweiWeave
     public class EmbroideryGameManager : MonoBehaviour
     {
         public static EmbroideryGameManager Instance { get; private set; }
+        private static EmbroideryPlayMode nextMode = EmbroideryPlayMode.Weaving;
+
+        public EmbroideryPlayMode PlayMode { get; private set; }
+        public bool IsHanluPattern => PlayMode == EmbroideryPlayMode.HanluPattern;
+
+        public static void SetNextMode(EmbroideryPlayMode mode)
+        {
+            nextMode = mode;
+        }
 
         public const int Rows = 5;
         public const int Cols = 8;
@@ -52,6 +63,7 @@ namespace JingweiWeave
 
         private void Awake()
         {
+            PlayMode = nextMode;
             Instance = this;
         }
 

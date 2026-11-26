@@ -23,7 +23,7 @@ public static class WorkshopProgress
     private static readonly string[] Names =
     {
         "桑叶", "蚕种", "蚕宝宝", "盐", "索绪", "线轴",
-        "梭子", "生坯绸", "嫘祖雕像", "染布", "衣片", "缝衣针"
+        "梭子", "生坯绸", "土地公", "染布", "衣片", "缝衣针"
     };
     private static readonly WorkshopItem[][] Recipes =
     {
@@ -317,6 +317,7 @@ public static class WorkshopProgress
     public static bool CanSubmit(WorkshopSeason season)
     {
         if (!IsUnlocked(season) || IsComplete(season)) return false;
+        if (season == WorkshopSeason.Autumn && !Has(WorkshopItem.DyedCloth)) return false;
         return Array.TrueForAll(Recipes[(int)season], Has) &&
             (!SeasonalOrderEnabled || WorkshopObservationView.HasSeasonOrderDeliveries(season));
     }

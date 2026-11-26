@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
+using Qingming.LevelBackground;
 
 namespace JiangnanDye
 {
@@ -42,6 +43,9 @@ namespace JiangnanDye
         internal bool HasRunProgress => allNodes != null &&
             System.Array.Exists(allNodes, node => node != null && node.isCollected);
 
+        private static bool HasRequiredHoe =>
+            WinterLevelState.HasHoe || WorkshopProgress.HasStep("autumn.hoe");
+
         public event System.Action<GameState> StateChanged;
 
         // 每种颜色 3 个相近点位，同一时间只激活一个；累计采集 3 次后该颜色点位失效。
@@ -69,6 +73,17 @@ namespace JiangnanDye
             if (hoeRoot != null) hoeRoot.SetActive(false);
             SetState(GameState.Exploring);
 
+            if (!HasRequiredHoe)
+            {
+                SimplePopup.Show("需要锄头", "请先在秋季场景拾取锄头，再进入染料园采集染材。", "返回秋季", () =>
+                {
+                    if (MiniGameOverlay.CloseIfActive(gameObject.scene)) return;
+                    SceneManager.LoadScene("Level3_Autumn");
+                });
+                return;
+            }
+
+            WinterLevelState.HasHoe = true;
             if (introUI != null) introUI.Show();
             else StartRound();
         }
@@ -199,7 +214,7 @@ namespace JiangnanDye
 
         public void Harvest(GatherableNode node)
         {
-            if (State != GameState.Exploring || WorkshopMinigameMenu.IsPaused) return;
+            if (!HasRequiredHoe || State != GameState.Exploring || WorkshopMinigameMenu.IsPaused) return;
             if (node == null || !node.CanHarvest) return;
 
             if (node.resourceType == ResourceType.Stone)
@@ -292,19 +307,23 @@ namespace JiangnanDye
             }
         }
 
-        /// <summary>结算界面的"前往研磨"按钮：结束小游戏，返回冬天场景并提示玩家询问 NPC 研磨之法。</summary>
+        /// <summary>结算界面的"前往研磨"按钮：结束小游戏，返回秋天场景并提示玩家询问 NPC 研磨之法。</summary>
         public void GoToGrinding()
         {
             Time.timeScale = 1f;
             if (inventory != null) WinterLevelState.SetCollectedDyes(inventory.Items);
             WinterLevelState.PendingGrindingPrompt = true;
             if (MiniGameOverlay.CloseIfActive(gameObject.scene,
-                WinterLevelInteractions.ShowPendingGrindingPrompt)) return;
-            SceneManager.LoadScene("Level4_Winter");
+                AutumnLevelInteractions.ShowPendingGrindingPrompt)) return;
+            SceneManager.LoadScene("Level3_Autumn");
         }
 
         private void OnDestroy()
         {
+            // 除了结算界面的「前往研磨」，暂停菜单离开等路径也要把已收下的染材带回秋季场景
+            if (inventory != null && inventory.Count > 0)
+                WinterLevelState.SetCollectedDyes(inventory.Items);
+
             if (Instance == this) Instance = null;
         }
 

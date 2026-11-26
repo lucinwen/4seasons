@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Qingming.LevelBackground;
+using JiangnanDye;
 
 namespace JingweiWeave
 {
@@ -43,6 +44,7 @@ namespace JingweiWeave
             MinigameUiPresentation.Action(successConfirmButton);
 
             ApplyLayoutTweaks();
+            ApplyModePresentation();
             CreateIntroText();
             RefreshHints();
         }
@@ -75,6 +77,34 @@ namespace JingweiWeave
             }
         }
 
+        private void ApplyModePresentation()
+        {
+            if (gm == null || !gm.IsHanluPattern || gm.uiRoot == null) return;
+            var board = gm.uiRoot.transform.Find("Board") as RectTransform;
+            if (board == null) return;
+
+            const float scale = 1300f / 1672f;
+            Color tint = DyedClothTint();
+            tint.a = 0.52f;
+            var cloth = WorkshopUi.Fill(board, "Dyed Cloth Base",
+                new Rect(368f * scale, 168f * scale, (1571f - 368f) * scale, (852f - 168f) * scale), tint);
+            cloth.raycastTarget = false;
+            cloth.transform.SetSiblingIndex(0);
+        }
+
+        private static Color DyedClothTint()
+        {
+            string saved = WorkshopProgress.DyedColor;
+            var config = Resources.Load<WinterDyeingConfig>("WinterDyeingConfig");
+            foreach (var color in DyeColorUtil.AllColors)
+            {
+                string name = DyeColorUtil.ChineseName(color);
+                if (saved != name && saved != name + "布") continue;
+                return config != null ? config.GetClothTint(color) : DyeColorUtil.Tint(color);
+            }
+            return new Color32(214, 190, 150, 255);
+        }
+
         /// <summary>在棋盘顶部添加玩法说明。</summary>
         private void CreateIntroText()
         {
@@ -101,9 +131,22 @@ namespace JingweiWeave
             var plate = go.GetComponent<UnityEngine.UI.Image>();
             plate.raycastTarget = false;
             MinigameUiPresentation.Surface(plate, MinigameUiPresentation.Pine, true);
-            WorkshopUi.Label(rt, "Instruction", new Rect(22f, 0f, 916f, 64f),
-                "参照每行和每列的目标数字，用梭子织出图案", 27,
-                MinigameUiPresentation.Paper, TextAnchor.MiddleCenter, WorkshopArt.WorkshopFont);
+            if (gm.IsHanluPattern)
+            {
+                rt.sizeDelta = new Vector2(1080f, 100f);
+                rt.anchoredPosition = new Vector2(-70f, 452f);
+                WorkshopUi.Label(rt, "Mode Title", new Rect(22f, 4f, 1036f, 40f),
+                    "寒露攀花", 31, MinigameUiPresentation.Paper, TextAnchor.MiddleCenter, WorkshopArt.WorkshopFont);
+                WorkshopUi.Label(rt, "Instruction", new Rect(22f, 46f, 1036f, 46f),
+                    "参照每行和每列的目标数字，用梭子在染布上织出花纹", 25,
+                    MinigameUiPresentation.Paper, TextAnchor.MiddleCenter, WorkshopArt.WorkshopFont);
+            }
+            else
+            {
+                WorkshopUi.Label(rt, "Instruction", new Rect(22f, 0f, 916f, 64f),
+                    "参照每行和每列的目标数字，用梭子织出图案", 27,
+                    MinigameUiPresentation.Paper, TextAnchor.MiddleCenter, WorkshopArt.WorkshopFont);
+            }
         }
 
         /// <summary>重新统计并刷新 13 个数字提示的颜色。</summary>
@@ -156,6 +199,13 @@ namespace JingweiWeave
 
         private void ShowSuccessPopup()
         {
+            if (gm.IsHanluPattern)
+            {
+                WorkshopProgress.MarkStep("autumn.hanlu.patterned");
+                SimplePopup.Show("寒露攀花", "攀花完成，染布上的花纹已经织好。", "完成", gm.CloseGame);
+                return;
+            }
+
             // 通关奖励：生坯绸道具弹窗，收下后关闭小游戏叠加层
             SimplePopup.ShowItem(
                 WorkshopItem.RawSilkCloth,

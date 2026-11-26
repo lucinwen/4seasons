@@ -35,7 +35,7 @@ public sealed partial class WorkshopKnowledgeView
         new ItemCardCopy(424, 183, 172, 899,
             "生坯绸是织造完成后尚\n未经过精练、染整的原\n始绸料，保留着丝织物\n最初的质感。"),
         new ItemCardCopy(417, 184, 151, 899,
-            "嫘祖是中国民间传说中\n的蚕桑丝织始祖，相传\n她教民养蚕缫丝，推动\n了丝织文明的发展。"),
+            "土地公是乡间守护神，\n寄托着蚕农祈求桑树繁\n茂、丰收、四时风调雨\n顺的美好愿望。"),
         new ItemCardCopy(428, 194, 207, 867,
             "染布是通过染料与\n织物接触，使布料\n呈现不同色彩的工\n艺，可结合浸染、\n晾晒等步骤完成。"),
         new ItemCardCopy(409, 195, 197, 867,

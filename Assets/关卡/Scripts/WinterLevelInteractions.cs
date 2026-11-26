@@ -1,22 +1,16 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Qingming.LevelBackground;
 
 /// <summary>
-/// 冬天关卡交互引导：场景加载后自动为手动摆放的「染料园触点」「锄头」「裁衣台」「NPC」
+/// 冬天关卡交互引导：场景加载后自动为手动摆放的「裁衣台」「缝衣针」「NPC」
 /// 挂上交互组件，无需修改场景文件（组件在运行时动态添加）。
 /// </summary>
 public class WinterLevelInteractions : MonoBehaviour
 {
     private const string SceneName = "Level4_Winter";
-    private const string DyeGardenPointName = "染料园触点";
-    private const string HoeObjectName = "4-挖掘染料锄头";
     private const string ClothTableName = "4-裁剪台";
     private const string NpcName = "idle_blink_frame_01";
-    private const string GrindingBowlName = "4-染料空";
-    private const string GrindingRodName = "4-研磨棒";
-    private const string DyeVatName = "4-染料空缸";
     private const string NeedleName = "4-裁衣工具针";
     private const string CollisionRootName = "碰撞盒";
 
@@ -46,41 +40,12 @@ public class WinterLevelInteractions : MonoBehaviour
     private void Start()
     {
         WinterLevelState.RestoreWorkshopProgress();
-        AttachDyeGardenTrigger();
-        AttachHoePickup();
         AttachClothCuttingTrigger();
         AttachNeedlePickup();
         AttachNpcDialogue();
-        AttachGrindingBowl();
-        AttachGrindingRod();
-        AttachDyeVat();
         ConfigureWinterPlayerStep();
         MakeGroundCollisionSolid();
         FixBlockingPropColliders();
-        RestoreReturnPosition();
-        StartCoroutine(ShowPendingGrindingPromptNextFrame());
-    }
-
-    /// <summary>
-    /// 从染料园返回冬天场景时，把玩家放回进入小游戏前的位置。
-    /// </summary>
-    private static void RestoreReturnPosition()
-    {
-        if (!WinterLevelState.HasReturnPosition) return;
-        WinterLevelState.HasReturnPosition = false;
-
-        var player = GameObject.Find("Player");
-        if (player == null) return;
-
-        Vector3 pos = WinterLevelState.ReturnPosition;
-        var rb = player.GetComponent<Rigidbody2D>();
-        if (rb != null) rb.position = new Vector2(pos.x, pos.y);
-        else player.transform.position = pos;
-
-        // 掉落重置的出生点也跟着改，避免玩家在染料园入口附近掉下去后被送回关卡起点
-        var controller = player.GetComponent<LevelPlayerController>();
-        if (controller != null)
-            controller.spawnPoint = new Vector3(pos.x, pos.y, controller.spawnPoint.z);
     }
 
     private static void AttachNpcDialogue()
@@ -96,54 +61,6 @@ public class WinterLevelInteractions : MonoBehaviour
             npc.AddComponent<WinterNpcDialogue>();
     }
 
-    private static void AttachGrindingBowl()
-    {
-        var bowl = GameObject.Find(GrindingBowlName);
-        if (bowl == null)
-        {
-            Debug.LogWarning("[WinterLevelInteractions] 未找到钵体：" + GrindingBowlName);
-            return;
-        }
-
-        var col = bowl.GetComponent<Collider2D>();
-        if (col != null) col.enabled = true;
-
-        if (bowl.GetComponent<WinterGrindingClickTarget>() == null)
-            bowl.AddComponent<WinterGrindingClickTarget>();
-    }
-
-    private static void AttachGrindingRod()
-    {
-        var rod = GameObject.Find(GrindingRodName);
-        if (rod == null)
-        {
-            Debug.LogWarning("[WinterLevelInteractions] 未找到研磨棒：" + GrindingRodName);
-            return;
-        }
-
-        if (WinterLevelState.HasGrindingRod)
-        {
-            rod.SetActive(false);
-            return;
-        }
-
-        var col = rod.GetComponent<Collider2D>();
-        if (col == null)
-        {
-            var box = rod.AddComponent<BoxCollider2D>();
-            box.isTrigger = true;
-            box.size = new Vector2(20f, 20f);
-            box.offset = Vector2.zero;
-        }
-        else
-        {
-            col.enabled = true;
-        }
-
-        if (rod.GetComponent<WinterRodClickTarget>() == null)
-            rod.AddComponent<WinterRodClickTarget>();
-    }
-
     /// <summary>
     /// 冬天场景由多块地面碰撞盒拼成，木廊/台阶之间有约 0.75 的高度差。
     /// 放宽该场景的自动迈步高度，玩家往左/往右走时不会被隐形台阶卡住。
@@ -155,48 +72,6 @@ public class WinterLevelInteractions : MonoBehaviour
 
         var controller = player.GetComponent<LevelPlayerController>();
         if (controller != null) controller.stepHeight = 0.8f;
-    }
-
-    private static void AttachDyeVat()
-    {
-        var vat = GameObject.Find(DyeVatName);
-        if (vat == null)
-        {
-            Debug.LogWarning("[WinterLevelInteractions] 未找到清水缸：" + DyeVatName);
-            return;
-        }
-
-        var col = vat.GetComponent<Collider2D>();
-        if (col == null)
-        {
-            var box = vat.AddComponent<BoxCollider2D>();
-            box.isTrigger = true;
-            box.size = new Vector2(8f, 8f);
-            box.offset = new Vector2(0f, 0.5f);
-        }
-        else
-        {
-            col.enabled = true;
-        }
-
-        if (vat.GetComponent<WinterDyeVatClickTarget>() == null)
-            vat.AddComponent<WinterDyeVatClickTarget>();
-    }
-
-    /// <summary>从寻找染料小游戏带回原料后，衔接研磨对话。</summary>
-    private static IEnumerator ShowPendingGrindingPromptNextFrame()
-    {
-        yield return null;
-        ShowPendingGrindingPrompt();
-    }
-
-    internal static void ShowPendingGrindingPrompt()
-    {
-        if (!WinterLevelState.PendingGrindingPrompt) return;
-        WinterLevelState.PendingGrindingPrompt = false;
-        if (WinterLevelState.CollectedDyes.Count > 0)
-            WorkshopDialoguePresenter.PlayOnce("dialogue.winter.materialsComplete",
-                WorkshopDialogueScripts.WinterDyeMaterialsComplete);
     }
 
     private static void AttachClothCuttingTrigger()
@@ -301,57 +176,4 @@ public class WinterLevelInteractions : MonoBehaviour
         Debug.Log($"[WinterLevelInteractions] 已将 {count} 个碰撞盒改为实体碰撞，防止玩家下落");
     }
 
-    private static void AttachDyeGardenTrigger()
-    {
-        var point = GameObject.Find(DyeGardenPointName);
-        if (point == null)
-        {
-            Debug.LogWarning("[WinterLevelInteractions] 未找到染料园触点：" + DyeGardenPointName);
-            return;
-        }
-
-        // 触点的实体碰撞盒只作为位置标记，运行时关闭，避免形成隐形墙
-        foreach (var col in point.GetComponents<Collider2D>())
-        {
-            if (!col.isTrigger) col.enabled = false;
-        }
-
-        if (point.GetComponent<WinterDyeGardenTrigger>() == null)
-            point.AddComponent<WinterDyeGardenTrigger>();
-    }
-
-    private static void AttachHoePickup()
-    {
-        var hoe = GameObject.Find(HoeObjectName);
-        if (WinterLevelState.HasHoe)
-        {
-            if (hoe != null) hoe.SetActive(false);
-            return;
-        }
-        if (hoe == null)
-        {
-            Debug.LogWarning("[WinterLevelInteractions] 未找到锄头：" + HoeObjectName);
-            return;
-        }
-        if (hoe.GetComponent<PickupItem>() != null) return;
-
-        // 锄头图片较小，补一个略大的 Trigger 碰撞盒方便鼠标点中
-        var sr = hoe.GetComponent<SpriteRenderer>();
-        if (sr != null && sr.sprite != null)
-        {
-            var col = hoe.GetComponent<BoxCollider2D>();
-            if (col == null) col = hoe.AddComponent<BoxCollider2D>();
-            col.isTrigger = true;
-            col.size = sr.sprite.bounds.size * 1.6f;
-            col.offset = Vector2.zero;
-        }
-
-        var pickup = hoe.AddComponent<PickupItem>();
-        pickup.itemName = "锄头";
-        pickup.triggerDistance = 2.5f;
-        pickup.labelHeight = 3f; // 锄头缩放较小，按局部比例抬高名字
-        pickup.pickupTitle = "锄头";
-        pickup.pickupMessage = "带去染料园挖取染材。";
-        pickup.pickupButtonText = "拾取";
-    }
 }
