@@ -112,7 +112,8 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     internal static bool IsOpen => current != null;
     internal static bool BlocksWorldInput => IsOpen || lastClosedFrame == Time.frameCount;
     internal static WorkshopObservation? ActiveGame => current != null && !current.readOnly &&
-        (IsSeasonGame(current.observation) || current.IsWinterPreparation) ? current.observation : (WorkshopObservation?)null;
+        (IsSeasonGame(current.observation) || current.IsWinterPreparation || current.IsDirectDyeing)
+        ? current.observation : (WorkshopObservation?)null;
 
     internal static WorkshopSeason Season(WorkshopObservation id) => Definitions[(int)id].Season;
     internal static string RecordTitle(WorkshopObservation id) => Definitions[(int)id].Title;

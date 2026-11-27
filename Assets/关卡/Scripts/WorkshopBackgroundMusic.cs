@@ -4,9 +4,11 @@ using UnityEngine.SceneManagement;
 /// <summary>Plays the score for the current scene or foreground workshop activity.</summary>
 internal sealed class WorkshopBackgroundMusic : MonoBehaviour
 {
-    private const float MusicVolume = 0.48f;
-    private const float RewardVolume = 0.18f;
-    private const float FadeSeconds = 0.65f;
+    private const float MusicVolume = 0.42f;
+    private const float RewardVolume = 0.15f;
+    private const float FadeSeconds = 1.1f;
+    private const string FieldworkTrack = "Harvest";
+    private const string HandcraftTrack = "Weave";
     private static readonly string[] SeasonTracks = { "Spring", "Summer", "Autumn", "Winter" };
 
     private AudioSource first;
@@ -15,6 +17,9 @@ internal sealed class WorkshopBackgroundMusic : MonoBehaviour
     private AudioListener fallbackListener;
     private string sceneTrack;
     private string currentTrack;
+    private float firstMix;
+    private float secondMix;
+    private float musicGain = MusicVolume;
     private bool sceneChanged = true;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -80,11 +85,14 @@ internal sealed class WorkshopBackgroundMusic : MonoBehaviour
         if (currentTrack != nextTrack)
             ChangeTrack(nextTrack);
 
-        float level = MiniGameCompletionAnimation.IsPlaying ? RewardVolume : MusicVolume;
-        float delta = Time.unscaledDeltaTime * MusicVolume / FadeSeconds;
-        if (level == RewardVolume) delta *= 2f;
-        FadeSource(first, first == foreground ? level : 0f, delta);
-        FadeSource(second, second == foreground ? level : 0f, delta);
+        bool rewardPlaying = MiniGameCompletionAnimation.IsPlaying;
+        float duckTime = rewardPlaying ? 0.18f : 0.55f;
+        musicGain = Mathf.MoveTowards(musicGain, rewardPlaying ? RewardVolume : MusicVolume,
+            Time.unscaledDeltaTime * (MusicVolume - RewardVolume) / duckTime);
+
+        float mixStep = Time.unscaledDeltaTime / FadeSeconds;
+        FadeSource(first, ref firstMix, mixStep);
+        FadeSource(second, ref secondMix, mixStep);
     }
 
     private void UpdateListener()
@@ -104,8 +112,11 @@ internal sealed class WorkshopBackgroundMusic : MonoBehaviour
     private void ChangeTrack(string track)
     {
         currentTrack = track;
-        foreground = null;
-        if (track == null) return;
+        if (track == null)
+        {
+            foreground = null;
+            return;
+        }
 
         var clip = Resources.Load<AudioClip>("WorkshopMusic/" + track);
         if (clip == null) return;
@@ -114,39 +125,41 @@ internal sealed class WorkshopBackgroundMusic : MonoBehaviour
         else if (second.clip == clip) foreground = second;
         else
         {
-            foreground = first.volume <= second.volume ? first : second;
+            foreground = firstMix <= secondMix ? first : second;
             foreground.Stop();
             foreground.volume = 0f;
+            if (foreground == first) firstMix = 0f;
+            else secondMix = 0f;
             foreground.clip = clip;
         }
 
-        if (!foreground.isPlaying) foreground.Play();
+        if (foreground.isPlaying) return;
+        if (foreground.timeSamples > 0) foreground.UnPause();
+        else foreground.Play();
     }
 
-    private void FadeSource(AudioSource source, float target, float delta)
+    private void FadeSource(AudioSource source, ref float mix, float step)
     {
-        source.volume = Mathf.MoveTowards(source.volume, target, delta);
-        if (source != foreground && source.volume == 0f && source.isPlaying)
-            source.Stop();
+        mix = Mathf.MoveTowards(mix, source == foreground ? 1f : 0f, step);
+        source.volume = Mathf.Sin(mix * Mathf.PI * 0.5f) * musicGain;
+
+        // Keep the outgoing cue's position so closing an activity can resume the chapter theme.
+        if (source != foreground && mix == 0f && source.isPlaying)
+            source.Pause();
     }
 
     private static string ActivityTrack()
     {
-        switch (WorkshopObservationView.ActiveGame)
-        {
-            case WorkshopObservation.MangzhongCocoon: return "Mangzhong";
-            case WorkshopObservation.QiufenOffering: return "Qiufen";
-            case WorkshopObservation.HanluLoom: return "Hanlu";
-            case WorkshopObservation.LidongDye: return "Lidong";
-            case WorkshopObservation.XiaoxueTailoring: return "Xiaoxue";
-        }
-
-        if (SpringSilkwormWashOverlay.IsOpen) return "Wash";
-        if (HarvestOverlayManager.IsHarvestActive) return "Qingming";
         if (AutumnOfferingView.IsOpen) return "Offering";
-        if (WinterGrindingOverlay.IsActive) return "Grinding";
-        if (WinterDyeingOverlay.IsActive) return "Dyeing";
-        if (WorkshopTailor.IsOpen) return "Tailoring";
+
+        var activity = WorkshopObservationView.ActiveGame;
+        if (HarvestOverlayManager.IsHarvestActive || activity == WorkshopObservation.QingmingMulberry ||
+            activity == WorkshopObservation.MangzhongCocoon)
+            return FieldworkTrack;
+        if (WinterGrindingOverlay.IsActive || WinterDyeingOverlay.IsActive || WorkshopTailor.IsOpen ||
+            activity == WorkshopObservation.LidongDye || activity == WorkshopObservation.XiaoxueTailoring)
+            return HandcraftTrack;
+
         return null;
     }
 
@@ -159,13 +172,13 @@ internal sealed class WorkshopBackgroundMusic : MonoBehaviour
             if (!scene.isLoaded) continue;
             switch (scene.name)
             {
-                case "MulberryHarvest": return "Qingming";
-                case "CocoonMatch": return "CocoonMatch";
                 case "Maze_Autumn": return "Maze";
-                case "LoomRepair": return "LoomRepair";
-                case "EmbroideryScene": return "Weave";
-                case "MainScene": return "DyeGather";
-                case "ClothCutting": return "Cutting";
+                case "MulberryHarvest":
+                case "CocoonMatch":
+                case "MainScene": return FieldworkTrack;
+                case "LoomRepair":
+                case "EmbroideryScene":
+                case "ClothCutting": return HandcraftTrack;
             }
         }
 

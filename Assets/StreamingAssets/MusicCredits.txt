@@ -1,34 +1,41 @@
 四时织坊 · 背景音乐鸣谢
 Four Seasons Workshop · Background Music Credits
 
-标题 / Title — Dawn's Break © 2024 by Shane Ivers
-https://www.silvermansound.com/free-music/dawns-break
+标题 / Title — Shenxian (Drumless) by PeriTune (Sei Mutsuki)
+https://peritune.com/blog/2020/06/05/shenxian/
 
-主厅 / Workshop Hall — Zen Garden © 2016 by Shane Ivers
-https://www.silvermansound.com/free-music/zen-garden
+主厅 / Workshop Hall — 《九坊耕织图》 by 黑耀耀
+https://www.heiyaoyao.cn/music/bgm1/
 
-春章 / Spring — Taohua by PeriTune (Sei Mutsuki)
-https://peritune.com/blog/2021/03/03/taohua/
+春章 / Spring — 《竹涧忘忧》 by 黑耀耀
+https://www.heiyaoyao.cn/music/bgm1/
 
-夏章 / Summer — Chinatown (Healing) by PeriTune (Sei Mutsuki)
-https://peritune.com/blog/2017/06/22/chinatown/
+夏章 / Summer — 《枕泉听月录》 by 黑耀耀
+https://www.heiyaoyao.cn/music/bgm1/
 
-秋章 / Autumn — Cattails by Kevin MacLeod (incompetech.com)
-https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100743
+秋章 / Autumn — 《坐隐松烟》 by 黑耀耀
+https://www.heiyaoyao.cn/music/bgm1/
 
-冬章 / Winter — Pale_Warmth by PeriTune (Sei Mutsuki)
-https://peritune.com/blog/2024/12/05/pale_warmth/
+冬章 / Winter — Morning Snowfields by PeriTune (Sei Mutsuki)
+https://peritune.com/blog/2026/01/02/morning_snowfields/
 
-采集与探索 / Fieldwork — Wish5 by PeriTune (Sei Mutsuki)
-https://peritune.com/blog/2019/05/10/wish5/
+采集与择茧挑战 / Fieldwork and Cocoon Challenges — 《铃鼓嬉贩》 by 黑耀耀
+https://www.heiyaoyao.cn/music/bgm1/
 
-手作工位 / Handcraft — Taohua (Melody Off) by PeriTune (Sei Mutsuki)
-https://peritune.com/blog/2021/03/03/taohua/
+迷宫 / Maze — Wuxia3 (Healing) by PeriTune (Sei Mutsuki)
+https://peritune.com/blog/2021/05/22/wuxia3/
+
+手作工位 / Handcraft — Wuxia2 (Guzheng & Pipa) by PeriTune (Sei Mutsuki)
+https://peritune.com/blog/2018/10/13/wuxia2/
+
+秋社 / Autumn Offering — 《九霄链峰图》 by 黑耀耀
+https://www.heiyaoyao.cn/music/bgm53/
 
 以上曲目按知识共享署名 4.0 国际许可协议使用。
 These tracks are licensed under Creative Commons Attribution 4.0 International.
 https://creativecommons.org/licenses/by/4.0/
+https://www.heiyaoyao.cn/announcements/import-notice/
 https://peritune.com/about/
 
-游戏版本统一调整音量并转码为 Ogg Vorbis。部分曲目使用作者提供的循环版，其余曲目在首尾加短淡化。
-The game versions are level-matched and encoded as Ogg Vorbis. They use the authors' loops where available and short fades at the ends of the other tracks.
+游戏版本调整了响度并转码为 Ogg Vorbis。PeriTune 曲目使用作者制作的循环版，黑耀耀曲目修剪了首尾并添加短交叉淡化以便循环。
+The game versions are level-matched and encoded as Ogg Vorbis. PeriTune tracks use the composer's loops. Tracks by 黑耀耀 are trimmed and crossfaded at the loop point.

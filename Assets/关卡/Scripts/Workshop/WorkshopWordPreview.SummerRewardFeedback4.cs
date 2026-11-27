@@ -32,8 +32,7 @@ public sealed partial class WorkshopWordPreview
 
         WorkshopCocoonSorting.Show();
         yield return null;
-        for (int i = 0; i < WorkshopCocoonSorting.Target; i++)
-        { Feedback3SortCell(true).onClick.Invoke(); yield return null; }
+        yield return Feedback3SolveSorting();
         InvokeWorktableButton("Finish Cocoon Sorting");
         yield return new WaitForSecondsRealtime(.65f);
         RewardFeedback3TermOnly(null, "real cocoon sorting completion");

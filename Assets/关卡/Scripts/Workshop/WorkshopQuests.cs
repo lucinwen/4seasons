@@ -41,7 +41,7 @@ internal static class WorkshopQuests
         new[] {
             Item(WorkshopItem.Salt, "取盐", "盐窖", "获取并收下盐。"),
             Item(WorkshopItem.Suoxu, "立夏下簇", "择茧草堂", "完成原有蚕茧合成消除小游戏，领取索绪。"),
-            new Entry("WhiteTiles", "立夏择茧", "蚕茧簇架", "取得索绪后，回到簇架，从最下行开始点选深色茧块，避开白块。完成择茧领取立夏卡。", () => Step(WorkshopWordRules.Sorted), () => Has(WorkshopItem.Suoxu)),
+            new Entry("WhiteTiles", "立夏择茧", "蚕茧簇架", "取得索绪后回到簇架。赶在完好茧滑出底线前点中深色块，避开浅色的破口茧和受潮茧。通关领立夏卡。", () => Step(WorkshopWordRules.Sorted), () => Has(WorkshopItem.Suoxu)),
             new Entry("Water", "取水", "水源", "为煮茧备水。", HasWater),
             new Entry("Firewood", "拾木材", "发光木柴", "收下木材，带到练丝坊。", HasFirewood),
             Item(WorkshopItem.Spool, "小满寻找线轴", "练丝坊煮茧锅", "备水拾柴后走通原有迷宫，找到线轴。", () => HasWater() && HasFirewood()),

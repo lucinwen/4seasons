@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -40,25 +41,49 @@ public sealed partial class WorkshopWordPreview
         yield return null;
         Feedback2Require(WorkshopCocoonSorting.IsOpen && Time.timeScale == 0f && WorkshopQuestGuide.IsWorldOverlayActive,
             "Sorting did not open as a blocking worktable.");
-        yield return Capture("961-feedback3-cocoon-sorting-game");
-        Feedback3SortCell(false).onClick.Invoke();
+        var board = GameObject.Find("Sorting Board")?.GetComponent<RectTransform>();
+        var track = board?.Find("Sorting Track") as RectTransform;
+        Feedback2Require(board != null && board.GetComponent<RectMask2D>() != null && track != null,
+            "Sorting is missing its clipped scrolling track.");
+        float readyY = track.anchoredPosition.y;
+        InvokeWorktableButton("Start Cocoon Sorting");
+        yield return new WaitForSecondsRealtime(.15f);
+        Feedback2Require(track.anchoredPosition.y < readyY && Time.timeScale == 0f,
+            "Sorting tiles did not move down while the workshop was paused.");
+        var target = Feedback3SortCell(track, 0, true);
+        var art = target?.transform.Find("Silkworm Cocoon")?.GetComponent<Image>();
+        Feedback2Require(art != null && art.enabled && art.sprite != null && !art.raycastTarget,
+            "The first sorting target is missing clickable tile art.");
+        var images = target.transform.parent.GetComponentsInChildren<Image>();
+        foreach (string name in new[] { "Torn Cocoon", "Damp Cocoon", "Large Dew Bead", "Small Dew Bead" })
+            Feedback2Require(images.Any(image => image.name == name && image.enabled && image.sprite != null && !image.raycastTarget),
+                "The first sorting row is missing defect art: " + name);
+        var white = Feedback3SortCell(track, 0, false);
+        Feedback2Require(white != null, "The first sorting row is missing a visible white tile.");
+        white.onClick.Invoke();
         yield return null;
-        Feedback2Require(!WorkshopProgress.HasStep(WorkshopWordRules.Sorted), "A white tile awarded sorting progress.");
+        Feedback2Require(Feedback3SortingStatus().Contains("点到白块了") &&
+            !WorkshopProgress.HasStep(WorkshopWordRules.Sorted), "A white tile did not fail the sorting round.");
         yield return Capture("962-feedback3-cocoon-wrong-tile");
         InvokeWorktableButton("Retry Cocoon Sorting");
+        yield return Capture("961-feedback3-cocoon-sorting-game");
+        float missDeadline = Time.realtimeSinceStartup + 3f;
+        while (!Feedback3SortingStatus().Contains("有蚕茧滑出底线") && Time.realtimeSinceStartup < missDeadline)
+            yield return null;
+        Feedback2Require(Feedback3SortingStatus().Contains("有蚕茧滑出底线") &&
+            !WorkshopProgress.HasStep(WorkshopWordRules.Sorted), "An unattended cocoon did not fail the sorting round.");
+        InvokeWorktableButton("Retry Cocoon Sorting");
         yield return null;
-        Feedback3SortCell(true).onClick.Invoke();
+        var retriedTarget = Feedback3SortCell(track, 0, true);
+        Feedback2Require(retriedTarget != null, "Retry did not begin a new sorting round.");
+        retriedTarget.onClick.Invoke();
         InvokeWorktableButton("Leave Cocoon Sorting");
         yield return null;
         Feedback2Require(!WorkshopCocoonSorting.IsOpen && !WorkshopProgress.HasStep(WorkshopWordRules.Sorted) && Time.timeScale == 1f,
             "Leaving an incomplete sorting round changed progress or kept the world paused.");
         WorkshopCocoonSorting.Show();
         yield return null;
-        for (int i = 0; i < WorkshopCocoonSorting.Target; i++)
-        {
-            Feedback3SortCell(true).onClick.Invoke();
-            yield return null;
-        }
+        yield return Feedback3SolveSorting();
         yield return Capture("963-feedback3-cocoon-sorting-finished");
         InvokeWorktableButton("Finish Cocoon Sorting");
         yield return new WaitForSecondsRealtime(.65f);
@@ -74,18 +99,44 @@ public sealed partial class WorkshopWordPreview
         yield return new WaitForSecondsRealtime(.5f);
         Feedback2Require(WorkshopProgress.HasStep(WorkshopWordRules.Sorted) && !WorkshopRewardCards.IsBusy,
             "Replaying sorting lost the saved completion or duplicated the card.");
-        Debug.Log("[CocoonFeedback3] PASS: pause stays visible through tile travel and opens/resumes; sorting rejects white tiles, retries, cancels without reward, completes twenty rows and unlocks Lixia once; reload retains completion.");
+        Debug.Log("[CocoonFeedback3] PASS: pause stays visible through tile travel and opens/resumes; sorting shows cocoon art, scrolls, fails on white tiles or missed cocoons, retries, cancels without reward, completes twenty rows and unlocks Lixia once; reload retains completion.");
     }
 
-    private static Button Feedback3SortCell(bool cocoon)
+    private static string Feedback3SortingStatus()
     {
-        foreach (var button in UnityEngine.Object.FindObjectsOfType<Button>())
+        var status = GameObject.Find("Sorting Progress")?.GetComponent<Text>();
+        Feedback2Require(status != null, "Sorting status is missing.");
+        return status.text;
+    }
+
+    private static IEnumerator Feedback3SolveSorting()
+    {
+        var track = GameObject.Find("Sorting Track")?.GetComponent<RectTransform>();
+        Feedback2Require(track != null, "Sorting track is missing.");
+        InvokeWorktableButton("Start Cocoon Sorting");
+        for (int sequence = 0; sequence < WorkshopCocoonSorting.Target; sequence++)
         {
-            if (!button.name.StartsWith("Sort Cell 3 ") || !button.interactable) continue;
-            var label = button.GetComponentInChildren<Text>();
-            if ((label != null && label.text == "蚕茧") == cocoon) return button;
+            float deadline = Time.realtimeSinceStartup + 3f;
+            Button cell;
+            while ((cell = Feedback3SortCell(track, sequence, true)) == null && Time.realtimeSinceStartup < deadline)
+                yield return null;
+            Feedback2Require(cell != null, "Sorting row did not become clickable: " + sequence);
+            cell.onClick.Invoke();
+            yield return null;
         }
-        throw new System.InvalidOperationException("Sorting row has no requested active tile.");
+    }
+
+    private static Button Feedback3SortCell(RectTransform track, int sequence, bool cocoon)
+    {
+        var row = track.Find("Sort Row " + sequence) as RectTransform;
+        if (row == null) return null;
+        var board = (RectTransform)track.parent;
+        float rowCenter = board.InverseTransformPoint(row.TransformPoint(row.rect.center)).y;
+        if (rowCenter <= board.rect.yMin || rowCenter >= board.rect.yMax) return null;
+        foreach (var button in row.GetComponentsInChildren<Button>())
+            if (button.IsInteractable() && (button.transform.Find("Silkworm Cocoon") != null) == cocoon)
+                return button;
+        return null;
     }
 }
 #endif
