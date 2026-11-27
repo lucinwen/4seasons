@@ -174,7 +174,7 @@ public sealed class WorkshopHub : MonoBehaviour
         shadow.effectColor = new Color32(17, 30, 23, 220);
         shadow.effectDistance = new Vector2(2f, -3f);
         Label(_page, "Workshop Name", new Rect(57f, 94f, 350f, 40f),
-            "四时合作社 · 中央主厅", 25, new Color32(223, 211, 173, 255));
+            WorkshopTitle.GameName + " · 中央主厅", 25, new Color32(223, 211, 173, 255));
         DrawAnnouncement();
         DrawTopActions();
         DrawMainHallHotspots();
@@ -190,7 +190,7 @@ public sealed class WorkshopHub : MonoBehaviour
             new Color32(35, 71, 55, 245)).transform;
         WorkshopUi.Fill(banner, "Announcement Accent", new Rect(0, 0, 7, 66), fresh ? Brass : Rule);
         Label(banner, "Announcement Kicker", new Rect(20, 3, 158, 60),
-            "合作社公告", 24, new Color32(246, 215, 151, 255));
+            WorkshopTitle.GameName + "公告", 24, new Color32(246, 215, 151, 255));
         Label(banner, "Announcement Headline", new Rect(180, 3, 350, 60),
             story.AnnouncementTitle, 25, WorkshopUi.Cream);
         Label(banner, "Announcement Time", new Rect(522, 3, 98, 60),
@@ -256,7 +256,7 @@ public sealed class WorkshopHub : MonoBehaviour
             "知识卡与节气", new Color32(45, 85, 65, 245),
             () => WorkshopKnowledgeView.ShowJournal(_season), $"{stored} / 12");
         DrawBuildingHotspot(new Rect(790, 333, 322, 96), "新闻公告",
-            "合作社新消息", new Color32(132, 70, 47, 245), OpenAnnouncement,
+            WorkshopTitle.GameName + "新消息", new Color32(132, 70, 47, 245), OpenAnnouncement,
             WorkshopProgress.HasStep("announcement." + _season) ? "查看" : "新");
         DrawBuildingHotspot(new Rect(887, 430, 318, 215),
             WorkshopProgress.SeasonName(_season) + "季工坊", ChapterCraft(_season),

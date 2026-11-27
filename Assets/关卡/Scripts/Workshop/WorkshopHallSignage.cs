@@ -12,7 +12,7 @@ internal static class WorkshopHallSignage
     internal static RectTransform Draw(Transform parent, Rect bounds, Rect view)
     {
         var signage = WorkshopUi.Rect(parent, "Panorama Signage", bounds);
-        DrawLabel(signage, view, new Rect(846f, 239f, 228f, 44f), "四时合作社工坊", 32, RoofSignInk);
+        DrawLabel(signage, view, new Rect(846f, 239f, 228f, 44f), WorkshopTitle.GameName, 32, RoofSignInk);
         DrawLabel(signage, view, new Rect(1690f, 304f, 74f, 26f), "公告栏", 18, DirectionSignInk);
         DrawLabel(signage, view, new Rect(1690f, 336f, 74f, 26f), "储物屋", 18, DirectionSignInk);
         DrawLabel(signage, view, new Rect(1690f, 368f, 74f, 26f), WardrobeName, 18, DirectionSignInk);

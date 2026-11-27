@@ -2,7 +2,7 @@ internal static class WorkshopDialogueScripts
 {
     internal static readonly WorkshopDialogueLine[] Prologue =
     {
-        new WorkshopDialogueLine("工坊掌事", "欢迎加入四时合作社，和大家一起学习桑蚕丝织。"),
+        new WorkshopDialogueLine("工坊掌事", $"欢迎加入{WorkshopTitle.GameName}，和大家一起学习桑蚕丝织。"),
         new WorkshopDialogueLine("工坊掌事", "春天采桑浴蚕、喂蚕，夏天下簇缫丝备料，秋天采材织造染色攀花，冬天裁衣缝制。"),
         new WorkshopDialogueLine("工坊掌事", "先去春季公告栏，向蚕房师傅领任务吧。"),
     };
@@ -212,7 +212,7 @@ internal static class WorkshopDialogueScripts
         new WorkshopDialogueLine("玩家", "那以后还会有人继续做桑蚕丝织吗？"),
         new WorkshopDialogueLine("工坊掌事", "当然。只要有人愿意学习、愿意传承，这些技艺就不会轻易消失。"),
         new WorkshopDialogueLine("玩家", "我也想继续学习，把今天学到的知识告诉更多人！"),
-        new WorkshopDialogueLine("工坊掌事", "好！这才是四时合作社的小织匠。"),
+        new WorkshopDialogueLine("工坊掌事", $"好！这才是{WorkshopTitle.GameName}的小织匠。"),
     };
 
     // Quest progress and return visits

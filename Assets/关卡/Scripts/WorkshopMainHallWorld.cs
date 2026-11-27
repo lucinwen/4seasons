@@ -230,7 +230,7 @@ public sealed class WorkshopMainHallWorld : MonoBehaviour
         WorkshopUi.ApplyPixelShape(seal);
         Label(seal.transform, "Seal Text", new Rect(0, 0, 58, 58), "织", 32,
             WorkshopUi.Paper, TextAnchor.MiddleCenter);
-        Label(location, "Workshop Name", new Rect(94, 16, 218, 39), "四时合作社", 35, WorkshopUi.Ink);
+        Label(location, "Workshop Name", new Rect(94, 16, 218, 39), WorkshopTitle.GameName, 35, WorkshopUi.Ink);
         Label(location, "Hall Name", new Rect(95, 59, 218, 25), "中央主厅", 22, WorkshopUi.Faded);
 
         var status = WorkshopUi.Card(frame, "Hall Progress", new Rect(1184, 32, 520, 128), WorkshopUi.Paper);
