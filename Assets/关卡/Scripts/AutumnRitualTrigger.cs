@@ -69,6 +69,14 @@ public class AutumnRitualTrigger : MonoBehaviour
     private void OnRitualClicked()
     {
         if (WorkshopQuestGuide.BlocksWorldInput || WorkshopQuestGuide.IsWorldOverlayActive) return;
+        if (!AutumnLevelState.HasRitualDone && AutumnLevelState.OfferingCount == 3)
+            WorkshopProcessCardView.Show(WorkshopProcessCard.BailuRitual, OpenOfferingTable);
+        else
+            OpenOfferingTable();
+    }
+
+    private static void OpenOfferingTable()
+    {
         AutumnOfferingView.Show(() => AutumnNpcDialogue.IntroduceRitual(SubmitOfferings));
     }
 

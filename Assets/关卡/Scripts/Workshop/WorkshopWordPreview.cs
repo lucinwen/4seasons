@@ -512,7 +512,7 @@ public sealed partial class WorkshopWordPreview : MonoBehaviour
 
     private static IEnumerator CaptureAll()
     {
-        PlayerPrefs.SetString("ShiXu.Workshop.v1", "{\"items\":4095,\"chapters\":7,\"solarTerms\":15,\"dyedColor\":\"紫色\",\"seasonalOrder\":true,\"steps\":[\"quest.guide.Spring\",\"quest.guide.Summer\",\"quest.guide.Autumn\",\"quest.guide.Winter\",\"autumn.loom\",\"winter.hoe\",\"winter.rod\",\"autumn.mortar\"]}");
+        PlayerPrefs.SetString("ShiXu.Workshop.v1", "{\"items\":8191,\"chapters\":7,\"solarTerms\":15,\"dyedColor\":\"紫色\",\"seasonalOrder\":true,\"steps\":[\"quest.guide.Spring\",\"quest.guide.Summer\",\"quest.guide.Autumn\",\"quest.guide.Winter\",\"autumn.loom\",\"winter.hoe\",\"winter.rod\",\"autumn.mortar\"]}");
         WorkshopProgress.ResetSession();
         yield return SceneManager.LoadSceneAsync("Level1_Spring");
         yield return new WaitForSecondsRealtime(0.6f);
@@ -551,10 +551,7 @@ public sealed partial class WorkshopWordPreview : MonoBehaviour
 
         yield return SceneManager.LoadSceneAsync("Level4_Winter");
         yield return new WaitForSecondsRealtime(0.6f);
-        WorkshopSimpleGames.Show(WorkshopSimpleGame.Fitting);
-        yield return Capture("05-winter-fitting");
-        CloseWorktable();
-        WorkshopProgress.MarkStep(WorkshopWordRules.Fitted);
+        yield return CaptureWinterLayout("05-winter-layout");
         WorkshopProgress.MarkStep(WorkshopObservationView.XiaoxueLiningStep);
         WorkshopTailor.Show(null, null);
         yield return Capture("06-winter-style");
@@ -565,6 +562,15 @@ public sealed partial class WorkshopWordPreview : MonoBehaviour
         Debug.Log("[WordRevision] UI PASS: style chooser and three-piece sewing open; no legacy lining requirement.");
         File.WriteAllText("../WordRevision/visual-review-complete.txt", "Actual Unity Editor frames, 1920x1080; no player build.\n");
         UnityEditor.EditorApplication.isPlaying = false;
+    }
+
+    private static IEnumerator CaptureWinterLayout(string name)
+    {
+        WorkshopObservationView.ShowWinterPreparation();
+        InvokeWorktableButton("Xiaoxue Rack Choice 2");
+        yield return Capture(name);
+        InvokeWorktableButton("Return From Observation");
+        yield return null;
     }
 
     private static IEnumerator Capture(string name)

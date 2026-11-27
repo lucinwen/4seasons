@@ -94,16 +94,21 @@ public static class WorkshopWordChecks
             Require(WorkshopWordRules.WinterStage == WorkshopWinterStage.Cutting && !WorkshopProgress.Has(WorkshopItem.CutPieces),
                 "cloth preparation survives reload and leads to scissors without awarding pieces");
             WorkshopProgress.Award(WorkshopItem.CutPieces);
-            Require(WorkshopWordRules.WinterStage == WorkshopWinterStage.Fitting, "cut pieces lead to pattern fitting");
-            Require(!WorkshopProgress.CanSubmit(WorkshopSeason.Winter), "fitting required after cutting");
-            WorkshopProgress.MarkStep(WorkshopWordRules.Fitted);
-            Require(WorkshopWordRules.WinterStage == WorkshopWinterStage.Needle, "fitting leads to needle if missing");
+            Require(WorkshopWordRules.WinterStage == WorkshopWinterStage.Needle, "cut pieces lead to needle if missing");
+            Require(!WorkshopProgress.CanSubmit(WorkshopSeason.Winter), "needle required after cutting");
             WorkshopProgress.Award(WorkshopItem.Needle);
-            Require(WorkshopWordRules.WinterStage == WorkshopWinterStage.Sewing, "ready table opens sewing instead of repeating fitting");
-            Require(WorkshopProgress.CanSubmit(WorkshopSeason.Winter), "winter handoff ready without old swatch/layout orders");
+            Require(WorkshopProgress.Items(WorkshopSeason.Winter).SequenceEqual(new[] {
+                WorkshopItem.Needle, WorkshopItem.SilkwormEggSheet, WorkshopItem.CutPieces }),
+                "winter task board lists needle, egg sheet and cut pieces in order");
+            Require(WorkshopWordRules.WinterStage == WorkshopWinterStage.EggSheet &&
+                !WorkshopProgress.CanSubmit(WorkshopSeason.Winter) && !WorkshopProgress.CompleteWinter("1_04"),
+                "dyed cloth cannot substitute for the egg sheet at settlement");
+            Require(WorkshopProgress.Award(WorkshopItem.SilkwormEggSheet) &&
+                WorkshopWordRules.WinterStage == WorkshopWinterStage.Sewing &&
+                WorkshopProgress.CanSubmit(WorkshopSeason.Winter), "all three delivery items open sewing");
             WorkshopProgress.MarkStep(WorkshopObservationView.XiaoxueLiningStep);
             WorkshopProgress.ResetSession();
-            Require(WorkshopProgress.CanSubmit(WorkshopSeason.Winter) && WorkshopProgress.DyedColor == DyeColorUtil.ChineseName(DyeColor.Purple), "permanent inventory and fitting survive reload");
+            Require(WorkshopProgress.CanSubmit(WorkshopSeason.Winter) && WorkshopProgress.DyedColor == DyeColorUtil.ChineseName(DyeColor.Purple), "permanent inventory and winter delivery survive reload");
             Require(WorkshopProgress.CompleteWinter("1_04"), "legacy lining record does not add a sewing prerequisite");
             Require(WorkshopWordRules.WinterStage == WorkshopWinterStage.Complete, "finished table leads to wardrobe");
             Require(WorkshopProgress.Items(WorkshopSeason.Winter).All(WorkshopProgress.Has), "winter sewing preserves all items");
@@ -113,11 +118,16 @@ public static class WorkshopWordChecks
             Load("{\"items\":7,\"steps\":[\"spring.guyu.batchFed\"]}");
             Require(WorkshopProgress.CanSubmit(WorkshopSeason.Spring), "old real feeding completion remains valid");
             Load("{\"items\":1536}");
-            Require(WorkshopWordRules.WinterStage == WorkshopWinterStage.Fitting,
-                "legacy cut pieces skip the new preparation requirement");
+            Require(WorkshopWordRules.WinterStage == WorkshopWinterStage.Needle,
+                "legacy cut pieces allow the player to proceed to the needle");
+            Load("{\"items\":3584,\"chapters\":7}");
+            Require(WorkshopWordRules.WinterStage == WorkshopWinterStage.EggSheet && !WorkshopProgress.CanSubmit(WorkshopSeason.Winter),
+                "unfinished legacy saves retain their materials and can collect the new item");
             Load("{\"items\":4095,\"chapters\":15,\"dyedColor\":\"紫色\"}");
             Require(Enum.GetValues(typeof(WorkshopSeason)).Cast<WorkshopSeason>().All(WorkshopProgress.IsComplete), "completed legacy chapters remain complete");
-            Require(WorkshopProgress.Has(WorkshopItem.DyedCloth), "legacy inventory preserved");
+            Require(WorkshopProgress.Has(WorkshopItem.DyedCloth) &&
+                WorkshopProgress.Items(WorkshopSeason.Winter).All(WorkshopProgress.Has),
+                "completed legacy saves retain dyed cloth and display the full updated delivery");
             Require(WorkshopQuests.ForSeason(WorkshopSeason.Summer).Any(q => q.Id == "WhiteTiles"), "cocoon sorting is present in the summer route");
             int entered = 0;
             for (int season = 0; season < 3; season++)
@@ -127,7 +137,7 @@ public static class WorkshopWordChecks
             WorkshopNarrativeView.ShowFinale(() => entered++);
             Require(entered == 4 && !WorkshopNarrativeView.IsOpen && WorkshopProgress.HasStep("finale.seen"),
                 "finale goes directly to the wardrobe callback");
-            Debug.Log("[WordRevision] RULES PASS: first-conversation cake, independent scene hammer, new game, four-season delivery, permanent inventory, feeding, weaving, dye-pattern gates, cutting-fitting-needle-sewing-wardrobe routing, legacy compatibility and save reload.");
+            Debug.Log("[WordRevision] RULES PASS: first-conversation cake, independent scene hammer, new game, four-season delivery, permanent inventory, feeding, weaving, dye-pattern gates, layout-cutting-needle-sewing-wardrobe routing, legacy compatibility and save reload.");
         }
         finally
         {

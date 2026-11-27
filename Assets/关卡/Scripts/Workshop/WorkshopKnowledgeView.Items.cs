@@ -32,8 +32,7 @@ public sealed partial class WorkshopKnowledgeView
             "线轴用于缠绕和收\n纳缫出的蚕丝，方\n便丝线整理、运输\n与后续织造，避免\n丝线缠绕打结。"),
         new ItemCardCopy(427, 184, 163, 900,
             "梭子用于携带纬线穿过\n经线之间，配合织机往\n复运动，使经纬线交织\n形成完整布面。"),
-        new ItemCardCopy(424, 183, 172, 899,
-            "生坯绸是织造完成后尚\n未经过精练、染整的原\n始绸料，保留着丝织物\n最初的质感。"),
+        default, // 缬的标题和正文印在卡图上。
         new ItemCardCopy(417, 184, 151, 899,
             "土地公是乡间守护神，\n寄托着蚕农祈求桑树繁\n茂、丰收、四时风调雨\n顺的美好愿望。"),
         new ItemCardCopy(428, 194, 207, 867,
@@ -53,7 +52,7 @@ public sealed partial class WorkshopKnowledgeView
 
         if (WorkshopArt.ItemCardHasPrintedCopy(item)) return; // Reviewed HD/Word cards already carry their original copy.
         var copy = ItemCopy[(int)item];
-        var season = (WorkshopSeason)((int)item / 3);
+        var season = WorkshopProgress.ItemSeason(item);
         bool lightTitle = season == WorkshopSeason.Spring || season == WorkshopSeason.Autumn;
         var titleBox = new Rect((copy.TitleCenter - new Vector2(210, 60)) * scale, new Vector2(420, 120) * scale);
         var title = WorkshopUi.Label(card, "Item Card Title", titleBox,

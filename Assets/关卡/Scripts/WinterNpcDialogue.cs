@@ -1,8 +1,9 @@
 using System;
 using UnityEngine;
+using Qingming.LevelBackground;
 
 /// <summary>
-/// 冬季只提示裁衣进度；染材和研磨对话供秋季工位复用。
+/// 冬季发放蚕连并提示裁衣进度；染材和研磨对话供秋季工位复用。
 /// 由 WinterLevelInteractions 在运行时挂到 NPC 上，不改场景。
 /// </summary>
 public class WinterNpcDialogue : MonoBehaviour
@@ -10,6 +11,11 @@ public class WinterNpcDialogue : MonoBehaviour
     private const string DyeMaterialsIntro = "dialogue.winter.materials";
     private const string GrindingIntro = "dialogue.winter.grinding";
     private const string TailoringIntro = "dialogue.winter.tailoring";
+    private static readonly WorkshopDialogueLine[] EggSheetIntro =
+    {
+        new WorkshopDialogueLine("缝衣师傅", "这卷附着蚕卵的纸叫蚕连。冬天把它挂起来保存，留下明年春天要孵的蚕种。"),
+        new WorkshopDialogueLine("缝衣师傅", "收下这卷蚕连，等缝衣针和衣片也齐了，就一起交到任务面板。")
+    };
 
     public void Talk()
     {
@@ -18,12 +24,19 @@ public class WinterNpcDialogue : MonoBehaviour
             WorkshopProgress.UnlockSolarTerms(WorkshopSeason.Autumn);
             WorkshopDialoguePresenter.Play(new[] {
                 new WorkshopDialogueLine("染整师傅", "立秋采染材，秋分研磨和染色。先拾锄头去染材园，再找研磨棒和研钵。"),
-                new WorkshopDialogueLine("染整师傅", "白露织出的生坯绸可以用来染色。选好喜欢的颜色，寒露再去织造坊攀花。道具都会保留。") });
+                new WorkshopDialogueLine("染整师傅", "白露织造后收下的缬可以用来染色。选好喜欢的颜色，寒露再去织造坊攀花。道具都会保留。") });
             return;
         }
         if (WorkshopProgress.IsComplete(WorkshopSeason.Winter))
         {
             WorkshopDialoguePresenter.Play(WorkshopDialogueScripts.WinterDone);
+            return;
+        }
+        if (gameObject.scene.name == WorkshopProgress.SceneName(WorkshopSeason.Winter) &&
+            WorkshopProgress.IsUnlocked(WorkshopSeason.Winter) && !WorkshopProgress.Has(WorkshopItem.SilkwormEggSheet))
+        {
+            WorkshopDialoguePresenter.Play(EggSheetIntro, () =>
+                SimplePopup.ShowItem(WorkshopItem.SilkwormEggSheet, "收好这卷蚕连，留存来年春蚕的蚕种。", CollectEggSheet));
             return;
         }
 
@@ -38,13 +51,18 @@ public class WinterNpcDialogue : MonoBehaviour
         string next;
         switch (stage)
         {
-            case WorkshopWinterStage.Preparing: next = "带秋季染布到裁衣台，先晾干，再摆齐前片、后片和袖片，留一块完整的余布。"; break;
+            case WorkshopWinterStage.Preparing: next = "带秋季染布到裁衣台，晾干后把衣样纸拖到布上。避开布疵，让衣样彼此错开。"; break;
             case WorkshopWinterStage.Cutting: next = "染布已经晾好、衣样也排齐了。到裁衣台沿虚线剪出前衣、后衣和衣袖。"; break;
-            case WorkshopWinterStage.Fitting: next = "衣片已经剪好。再点裁衣台，将三张纸样拖到同名轮廓，确认版型。"; break;
-            case WorkshopWinterStage.Needle: next = "版型已经确认。收下缝素堂里发光的缝衣针，回裁衣台选款缝衣。"; break;
-            default: next = "材料与版型都备齐了。直接在裁衣台选择喜欢的款式，拼合三块衣片，缝好后去试衣。"; break;
+            case WorkshopWinterStage.Needle: next = "衣片已经剪好。收下缝素堂里发光的缝衣针，就能选款缝衣。"; break;
+            default: next = "缝衣针、蚕连和衣片都备齐了。选好喜欢的款式，拼合三块衣片，缝好后去试衣。"; break;
         }
         WorkshopDialoguePresenter.Play(new[] { new WorkshopDialogueLine("缝衣师傅", next) });
+    }
+
+    private static void CollectEggSheet()
+    {
+        if (WorkshopProgress.Award(WorkshopItem.SilkwormEggSheet))
+            WorkshopProcessCardView.Show(WorkshopProcessCard.WinterEggs, null);
     }
 
     internal static void IntroduceDyeMaterials(Action onFinished = null)

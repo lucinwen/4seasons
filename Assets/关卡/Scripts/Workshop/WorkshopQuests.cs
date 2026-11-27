@@ -55,23 +55,23 @@ internal static class WorkshopQuests
             new Entry("Hammer", "白露拾木槌", "织机左侧地面", "点击发光的修机木槌拾取。", HasHammer),
             new Entry("LoomRepair", "白露修复织机", "织造坊", "在黄色区域内完成三次击打。", LoomRepaired, HasHammer),
             Item(WorkshopItem.Shuttle, "取得梭子", "织机附近工具箱", "修机后打开工具箱，收下梭子。", LoomRepaired),
-            Item(WorkshopItem.RawSilkCloth, "白露经纬织造", "修好的织机", "用梭子织入、拔子取消，满足每行每列的目标数字，获得生坯绸。", () => LoomRepaired() && Has(WorkshopItem.Shuttle)),
+            Item(WorkshopItem.RawSilkCloth, "白露经纬织造", "修好的织机", "用梭子织入、拔子取消，满足每行每列的目标数字，获得缬。", () => LoomRepaired() && Has(WorkshopItem.Shuttle)),
             new Entry("GrindingRod", "寻找研磨棒与研钵", "青染轩", "拾研磨棒，点击研钵收下，准备研磨。", () => HasGrindingRod() && Step("autumn.mortar")),
             new Entry("Grind", "秋分研磨染材", "青染轩研钵", "把天然染材研磨成染料。", HasGroundDye, () => HasDyeMaterials() && HasGrindingRod() && Step("autumn.mortar")),
-            Item(WorkshopItem.DyedCloth, "秋分染色", "青染轩染缸", "选择已研磨的染料，把一块素绸拖入染缸，染好后收下。道具不消耗。", () => HasGroundDye() && Has(WorkshopItem.RawSilkCloth)),
+            Item(WorkshopItem.DyedCloth, "秋分染色", "青染轩染缸", "选择已研磨的染料，把缬拖入染缸，染好后收下。道具不消耗。", () => HasGroundDye() && Has(WorkshopItem.RawSilkCloth)),
             new Entry("Offerings", "备齐秋社贡品", "灵桑阙与师傅处", "收集香蕉、蚕花酒；第一次与师傅交谈即获得糕点。", OfferingsReady),
             Item(WorkshopItem.Statue, "白露秋分秋社", "灵桑阙", "登上灵桑阙提交贡品，领取土地公雕像。", OfferingsReady),
             new Entry("Panhua", "寒露攀花", "染好布后回到织机", "用梭子和拔子，按行列数字推演纹样。染布保留。", () => Step(WorkshopWordRules.Patterned), () => WorkshopWordRules.CanPattern),
-            Handoff(WorkshopSeason.Autumn, "交付秋季成果", "提交土地公雕像、梭子、生坯绸，获得素绸。染布带入冬章。")
+            Handoff(WorkshopSeason.Autumn, "交付秋季成果", $"提交土地公雕像、梭子、缬，获得{WorkshopProgress.ProductName(WorkshopSeason.Autumn)}。染布带入冬章。")
         },
         new[] {
-            new Entry("WinterPreparation", "小雪晾布排料", "缝素堂裁衣台", "晾干染布，摆齐前片、后片和袖片，留一块完整的余布。",
+            Item(WorkshopItem.SilkwormEggSheet, "领取蚕连", "缝素堂缝衣师傅", "与缝衣师傅交谈，领取蚕连和卷连保种工艺卡。"),
+            new Entry("WinterPreparation", "小雪排布", "缝素堂裁衣台", "晾干染布，再拖放衣样纸。避开布疵和其他衣样，留一块完整的余布。",
                 () => WorkshopWordRules.HasWinterPreparation, () => Has(WorkshopItem.DyedCloth)),
-            Item(WorkshopItem.CutPieces, "立冬小雪剪帛", "缝素堂裁衣台", "排料完成后，沿虚线剪出前衣、后衣和衣袖。",
+            Item(WorkshopItem.CutPieces, "立冬小雪剪帛", "缝素堂裁衣台", "排好布再沿虚线剪帛，剪完后领取前衣、后衣和衣袖。",
                 () => Has(WorkshopItem.DyedCloth) && WorkshopWordRules.HasWinterPreparation),
-            new Entry("Fitting", "小雪量体裁衣", "剪帛后再点裁衣台", "把三张衣样纸拖到右侧布面的同名轮廓。", () => Step(WorkshopWordRules.Fitted), () => Has(WorkshopItem.CutPieces)),
             Item(WorkshopItem.Needle, "取得缝衣针", "缝素堂", "点击并收下缝衣针。"),
-            new Entry("WinterHandoff", "小雪选款缝衣", "缝素堂裁衣台", "版型确认、缝衣针备好后，在裁衣台选款，拼合三块衣片并缝制。道具保留，也可回工坊交件。", () => WorkshopProgress.IsComplete(WorkshopSeason.Winter), () => WorkshopProgress.CanSubmit(WorkshopSeason.Winter)),
+            new Entry("WinterHandoff", "小雪选款缝衣", "缝素堂裁衣台或工坊任务面板", "交付缝衣针、蚕连和衣片，选款缝衣。道具保留。", () => WorkshopProgress.IsComplete(WorkshopSeason.Winter), () => WorkshopProgress.CanSubmit(WorkshopSeason.Winter)),
             new Entry("TryOn", "锦衣堂试衣", "成衣完成后直接进入", "穿上刚缝好的衣服，试衣留念。", () => Step("winter.tryOn"), () => WorkshopProgress.IsComplete(WorkshopSeason.Winter))
         }
     };

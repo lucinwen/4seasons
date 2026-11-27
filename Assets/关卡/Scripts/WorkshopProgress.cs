@@ -9,7 +9,7 @@ public enum WorkshopSeason { Spring, Summer, Autumn, Winter }
 public enum WorkshopItem
 {
     MulberryLeaf, SilkwormEgg, Silkworm, Salt, Suoxu, Spool,
-    Shuttle, RawSilkCloth, Statue, DyedCloth, CutPieces, Needle
+    Shuttle, RawSilkCloth, Statue, DyedCloth, CutPieces, Needle, SilkwormEggSheet
 }
 
 public static class WorkshopProgress
@@ -19,18 +19,18 @@ public static class WorkshopProgress
 
     private static readonly string[] Scenes = { "Level1_Spring", "Level2_Summer", "Level3_Autumn", "Level4_Winter" };
     private static readonly string[] Seasons = { "春", "夏", "秋", "冬" };
-    private static readonly string[] Products = { "蚕茧", "丝束", "素绸", "成衣" };
+    private static readonly string[] Products = { "蚕茧", "丝束", "绸料", "成衣" };
     private static readonly string[] Names =
     {
         "桑叶", "蚕种", "蚕宝宝", "盐", "索绪", "线轴",
-        "梭子", "生坯绸", "土地公雕像", "染布", "衣片", "缝衣针"
+        "梭子", "缬", "土地公雕像", "染布", "衣片", "缝衣针", "蚕连"
     };
     private static readonly WorkshopItem[][] Recipes =
     {
         new[] { WorkshopItem.MulberryLeaf, WorkshopItem.Silkworm, WorkshopItem.SilkwormEgg },
         new[] { WorkshopItem.Salt, WorkshopItem.Suoxu, WorkshopItem.Spool },
         new[] { WorkshopItem.Shuttle, WorkshopItem.RawSilkCloth, WorkshopItem.Statue },
-        new[] { WorkshopItem.DyedCloth, WorkshopItem.CutPieces, WorkshopItem.Needle }
+        new[] { WorkshopItem.Needle, WorkshopItem.SilkwormEggSheet, WorkshopItem.CutPieces }
     };
 
     [Serializable]
@@ -82,6 +82,13 @@ public static class WorkshopProgress
             if (save.challengeWorks == null) save.challengeWorks = new List<ChallengeWork>();
             if (save.orderWorks == null) save.orderWorks = new List<ChallengeWork>();
             bool migrated = false;
+            // Completed winter chapters retain a full delivery record after the recipe changes.
+            const int eggSheetBit = 1 << (int)WorkshopItem.SilkwormEggSheet;
+            if ((save.chapters & (1 << (int)WorkshopSeason.Winter)) != 0 && (save.items & eggSheetBit) == 0)
+            {
+                save.items |= eggSheetBit;
+                migrated = true;
+            }
             // Keep all previously earned inventory. Harvesting alone no longer grants a silkworm.
             // The old Mangzhong id belongs to the removed cocoon inspection game.
             // Only the former thread puzzle's records transfer to its new station.
@@ -147,6 +154,8 @@ public static class WorkshopProgress
     public static string SeasonName(WorkshopSeason season) => Seasons[(int)season];
     public static string ProductName(WorkshopSeason season) => Products[(int)season];
     public static string ItemName(WorkshopItem item) => Names[(int)item];
+    internal static WorkshopSeason ItemSeason(WorkshopItem item) => item == WorkshopItem.SilkwormEggSheet
+        ? WorkshopSeason.Winter : (WorkshopSeason)((int)item / 3);
     public static WorkshopItem[] Items(WorkshopSeason season) => (WorkshopItem[])Recipes[(int)season].Clone();
 
     public static bool TryGetSeason(string sceneName, out WorkshopSeason season)

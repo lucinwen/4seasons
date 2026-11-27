@@ -60,7 +60,7 @@ public sealed partial class WorkshopWordPreview
 
     private static IEnumerator ReviewImmersive()
     {
-        PlayerPrefs.SetString("ShiXu.Workshop.v1", "{\"items\":4095,\"chapters\":7,\"solarTerms\":15,\"dyedColor\":\"紫色\",\"seasonalOrder\":true,\"steps\":[\"quest.guide.Spring\",\"quest.guide.Summer\",\"quest.guide.Autumn\",\"quest.guide.Winter\",\"autumn.loom\",\"winter.hoe\",\"winter.rod\",\"autumn.mortar\"]}");
+        PlayerPrefs.SetString("ShiXu.Workshop.v1", "{\"items\":8191,\"chapters\":7,\"solarTerms\":15,\"dyedColor\":\"紫色\",\"seasonalOrder\":true,\"steps\":[\"quest.guide.Spring\",\"quest.guide.Summer\",\"quest.guide.Autumn\",\"quest.guide.Winter\",\"autumn.loom\",\"winter.hoe\",\"winter.rod\",\"autumn.mortar\"]}");
         WorkshopProgress.ResetSession();
         yield return SceneManager.LoadSceneAsync("Level1_Spring");
         yield return new WaitForSecondsRealtime(.7f);
@@ -190,12 +190,10 @@ public sealed partial class WorkshopWordPreview
         MiniGameOverlay.Close();yield return new WaitForSecondsRealtime(.7f);
 
         yield return SceneManager.LoadSceneAsync("Level4_Winter");yield return new WaitForSecondsRealtime(.7f);
+        yield return CaptureWinterLayout("66-winter-layout");
         MiniGameOverlay.Show("ClothCutting");yield return new WaitForSecondsRealtime(1.2f);
-        yield return Capture("66-winter-cutting-immersive");
+        yield return Capture("67-winter-cutting-immersive");
         MiniGameOverlay.Close();yield return new WaitForSecondsRealtime(.7f);
-        WorkshopSimpleGames.Show(WorkshopSimpleGame.Fitting);
-        yield return Capture("67-winter-fitting-immersive");CloseWorktable();yield return null;
-        WorkshopProgress.MarkStep(WorkshopWordRules.Fitted);
         WorkshopTailor.Show(null,null);yield return Capture("68-winter-style-immersive");
         InvokeNamedButton("ConfirmStyle");yield return Capture("69-winter-sewing-immersive");
         Debug.Log("[ImmersiveReview] PASS: dry/wet/local/complete/cancel wash; stationary/even/cancel/save reeling; sprites and turning wheel; direct maze and garden; all active workshop interfaces rendered.");

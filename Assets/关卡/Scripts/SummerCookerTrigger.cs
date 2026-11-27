@@ -66,14 +66,23 @@ public class SummerCookerTrigger : MonoBehaviour
     {
         if (WorkshopProgress.Has(WorkshopItem.Spool))
         {
-            _floatBtn.Hide();
             if (WorkshopWordRules.HasDelivery(WorkshopSeason.Summer))
             {
+                _floatBtn.Hide();
                 SimplePopup.Show("练丝备料已完成", "缫丝与接水管备料都已完成。带盐、线轴和索绪回工坊交付夏季成果，不用重做。", "知道了");
                 return;
             }
-            if (!WorkshopProgress.HasStep(WorkshopWordRules.Reeled)) WorkshopSimpleGames.Show(WorkshopSimpleGame.Reeling);
-            else SimplePopup.Show("缫丝已完成", "走近右侧缫丝车，点击「绕丝上轴」完成丝路接接乐。", "知道了");
+            if (!WorkshopProgress.HasStep(WorkshopWordRules.Reeled))
+            {
+                WorkshopProcessCardView.Show(WorkshopProcessCard.Xiaoman, () =>
+                {
+                    _floatBtn.Hide();
+                    WorkshopSimpleGames.Show(WorkshopSimpleGame.Reeling);
+                });
+                return;
+            }
+            _floatBtn.Hide();
+            SimplePopup.Show("缫丝已完成", "走近右侧缫丝车，点击「绕丝上轴」完成丝路接接乐。", "知道了");
             return;
         }
         bool hasWater = SummerItemInteraction.WaterCollected;
@@ -108,9 +117,12 @@ public class SummerCookerTrigger : MonoBehaviour
 
     private void OpenMaze()
     {
-        // 迷宫结束后卸载顶层，原关卡角色仍在煮茧锅旁。
-        if (_floatBtn != null) _floatBtn.Hide();
-        MiniGameOverlay.ShowMap(mazeSceneName);
+        WorkshopProcessCardView.Show(WorkshopProcessCard.Xiaoman, () =>
+        {
+            // 迷宫结束后卸载顶层，原关卡角色仍在煮茧锅旁。
+            if (_floatBtn != null) _floatBtn.Hide();
+            MiniGameOverlay.ShowMap(mazeSceneName);
+        });
     }
 
     private static bool IsPlayer(Collider2D other)

@@ -18,7 +18,8 @@ internal sealed class WorkshopQuestGuide : MonoBehaviour
         WorkshopDialoguePresenter.BlocksWorldInput || MiniGameCompletionAnimation.IsPlaying ||
         AutumnOfferingView.BlocksWorldInput || WorkshopObservationView.BlocksWorldInput ||
         WorkshopCraftRecordView.BlocksWorldInput || WorkshopHeritageBrief.IsOpen || SpringSilkwormWashOverlay.IsOpen ||
-        WorkshopSimpleGames.IsOpen || WorkshopCocoonSorting.IsOpen || WorkshopTailor.IsOpen || WorkshopWardrobe.IsOpen || WorkshopRewardCardView.BlocksWorldInput;
+        WorkshopSimpleGames.IsOpen || WorkshopCocoonSorting.IsOpen || WorkshopTailor.IsOpen || WorkshopWardrobe.IsOpen ||
+        WorkshopRewardCardView.BlocksWorldInput || WorkshopProcessCardView.BlocksWorldInput;
 
     internal static bool IsWorldOverlayActive
     {
@@ -29,7 +30,7 @@ internal sealed class WorkshopQuestGuide : MonoBehaviour
                 WorkshopKnowledgeView.IsOpen || WorkshopSimpleGames.IsOpen || WorkshopCocoonSorting.IsOpen || WorkshopTailor.IsOpen || WorkshopWardrobe.IsOpen ||
                 WorkshopNarrativeView.IsOpen || SimplePopup.IsOpen || WorkshopDialoguePresenter.IsOpen ||
                 AutumnOfferingView.IsOpen || WorkshopObservationView.IsOpen ||
-                WorkshopCraftRecordView.IsOpen || WorkshopHeritageBrief.IsOpen || WorkshopRewardCards.IsOpen;
+                WorkshopCraftRecordView.IsOpen || WorkshopHeritageBrief.IsOpen || WorkshopRewardCards.IsOpen || WorkshopProcessCardView.IsOpen;
         }
     }
 

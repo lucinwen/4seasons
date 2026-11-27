@@ -10,7 +10,7 @@ public sealed partial class WorkshopWordPreview
     // Fixed editorial expectations: these must not be derived from the runtime copy tables.
     private static readonly string[] OriginalItemTitles =
     {
-        "桑叶", "蚕种", "蚕宝宝", "盐", "索绪", "线轴", "梭子", "生坯绸", "土地公", "染布", "衣片", "缝衣针"
+        "桑叶", "蚕种", "蚕宝宝", "盐", "索绪", "线轴", "梭子", "缬", "土地公", "染布", "衣片", "缝衣针", "蚕连"
     };
 
     private static readonly string[] OriginalItemKnowledge =
@@ -22,11 +22,12 @@ public sealed partial class WorkshopWordPreview
         "索绪是从煮熟的蚕茧中寻找并抽出丝头的完整过程，为后续连续缫丝做好准备。",
         "线轴用于缠绕和收纳缫出的蚕丝，方便丝线整理、运输与后续织造，避免丝线缠绕打结。",
         "梭子用于携带纬线穿过经线之间，配合织机往复运动，使经纬线交织形成完整布面。",
-        "生坯绸是织造完成后尚未经过精练、染整的原始绸料，保留着丝织物最初的质感。",
+        "缬是经攀花工艺织成的提花丝织物，以经纬丝线交织形成精美纹样，花纹细腻雅致。",
         "土地公是乡间守护神，寄托着蚕农祈求桑树繁茂、丰收、四时风调雨顺的美好愿望。",
         "染布是通过染料与织物接触，使布料呈现不同色彩的工艺，可结合浸染、晾晒等步骤完成。",
         "衣片是根据服装结构裁剪出的布料部件，经过拼接、缝合与整理，最终组合成完整服饰。",
-        "缝衣针是传统成衣制作的重要工具，通过穿引丝线，将裁剪好的衣片缝合成完整衣物。"
+        "缝衣针是传统成衣制作的重要工具，通过穿引丝线，将裁剪好的衣片缝合成完整衣物。",
+        "蚕连是附着蚕卵的纸张，冬季卷起悬挂，经受寒气以保藏蚕种，为来年春蚕孵育做好准备。"
     };
 
     private static readonly string[] OriginalSolarKnowledge =
@@ -82,13 +83,19 @@ public sealed partial class WorkshopWordPreview
             var body = CardReviewText(canvas, "Item Card Description");
             if (WorkshopArt.ItemCardHasPrintedCopy(item))
             {
-                // The two reviewed HD restorations carry their original copy.
-                // Preserve it intact and include each full-size card in the visual review.
+                // These bitmaps already carry their supplied title and knowledge text.
                 Feedback2Require(title == null && body == null,
                     "The reviewed bitmap's original knowledge must not be covered with duplicate dynamic text: " + item);
-                if (item != WorkshopItem.Statue)
+                if (item == WorkshopItem.Suoxu || item == WorkshopItem.Spool)
                     Feedback2Require(artwork.sprite.texture.width >= 1600 && artwork.sprite.texture.height >= 2400,
                         "The restored card was reduced during import: " + item);
+                if (item == WorkshopItem.RawSilkCloth)
+                    Feedback2Require(WorkshopProgress.ItemName(item) == OriginalItemTitles[index] &&
+                        artwork.sprite.name == "知识卡片-缬" && artwork.sprite.texture.width == 816 &&
+                        artwork.sprite.texture.height == 1364, "The supplied autumn card or item name was not applied.");
+                if (item == WorkshopItem.SilkwormEggSheet)
+                    Feedback2Require(artwork.sprite.texture.width >= 800 && artwork.sprite.texture.height >= 1300,
+                        "The supplied egg sheet card was reduced during import.");
             }
             else
             {

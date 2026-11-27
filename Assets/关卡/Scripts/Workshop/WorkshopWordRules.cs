@@ -1,6 +1,6 @@
 using UnityEngine;
 
-internal enum WorkshopWinterStage { Preparing, Cutting, Fitting, Needle, Sewing, Complete }
+internal enum WorkshopWinterStage { Preparing, Cutting, Needle, EggSheet, Sewing, Complete }
 
 /// <summary>The simplified, permanent-inventory chapter flow specified in the Word plan.</summary>
 internal static class WorkshopWordRules
@@ -11,7 +11,6 @@ internal static class WorkshopWordRules
     internal const string Woven = "autumn.bailu.woven";
     internal const string Patterned = "autumn.hanlu.patterned";
     internal const string WinterPrepared = "winter.xiaoxue.prepared";
-    internal const string Fitted = "winter.xiaoxue.fitted";
 
     internal static bool HasWinterPreparation => WorkshopProgress.HasStep(WinterPrepared) ||
         WorkshopProgress.Has(WorkshopItem.CutPieces);
@@ -23,8 +22,9 @@ internal static class WorkshopWordRules
             if (WorkshopProgress.IsComplete(WorkshopSeason.Winter)) return WorkshopWinterStage.Complete;
             if (!HasWinterPreparation) return WorkshopWinterStage.Preparing;
             if (!WorkshopProgress.Has(WorkshopItem.CutPieces)) return WorkshopWinterStage.Cutting;
-            if (!WorkshopProgress.HasStep(Fitted)) return WorkshopWinterStage.Fitting;
-            return WorkshopProgress.Has(WorkshopItem.Needle) ? WorkshopWinterStage.Sewing : WorkshopWinterStage.Needle;
+            if (!WorkshopProgress.Has(WorkshopItem.Needle)) return WorkshopWinterStage.Needle;
+            return WorkshopProgress.Has(WorkshopItem.SilkwormEggSheet)
+                ? WorkshopWinterStage.Sewing : WorkshopWinterStage.EggSheet;
         }
     }
 
@@ -40,7 +40,7 @@ internal static class WorkshopWordRules
             case WorkshopSeason.Autumn:
                 return WorkshopProgress.Has(WorkshopItem.DyedCloth) && WorkshopProgress.HasStep(Patterned);
             case WorkshopSeason.Winter:
-                return WorkshopProgress.HasStep(Fitted);
+                return WorkshopProgress.Has(WorkshopItem.CutPieces);
             default: return false;
         }
     }

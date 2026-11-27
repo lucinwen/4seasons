@@ -54,16 +54,31 @@ public static class WorkshopRewardChecks
             Require(WorkshopRewardCards.HasReceivedItemCard(WorkshopItem.Suoxu) &&
                 !WorkshopRewardCards.TryBeginItemCard(WorkshopItem.Suoxu), "accepted item receipt survives reload");
 
-            Load("{\"items\":4095,\"chapters\":7,\"dyedColor\":\"紫色\",\"steps\":[\"spring.guyu.fed\",\"summer.cocoon-sorted\",\"summer.xiaoman.reeled\",\"autumn.loom\",\"autumn.bailu.woven\",\"winter.dyes\",\"winter.ground\",\"autumn.hanlu.patterned\",\"winter.xiaoxue.fitted\"],\"observations\":[\"observation.summer.mangzhong.thread\"]}");
-            Require(WorkshopRewardCards.CardCount == 16 && !WorkshopRewardCards.IsBusy,
-                "all pre-sewing minigames have distinct collected cards");
+            Load("{\"items\":512,\"chapters\":7}");
+            var layout = WorkshopRewardCards.Definitions.Single(card => card.Id == "fit");
+            var cutting = WorkshopRewardCards.Definitions.Single(card => card.Id == "cut");
+            Require(!WorkshopRewardCards.Earned(layout) && !WorkshopRewardCards.Earned(cutting),
+                "dyed cloth alone earns neither winter game card");
+            WorkshopProgress.MarkStep(WorkshopWordRules.WinterPrepared);
+            Require(WorkshopRewardCards.Earned(layout) && !WorkshopRewardCards.AutomaticItemCard(layout) &&
+                !WorkshopRewardCards.Earned(cutting) && !WorkshopProgress.Has(WorkshopItem.CutPieces),
+                "layout records its craft without granting a cutting reward");
+
+            var eggSheet = WorkshopRewardCards.Definitions.Single(card => card.Id == "winterEggs");
+            Require(!WorkshopRewardCards.Earned(eggSheet) && WorkshopArt.ItemCard(eggSheet.Item) != null &&
+                WorkshopArt.ItemCardHasPrintedCopy(eggSheet.Item) &&
+                Resources.Load<Sprite>("WorkshopProcessCards/WinterEggs") != null,
+                "the winter egg sheet and process artwork import before the item is earned");
+            Load("{\"items\":8191,\"chapters\":7,\"dyedColor\":\"紫色\",\"steps\":[\"spring.guyu.fed\",\"summer.cocoon-sorted\",\"summer.xiaoman.reeled\",\"autumn.loom\",\"autumn.bailu.woven\",\"winter.dyes\",\"winter.ground\",\"autumn.hanlu.patterned\",\"winter.xiaoxue.fitted\"],\"observations\":[\"observation.summer.mangzhong.thread\"]}");
+            Require(WorkshopRewardCards.CardCount == 17 && WorkshopRewardCards.Earned(eggSheet) && !WorkshopRewardCards.IsBusy,
+                "the winter egg preservation craft is available for review after reload");
             Require(WorkshopProgress.CompleteWinter("1_04"), "winter sewing fixture completes");
-            Require(WorkshopRewardCards.CardCount == 17 && WorkshopProgress.HasStep("reward.craft.sew"),
-                "sewing has its own card independent of fitting");
+            Require(WorkshopRewardCards.CardCount == 18 && WorkshopProgress.HasStep("reward.craft.sew"),
+                "sewing has its own card independent of layout");
             WorkshopProgress.MarkStep("winter.tryOn");
-            Require(WorkshopRewardCards.CardCount == 18 && WorkshopRewardCards.Definitions.All(WorkshopRewardCards.Earned) &&
+            Require(WorkshopRewardCards.CardCount == 19 && WorkshopRewardCards.Definitions.All(WorkshopRewardCards.Earned) &&
                 WorkshopRewardCards.HasTerm(WorkshopSeason.Winter, 3), "try-on grants the final craft and Dongzhi cards");
-            Debug.Log("[CardRewards] PASS: 18 distinct crafts, success-only gains, term mapping, repeat protection, reload and silent legacy migration.");
+            Debug.Log("[CardRewards] PASS: 19 distinct crafts, success-only gains, term mapping, repeat protection, reload and silent legacy migration.");
         }
         finally
         {

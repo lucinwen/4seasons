@@ -6,7 +6,6 @@ using UnityEngine;
 internal sealed class WorkshopSynthesis : MonoBehaviour
 {
     private const int SlotCount = 3;
-    private static readonly string[] ProductAssets = { "Cocoon", "RawSilk", "PlainSilk" };
     private static readonly Rect OutputBounds = new Rect(1380, 378, 354, 346);
     private static readonly Rect ProductBounds = new Rect(1464, 421, 186, 186);
     private static readonly Color WellLip = new Color32(84, 98, 64, 255);
@@ -79,7 +78,7 @@ internal sealed class WorkshopSynthesis : MonoBehaviour
         var productArt = season == WorkshopSeason.Winter
             ? completed ? WorkshopArt.Garment(WorkshopProgress.GarmentId) :
                 WorkshopTailor.PreviewForDye(WorkshopProgress.DyedColor)
-            : Resources.Load<Sprite>("WorkshopFinish/" + ProductAssets[(int)season]);
+            : null;
         if (productArt == null) productArt = WorkshopArt.ChapterProduct(season);
         product = WorkshopUi.Picture(table, "Synthesis Product", ProductBounds, productArt);
         MoveIcon(product.rectTransform, ProductBounds);

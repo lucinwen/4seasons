@@ -2,7 +2,7 @@ using UnityEngine;
 using Qingming.LevelBackground;
 
 /// <summary>
-/// 冬季裁衣台按当前进度进入晾布排料、剪帛、纸样、缝衣或试衣。
+/// 冬季裁衣台先排布再剪帛，之后按进度进入缝衣或试衣。
 /// </summary>
 public class WinterClothCuttingTrigger : MonoBehaviour
 {
@@ -73,10 +73,10 @@ public class WinterClothCuttingTrigger : MonoBehaviour
         {
             switch (WorkshopWordRules.WinterStage)
             {
-                case WorkshopWinterStage.Preparing: return "小雪 · 晾布排料";
+                case WorkshopWinterStage.Preparing: return "小雪 · 排布";
                 case WorkshopWinterStage.Cutting: return "立冬小雪 · 剪帛";
-                case WorkshopWinterStage.Fitting: return "小雪 · 量体裁衣";
                 case WorkshopWinterStage.Needle: return "缝衣前先取针";
+                case WorkshopWinterStage.EggSheet: return "缝衣前先领蚕连";
                 case WorkshopWinterStage.Sewing: return "小雪 · 选款缝衣";
                 default: return "锦衣堂 · 试衣";
             }
@@ -85,6 +85,7 @@ public class WinterClothCuttingTrigger : MonoBehaviour
 
     private void OnStartCuttingClicked()
     {
+        if (WorkshopQuestGuide.BlocksWorldInput || WorkshopQuestGuide.IsWorldOverlayActive) return;
         if (!WorkshopProgress.Has(WorkshopItem.DyedCloth))
         {
             SimplePopup.Show(noClothTitle, noClothMessage, "知道了", null);
@@ -95,19 +96,20 @@ public class WinterClothCuttingTrigger : MonoBehaviour
         switch (WorkshopWordRules.WinterStage)
         {
             case WorkshopWinterStage.Preparing:
-                WinterNpcDialogue.IntroduceTailoring(() => WorkshopObservationView.ShowWinterPreparation(OpenCutting));
+                WinterNpcDialogue.IntroduceTailoring(() => WorkshopProcessCardView.Show(WorkshopProcessCard.Xiaoxue,
+                    () => WorkshopObservationView.ShowWinterPreparation(OpenCutting)));
                 break;
             case WorkshopWinterStage.Cutting:
                 OpenCutting();
                 break;
-            case WorkshopWinterStage.Fitting:
-                WorkshopSimpleGames.Show(WorkshopSimpleGame.Fitting, ContinueToSewing);
-                break;
             case WorkshopWinterStage.Needle:
-                SimplePopup.Show("还差缝衣针", "版型已经确认，不用再拖纸样。收下缝素堂里发光的缝衣针，再来选款缝衣。", "知道了");
+                SimplePopup.Show("还差缝衣针", "三块衣片已经剪好。收下缝素堂里发光的缝衣针。", "知道了");
+                break;
+            case WorkshopWinterStage.EggSheet:
+                SimplePopup.Show("还差蚕连", "与缝衣师傅对话，收下蚕连，再来选款缝衣。", "知道了");
                 break;
             case WorkshopWinterStage.Sewing:
-                WorkshopTailor.Show(null, null);
+                WorkshopProcessCardView.Show(WorkshopProcessCard.Xiaoxue, () => WorkshopTailor.Show(null, null));
                 break;
             case WorkshopWinterStage.Complete:
                 WorkshopWardrobe.Show();
@@ -115,18 +117,15 @@ public class WinterClothCuttingTrigger : MonoBehaviour
         }
     }
 
-    private static void ContinueToSewing()
-    {
-        if (WorkshopWordRules.WinterStage == WorkshopWinterStage.Sewing && WorkshopProgress.CanSubmit(WorkshopSeason.Winter))
-            WorkshopTailor.Show(null, null);
-    }
-
-    private static void OpenCutting() => MiniGameOverlay.Show("ClothCutting");
+    private static void OpenCutting() =>
+        WorkshopProcessCardView.Show(WorkshopProcessCard.Lidong, () => MiniGameOverlay.Show("ClothCutting"));
 
     private void OnReplayPreparationClicked()
     {
+        if (WorkshopQuestGuide.BlocksWorldInput || WorkshopQuestGuide.IsWorldOverlayActive) return;
         HideActions();
-        WorkshopObservationView.ShowWinterPreparation();
+        WorkshopProcessCardView.Show(WorkshopProcessCard.Xiaoxue,
+            () => WorkshopObservationView.ShowWinterPreparation());
     }
 
     private void HideActions()

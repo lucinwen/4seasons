@@ -42,21 +42,23 @@ internal static class WorkshopRewardCards
             WorkshopItem.DyedCloth, () => WorkshopProgress.HasStep("winter.dyes"), 0),
         new Card("repair", "白露 · 修整织机", "用木槌修整织机，检查工位并备好梭子，再开始织造。", WorkshopSeason.Autumn,
             WorkshopItem.Shuttle, () => WorkshopProgress.HasStep("autumn.loom"), 2),
-        new Card("weave", "白露 · 交替走梭", "交替抬起经线、来回投梭，让经纬相交，逐行织成生坯绸。", WorkshopSeason.Autumn,
+        new Card("weave", "白露 · 经纬织造", "用梭子引纬，按行列数字完成织造后收下缬。", WorkshopSeason.Autumn,
             WorkshopItem.RawSilkCloth, () => WorkshopProgress.HasStep(WorkshopWordRules.Woven), 2),
         new Card("grind", "秋分 · 研磨染料", "将采来的染材研磨成可使用的染料，再把染色工位准备妥当。", WorkshopSeason.Autumn,
             WorkshopItem.DyedCloth, () => WorkshopProgress.HasStep("winter.ground"), 3),
-        new Card("dye", "秋分 · 染绸", "选择研磨好的染料，把素绸送入染缸，让整幅布获得同一种颜色。", WorkshopSeason.Autumn,
+        new Card("dye", "秋分 · 染绸", "选择研磨好的染料，把缬送入染缸，让整幅布获得同一种颜色。", WorkshopSeason.Autumn,
             WorkshopItem.DyedCloth, () => WorkshopProgress.Has(WorkshopItem.DyedCloth), 3),
         new Card("ritual", "白露秋分 · 秋社", "备齐供品并完成秋社陈设，以土地公雕像记录这一季的劳作与祈愿。", WorkshopSeason.Autumn,
             WorkshopItem.Statue, () => WorkshopProgress.Has(WorkshopItem.Statue), 2, 3),
         new Card("pattern", "寒露 · 攀花", "在染好的绸面上完成纹样，让染整后的布进入装饰工序。", WorkshopSeason.Autumn,
             WorkshopItem.RawSilkCloth, () => WorkshopProgress.HasStep(WorkshopWordRules.Patterned), 4),
-        new Card("cut", "立冬小雪 · 剪帛", "沿衣样裁出前衣、后衣与衣袖。先确定轮廓，再保留完整衣片供后续排样。", WorkshopSeason.Winter,
+        new Card("fit", "小雪 · 排布", "把前片、后片与袖片的衣样排在染布上，避开布疵，给剪帛留好位置。", WorkshopSeason.Winter,
+            WorkshopItem.DyedCloth, () => WorkshopWordRules.HasWinterPreparation, 1),
+        new Card("cut", "立冬小雪 · 剪帛", "排布完成后，沿虚线裁出前衣、后衣与衣袖，收下三块衣片。", WorkshopSeason.Winter,
             WorkshopItem.CutPieces, () => WorkshopProgress.Has(WorkshopItem.CutPieces), 0, 1),
-        new Card("fit", "小雪 · 排样", "把衣片摆到对应位置，辨清前后与袖片，完成缝衣前的排样。", WorkshopSeason.Winter,
-            WorkshopItem.CutPieces, () => WorkshopProgress.HasStep(WorkshopWordRules.Fitted), 1),
-        new Card("sew", "小雪 · 成衣", "备齐染布、衣片和缝衣针，选定衣形，把四季的蚕桑织染成果合成衣裳。", WorkshopSeason.Winter,
+        new Card("winterEggs", "冬至至大寒 · 卷连保种", "冬季把附有蚕种的蚕连卷起悬挂，妥善保存，留待来年春蚕孵育。", WorkshopSeason.Winter,
+            WorkshopItem.SilkwormEggSheet, () => WorkshopProgress.Has(WorkshopItem.SilkwormEggSheet)),
+        new Card("sew", "小雪 · 成衣", "交付缝衣针、蚕连和衣片，选定衣形，把衣片缝合成衣裳。", WorkshopSeason.Winter,
             WorkshopItem.Needle, () => WorkshopProgress.IsComplete(WorkshopSeason.Winter), 1),
         new Card("tryOn", "冬至 · 试衣", "试穿完成的衣裳，查看布色与衣形。四季工序在一件成衣上汇合。", WorkshopSeason.Winter,
             WorkshopItem.Needle, () => WorkshopProgress.HasStep("winter.tryOn"), 3)
@@ -191,7 +193,7 @@ internal static class WorkshopRewardCards
     }
 
     internal static bool AutomaticItemCard(Card card) => card != null && card.Id != "maze" && card.Id != "thread" &&
-        card.Id != "pattern" && WorkshopProgress.Has(card.Item);
+        card.Id != "pattern" && card.Id != "fit" && WorkshopProgress.Has(card.Item);
 
     private static bool ItemAlreadyQueued(WorkshopItem item)
     {

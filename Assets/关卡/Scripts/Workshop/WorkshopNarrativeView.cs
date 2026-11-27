@@ -229,7 +229,7 @@ public sealed class WorkshopNarrativeView : MonoBehaviour
         Label(page, "Finale Title", new Rect(96, 167, 1190, 88),
             "成衣完成，晋升大织将", 57, Cream, TextAnchor.MiddleCenter);
         Label(page, "Finale Body", new Rect(147, 277, 1090, 220),
-            "春天采桑、浴蚕、喂蚕；夏天下簇、寻轴、缫丝、接水管备料；秋天采材、修机织造、研磨染色、秋社与攀花；冬天剪帛、拖纸样、选款缝衣。\n\n从桑叶到成衣，四季工序已经完成。所有道具仍然保留，现在去锦衣堂试穿自己缝好的衣服吧。",
+            "春天采桑、浴蚕、喂蚕；夏天下簇、寻轴、缫丝、接水管备料；秋天采材、修机织造、研磨染色、秋社与攀花；冬天先排布，再剪帛，最后选款缝衣。\n\n从桑叶到成衣，四季工序已经完成。所有道具仍然保留，现在去锦衣堂试穿自己缝好的衣服吧。",
             30, Cream, TextAnchor.UpperCenter);
 
         for (int i = 0; i < 4; i++)

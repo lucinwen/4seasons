@@ -296,7 +296,11 @@ public sealed class WorkshopStorageView : MonoBehaviour
     private void Tailor()
     {
         if (WorkshopTailor.IsOpen) return;
+        WorkshopProcessCardView.Show(WorkshopProcessCard.Xiaoxue, StartTailoring);
+    }
 
+    private void StartTailoring()
+    {
         var events = EventSystem.current;
         var selected = events != null ? events.currentSelectedGameObject : null;
         if (events != null) events.SetSelectedGameObject(null);
@@ -329,7 +333,7 @@ public sealed class WorkshopStorageView : MonoBehaviour
         if (!visibility.interactable || resumedFrame == Time.frameCount) return;
         if (WorkshopKnowledgeView.BlocksWorldInput || WorkshopNarrativeView.IsOpen || WorkshopDialoguePresenter.BlocksWorldInput ||
             WorkshopCraftRecordView.BlocksWorldInput || WorkshopHeritageBrief.IsOpen || WorkshopChapterGuide.IsOpen ||
-            WorkshopObservationView.BlocksWorldInput) return;
+            WorkshopObservationView.BlocksWorldInput || WorkshopProcessCardView.BlocksWorldInput) return;
         if (!Input.GetKeyDown(KeyCode.Escape)) return;
         if (collectionsPage != null) CloseCollections();
         else Close();

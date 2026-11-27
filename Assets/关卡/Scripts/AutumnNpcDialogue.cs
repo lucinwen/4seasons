@@ -26,7 +26,7 @@ public class AutumnNpcDialogue : MonoBehaviour
                 new WorkshopDialogueLine("织造师傅", receivedCake
                     ? "这份糕点先送给你。收集香蕉与蚕花酒后，带到灵桑阙参加秋社。"
                     : "立秋先到染材园采集天然染材。锄头在入口旁，研磨棒和研钵在青染轩。"),
-                new WorkshopDialogueLine("织造师傅", "修机锤放在织机左侧的地上，自己拾起就能修机。织出生坯绸后去青染轩研磨染色，最后用染布攀花。道具一直保留。") });
+                new WorkshopDialogueLine("织造师傅", "修机锤放在织机左侧的地上，自己拾起就能修机。完成织造、收下缬后，去青染轩研磨染色，最后用染布攀花。道具一直保留。") });
             return;
         }
 

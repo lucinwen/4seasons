@@ -55,6 +55,9 @@ internal sealed class WorkshopWordStation : MonoBehaviour
     {
         if (WorkshopWordRules.HasDelivery(WorkshopSeason.Spring))
             SimplePopup.Show("喂蚕已完成", "蚕宝宝已经养好，不用再喂一轮。带蚕种、桑叶和蚕宝宝回工坊提交春季成果。", "知道了");
-        else WorkshopSimpleGames.Show(WorkshopSimpleGame.Feeding);
+        else if (WorkshopWordRules.CanFeed)
+            WorkshopProcessCardView.Show(WorkshopProcessCard.Guyu, () => WorkshopSimpleGames.Show(WorkshopSimpleGame.Feeding));
+        else
+            WorkshopSimpleGames.Show(WorkshopSimpleGame.Feeding);
     }
 }

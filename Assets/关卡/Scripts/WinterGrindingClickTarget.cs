@@ -49,7 +49,8 @@ public class WinterGrindingClickTarget : MonoBehaviour
         }
 
         if (WinterLevelState.CollectedDyes.Count > 0)
-            WinterNpcDialogue.IntroduceGrinding(WinterGrindingOverlay.Show);
+            WinterNpcDialogue.IntroduceGrinding(() =>
+                WorkshopProcessCardView.Show(WorkshopProcessCard.Qiufen, WinterGrindingOverlay.Show));
         else
             WinterGrindingOverlay.Show(); // 内部会提示先采集染材
     }

@@ -68,7 +68,9 @@ public static class WorkshopArt
         ? Resources.Load<Sprite>("WorkshopCardHD/Suoxu") : item == WorkshopItem.Spool
         ? Resources.Load<Sprite>("WorkshopCardHD/Spool") : item == WorkshopItem.Statue
         ? Resources.Load<Sprite>("WorkshopCardHD/Statue") : null;
-    internal static bool ItemCardHasPrintedCopy(WorkshopItem item) => item == WorkshopItem.Suoxu || item == WorkshopItem.Spool;
+    internal static bool ItemCardHasPrintedCopy(WorkshopItem item) =>
+        item == WorkshopItem.Suoxu || item == WorkshopItem.Spool ||
+        item == WorkshopItem.RawSilkCloth || item == WorkshopItem.SilkwormEggSheet;
     internal static bool TryIdentifyItemCard(Sprite sprite, out WorkshopItem item)
     {
         var cards = Data?.itemCards;
@@ -103,7 +105,21 @@ public static class WorkshopArt
     public static Texture2D SeasonBackground(WorkshopSeason season) => Get(Data?.seasonBackgrounds, (int)season);
     public static Sprite CuttingWorkbench => Data != null ? Data.cuttingWorkbench : null;
     public static Sprite CutPiece(int index) => Get(Data?.cutPieces, index);
-    public static Sprite ChapterProduct(WorkshopSeason season) => Get(Data?.chapterProducts, (int)season);
+    public static Sprite ChapterProduct(WorkshopSeason season)
+    {
+        var product = season switch
+        {
+            WorkshopSeason.Spring => Resources.Load<Sprite>("WorkshopFinish/Cocoon"),
+            WorkshopSeason.Summer => Resources.Load<Sprite>("WorkshopFinish/RawSilk"),
+            WorkshopSeason.Autumn => Resources.Load<Sprite>("WorkshopFinish/SilkFabric") ?? PlainSilk,
+            _ => null
+        };
+        return product ?? Get(Data?.chapterProducts, (int)season);
+    }
+
+    internal static Sprite PlainSilk => Resources.Load<Sprite>("WorkshopFinish/PlainSilk") ??
+        Get(Data?.chapterProducts, (int)WorkshopSeason.Autumn);
+
     public static ItemData RawDye(DyeColor color, bool healthy) => Get(healthy ? Data?.normalDyes : Data?.damagedDyes, (int)color);
 
     public static Sprite Garment(string id)

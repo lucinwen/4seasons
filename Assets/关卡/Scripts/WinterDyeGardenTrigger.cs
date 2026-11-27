@@ -57,7 +57,7 @@ public class WinterDyeGardenTrigger : MonoBehaviour
         }
 
         // 小游戏叠加层打开期间不显示场景悬浮按钮
-        if (MiniGameOverlay.IsActive)
+        if (MiniGameOverlay.IsActive || WorkshopProcessCardView.BlocksWorldInput)
         {
             if (_shown)
             {
@@ -78,21 +78,30 @@ public class WinterDyeGardenTrigger : MonoBehaviour
 
     private void OnEnterClicked()
     {
+        if (WorkshopQuestGuide.BlocksWorldInput || WorkshopQuestGuide.IsWorldOverlayActive) return;
         if (!WinterLevelState.HasHoe && !WorkshopProgress.HasStep("autumn.hoe"))
         {
             SimplePopup.Show(noHoeTitle, noHoeMessage, "知道了", null);
             return;
         }
 
-        WinterLevelState.HasHoe = true;
         _floatBtn.Hide();
         _shown = false;
 
-        WorkshopProgress.UnlockSolarTerms(WorkshopSeason.Autumn);
         if (WorkshopProgress.HasStep("winter.dyes") || WinterLevelState.HasDyedCloth)
-            MiniGameOverlay.ShowMap(dyeGameSceneName);
+            ShowKnowledgeCard();
         else
-            WinterNpcDialogue.IntroduceDyeMaterials(() => MiniGameOverlay.ShowMap(dyeGameSceneName));
+            WinterNpcDialogue.IntroduceDyeMaterials(ShowKnowledgeCard);
+    }
+
+    private void ShowKnowledgeCard()
+    {
+        WorkshopProcessCardView.Show(WorkshopProcessCard.Liqiu, () =>
+        {
+            WinterLevelState.HasHoe = true;
+            WorkshopProgress.UnlockSolarTerms(WorkshopSeason.Autumn);
+            MiniGameOverlay.ShowMap(dyeGameSceneName);
+        });
     }
 
     private void OnDestroy()

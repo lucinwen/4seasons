@@ -45,7 +45,7 @@ public class WinterDyeVatClickTarget : MonoBehaviour
         }
         if (!WorkshopProgress.Has(WorkshopItem.RawSilkCloth))
         {
-            SimplePopup.Show("缺少素绸", "先在秋季织成生坯绸，再来染色。", "知道了", null);
+            SimplePopup.Show("还未获得缬", "先在织造坊完成白露织造，收下缬，再来染色。", "知道了", null);
             return;
         }
         if (WinterLevelState.ProducedDyeColors.Count == 0)
@@ -54,6 +54,6 @@ public class WinterDyeVatClickTarget : MonoBehaviour
             return;
         }
 
-        WinterDyeingOverlay.Show();
+        WorkshopProcessCardView.Show(WorkshopProcessCard.Qiufen, WinterDyeingOverlay.Show);
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using JiangnanDye;
 using Qingming.LevelBackground;
 
-/// <summary>秋季染色台：选染料，将一块素绸拖入染缸，染好后收下。</summary>
+/// <summary>秋季染色台：选染料，将缬拖入染缸，染好后收下。</summary>
 public class WinterDyeingOverlay : MonoBehaviour
 {
     public static bool IsActive { get; private set; }
@@ -41,17 +41,18 @@ public class WinterDyeingOverlay : MonoBehaviour
         if (IsActive) return;
         WinterGrindingOverlay.Close();
         var config = Resources.Load<WinterDyeingConfig>("WinterDyeingConfig");
-        if (config == null || config.clearWaterVat == null || config.silk == null)
+        var silk = WorkshopArt.RawSilk ?? config?.silk;
+        if (config == null || config.clearWaterVat == null || silk == null)
         {
             SimplePopup.Show("染色", "染色界面素材缺失，请检查 Resources/WinterDyeingConfig。", "知道了");
             return;
         }
         var frame = WorkshopUi.NewCanvas("WinterDyeingOverlay", 600);
         _runner = frame.parent.gameObject.AddComponent<WinterDyeingOverlay>();
-        _runner.Build(frame, config);
+        _runner.Build(frame, config, silk);
     }
 
-    private void Build(RectTransform frame, WinterDyeingConfig config)
+    private void Build(RectTransform frame, WinterDyeingConfig config, Sprite silk)
     {
         _frame = frame;
         _config = config;
@@ -61,12 +62,12 @@ public class WinterDyeingOverlay : MonoBehaviour
         WorkshopUi.Picture(frame, "Autumn Dye Workbench", new Rect(0, 0, 1920, 1080),
             Resources.Load<Sprite>("WordRevision/AutumnDyeWorkbench"), stretch: true);
         _statusText = TableLabel(frame, "Dye Hint", new Rect(60, 48, 1300, 55),
-            "选染料，把素绸拖入染缸。", 29, TextAnchor.MiddleLeft);
+            "选染料，把缬拖入染缸。", 29, TextAnchor.MiddleLeft);
         WorkshopUi.PixelButton(frame, "CloseButton", new Rect(1720, 45, 150, 58),
             "返回", CloseInternal, true, 26);
         CreateDyeList();
         CreateVat();
-        CreateSilk();
+        CreateSilk(silk);
         _collectButton = WorkshopUi.PixelButton(frame, "Collect Dyed Cloth", new Rect(1435, 875, 230, 62),
             "收好染布", CollectFinishedCloth, true, 27);
         _collectButton.transform.parent.gameObject.SetActive(false);
@@ -117,12 +118,13 @@ public class WinterDyeingOverlay : MonoBehaviour
         _vatDropArea = WorkshopUi.Rect(_frame, "VatDropArea", new Rect(770, 385, 390, 180));
     }
 
-    private void CreateSilk()
+    private void CreateSilk(Sprite silk)
     {
-        _silkImage = WorkshopUi.Picture(_frame, "Silk", SilkBounds, _config.silk);
+        _silkImage = WorkshopUi.Picture(_frame, "Silk", SilkBounds, silk);
         _silkImage.raycastTarget = true;
         _silkImage.gameObject.AddComponent<WinterDyeingSilk>().Init(this);
-        _silkLabel = TableLabel(_frame, "Silk Name", new Rect(1420, 810, 260, 42), "素绸", 25);
+        _silkLabel = TableLabel(_frame, "Silk Name", new Rect(1420, 810, 260, 42),
+            WorkshopProgress.ItemName(WorkshopItem.RawSilkCloth), 25);
     }
 
     private void SelectColor(DyeColor color)
@@ -131,7 +133,7 @@ public class WinterDyeingOverlay : MonoBehaviour
         _selectedColor = color;
         _vatImage.sprite = _config.GetVat(color) ?? _config.clearWaterVat;
         foreach (var selection in _dyeSelections) selection.Value.enabled = selection.Key == color;
-        SetStatus("把右侧素绸拖入染缸，染成" + DyeColorUtil.ChineseName(color) + "。");
+        SetStatus("把右侧的缬拖入染缸，染成" + DyeColorUtil.ChineseName(color) + "。");
     }
 
     public bool IsOverVat(Vector2 screenPosition)
@@ -157,7 +159,7 @@ public class WinterDyeingOverlay : MonoBehaviour
         _silkImage.raycastTarget = false;
         _silkLabel.text = "";
         foreach (var button in _dyeButtons) button.interactable = false;
-        SetStatus("素绸正在上色……");
+        SetStatus("缬正在上色……");
         WorkshopAudioFeedback.DyeDip();
         StartCoroutine(DyeOneCloth(_selectedColor.Value));
         return true;
@@ -187,7 +189,7 @@ public class WinterDyeingOverlay : MonoBehaviour
         rect.anchoredPosition = home;
         rect.localScale = Vector3.one;
         var dedicated = _config.GetCloth(color);
-        _silkImage.sprite = dedicated != null ? dedicated : _config.silk;
+        if (dedicated != null) _silkImage.sprite = dedicated;
         _silkImage.color = dedicated != null ? Color.white : dyedTint;
         _silkImage.raycastTarget = true;
         _silkLabel.text = DyeColorUtil.ChineseName(color) + "布";

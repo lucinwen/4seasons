@@ -190,10 +190,10 @@ namespace JingweiWeave
                 return;
             }
 
-            // 通关奖励：生坯绸道具弹窗，收下后关闭小游戏叠加层
+            // 通关奖励：缬道具弹窗，收下后关闭小游戏叠加层
             SimplePopup.ShowItem(
                 WorkshopItem.RawSilkCloth,
-                "生坯绸是未经染整加工的丝织坯布，质地柔韧、色泽自然，\n还需经过精练、染色等工序，才能成为成品绸缎。",
+                "白露经纬织造已完成，收下这件秋季道具。",
                 () =>
                 {
                     bool first = !WorkshopProgress.Has(WorkshopItem.RawSilkCloth);

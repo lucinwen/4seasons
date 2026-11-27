@@ -17,7 +17,7 @@ internal static class WorkshopObjectives
             case WorkshopSeason.Spring: goal = "清明拿篮采桑，谷雨浴蚕，再拖叶喂蚕。"; break;
             case WorkshopSeason.Summer: goal = "立夏下簇，小满寻线轴并缫丝，芒种夏至接水管备料。"; break;
             case WorkshopSeason.Autumn: goal = "立秋采染材，白露织造，秋分染色与秋社，寒露攀花。"; break;
-            case WorkshopSeason.Winter: goal = "将秋季染布晾干排料，再剪帛、量体裁衣，找到针后选款缝衣。"; break;
+            case WorkshopSeason.Winter: goal = "找缝衣师傅领取蚕连。用秋季染布排样剪帛领衣片，再备好缝衣针。"; break;
             default: goal = "收集本季的三件关键道具。"; break;
         }
 
@@ -50,20 +50,23 @@ internal static class WorkshopObjectives
                 return ("取梭", "点击织机附近的工具箱，领取梭子。",
                     "找到织机附近的工具箱，点击查看并获取梭子。织造时会用到它。");
             case WorkshopItem.RawSilkCloth:
-                return ("织造", "拾起地上的锤子，修好织机，再用梭子织造。",
-                    "点击拾取织机左侧地上的修机锤，走近织机点「修复织机」。修好并拿到梭子后，点「开始织造」。");
+                return ("织造", "拾起地上的锤子，修好织机，完成织造后领取缬。",
+                    "点击拾取织机左侧地上的修机锤，走近织机点「修复织机」。修好并拿到梭子后，点「白露 · 经纬织造」，通关后收下缬。");
             case WorkshopItem.Statue:
                 return ("酬蚕", "白露秋分带酒、香蕉、糕点到灵桑阙参加秋社。",
                     "第一次与织造师傅交谈即获得糕点，再点击蚕花酒和香蕉果篮。把三件贡品交给供桌。");
             case WorkshopItem.DyedCloth:
                 return ("染布", "秋季采染材并研磨，再到染缸选择颜色。",
-                    "拾锄头进染料园找染材，回来研磨。选好染料，把一块素绸拖进染缸，染好后带回织机攀花。");
+                    "拾锄头进染料园找染材，回来研磨。选好染料，把缬拖进染缸，染好后带回织机攀花。");
             case WorkshopItem.CutPieces:
-                return ("裁衣", "在裁衣台晾布排料，再剪出三片衣料。",
-                    "带秋季染布到裁衣台。晾干后摆齐前片、后片和袖片，留出整块余布。完成排料后点击剪刀，沿虚线拖动，剪出三片衣料。");
+                return ("裁衣", "先拖放衣样排布，再剪帛领衣片。",
+                    "带秋季染布到裁衣台。晾干后将前片、后片和袖片的衣样拖到布上，避开布疵和其他衣样，留出整块余布。排好后沿虚线剪帛，领取三块衣片。");
             case WorkshopItem.Needle:
                 return ("领针", "点击场景里的缝衣针并收下。",
                     "找到场景中的缝衣针，点击后选择「收下」。");
+            case WorkshopItem.SilkwormEggSheet:
+                return ("领取蚕连", "到缝素堂找缝衣师傅。",
+                    "与缝衣师傅交谈，收下蚕连并阅读卷连保种节气工艺卡。");
             default:
                 return ("收集道具", "在关卡中寻找道具。", "在关卡中寻找道具并按提示操作。");
         }

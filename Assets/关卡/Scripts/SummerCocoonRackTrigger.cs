@@ -60,15 +60,22 @@ public class SummerCocoonRackTrigger : MonoBehaviour
     private void OnButtonClicked()
     {
         if (WorkshopQuestGuide.BlocksWorldInput) return;
-        if (WorkshopProgress.Has(WorkshopItem.Suoxu)) { WorkshopCocoonSorting.Show(); return; }
+        if (WorkshopProgress.Has(WorkshopItem.Suoxu))
+        {
+            WorkshopProcessCardView.Show(WorkshopProcessCard.Lixia, WorkshopCocoonSorting.Show);
+            return;
+        }
         SpringSummerNpcDialogue.BeforeCocoon(OpenCocoonGame);
     }
 
     private void OpenCocoonGame()
     {
-        if (_floatBtn != null) _floatBtn.Hide();
-        Debug.Log("[SummerCocoonRackTrigger] 叠加打开择茧小游戏 " + cocoonSceneName);
-        MiniGameOverlay.Show(cocoonSceneName);
+        WorkshopProcessCardView.Show(WorkshopProcessCard.Lixia, () =>
+        {
+            if (_floatBtn != null) _floatBtn.Hide();
+            Debug.Log("[SummerCocoonRackTrigger] 叠加打开择茧小游戏 " + cocoonSceneName);
+            MiniGameOverlay.Show(cocoonSceneName);
+        });
     }
 
     private static bool IsPlayer(Collider2D other)

@@ -31,7 +31,7 @@ public sealed partial class WorkshopWordPreview
     /// <summary>Uses the authored spawn and ordinary walking throughout; no physics/body/position bypass.</summary>
     internal static IEnumerator ReviewWinterSceneRevision()
     {
-        Feedback2Save("{\"items\":2047,\"chapters\":7,\"solarTerms\":15,\"dyedColor\":\"紫色\",\"steps\":[\"quest.guide.Spring\",\"quest.guide.Summer\",\"quest.guide.Autumn\",\"quest.guide.Winter\",\"dialogue.winter.tailoring\",\"spring.guyu.fed\",\"summer.xiaoman.reeled\",\"autumn.loom\",\"autumn.bailu.woven\",\"winter.dyes\",\"winter.ground\",\"autumn.hanlu.patterned\"]}");
+        Feedback2Save("{\"items\":1023,\"chapters\":7,\"solarTerms\":15,\"dyedColor\":\"紫色\",\"steps\":[\"quest.guide.Spring\",\"quest.guide.Summer\",\"quest.guide.Autumn\",\"quest.guide.Winter\",\"dialogue.winter.tailoring\",\"spring.guyu.fed\",\"summer.xiaoman.reeled\",\"autumn.loom\",\"autumn.bailu.woven\",\"winter.dyes\",\"winter.ground\",\"autumn.hanlu.patterned\"]}");
         WinterLevelState.HasReturnPosition = false;
         WinterLevelState.PendingGrindingPrompt = false;
         yield return SceneManager.LoadSceneAsync("Level4_Winter");
@@ -76,6 +76,15 @@ public sealed partial class WorkshopWordPreview
             yield return null;
         }
         WinterSceneRequire(!WorkshopDialoguePresenter.IsOpen, "The guide dialogue could not be dismissed.");
+        WinterSceneRequire(SimplePopup.IsOpen && !WorkshopProgress.Has(WorkshopItem.SilkwormEggSheet),
+            "Talking to the guide should offer an egg sheet to collect.");
+        yield return Capture("941a-winter-egg-sheet-item");
+        InvokeNamedButton("Confirm");
+        yield return null;
+        WinterSceneRequire(WorkshopProgress.Has(WorkshopItem.SilkwormEggSheet) && WorkshopProcessCardView.IsOpen,
+            "Accepting the item should award it and open its seasonal craft card.");
+        yield return Capture("941b-winter-egg-sheet-process");
+        InvokeNamedButton("Start Process Game");
         yield return null;
 
         var table = GameObject.Find("4-裁剪台");
@@ -88,13 +97,17 @@ public sealed partial class WorkshopWordPreview
         WinterSceneRequire(cut != null && cut.IsVisible, "The relocated cutting table has no reachable action.");
         WinterSceneClickTag(cut);
         yield return null;
-        WinterSceneRequire(WorkshopSimpleGames.IsOpen && WorkshopWordRules.WinterStage == WorkshopWinterStage.Fitting,
-            "The cutting table did not open the saved fitting stage.");
-        yield return Capture("943-winter-revision-tailoring-entry");
-        CloseWorktable();
+        WinterSceneRequire(WorkshopProcessCardView.IsOpen, "The cutting table did not show its Xiaoxue process card.");
+        InvokeNamedButton("Start Process Game");
         yield return null;
-        WinterSceneRequire(!WorkshopSimpleGames.IsOpen && !WorkshopRewardCards.IsBusy,
-            "Leaving the fitting worktable must resume the courtyard without a reward.");
+        WinterSceneRequire(WorkshopObservationView.IsOpen && !MiniGameOverlay.IsActive &&
+            WorkshopWordRules.WinterStage == WorkshopWinterStage.Preparing,
+            "The cutting table did not open cloth layout before scissors.");
+        yield return Capture("943-winter-revision-tailoring-entry");
+        InvokeWorktableButton("Return From Observation");
+        yield return null;
+        WinterSceneRequire(!WorkshopObservationView.IsOpen && !WorkshopRewardCards.IsBusy,
+            "Leaving cloth layout must resume the courtyard without a reward.");
         yield return null;
 
         yield return WinterSceneWalk(player, 1.5f, "east-workshop-porch");

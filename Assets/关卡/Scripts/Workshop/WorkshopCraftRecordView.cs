@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using JiangnanDye;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 internal sealed class WorkshopCraftRecordView : MonoBehaviour
 {
@@ -16,13 +17,13 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
     private static readonly string[][] ChapterSteps =
     {
         new[] { "桑叶", "养蚕", "结茧" }, new[] { "择茧", "缫丝", "丝束" },
-        new[] { "引纬", "织坯", "素绸" }, new[] { "染布", "裁片", "成衣" }
+        new[] { "引纬", "缬", WorkshopProgress.ProductName(WorkshopSeason.Autumn) }, new[] { "染布", "裁片", "成衣" }
     };
     private static readonly string[] ChapterNotes =
     {
         "春蚕在蚕匾里吃适合蚕龄的桑叶，长成后才会吐丝结茧。",
         "挑茧以后，先煮茧、找丝头，再把丝绪均匀绕到丝轴上。",
-        "梭子引纬，纬线与经线交错成布。这里记录基础素绸，宋锦显花另见工艺资料。",
+        $"梭子引纬，纬线与经线交错成布。完成白露织造可收下缬，交付秋季成果后获得{WorkshopProgress.ProductName(WorkshopSeason.Autumn)}。",
         "布料染好后按样板裁片，再按裁片的形状组装缝制。"
     };
 
@@ -91,6 +92,7 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
         if (cover != null)
         {
             WorkshopUi.Picture(frame, "Original Chapter Completion", ChapterArtwork, cover);
+            if (season == WorkshopSeason.Autumn) DrawAutumnResult(cover);
             close = WorkshopUi.PixelButton(frame, "Continue from Result", FromArtwork(PrintedButtons[index]),
                 "继续", Close, true, 32);
         }
@@ -98,7 +100,8 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
         {
             var result = WorkshopUi.PixelCard(frame, "Chapter Result", ChapterArtwork, WorkshopUi.Paper, WorkshopUi.Bronze);
             Label(result, "Chapter", new Rect(50, 60, 908, 85), WorkshopProgress.SeasonName(season) + "章完成", 54);
-            var product = season == WorkshopSeason.Winter ? WorkshopArt.Garment(WorkshopProgress.GarmentId) : Product(index);
+            var product = season == WorkshopSeason.Winter ? WorkshopArt.Garment(WorkshopProgress.GarmentId) :
+                WorkshopArt.ChapterProduct(season);
             WorkshopUi.Picture(result, "Result", new Rect(284, 157, 440, 240), product);
             Label(result, "Product", new Rect(50, 398, 908, 56), WorkshopProgress.ProductName(season), 35);
             close = WorkshopUi.PixelButton(result, "Continue from Result", new Rect(376, 476, 256, 66),
@@ -123,6 +126,30 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
         SecondaryButton("Regional Sources", action, width, "地方工艺与来源",
             () => OpenChild(done => WorkshopHeritageBrief.ShowSeason(season, done)));
         KeepFocusIn(frame, close);
+    }
+
+    private void DrawAutumnResult(Sprite cover)
+    {
+        // The autumn cover has its original product name and illustration printed on the paper.
+        var nameBounds = new Rect(757, 446, 142, 65);
+        DrawParchment(cover, "Product Name Parchment", nameBounds, new Rect(757, 514, 142, 18));
+        var name = WorkshopUi.Label(frame, "Product", FromArtwork(nameBounds),
+            WorkshopProgress.ProductName(WorkshopSeason.Autumn), 40, new Color32(53, 29, 13, 255), TextAnchor.MiddleCenter);
+        name.fontStyle = FontStyle.Bold;
+
+        var paper = new Rect(544, 559, 420, 109);
+        DrawParchment(cover, "Product Parchment", new Rect(987, 371, 431, 256), paper);
+        DrawParchment(cover, "Product Parchment Top", new Rect(1126, 331, 292, 40), paper);
+        WorkshopUi.Picture(frame, "Result", FromArtwork(new Rect(938, 309, 514, 343)),
+            WorkshopArt.ChapterProduct(WorkshopSeason.Autumn));
+    }
+
+    private void DrawParchment(Sprite cover, string name, Rect bounds, Rect paper)
+    {
+        var image = WorkshopUi.Rect(frame, name, FromArtwork(bounds)).gameObject.AddComponent<RawImage>();
+        image.texture = cover.texture;
+        image.uvRect = new Rect(paper.x / 1672f, 1f - paper.yMax / 941f, paper.width / 1672f, paper.height / 941f);
+        image.raycastTarget = false;
     }
 
     private void SecondaryButton(string name, int column, float width, string text, Action clicked)
@@ -177,13 +204,14 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
         switch (season)
         {
             case WorkshopSeason.Spring:
-                steps = new[] { observation?.Leaf, observation?.SilkwormTray, Product(0) };
+                steps = new[] { observation?.Leaf, observation?.SilkwormTray, WorkshopArt.ChapterProduct(season) };
                 break;
             case WorkshopSeason.Summer:
-                steps = new[] { Product(0), observation?.SilkReel, Product(1) };
+                steps = new[] { WorkshopArt.ChapterProduct(WorkshopSeason.Spring), observation?.SilkReel,
+                    WorkshopArt.ChapterProduct(season) };
                 break;
             case WorkshopSeason.Autumn:
-                steps = new[] { observation?.Shuttle, greigeSilk, Product(2) };
+                steps = new[] { observation?.Shuttle, greigeSilk, WorkshopArt.ChapterProduct(season) };
                 break;
             default:
                 steps = new[] { DyedCloth(out fabricTint, out clothTint), null, WorkshopArt.Garment(WorkshopProgress.GarmentId) };
@@ -221,11 +249,11 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
             fabricTint = config != null ? config.GetClothTint(color) : DyeColorUtil.Tint(color);
             var dedicated = config?.GetCloth(color);
             clothTint = dedicated != null ? Color.white : fabricTint;
-            return dedicated ?? config?.silk ?? Product(2);
+            return dedicated ?? config?.silk ?? WorkshopArt.PlainSilk;
         }
 
         fabricTint = clothTint = Color.white;
-        return Product(2);
+        return WorkshopArt.PlainSilk;
     }
 
     private void BuildProduction()
@@ -236,7 +264,7 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
         else WorkshopUi.PixelCard(frame, "Production Board", bounds, WorkshopUi.Paper, WorkshopUi.Bronze);
         var content = WorkshopUi.Rect(frame, "Production Journey", bounds);
         Label(content, "Title", new Rect(595, 131, 482, 68), "制作记录", 47);
-        string[] processes = { "春 · 采桑浴蚕与喂蚕", "夏 · 下簇缫丝与备料", "秋 · 织造染色与攀花", "冬 · 剪帛量体与缝衣" };
+        string[] processes = { "春 · 采桑浴蚕与喂蚕", "夏 · 下簇缫丝与备料", "秋 · 织造染色与攀花", "冬 · 排布剪帛与缝衣" };
         for (int i = 0; i < processes.Length; i++)
         {
             var season = (WorkshopSeason)i;
@@ -250,8 +278,10 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
 
         string garmentId = WorkshopProgress.GarmentId;
         var garment = WorkshopArt.Garment(garmentId);
-        Sprite[] stages = { WorkshopObservationArt.Current?.Leaf, Product(0), Product(1), Product(2), garment };
-        string[] names = { "桑叶", "蚕茧", "丝束", "素绸", garment != null ? WorkshopTailor.GarmentName(garmentId) : "成衣图未记录" };
+        Sprite[] stages = { WorkshopObservationArt.Current?.Leaf, WorkshopArt.ChapterProduct(WorkshopSeason.Spring),
+            WorkshopArt.ChapterProduct(WorkshopSeason.Summer), WorkshopArt.ChapterProduct(WorkshopSeason.Autumn), garment };
+        string[] names = { "桑叶", "蚕茧", "丝束", WorkshopProgress.ProductName(WorkshopSeason.Autumn),
+            garment != null ? WorkshopTailor.GarmentName(garmentId) : "成衣图未记录" };
         for (int i = 0; i < stages.Length; i++)
         {
             float x = 398 + i * 183;
@@ -359,9 +389,4 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
         ChapterArtwork.y + source.y * (ChapterArtwork.height / 941f),
         source.width * (ChapterArtwork.width / 1672f), source.height * (ChapterArtwork.height / 941f));
 
-    private static Sprite Product(int index)
-    {
-        string item = index == 0 ? "Cocoon" : index == 1 ? "RawSilk" : "PlainSilk";
-        return Resources.Load<Sprite>("WorkshopFinish/" + item) ?? WorkshopArt.ChapterProduct((WorkshopSeason)index);
-    }
 }

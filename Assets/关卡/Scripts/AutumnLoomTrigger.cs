@@ -53,6 +53,7 @@ public class AutumnLoomTrigger : MonoBehaviour
 
     private void OnLoomClicked()
     {
+        if (WorkshopQuestGuide.BlocksWorldInput || WorkshopQuestGuide.IsWorldOverlayActive) return;
         if (AutumnLevelState.HasLoomRepaired && WorkshopProgress.Has(WorkshopItem.RawSilkCloth))
             OpenLoom();
         else
@@ -63,7 +64,7 @@ public class AutumnLoomTrigger : MonoBehaviour
     {
         if (WorkshopProgress.HasStep(WorkshopWordRules.Patterned))
         {
-            SimplePopup.Show("攀花已完成", "纹样已经织好，梭子、生坯绸与染布都还在。收齐土地公雕像后回工坊交付秋季成果。", "知道了");
+            SimplePopup.Show("攀花已完成", "纹样已经织好，梭子、缬与染布都还在。收齐土地公雕像后回工坊交付秋季成果。", "知道了");
             return;
         }
         if (!AutumnLevelState.HasLoomRepaired)
@@ -76,7 +77,7 @@ public class AutumnLoomTrigger : MonoBehaviour
 
             _floatBtn.Hide();
             _shown = false; // 关闭叠加层返回后重新显示按钮
-            MiniGameOverlay.Show("LoomRepair");
+            WorkshopProcessCardView.Show(WorkshopProcessCard.BailuWeaving, () => MiniGameOverlay.Show("LoomRepair"));
             return;
         }
 
@@ -91,17 +92,24 @@ public class AutumnLoomTrigger : MonoBehaviour
         _shown = false;
         if (!WorkshopProgress.Has(WorkshopItem.RawSilkCloth))
         {
-            EmbroideryGameManager.SetNextMode(EmbroideryPlayMode.Weaving);
-            MiniGameOverlay.Show("EmbroideryScene");
+            ShowEmbroidery(WorkshopProcessCard.BailuWeaving, EmbroideryPlayMode.Weaving);
             return;
         }
         if (!WorkshopWordRules.CanPattern)
         {
-            SimplePopup.Show("先染好布", "已获得生坯绸。先到青染轩研磨染材、选择颜色染布，再带梭子回来攀花。道具不会消耗。", "知道了");
+            SimplePopup.Show("先染好布", "已获得缬。先到青染轩研磨染材、选择颜色染布，再带梭子回来攀花。道具不会消耗。", "知道了");
             return;
         }
-        EmbroideryGameManager.SetNextMode(EmbroideryPlayMode.HanluPattern);
-        MiniGameOverlay.Show("EmbroideryScene");
+        ShowEmbroidery(WorkshopProcessCard.Hanlu, EmbroideryPlayMode.HanluPattern);
+    }
+
+    private static void ShowEmbroidery(WorkshopProcessCard card, EmbroideryPlayMode mode)
+    {
+        WorkshopProcessCardView.Show(card, () =>
+        {
+            EmbroideryGameManager.SetNextMode(mode);
+            MiniGameOverlay.Show("EmbroideryScene");
+        });
     }
 
     private void OnDestroy()

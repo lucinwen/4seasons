@@ -64,7 +64,7 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
     {
         var art = WorkshopArt.ItemCard(item);
         if (art == null) return;
-        var view = Open((WorkshopSeason)((int)item / 3));
+        var view = Open(WorkshopProgress.ItemSeason(item));
         view.RenderDetail(art, view.Close);
     }
 
@@ -287,7 +287,7 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
         image.rectTransform.anchoredPosition = new Vector2(rect.center.x, -rect.center.y);
     }
 
-    private static void MarkPrintedButtonFocus(UnityEngine.UI.Button button)
+    internal static void MarkPrintedButtonFocus(UnityEngine.UI.Button button)
     {
         Rect bounds = ((RectTransform)button.transform).rect;
         button.targetGraphic = WorkshopUi.Fill(button.transform, "Keyboard Focus Line",

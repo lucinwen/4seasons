@@ -89,7 +89,7 @@ namespace Qingming.LevelBackground
         {
             var popup = Create(out var frame, onConfirm, onCancel);
             WorkshopKnowledgeView.DrawItemCard(frame, new Rect(224, 31, 1472, 871), item, art);
-            var season = (WorkshopSeason)((int)item / 3);
+            var season = WorkshopProgress.ItemSeason(item);
             return AddActions(popup, frame, 960, 945, season, confirmText, showCancel, cancelText, playSound);
         }
 

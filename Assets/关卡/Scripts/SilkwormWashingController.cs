@@ -87,7 +87,7 @@ public class SilkwormWashingController : MonoBehaviour
             return;
         }
 
-        BeginWashing();
+        WorkshopProcessCardView.Show(WorkshopProcessCard.Guyu, BeginWashing);
     }
 
     private void ShowIntroPanel()

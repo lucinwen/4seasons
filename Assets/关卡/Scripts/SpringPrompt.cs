@@ -126,9 +126,12 @@ public class SpringPrompt : MonoBehaviour
             return;
         }
 
-        var harvest = HarvestOverlayManager.Instance;
-        if (harvest != null) harvest.ShowHarvest();
-        else SceneManager.LoadScene(gameSceneName);
+        WorkshopProcessCardView.Show(WorkshopProcessCard.Qingming, () =>
+        {
+            var harvest = HarvestOverlayManager.Instance;
+            if (harvest != null) harvest.ShowHarvest();
+            else SceneManager.LoadScene(gameSceneName);
+        });
     }
 
     private static bool IsPlayer(Collider2D other)

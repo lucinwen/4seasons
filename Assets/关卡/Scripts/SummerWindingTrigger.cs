@@ -40,7 +40,11 @@ public sealed class SummerWindingTrigger : MonoBehaviour
     {
         if (WorkshopQuestGuide.BlocksWorldInput || WorkshopQuestGuide.IsWorldOverlayActive) return;
         action.Hide();
-        WorkshopObservationView.Show(WorkshopObservation.MangzhongCocoon);
+        if (WorkshopProgress.Has(WorkshopItem.Spool))
+            WorkshopProcessCardView.Show(WorkshopProcessCard.Mangzhong,
+                () => WorkshopObservationView.Show(WorkshopObservation.MangzhongCocoon));
+        else
+            WorkshopObservationView.Show(WorkshopObservation.MangzhongCocoon);
     }
 
     private static bool IsPlayer(Collider2D other)

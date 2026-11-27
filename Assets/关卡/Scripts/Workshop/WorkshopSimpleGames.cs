@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Qingming.LevelBackground;
 
-internal enum WorkshopSimpleGame { Feeding, Reeling, Weaving, Fitting }
+internal enum WorkshopSimpleGame { Feeding, Reeling, Weaving }
 
 /// <summary>Small worktable interactions sharing the established paper-and-wood UI.</summary>
 internal sealed class WorkshopSimpleGames : MonoBehaviour
@@ -19,10 +19,9 @@ internal sealed class WorkshopSimpleGames : MonoBehaviour
     private int placed;
     private Text status;
     private Text closeLabel;
-    private Action afterClose;
     private WorkshopPlainWeave weave;
 
-    internal static void Show(WorkshopSimpleGame game, Action closed = null)
+    internal static void Show(WorkshopSimpleGame game)
     {
         if (IsOpen || MiniGameOverlay.IsActive) return;
         string missing = null;
@@ -34,15 +33,12 @@ internal sealed class WorkshopSimpleGames : MonoBehaviour
                 missing = "先备水、拾柴，在迷宫里找到线轴。"; break;
             case WorkshopSimpleGame.Weaving when !AutumnLevelState.HasLoomRepaired || !WorkshopProgress.Has(WorkshopItem.Shuttle):
                 missing = "先拾起织机左侧地上的木槌修好织机，再从工具箱取得梭子。"; break;
-            case WorkshopSimpleGame.Fitting when !WorkshopProgress.Has(WorkshopItem.CutPieces):
-                missing = "先在裁衣台沿虚线剪出前衣、后衣和衣袖。"; break;
         }
         if (missing != null) { SimplePopup.Show("先备好材料", missing, "知道了"); return; }
         var root = WorkshopUi.NewCanvas("Simplified " + game, 24000);
         current = root.gameObject.AddComponent<WorkshopSimpleGames>();
         current.frame = root;
         current.game = game;
-        current.afterClose = closed;
         current.previousTime = Time.timeScale;
         Time.timeScale = 0f;
         current.Build();
@@ -50,7 +46,7 @@ internal sealed class WorkshopSimpleGames : MonoBehaviour
 
     private void Build()
     {
-        var season=game==WorkshopSimpleGame.Feeding?WorkshopSeason.Spring:game==WorkshopSimpleGame.Reeling?WorkshopSeason.Summer:game==WorkshopSimpleGame.Weaving?WorkshopSeason.Autumn:WorkshopSeason.Winter;
+        var season=game==WorkshopSimpleGame.Feeding?WorkshopSeason.Spring:game==WorkshopSimpleGame.Reeling?WorkshopSeason.Summer:WorkshopSeason.Autumn;
         WorkshopImmersive.Background(frame,season);
         var paper=WorkshopUi.Rect(frame,"Worktable",new Rect(0,0,1920,1080));
         var close=WorkshopImmersive.Button(paper,"Close",new Rect(1680,35,195,62),"返回工位",Close);
@@ -62,7 +58,6 @@ internal sealed class WorkshopSimpleGames : MonoBehaviour
             case WorkshopSimpleGame.Feeding:BuildFeeding();break;
             case WorkshopSimpleGame.Reeling:BuildReeling();break;
             case WorkshopSimpleGame.Weaving:weave=new WorkshopPlainWeave();DrawWeave();break;
-            case WorkshopSimpleGame.Fitting:BuildFitting();break;
         }
         ApplyReadingFont();
         foreach(var label in frame.GetComponentsInChildren<Text>(true))WorkshopImmersive.QuietText(label);
@@ -124,7 +119,7 @@ internal sealed class WorkshopSimpleGames : MonoBehaviour
     {
         foreach (Transform child in work) { child.gameObject.SetActive(false); Destroy(child.gameObject); }
         WorkshopUi.Label(work, "Instructions", new Rect(30, 0, 1480, 75),
-            "奇数经与偶数经轮流抬起，梭子左右交替穿过。织满六行，获得生坯绸。", 30, WorkshopUi.Ink);
+            "奇数经与偶数经轮流抬起，梭子左右交替穿过。织满六行，获得缬。", 30, WorkshopUi.Ink);
         for (int row = 0; row < 6; row++)
             for (int col = 0; col < 6; col++)
                 WorkshopUi.Fill(work, $"Weave {row},{col}", new Rect(565 + col * 62, 110 + row * 62, 58, 58),
@@ -153,40 +148,8 @@ internal sealed class WorkshopSimpleGames : MonoBehaviour
         if (weave.Complete)
         {
             WorkshopWordRules.CompleteWeaving();
-            Finish("织造完成，获得生坯绸。接下来到青染轩研磨染材、选择喜欢的颜色染布。");
+            Finish("织造完成，获得缬。接下来到青染轩研磨染材、选择喜欢的颜色染布。");
         }
-    }
-
-    private void BuildFitting()
-    {
-        WorkshopUi.Label(work, "Instructions", new Rect(30, 0, 1470, 75),
-            "把纸样铺到布面的对应位置。", 30, WorkshopUi.Ink);
-        WorkshopUi.Picture(work, "Fabric", new Rect(740, 110, 710, 470), Art("CuttingCloth"), new Color32(220, 200, 178, 255), true);
-        string[] names = { "前衣", "后衣", "衣袖" };
-        for (int i = 0; i < 3; i++)
-        {
-            int part = i;
-            var target = WorkshopUi.Rect(work, "Pattern Target " + i, new Rect(780 + i * 215, 190, 190, 290));
-            WorkshopUi.Picture(target, "Pattern Outline", new Rect(0, 0, 190, 235), WorkshopArt.CutPiece(i), new Color(1, 1, 1, 0.35f));
-            WorkshopUi.Label(target, "Pattern Name", new Rect(0, 242, 190, 40), names[i], 28, WorkshopUi.Ink, TextAnchor.MiddleCenter);
-            var piece = WorkshopUi.Picture(work, "Pattern Paper " + i, new Rect(35 + i * 215, 200, 190, 235), WorkshopArt.CutPiece(i));
-            WorkshopUi.Label(work, "Paper Name " + i, new Rect(35 + i * 215, 450, 190, 40), names[i], 28, WorkshopUi.Ink, TextAnchor.MiddleCenter);
-            piece.raycastTarget = true;
-            piece.gameObject.AddComponent<WorkshopWordDrag>().Bind(frame, target, () =>
-            {
-                WorkshopUi.Picture(target, "Fitted Paper", new Rect(0, 0, 190, 235), WorkshopArt.CutPiece(part));
-                placed++;
-                status.text = $"纸样已确认 {placed} / 3。";
-                if (placed == 3)
-                {
-                    WorkshopProgress.MarkStep(WorkshopWordRules.Fitted);
-                    Finish(WorkshopProgress.Has(WorkshopItem.Needle)
-                        ? "版型已确认。点击完成并返回，直接选择款式、拼合衣片并缝制。"
-                        : "版型已确认。收下缝素堂里发光的缝衣针，再点裁衣台选款缝衣。");
-                }
-            });
-        }
-        status.text = "拖动纸样，对齐布上的轮廓。";
     }
 
     private void Update()
@@ -215,7 +178,6 @@ internal sealed class WorkshopSimpleGames : MonoBehaviour
         current = null;
         Time.timeScale = previousTime;
         WorkshopUi.CloseCanvas(frame);
-        afterClose?.Invoke();
     }
     private void OnDestroy() { if (current == this) { current = null; Time.timeScale = previousTime; } }
 }

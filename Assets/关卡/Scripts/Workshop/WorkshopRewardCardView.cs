@@ -92,6 +92,11 @@ internal sealed class WorkshopRewardCardView : MonoBehaviour
 
     private void RenderCard(WorkshopRewardCards.Card card, bool received, Action goBack)
     {
+        if (!received && card.Item == WorkshopItem.SilkwormEggSheet)
+        {
+            WorkshopProcessCardView.Show(WorkshopProcessCard.WinterEggs, null);
+            return;
+        }
         if (!received && (card.Id == "maze" || card.Id == "reeling" || card.Id == "thread"))
         {
             // These crafts are represented by their solar craft card. Keep the
@@ -131,7 +136,7 @@ internal sealed class WorkshopRewardCardView : MonoBehaviour
             ActionButton(board, "Craft Season " + tab, new Rect(60 + i * 224, 123, 208, 58),
                 WorkshopProgress.SeasonName(tab) + "季工艺", () => SelectSeason(tab), tab == season, 28);
         }
-        Label(board, "Collection Hint", new Rect(980, 129, 640, 47), "完成小游戏后获得卡片；已收录卡片可点开回看。",
+        Label(board, "Collection Hint", new Rect(980, 129, 640, 47), "完成工序或领取道具可收录卡片，点击回看。",
             24, WorkshopUi.Faded, TextAnchor.MiddleRight);
         WorkshopUi.Fill(board, "Collection Rule", new Rect(60, 199, 1560, 2), WorkshopUi.Bronze);
 
@@ -169,7 +174,7 @@ internal sealed class WorkshopRewardCardView : MonoBehaviour
             29, earned ? WorkshopUi.Ink : WorkshopUi.Faded);
         Fit(title, 24, 29);
         var description = Label(surface, "Craft Entry Description", new Rect(175, 101, 310, 76),
-            earned ? card.Description : "完成对应小游戏后收录工艺知识与节气卡片。", 23, WorkshopUi.Faded, TextAnchor.UpperLeft);
+            earned ? card.Description : "完成对应工序或领取道具后收录。", 23, WorkshopUi.Faded, TextAnchor.UpperLeft);
         Fit(description, 20, 23);
         Label(surface, "Craft Entry Status", new Rect(175, 195, 310, 43),
             earned ? "已收录 · 点击回看" : "尚未收录", 25, earned ? WorkshopUi.Green : WorkshopUi.Faded);
@@ -238,7 +243,7 @@ internal sealed class WorkshopRewardCardView : MonoBehaviour
 
     private void Update()
     {
-        if (current != this || termOpen || resumedFrame == Time.frameCount) return;
+        if (current != this || termOpen || resumedFrame == Time.frameCount || WorkshopProcessCardView.BlocksWorldInput) return;
         if (Input.GetKeyDown(KeyCode.Escape)) back?.Invoke();
     }
 
