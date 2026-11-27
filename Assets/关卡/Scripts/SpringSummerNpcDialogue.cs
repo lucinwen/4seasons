@@ -55,7 +55,7 @@ internal static class SpringSummerNpcDialogue
     internal static bool RequireMulberryBriefing()
     {
         if (HasMulberryBriefing) return true;
-        SimplePopup.Show("先去找蚕房师傅", "请先与春章的蚕房师傅交谈，领到今天的采桑任务。", "知道了", null);
+        SimplePopup.Show("先去找蚕桑师傅", "请先与春章的蚕桑师傅交谈，领到今天的采桑任务。", "知道了", null);
         return false;
     }
 
@@ -84,7 +84,7 @@ internal static class SpringSummerNpcDialogue
         else if (!WorkshopProgress.Has(WorkshopItem.SilkwormEgg) && !WorkshopProgress.HasStep(BathIntroStep))
             BeforeBath();
         else
-            ShowNextTask(WorkshopSeason.Spring, "蚕房师傅");
+            ShowNextTask(WorkshopSeason.Spring, "蚕桑师傅");
     }
 
     private static void TalkSummer()

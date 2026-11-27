@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using JiangnanDye;
 using Qingming.LevelBackground;
 
-/// <summary>秋季染色台：选染料，将缬拖入染缸，染好后收下。</summary>
+/// <summary>秋季染色台：选染料，将生坯绸拖入染缸，染好后收下。</summary>
 public class WinterDyeingOverlay : MonoBehaviour
 {
     public static bool IsActive { get; private set; }
@@ -62,7 +62,7 @@ public class WinterDyeingOverlay : MonoBehaviour
         WorkshopUi.Picture(frame, "Autumn Dye Workbench", new Rect(0, 0, 1920, 1080),
             Resources.Load<Sprite>("WordRevision/AutumnDyeWorkbench"), stretch: true);
         _statusText = TableLabel(frame, "Dye Hint", new Rect(60, 48, 1300, 55),
-            "选染料，把缬拖入染缸。", 29, TextAnchor.MiddleLeft);
+            "选染料，把生坯绸拖入染缸。", 29, TextAnchor.MiddleLeft);
         WorkshopUi.PixelButton(frame, "CloseButton", new Rect(1720, 45, 150, 58),
             "返回", CloseInternal, true, 26);
         CreateDyeList();
@@ -124,7 +124,7 @@ public class WinterDyeingOverlay : MonoBehaviour
         _silkImage.raycastTarget = true;
         _silkImage.gameObject.AddComponent<WinterDyeingSilk>().Init(this);
         _silkLabel = TableLabel(_frame, "Silk Name", new Rect(1420, 810, 260, 42),
-            WorkshopProgress.ItemName(WorkshopItem.RawSilkCloth), 25);
+            WorkshopProgress.ItemName(WorkshopItem.GreigeCloth), 25);
     }
 
     private void SelectColor(DyeColor color)
@@ -133,7 +133,7 @@ public class WinterDyeingOverlay : MonoBehaviour
         _selectedColor = color;
         _vatImage.sprite = _config.GetVat(color) ?? _config.clearWaterVat;
         foreach (var selection in _dyeSelections) selection.Value.enabled = selection.Key == color;
-        SetStatus("把右侧的缬拖入染缸，染成" + DyeColorUtil.ChineseName(color) + "。");
+        SetStatus("把右侧的生坯绸拖入染缸，染成" + DyeColorUtil.ChineseName(color) + "。");
     }
 
     public bool IsOverVat(Vector2 screenPosition)
@@ -154,12 +154,12 @@ public class WinterDyeingOverlay : MonoBehaviour
 
     public bool TryDyeCloth()
     {
-        if (!CanDragSilk || !WorkshopProgress.Has(WorkshopItem.RawSilkCloth)) return false;
+        if (!CanDragSilk || !WorkshopProgress.Has(WorkshopItem.GreigeCloth)) return false;
         _dyeing = true;
         _silkImage.raycastTarget = false;
         _silkLabel.text = "";
         foreach (var button in _dyeButtons) button.interactable = false;
-        SetStatus("缬正在上色……");
+        SetStatus("生坯绸正在上色……");
         WorkshopAudioFeedback.DyeDip();
         StartCoroutine(DyeOneCloth(_selectedColor.Value));
         return true;

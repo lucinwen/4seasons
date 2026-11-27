@@ -23,22 +23,22 @@ public class AutumnNpcDialogue : MonoBehaviour
         if (!WorkshopProgress.HasStep("dialogue.autumn.dyeIntro"))
         {
             WorkshopDialoguePresenter.PlayOnce("dialogue.autumn.dyeIntro", new[] {
-                new WorkshopDialogueLine("织造师傅", receivedCake
+                new WorkshopDialogueLine("织染师傅", receivedCake
                     ? "这份糕点先送给你。收集香蕉与蚕花酒后，带到灵桑阙参加秋社。"
                     : "立秋先到染材园采集天然染材。锄头在入口旁，研磨棒和研钵在青染轩。"),
-                new WorkshopDialogueLine("织造师傅", "修机锤放在织机左侧的地上，自己拾起就能修机。完成织造、收下缬后，去青染轩研磨染色，最后用染布攀花。道具一直保留。") });
+                new WorkshopDialogueLine("织染师傅", "修机锤放在织机左侧的地上，自己拾起就能修机。完成奇偶推梭、收下生坯绸后，去青染轩研磨染色，最后用染布攀花获得缬。道具一直保留。") });
             return;
         }
 
         if (receivedCake)
         {
             WorkshopDialoguePresenter.Play(new[] {
-                new WorkshopDialogueLine("织造师傅", "糕点送给你了。再收集香蕉与蚕花酒，就能去灵桑阙参加秋社。修机锤在织机左侧的地上，记得自己拾取。") });
+                new WorkshopDialogueLine("织染师傅", "糕点送给你了。再收集香蕉与蚕花酒，就能去灵桑阙参加秋社。修机锤在织机左侧的地上，记得自己拾取。") });
             return;
         }
 
         var next = WorkshopQuests.NextReady(WorkshopSeason.Autumn);
-        WorkshopDialoguePresenter.Play(new[] { new WorkshopDialogueLine("织造师傅", next != null
+        WorkshopDialoguePresenter.Play(new[] { new WorkshopDialogueLine("织染师傅", next != null
             ? next.Title + "：" + next.Instructions
             : "秋季成果已登记。染布一直保留，可以带入冬季剪帛制衣。") });
     }

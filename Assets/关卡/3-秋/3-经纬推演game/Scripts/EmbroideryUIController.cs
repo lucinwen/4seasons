@@ -186,17 +186,20 @@ namespace JingweiWeave
             if (gm.IsHanluPattern)
             {
                 WorkshopWordRules.CompletePattern();
-                SimplePopup.Show("寒露攀花", "攀花完成，染布上的花纹已经织好。", "完成", gm.CloseGame);
+                SimplePopup.ShowItem(
+                    WorkshopItem.RawSilkCloth,
+                    "寒露经纬攀花已完成，收下关键道具缬。",
+                    gm.CloseGame, fallbackIcon: WorkshopArt.RawSilk);
                 return;
             }
 
-            // 通关奖励：缬道具弹窗，收下后关闭小游戏叠加层
+            // 兼容独立打开织造棋盘的情况；主关卡使用奇偶推梭，奖励同样是生坯绸。
             SimplePopup.ShowItem(
-                WorkshopItem.RawSilkCloth,
-                "白露经纬织造已完成，收下这件秋季道具。",
+                WorkshopItem.GreigeCloth,
+                "白露织造已完成，收下生坯绸。",
                 () =>
                 {
-                    bool first = !WorkshopProgress.Has(WorkshopItem.RawSilkCloth);
+                    bool first = !WorkshopProgress.Has(WorkshopItem.GreigeCloth);
                     WorkshopWordRules.CompleteWeaving();
                     if (first)
                         WorkshopDialoguePresenter.Play(WorkshopDialogueScripts.AutumnWarpComplete, gm.CloseGame);

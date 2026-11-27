@@ -8,7 +8,7 @@ internal static class MinigameUiPresentation
     internal static readonly Color Linen = new Color32(235, 223, 197, 255);
     internal static readonly Color MutedInk = new Color32(78, 89, 77, 255);
     internal static readonly Color Bronze = new Color32(182, 139, 75, 255);
-    internal const float BackgroundVeilAlpha = 0.60f;
+    internal const float BackgroundVeilAlpha = 0.75f;
     internal static readonly Color BackgroundVeil = new Color(0f, 0f, 0f, BackgroundVeilAlpha);
     internal static readonly Color Veil = new Color32(12, 20, 19, 158);
     private static Sprite veilSprite;

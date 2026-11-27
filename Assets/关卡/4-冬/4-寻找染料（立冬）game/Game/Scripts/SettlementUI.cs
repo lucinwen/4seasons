@@ -35,6 +35,11 @@ namespace JiangnanDye
         {
             MinigameUiPresentation.Dialog(transform, panel, titleText);
             MinigameUiPresentation.Action(restartButton);
+            if (restartButton != null)
+            {
+                var background = restartButton.targetGraphic as Image ?? restartButton.GetComponent<Image>();
+                if (background != null) background.color = Color.white;
+            }
 
             if (panel != null) panel.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 710f);
             if (restartButton != null && restartButton.transform is RectTransform actionRect)

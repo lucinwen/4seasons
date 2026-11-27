@@ -16,7 +16,7 @@ MonoBehaviour:
   workshopTaskBoard: {fileID: 21300000, guid: b88df4ca8eef4bb684fdc3b7df950f67, type: 3}
   workshopChapterRail: {fileID: 21300000, guid: 89fc405b08374598a7ebca1cf8ca2851, type: 3}
   journalFrame: {fileID: 21300000, guid: 7499205598679604bafc199700205e03, type: 3}
-  rawSilk: {fileID: 21300000, guid: 1a2af3f2003b9b2439be7623098fa375, type: 3}
+  rawSilk: {fileID: 21300000, guid: c44f78675e709644897171825aa4a560, type: 3}
   seasonPanels:
   - {fileID: 21300000, guid: 59de9f751f3383a4ca77102bb9c3738b, type: 3}
   - {fileID: 21300000, guid: 702dd04f0e4b17044ac5b19d718997fb, type: 3}
@@ -37,8 +37,8 @@ MonoBehaviour:
   dialogueWorkshopIcon: {fileID: 21300000, guid: 3a14a65f49276ca47a35fdd1504702d9, type: 3}
   dialogueNpcPortraits:
   - {fileID: 21300000, guid: ea1cc2b330303cb45bc890b0ca99e4eb, type: 3}
-  - {fileID: 21300000, guid: cfb2261baca77924798289b17527dd71, type: 3}
   - {fileID: 21300000, guid: b5543393778ca654c8f1b2b70ad5012c, type: 3}
+  - {fileID: 21300000, guid: cfb2261baca77924798289b17527dd71, type: 3}
   - {fileID: 21300000, guid: 9122425c289cb9447b01e9cd51388377, type: 3}
   seasonBackgrounds:
   - {fileID: 2800000, guid: 2519205844bc5e62b669c7bba63dd96c, type: 3}

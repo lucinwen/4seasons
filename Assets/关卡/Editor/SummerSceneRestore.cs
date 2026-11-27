@@ -16,6 +16,8 @@ public static class SummerSceneRestore
     private const string BgPath = "Assets/关卡/2-夏/第二关-夏.png";
     private const string PlayerAnimCtrl = "Assets/animation/player.controller";
     private const string PlayerIdle = "Assets/animation/a-idle/待机_00001.png";
+    private const string NpcSprite = "Assets/关卡/2-夏/2-NPC动画关键帧/idle_frame_01.png";
+    private const string NpcAnimCtrl = "Assets/关卡/2-夏/2-NPC动画关键帧/idle_frame_01.controller";
 
     [MenuItem("Tools/Summer Setup/恢复夏天场景 (Level2_Summer)")]
     public static void Restore()
@@ -31,6 +33,7 @@ public static class SummerSceneRestore
         CreateCanvasAndLabel(cam);
         CreateEventSystem();
         CreateSummerItems();
+        CreateNpc();
         CreateStairColliders();
 
         EditorSceneManager.MarkSceneDirty(scene);
@@ -69,7 +72,7 @@ public static class SummerSceneRestore
         // Visual 子物体（位置/缩放/排序同步自场景）
         var visual = new GameObject("Visual");
         visual.transform.SetParent(player.transform, false);
-        visual.transform.localPosition = new Vector3(-0.8f, 0.48f, 0f);
+        visual.transform.localPosition = new Vector3(-0.88f, 0.52f, 0f);
         visual.transform.localScale = new Vector3(0.11f, 0.11f, 0.11f);
 
         var visualSr = visual.AddComponent<SpriteRenderer>();
@@ -339,6 +342,39 @@ public static class SummerSceneRestore
         new StairCollider("1 (9)",  new Vector2(0.6795192f, 0.0598908f), new Vector2(3.4309370f, -2.4595140f)),
         new StairCollider("1 (10)", new Vector2(0.1294117f, 4.8738490f), new Vector2(-15.0502700f, -2.1847070f)),
     };
+
+    // ==================== NPC ====================
+    private static void CreateNpc()
+    {
+        const string npcName = "缫丝师傅";
+        if (GameObject.Find(npcName) != null)
+        {
+            Debug.Log("[SummerSceneRestore] NPC 已存在，跳过");
+            return;
+        }
+
+        var npc = new GameObject(npcName);
+        npc.transform.position = new Vector3(15.85f, -2.38f, 0f);
+        npc.transform.localScale = new Vector3(-0.14779168f, 0.14779168f, 0.15977481f);
+
+        var sr = npc.AddComponent<SpriteRenderer>();
+        sr.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(NpcSprite);
+        sr.sortingOrder = 10;
+
+        var anim = npc.AddComponent<Animator>();
+        var animCtrl = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(NpcAnimCtrl);
+        if (animCtrl != null)
+        {
+            anim.runtimeAnimatorController = animCtrl;
+            anim.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+        }
+        else
+        {
+            Debug.LogWarning($"[SummerSceneRestore] 找不到 NPC 动画控制器: {NpcAnimCtrl}");
+        }
+
+        Debug.Log("  ✅ NPC 创建完成");
+    }
 
     private static void CreateStairColliders()
     {

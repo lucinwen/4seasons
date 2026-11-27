@@ -13,8 +13,8 @@ public class WinterNpcDialogue : MonoBehaviour
     private const string TailoringIntro = "dialogue.winter.tailoring";
     private static readonly WorkshopDialogueLine[] EggSheetIntro =
     {
-        new WorkshopDialogueLine("缝衣师傅", "这卷附着蚕卵的纸叫蚕连。冬天把它挂起来保存，留下明年春天要孵的蚕种。"),
-        new WorkshopDialogueLine("缝衣师傅", "收下这卷蚕连，等缝衣针和衣片也齐了，就一起交到任务面板。")
+        new WorkshopDialogueLine("裁衣师傅", "这卷附着蚕卵的纸叫蚕连。冬天把它挂起来保存，留下明年春天要孵的蚕种。"),
+        new WorkshopDialogueLine("裁衣师傅", "收下这卷蚕连，等缝衣针和衣片也齐了，就一起交到任务面板。")
     };
 
     public void Talk()
@@ -23,8 +23,8 @@ public class WinterNpcDialogue : MonoBehaviour
         {
             WorkshopProgress.UnlockSolarTerms(WorkshopSeason.Autumn);
             WorkshopDialoguePresenter.Play(new[] {
-                new WorkshopDialogueLine("染整师傅", "立秋采染材，秋分研磨和染色。先拾锄头去染材园，再找研磨棒和研钵。"),
-                new WorkshopDialogueLine("染整师傅", "白露织造后收下的缬可以用来染色。选好喜欢的颜色，寒露再去织造坊攀花。道具都会保留。") });
+                new WorkshopDialogueLine("织染师傅", "立秋采染材，秋分研磨和染色。先拾锄头去染材园，再找研磨棒和研钵。"),
+                new WorkshopDialogueLine("织染师傅", "白露奇偶推梭后收下的生坯绸可以用来染色。选好喜欢的颜色，寒露再去织造坊攀花获得缬。道具都会保留。") });
             return;
         }
         if (WorkshopProgress.IsComplete(WorkshopSeason.Winter))
@@ -51,12 +51,12 @@ public class WinterNpcDialogue : MonoBehaviour
         string next;
         switch (stage)
         {
-            case WorkshopWinterStage.Preparing: next = "带秋季染布到裁衣台，晾干后把衣样纸拖到布上。避开布疵，让衣样彼此错开。"; break;
+            case WorkshopWinterStage.Preparing: next = "带秋季染布到裁衣台，晾干后把五片衣样纸拖到布上。衣样固定方向、不可旋转，避开布疵并刚好排满布面。"; break;
             case WorkshopWinterStage.Cutting: next = "染布已经晾好、衣样也排齐了。到裁衣台沿虚线剪出前衣、后衣和衣袖。"; break;
             case WorkshopWinterStage.Needle: next = "衣片已经剪好。收下缝素堂里发光的缝衣针，就能选款缝衣。"; break;
             default: next = "缝衣针、蚕连和衣片都备齐了。选好喜欢的款式，拼合三块衣片，缝好后去试衣。"; break;
         }
-        WorkshopDialoguePresenter.Play(new[] { new WorkshopDialogueLine("缝衣师傅", next) });
+        WorkshopDialoguePresenter.Play(new[] { new WorkshopDialogueLine("裁衣师傅", next) });
     }
 
     private static void CollectEggSheet()

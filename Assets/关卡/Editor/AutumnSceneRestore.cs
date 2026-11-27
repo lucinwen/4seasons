@@ -153,7 +153,7 @@ public static class AutumnSceneRestore
 
         var bgGo = new GameObject("Background");
         bgGo.transform.position = new Vector3(4.88f, 0f, 0f);
-        bgGo.transform.localScale = new Vector3(0.89473814f, 0.89473814f, 0.50503f);
+        bgGo.transform.localScale = new Vector3(0.8789192f, 0.8789192f, 0.49610105f);
 
         var sr = bgGo.AddComponent<SpriteRenderer>();
         sr.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(BgPath);
@@ -200,7 +200,7 @@ public static class AutumnSceneRestore
     // ==================== NPC ====================
     private static void CreateNpc()
     {
-        const string npcName = "待机关键帧_01";
+        const string npcName = "织染师傅";
         if (GameObject.Find(npcName) != null)
         {
             Debug.Log("[AutumnSceneRestore] NPC 已存在，跳过");
@@ -208,8 +208,8 @@ public static class AutumnSceneRestore
         }
 
         var npc = new GameObject(npcName);
-        npc.transform.position = new Vector3(18.74f, -1.61f, 0f);
-        npc.transform.localScale = new Vector3(-0.1443673f, 0.14558f, 0.14558f);
+        npc.transform.position = new Vector3(8.19f, -2.29f, 0f);
+        npc.transform.localScale = new Vector3(-0.45938486f, 0.46324372f, 0.46324372f);
 
         var sr = npc.AddComponent<SpriteRenderer>();
         sr.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(NpcSprite);

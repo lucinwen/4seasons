@@ -655,7 +655,7 @@ internal sealed partial class WorkshopObservationView
             }
             FinishChallenge(100 + (WeavingMoveBudget - emptyRuns) * 10, $"双色织带 · 六梭完成 · 空送 {emptyRuns} 次", ribbon);
             if (WorkshopProgress.SeasonalOrderEnabled && IsAtOwnWorkshop(observation))
-                WorkshopProgress.Award(WorkshopItem.RawSilkCloth);
+                WorkshopProgress.Award(WorkshopItem.GreigeCloth);
             ShowShuttlePass(shuttle, fromSide, wovenCount - 1);
             return;
         }

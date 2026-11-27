@@ -4,7 +4,7 @@ internal static class WorkshopDialogueScripts
     {
         new WorkshopDialogueLine("工坊掌事", $"欢迎加入{WorkshopTitle.GameName}，和大家一起学习桑蚕丝织。"),
         new WorkshopDialogueLine("工坊掌事", "春天采桑浴蚕、喂蚕，夏天下簇缫丝备料，秋天采材织造染色攀花，冬天裁衣缝制。"),
-        new WorkshopDialogueLine("工坊掌事", "先去春季公告栏，向蚕房师傅领任务吧。"),
+        new WorkshopDialogueLine("工坊掌事", "先去春季公告栏，向蚕桑师傅领任务吧。"),
     };
 
     // Spring
@@ -13,32 +13,32 @@ internal static class WorkshopDialogueScripts
         new WorkshopDialogueLine("工坊掌事", "春天到了，咱们工坊又要开始忙起来啦。"),
         new WorkshopDialogueLine("工坊掌事", "蚕儿要长得好，第一件事情就是准备好它们的食物和住处。"),
         new WorkshopDialogueLine("玩家", "掌事，我们春天要先做什么呢？"),
-        new WorkshopDialogueLine("工坊掌事", "到了春章先和蚕房师傅打个招呼。他最清楚眼前这批小蚕需要什么。"),
-        new WorkshopDialogueLine("工坊掌事", "去吧，蚕房掌事已经在等你了。"),
+        new WorkshopDialogueLine("工坊掌事", "到了春章先和蚕桑师傅打个招呼。他最清楚眼前这批小蚕需要什么。"),
+        new WorkshopDialogueLine("工坊掌事", "去吧，蚕桑师傅已经在等你了。"),
     };
 
     internal static readonly WorkshopDialogueLine[] SpringMulberryIntro =
     {
-        new WorkshopDialogueLine("蚕房师傅", "清明桑叶初展，先拿采桑篮，左右移动接住八片鲜叶。"),
-        new WorkshopDialogueLine("蚕房师傅", "采好桑叶后捡蚕种纸，到浴蚕桶清洗。桑叶与干净蚕种备齐，就去养蚕区喂蚕。"),
+        new WorkshopDialogueLine("蚕桑师傅", "清明桑叶初展，先拿采桑篮，左右移动接住八片鲜叶。"),
+        new WorkshopDialogueLine("蚕桑师傅", "采好桑叶后捡蚕种纸，到浴蚕桶清洗。桑叶与干净蚕种备齐，就去养蚕区喂蚕。"),
     };
 
     internal static readonly WorkshopDialogueLine[] SpringBathIntro =
     {
-        new WorkshopDialogueLine("蚕房师傅", "谷雨蚕事渐忙，把蚕种纸带到浴蚕平台。"),
-        new WorkshopDialogueLine("蚕房师傅", "拿起擦拭布，蘸清水后轻轻擦去蚕种上的污渍，收好干净蚕种。"),
+        new WorkshopDialogueLine("蚕桑师傅", "谷雨蚕事渐忙，把蚕种纸带到浴蚕平台。"),
+        new WorkshopDialogueLine("蚕桑师傅", "拿起擦拭布，蘸清水后轻轻擦去蚕种上的污渍，收好干净蚕种。"),
     };
 
     internal static readonly WorkshopDialogueLine[] SpringEggPaperCollected =
     {
         new WorkshopDialogueLine("玩家", "师傅，我找到蚕种纸了！"),
-        new WorkshopDialogueLine("蚕房掌事", "很好，把它带到浴蚕桶旁边。咱们准备开始了。"),
+        new WorkshopDialogueLine("蚕桑师傅", "很好，把它带到浴蚕桶旁边。咱们准备开始了。"),
     };
 
     internal static readonly WorkshopDialogueLine[] SpringBathComplete =
     {
-        new WorkshopDialogueLine("蚕房师傅", "干净蚕种准备好了。"),
-        new WorkshopDialogueLine("蚕房师傅", "带着桑叶去养蚕架，把叶子拖入蚕匾，照料刚孵出的小蚕。"),
+        new WorkshopDialogueLine("蚕桑师傅", "干净蚕种准备好了。"),
+        new WorkshopDialogueLine("蚕桑师傅", "带着桑叶去养蚕架，把叶子拖入蚕匾，照料刚孵出的小蚕。"),
     };
 
     internal static readonly WorkshopDialogueLine[] SpringReview =
@@ -96,25 +96,25 @@ internal static class WorkshopDialogueScripts
     internal static readonly WorkshopDialogueLine[] AutumnBriefing =
     {
         new WorkshopDialogueLine("工坊掌事", "秋章先到染材园认识和采集天然染材。"),
-        new WorkshopDialogueLine("工坊掌事", "白露修机织造，秋分研磨染色与秋社，寒露攀花。梭子、缬和染布都不会消耗。"),
+        new WorkshopDialogueLine("工坊掌事", "白露修机、奇偶推梭，秋分研磨染色与秋社，寒露经纬攀花。梭子、生坯绸、染布和缬都不会消耗。"),
     };
 
     internal static readonly WorkshopDialogueLine[] AutumnRitualIntro =
     {
-        new WorkshopDialogueLine("织造师傅", "白露、秋分前后，咱们到灵桑阙参加秋社，春祈秋报。"),
-        new WorkshopDialogueLine("织造师傅", "第一次交谈时我会送你糕点。再收集香蕉与蚕花酒，登上灵桑阙提交贡品，领取土地公雕像。"),
+        new WorkshopDialogueLine("织染师傅", "白露、秋分前后，咱们到灵桑阙参加秋社，春祈秋报。"),
+        new WorkshopDialogueLine("织染师傅", "第一次交谈时我会送你糕点。再收集香蕉与蚕花酒，登上灵桑阙提交贡品，领取土地公雕像。"),
     };
 
     internal static readonly WorkshopDialogueLine[] AutumnWeavingIntro =
     {
-        new WorkshopDialogueLine("织造师傅", "白露先把织机修好。拾起织机左侧地上的木槌，在黄色区域内击打三次。"),
-        new WorkshopDialogueLine("织造师傅", "再到工具箱拿梭子。用梭子织入、拔子拆回，按行列数字完成织造，就能收下缬。"),
+        new WorkshopDialogueLine("织染师傅", "白露先把织机修好。拾起织机左侧地上的木槌，在黄色区域内击打三次。"),
+        new WorkshopDialogueLine("织染师傅", "再到工具箱拿梭子。奇数经与偶数经轮流抬起，梭子左右交替穿过，织满六行就能收下生坯绸。"),
     };
 
     internal static readonly WorkshopDialogueLine[] AutumnWarpComplete =
     {
-        new WorkshopDialogueLine("织造师傅", "织造完成了。收下的缬可以带去青染轩染色。"),
-        new WorkshopDialogueLine("织造师傅", "用采集的天然染材研磨染料，再挑喜欢的颜色染布。"),
+        new WorkshopDialogueLine("织染师傅", "奇偶推梭完成了。收下的生坯绸可以带去青染轩染色。"),
+        new WorkshopDialogueLine("织染师傅", "用采集的天然染材研磨染料，再挑喜欢的颜色染布。"),
     };
 
     internal static readonly WorkshopDialogueLine[] AutumnReview =
@@ -126,67 +126,67 @@ internal static class WorkshopDialogueScripts
     // Winter
     internal static readonly WorkshopDialogueLine[] WinterBriefing =
     {
-        new WorkshopDialogueLine("工坊掌事", "带上秋季的染布，到缝素堂晾干。先把前片、后片和袖片的衣样纸排在布上。"),
-        new WorkshopDialogueLine("工坊掌事", "排好再沿虚线剪帛，剪完就能领取衣片。记得向缝衣师傅领取蚕连，再收好缝衣针。"),
+        new WorkshopDialogueLine("工坊掌事", "带上秋季的染布，到缝素堂晾干。把前片、后片、左袖、右袖和领贴的衣样纸排在布上。"),
+        new WorkshopDialogueLine("工坊掌事", "排好再沿虚线剪帛，剪完就能领取衣片。记得向裁衣师傅领取蚕连，再收好缝衣针。"),
     };
 
     internal static readonly WorkshopDialogueLine[] WinterDyeMaterialsIntro =
     {
-        new WorkshopDialogueLine("染整师傅", "立秋到染材园采集天然染材，入口旁有锄头。"),
-        new WorkshopDialogueLine("染整师傅", "采到的材料有正常与损坏之分，按篮筐空间选择收下或丢弃。"),
+        new WorkshopDialogueLine("织染师傅", "立秋到染材园采集天然染材，入口旁有锄头。"),
+        new WorkshopDialogueLine("织染师傅", "采到的材料有正常与损坏之分，按篮筐空间选择收下或丢弃。"),
     };
 
     internal static readonly WorkshopDialogueLine[] WinterDyeMaterialsComplete =
     {
-        new WorkshopDialogueLine("染整师傅", "染材收好了，到青染轩寻找研磨棒和研钵。"),
-        new WorkshopDialogueLine("染整师傅", "把天然染材研磨成染料，秋分时给缬染上喜欢的颜色。"),
+        new WorkshopDialogueLine("织染师傅", "染材收好了，到青染轩寻找研磨棒和研钵。"),
+        new WorkshopDialogueLine("织染师傅", "把天然染材研磨成染料，秋分时给生坯绸染上喜欢的颜色。"),
     };
 
     internal static readonly WorkshopDialogueLine[] WinterGrindingIntro =
     {
-        new WorkshopDialogueLine("染整师傅", "染材已经准备好了。接下来要把它们处理成适合使用的染料。"),
+        new WorkshopDialogueLine("织染师傅", "染材已经准备好了。接下来要把它们处理成适合使用的染料。"),
         new WorkshopDialogueLine("玩家", "要怎么做呢？"),
-        new WorkshopDialogueLine("染整师傅", "把选好的材料放入研磨工具中，按照提示慢慢研磨。"),
-        new WorkshopDialogueLine("染整师傅", "注意控制力度，尽量让材料变得细腻均匀。"),
+        new WorkshopDialogueLine("织染师傅", "把选好的材料放入研磨工具中，按照提示慢慢研磨。"),
+        new WorkshopDialogueLine("织染师傅", "注意控制力度，尽量让材料变得细腻均匀。"),
         new WorkshopDialogueLine("玩家", "明白了！"),
     };
 
     internal static readonly WorkshopDialogueLine[] WinterGrindingComplete =
     {
         new WorkshopDialogueLine("玩家", "师傅，染料粉末已经准备好了！"),
-        new WorkshopDialogueLine("染整师傅", "很好。接下来就可以给缬染色了。"),
+        new WorkshopDialogueLine("织染师傅", "很好。接下来就可以给生坯绸染色了。"),
     };
 
     internal static readonly WorkshopDialogueLine[] WinterDyeingComplete =
     {
-        new WorkshopDialogueLine("染整师傅", "染布做好了，缬和染料记录都保留。"),
-        new WorkshopDialogueLine("染整师傅", "寒露回织造坊，用梭子和拔子在染布上攀花，再交付秋章。"),
+        new WorkshopDialogueLine("织染师傅", "染布做好了，生坯绸和染料记录都保留。"),
+        new WorkshopDialogueLine("织染师傅", "寒露回织造坊，用梭子和拔子在染布上攀花，再交付秋章。"),
     };
 
     internal static readonly WorkshopDialogueLine[] WinterTailoringIntro =
     {
-        new WorkshopDialogueLine("缝衣师傅", "小雪这天有冷雨。把染布晾在避雨又通风的架子上，干了再排衣样。"),
-        new WorkshopDialogueLine("缝衣师傅", "把前片、后片和袖片拖到布上，避开布疵，衣样不能重叠。留一整块布做里襟，排好就可以下剪了。"),
+        new WorkshopDialogueLine("裁衣师傅", "小雪这天有冷雨。把染布晾在避雨又通风的架子上，干了再排衣样。"),
+        new WorkshopDialogueLine("裁衣师傅", "把前片、后片、左袖、右袖和领贴拖到布上。五片衣样都不可旋转，避开布疵、不能重叠，刚好排满左侧布面就可以下剪了。"),
     };
 
     internal static readonly WorkshopDialogueLine[] WinterCuttingIntro =
     {
         new WorkshopDialogueLine("玩家", "师傅，这块布应该从哪里开始裁呀？"),
-        new WorkshopDialogueLine("缝衣师傅", "衣样已经排好了。点一下剪刀，再沿着虚线拖动，剪出前衣、后衣和衣袖。"),
+        new WorkshopDialogueLine("裁衣师傅", "衣样已经排好了。点一下剪刀，再沿着虚线拖动，剪出前衣、后衣和衣袖。"),
     };
 
     internal static readonly WorkshopDialogueLine[] WinterCuttingComplete =
     {
-        new WorkshopDialogueLine("缝衣师傅", "三块衣片都剪好了。"),
-        new WorkshopDialogueLine("缝衣师傅", "收好衣片、缝衣针和蚕连，就可以回裁衣台选款缝衣。"),
+        new WorkshopDialogueLine("裁衣师傅", "三块衣片都剪好了。"),
+        new WorkshopDialogueLine("裁衣师傅", "收好衣片、缝衣针和蚕连，就可以回裁衣台选款缝衣。"),
     };
 
     internal static readonly WorkshopDialogueLine[] WinterTailoringComplete =
     {
         new WorkshopDialogueLine("玩家", "师傅！我们的衣裳做好了！"),
-        new WorkshopDialogueLine("染整师傅", "哈哈，真不错！从春天的一片桑叶，到今天这件完整的丝衣，你可参与了不少工序。"),
+        new WorkshopDialogueLine("织染师傅", "哈哈，真不错！从春天的一片桑叶，到今天这件完整的丝衣，你可参与了不少工序。"),
         new WorkshopDialogueLine("玩家", "原来一件丝衣要经过这么多人的劳动！"),
-        new WorkshopDialogueLine("染整师傅", "是呀。桑树、蚕儿、蚕农、缫丝工、织造工和染整师傅，每个人都在其中付出了心血。"),
+        new WorkshopDialogueLine("织染师傅", "是呀。桑树、蚕儿、蚕农、缫丝工、织造工和织染师傅，每个人都在其中付出了心血。"),
     };
 
     internal static readonly WorkshopDialogueLine[] WinterReview =
@@ -217,12 +217,12 @@ internal static class WorkshopDialogueScripts
     // Quest progress and return visits
     internal static readonly WorkshopDialogueLine[] SpringInProgress =
     {
-        new WorkshopDialogueLine("蚕房师傅", "先拿采桑篮到桑园接叶，再拾蚕种纸到浴蚕桶清洗。"),
+        new WorkshopDialogueLine("蚕桑师傅", "先拿采桑篮到桑园接叶，再拾蚕种纸到浴蚕桶清洗。"),
     };
 
     internal static readonly WorkshopDialogueLine[] SpringDone =
     {
-        new WorkshopDialogueLine("蚕房师傅", "桑叶和干净蚕种备齐后，到蚕匾架拖叶喂蚕。获得蚕宝宝后回工坊交付春章成果。"),
+        new WorkshopDialogueLine("蚕桑师傅", "桑叶和干净蚕种备齐后，到蚕匾架拖叶喂蚕。获得蚕宝宝后回工坊交付春章成果。"),
     };
 
     internal static readonly WorkshopDialogueLine[] SummerInProgress =
@@ -237,21 +237,21 @@ internal static class WorkshopDialogueScripts
 
     internal static readonly WorkshopDialogueLine[] AutumnInProgress =
     {
-        new WorkshopDialogueLine("织造师傅", "染材园采材，修机取梭织造获缬，青染轩研磨染色，再参加秋社、回织机攀花。"),
+        new WorkshopDialogueLine("织染师傅", "染材园采材，修机取梭、奇偶推梭获生坯绸，青染轩研磨染色，再参加秋社、回织机经纬攀花获得缬。"),
     };
 
     internal static readonly WorkshopDialogueLine[] AutumnDone =
     {
-        new WorkshopDialogueLine("织造师傅", "染色后再回织机，用梭子和拔子按行列数字织纹样。完成秋社与攀花，再交付秋季任务。"),
+        new WorkshopDialogueLine("织染师傅", "染色后再回织机，用梭子和拔子按行列数字织纹样。完成秋社与攀花，再交付秋季任务。"),
     };
 
     internal static readonly WorkshopDialogueLine[] WinterInProgress =
     {
-        new WorkshopDialogueLine("缝衣师傅", "先把衣样纸排在布上，再沿虚线剪帛。备齐缝衣针、蚕连和衣片，就回裁衣台选款缝制。"),
+        new WorkshopDialogueLine("裁衣师傅", "先把衣样纸排在布上，再沿虚线剪帛。备齐缝衣针、蚕连和衣片，就回裁衣台选款缝制。"),
     };
 
     internal static readonly WorkshopDialogueLine[] WinterDone =
     {
-        new WorkshopDialogueLine("缝衣师傅", "成衣做好了。到锦衣堂试衣留念，恭喜晋升大织将！"),
+        new WorkshopDialogueLine("裁衣师傅", "成衣做好了。到锦衣堂试衣留念，恭喜晋升大织将！"),
     };
 }

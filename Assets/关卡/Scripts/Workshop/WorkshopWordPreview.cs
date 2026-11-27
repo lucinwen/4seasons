@@ -68,8 +68,15 @@ public sealed partial class WorkshopWordPreview : MonoBehaviour
         yield return Capture("30-summer-wheel-winding-action");
         wheelAction.onClick.Invoke();
         yield return null;
+        if (WorkshopObservationView.IsOpen || !SimplePopup.IsOpen)
+            throw new System.InvalidOperationException("Winding must require Xiaoman reeling after finding the spool.");
+        Object.FindObjectOfType<SimplePopup>().OnConfirm();
+        yield return null;
+        WorkshopProgress.MarkStep(WorkshopWordRules.Reeled);
+        wheelAction.onClick.Invoke();
+        yield return null;
         if (WorkshopObservationView.ActiveGame != WorkshopObservation.MangzhongCocoon)
-            throw new System.InvalidOperationException("The wheel must open the silk connection puzzle immediately after finding the spool.");
+            throw new System.InvalidOperationException("The wheel must open the silk connection puzzle after Xiaoman reeling.");
         VerifyXiazhiScene(0, false);
         // Leaving during the short success animation must not grant a three-round completion.
         yield return SolveXiazhiReviewBoard(0);

@@ -68,7 +68,7 @@ namespace JiangnanDye.ClothCutting
                     MinigameUiPresentation.Paper, 48);
                 var title = canvas.transform.Find("Title");
                 if (title != null) title.gameObject.SetActive(false);
-                if (collectionBg != null) collectionBg.color = Color.clear;
+                if (collectionBg != null) collectionBg.color = Color.white;
                 WorkshopImmersive.QuietText(progressText);
                 WorkshopImmersive.QuietText(collectionCountText);
             }

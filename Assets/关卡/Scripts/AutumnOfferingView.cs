@@ -53,7 +53,7 @@ internal sealed class AutumnOfferingView : MonoBehaviour
         DrawOffering(table, 108, "蚕花酒", FindWineIcon(), AutumnLevelState.HasWine, completed, "点击附近的蚕花酒罐");
         DrawOffering(table, 259, "香蕉", icons?.banana, AutumnLevelState.HasBanana, completed, "点击香蕉果篮领取");
         DrawOffering(table, 410, "糕点", icons?.cake, AutumnLevelState.HasCake, completed,
-            "第一次与织造师傅交谈时获得");
+            "第一次与织染师傅交谈时获得");
 
         bool canSubmit = collected == 3 && !completed;
         var back = WorkshopUi.PixelButton(table, "Return From Offering Table", new Rect(34, 576, 192, 58),

@@ -51,9 +51,9 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     {
         new Definition(WorkshopSeason.Spring, "spring.qingming", "清明", "桑园里的新叶", "清明采桑", "移篮接桑",
             "清明前后桑树陆续展叶。舒展开、叶面干的嫩叶适合取用。", "移篮接桑 → 师傅照料小蚕"),
-        new Definition(WorkshopSeason.Summer, "summer.mangzhong.thread", "芒种夏至", "练丝坊的备料丝路", "绕丝上轴", "丝路接接乐",
-            "芒种、夏至时蚕事转入治丝备料。转动管段，把丝头接到丝轴。", "练丝坊缫丝 → 接水管 → 络丝理经备料",
-            "点击线段，连接左侧丝头与右侧丝轴。连续接通三关，完成后点击返回。"),
+        new Definition(WorkshopSeason.Summer, "summer.mangzhong.thread", "芒种夏至", "练丝坊的备料丝路", "理经卷纬", "丝路接接乐",
+            "芒种、夏至时蚕事转入治丝备料。转动管段，把丝头接到丝轴。", "小满煮茧锅缫丝 → 芒种夏至缫丝车理经卷纬",
+            "点击线段，连接左侧丝头与右侧丝轴。连续接通三关，完成夏季最后一个游戏后点击返回。"),
         new Definition(WorkshopSeason.Summer, "summer.dashu.vent", "大暑", "蔟房的通风窗", "暑热观察"),
         new Definition(WorkshopSeason.Autumn, "autumn.qiufen", "秋分", "窗光下的丝样", "借光验丝", "借光验丝",
             "秋分后白昼渐短。织坊在夜织前，用剩下的窗光检查生丝的粗节和结头。", "夏季丝样 → 对光验丝 → 寒露上机",
@@ -62,11 +62,11 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
             "寒露晨凉，窗沿可能结露。丝轴沾了露，要整备妥当才能上机。", "验过的丝 → 理经走梭织绸 → 立冬试染",
             "先取状态合适的丝轴，再看样带抬经线、走梭。"),
         new Definition(WorkshopSeason.Autumn, "winter.lidong", "秋分", "染坊里的色样", "染色", "两阶染色",
-            "先采集天然染材并研磨，选好染料，将缬拖入染缸。", "缬 → 研磨与染色 → 寒露攀花",
+            "先采集天然染材并研磨，选好染料，将生坯绸拖入染缸。", "生坯绸 → 研磨与染色 → 寒露攀花",
             "调节染缸浓度，轻蘸或浸染，对上两阶颜色后确认。"),
         new Definition(WorkshopSeason.Winter, "winter.xiaoxue", "小雪", "从试染到成衣", "看成衣工序", "排布",
             "小雪时冷空气更活跃。逢冷雨先避雨晾布，做夹衣还得留里襟料。", "晾布 → 排料 → 剪帛",
-            "先找避雨又通风的晾架。布干后再顺纹摆衣样，给里襟留一块整布。")
+            "先找避雨又通风的晾架。布干后固定方向摆好五片衣样，避开布疵并刚好排满布面。")
     };
 
     private static readonly Color[] Accents =
@@ -134,7 +134,12 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         if (id != WorkshopObservation.MangzhongCocoon || IsOpen) return;
         if (!WorkshopProgress.Has(WorkshopItem.Spool))
         {
-            SimplePopup.Show("先找到线轴", "先备水拾柴，到煮茧锅寻找线轴，再回右侧缫丝车绕丝上轴。", "知道了");
+            SimplePopup.Show("先找到线轴", "先备水拾柴，到煮茧锅走通迷宫找到线轴，再回煮茧锅完成小满缫丝。", "知道了");
+            return;
+        }
+        if (!WorkshopProgress.HasStep(WorkshopWordRules.Reeled))
+        {
+            SimplePopup.Show("先完成小满缫丝", "先回煮茧锅完成小满缫丝，再到右侧缫丝车进行芒种夏至理经卷纬。", "知道了");
             return;
         }
         if (WorkshopProgress.SeasonalOrderEnabled && IsAtOwnWorkshop(id) && MissingOrderInput(id) is string guide)
@@ -165,7 +170,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
                 return "先到秋分窗台验生丝，把验过的丝轴带回织机。";
             case WorkshopObservation.HanluLoom when !AutumnLevelState.HasLoomRepaired || !AutumnLevelState.HasShuttle:
                 return "先修好织机并取得梭子，再把寒露整理过的丝织成绸。";
-            case WorkshopObservation.LidongDye when !HasOrderWork(WorkshopObservation.HanluLoom) || !WorkshopProgress.Has(WorkshopItem.RawSilkCloth):
+            case WorkshopObservation.LidongDye when !HasOrderWork(WorkshopObservation.HanluLoom) || !WorkshopProgress.Has(WorkshopItem.GreigeCloth):
                 return "寒露织样和正式整绸都备好后，才能在立冬试色。";
             case WorkshopObservation.XiaoxueTailoring when !WorkshopProgress.Has(WorkshopItem.DyedCloth):
                 return "先完成立冬试色和正式染整幅，再到小雪裁衣台。";

@@ -353,6 +353,10 @@ MonoBehaviour:
   continueButton: {fileID: 2043375027}
   completeText: {fileID: 1831020144}
   loomImage: {fileID: 1581250093}
+  loomStages:
+  - {fileID: 21300000, guid: c0daf1e98e5c6564fa313cc59f05c974, type: 3}
+  - {fileID: 21300000, guid: 4f26284d069568f4db27fa73b7349257, type: 3}
+  - {fileID: 21300000, guid: 1d3dfba20bd0adf419005916d2fd6952, type: 3}
 --- !u!224 &317252951
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1454,7 +1458,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1d3dfba20bd0adf419005916d2fd6952, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c0daf1e98e5c6564fa313cc59f05c974, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1

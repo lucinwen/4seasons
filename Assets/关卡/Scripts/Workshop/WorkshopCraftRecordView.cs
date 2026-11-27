@@ -23,7 +23,7 @@ internal sealed class WorkshopCraftRecordView : MonoBehaviour
     {
         "春蚕在蚕匾里吃适合蚕龄的桑叶，长成后才会吐丝结茧。",
         "挑茧以后，先煮茧、找丝头，再把丝绪均匀绕到丝轴上。",
-        $"梭子引纬，纬线与经线交错成布。完成白露织造可收下缬，交付秋季成果后获得{WorkshopProgress.ProductName(WorkshopSeason.Autumn)}。",
+        $"白露奇偶推梭获得生坯绸，染色后完成寒露经纬攀花获得缬。交付秋季成果后获得{WorkshopProgress.ProductName(WorkshopSeason.Autumn)}。",
         "布料染好后按样板裁片，再按裁片的形状组装缝制。"
     };
 

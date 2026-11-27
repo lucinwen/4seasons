@@ -30,7 +30,6 @@ public sealed class WorkshopArtData : ScriptableObject
 public static class WorkshopArt
 {
     private static WorkshopArtData data;
-    private static Font readingFont;
     private static WorkshopArtData Data => data != null ? data : (data = Resources.Load<WorkshopArtData>("WorkshopArt"));
 
     private static readonly string[][] Terms =
@@ -41,24 +40,11 @@ public static class WorkshopArt
         new[] { "立冬", "小雪", "大雪", "冬至", "小寒", "大寒" }
     };
 
-    public static Font PixelFont => Data != null && Data.pixelFont != null ? Data.pixelFont : Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+    public static Font PixelFont => Data != null && Data.pixelFont != null
+        ? Data.pixelFont
+        : Resources.Load<Font>("点点像素体-方形-JT29");
     public static Font WorkshopFont => PixelFont;
-    internal static Font ReadingFont
-    {
-        get
-        {
-            if (readingFont != null) return readingFont;
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR_WIN
-            var candidate = Font.CreateDynamicFontFromOSFont(new[] { "Microsoft YaHei", "Microsoft YaHei UI", "SimHei" }, 32);
-            if (candidate != null && candidate.HasCharacter('织'))
-            {
-                candidate.hideFlags = HideFlags.HideAndDontSave;
-                readingFont = candidate;
-            }
-#endif
-            return readingFont != null ? readingFont : (readingFont = WorkshopFont);
-        }
-    }
+    internal static Font ReadingFont => PixelFont;
     public static Sprite WorkshopTaskBoard => Data != null ? Data.workshopTaskBoard : null;
     public static Sprite WorkshopChapterRail => Data != null ? Data.workshopChapterRail : null;
     public static Sprite JournalFrame => Data != null ? Data.journalFrame : null;
@@ -89,7 +75,7 @@ public static class WorkshopArt
         // Each item occupies one row-major tile in the 4 by 4 atlas.
         const int cells = 4;
         const float tileSize = 1f / cells;
-        int index = (int)item;
+        int index = item == WorkshopItem.GreigeCloth ? (int)WorkshopItem.RawSilkCloth : (int)item;
         return new Rect((index % cells) * tileSize, (cells - 1 - index / cells) * tileSize,
             tileSize, tileSize);
     }

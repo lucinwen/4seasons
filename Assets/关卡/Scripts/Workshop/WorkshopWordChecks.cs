@@ -77,17 +77,23 @@ public static class WorkshopWordChecks
             }
             Require(weave.Complete && !weave.Pass(true), "completed weave locks");
             WorkshopWordRules.CompleteWeaving();
-            Require(WorkshopProgress.Has(WorkshopItem.RawSilkCloth), "basic weave awards greige cloth");
+            Require(WorkshopProgress.Has(WorkshopItem.GreigeCloth) && !WorkshopProgress.Has(WorkshopItem.RawSilkCloth),
+                "odd-even weaving awards greige cloth, not the final patterned silk");
             WorkshopWordRules.CompletePattern();
-            Require(!WorkshopProgress.HasStep(WorkshopWordRules.Patterned), "pattern requires dyed cloth");
+            Require(!WorkshopProgress.HasStep(WorkshopWordRules.Patterned) && !WorkshopProgress.Has(WorkshopItem.RawSilkCloth),
+                "pattern and its silk reward require dyed cloth");
             WorkshopProgress.RecordRawDyes(new[] { WorkshopArt.RawDye(DyeColor.Purple, true) });
             WorkshopProgress.RecordGroundDye(DyeColor.Purple);
             WorkshopProgress.RecordDyedCloth(DyeColor.Purple);
             WorkshopProgress.Award(WorkshopItem.Statue);
             Require(!WorkshopProgress.CanSubmit(WorkshopSeason.Autumn), "autumn requires pattern");
             WorkshopWordRules.CompletePattern();
-            Require(WorkshopProgress.CanSubmit(WorkshopSeason.Autumn) && WorkshopProgress.Submit(WorkshopSeason.Autumn), "autumn dye-pattern handoff");
-            Require(WorkshopProgress.Has(WorkshopItem.RawSilkCloth) && WorkshopProgress.Has(WorkshopItem.Shuttle) && WorkshopProgress.Has(WorkshopItem.DyedCloth), "autumn interactions and handoff preserve cloth and shuttle");
+            Require(WorkshopProgress.Has(WorkshopItem.RawSilkCloth) &&
+                WorkshopProgress.CanSubmit(WorkshopSeason.Autumn) && WorkshopProgress.Submit(WorkshopSeason.Autumn),
+                "pattern awards silk and opens the autumn handoff");
+            Require(WorkshopProgress.Has(WorkshopItem.GreigeCloth) && WorkshopProgress.Has(WorkshopItem.RawSilkCloth) &&
+                WorkshopProgress.Has(WorkshopItem.Shuttle) && WorkshopProgress.Has(WorkshopItem.DyedCloth),
+                "autumn interactions and handoff preserve all cloth and the shuttle");
 
             WorkshopProgress.MarkStep(WorkshopWordRules.WinterPrepared);
             WorkshopProgress.ResetSession();

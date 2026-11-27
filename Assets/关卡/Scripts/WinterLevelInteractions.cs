@@ -12,12 +12,13 @@ public class WinterLevelInteractions : MonoBehaviour
     private const string SceneName = "Level4_Winter";
     private const string DyeGardenPointName = "染料园触点";
     private const string HoeObjectName = "4-挖掘染料锄头";
-    private const string ClothTableName = "4-裁剪台";
+    private const string ClothTableName = "4-裁剪台 (1)";
     private const string NpcName = "idle_blink_frame_01";
     private const string GrindingBowlName = "4-染料空";
     private const string GrindingRodName = "4-研磨棒";
     private const string DyeVatName = "4-染料空缸";
     private const string NeedleName = "4-裁衣工具针";
+    private const string EggSheetRackName = "蚕连架";
     private const string CollisionRootName = "碰撞盒";
 
     // 这些是摆在走道上的装饰道具，图片自带的实体碰撞盒会在场景中形成隐形墙，
@@ -53,6 +54,7 @@ public class WinterLevelInteractions : MonoBehaviour
         }
         AttachClothCuttingTrigger();
         AttachNeedlePickup();
+        AttachEggSheetRack();
         AttachNpcDialogue();
         ConfigureWinterPlayerStep();
         MakeGroundCollisionSolid();
@@ -251,6 +253,51 @@ public class WinterLevelInteractions : MonoBehaviour
 
         if (needle.GetComponent<WinterNeedleClickTarget>() == null)
             needle.AddComponent<WinterNeedleClickTarget>();
+    }
+
+    private static void AttachEggSheetRack()
+    {
+        // 为所有蚕连架（含 "蚕连架" 和 "蚕连架 (1)"）添加点击拾取
+        for (int i = 0; i < 2; i++)
+        {
+            string name = i == 0 ? EggSheetRackName : EggSheetRackName + " (" + i + ")";
+            var rack = GameObject.Find(name);
+            if (rack == null)
+            {
+                Debug.LogWarning("[WinterLevelInteractions] 未找到蚕连架：" + name);
+                continue;
+            }
+
+            // 已有蚕连则隐藏蚕连架上的蚕连（架子保留）
+            if (WorkshopProgress.Has(WorkshopItem.SilkwormEggSheet))
+            {
+                var sr = rack.GetComponent<SpriteRenderer>();
+                if (sr != null) sr.enabled = false;
+                continue;
+            }
+
+            var col = rack.GetComponent<Collider2D>();
+            if (col == null)
+            {
+                // 补一个 Trigger 碰撞盒方便鼠标点中
+                var sr = rack.GetComponent<SpriteRenderer>();
+                Vector2 worldSize = sr != null ? sr.bounds.size * 1.5f : new Vector2(1f, 1f);
+                Vector3 scale = rack.transform.lossyScale;
+                var box = rack.AddComponent<BoxCollider2D>();
+                box.isTrigger = true;
+                box.size = new Vector2(
+                    worldSize.x / Mathf.Max(0.0001f, Mathf.Abs(scale.x)),
+                    worldSize.y / Mathf.Max(0.0001f, Mathf.Abs(scale.y)));
+                box.offset = Vector2.zero;
+            }
+            else
+            {
+                col.enabled = true;
+            }
+
+            if (rack.GetComponent<WinterEggSheetRackClickTarget>() == null)
+                rack.AddComponent<WinterEggSheetRackClickTarget>();
+        }
     }
 
     /// <summary>

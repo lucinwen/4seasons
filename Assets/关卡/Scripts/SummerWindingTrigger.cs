@@ -14,6 +14,7 @@ public sealed class SummerWindingTrigger : MonoBehaviour
         action.Configure("绕丝上轴", new Vector3(0f, 2.6f, 0f), OpenWinding);
         action.SetOpacity(0.9f);
         WorkshopPickupGlow.Bind(gameObject, () => WorkshopProgress.Has(WorkshopItem.Spool) &&
+            WorkshopProgress.HasStep(WorkshopWordRules.Reeled) &&
             !WorkshopObservationView.HasRecord(WorkshopObservation.MangzhongCocoon));
     }
 
@@ -40,7 +41,8 @@ public sealed class SummerWindingTrigger : MonoBehaviour
     {
         if (WorkshopQuestGuide.BlocksWorldInput || WorkshopQuestGuide.IsWorldOverlayActive) return;
         action.Hide();
-        if (WorkshopProgress.Has(WorkshopItem.Spool))
+        if (WorkshopProgress.Has(WorkshopItem.Spool) &&
+            WorkshopProgress.HasStep(WorkshopWordRules.Reeled))
             WorkshopProcessCardView.Show(WorkshopProcessCard.Mangzhong,
                 () => WorkshopObservationView.Show(WorkshopObservation.MangzhongCocoon));
         else

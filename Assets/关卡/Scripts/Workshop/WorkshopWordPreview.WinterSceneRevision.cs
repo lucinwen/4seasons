@@ -87,7 +87,7 @@ public sealed partial class WorkshopWordPreview
         InvokeNamedButton("Start Process Game");
         yield return null;
 
-        var table = GameObject.Find("4-裁剪台");
+        var table = GameObject.Find("4-裁剪台 (1)");
         WinterSceneRequire(table != null && table.GetComponent<WinterClothCuttingTrigger>() != null,
             "The central workshop lost its tailoring entry.");
         yield return WinterSceneWalk(player, table.transform.position.x, "central-workshop");

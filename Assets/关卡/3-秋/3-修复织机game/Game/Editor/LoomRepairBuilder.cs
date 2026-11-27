@@ -36,7 +36,12 @@ namespace JiangnanDye.LoomRepair.EditorTools
             AssetDatabase.Refresh();
 
             // 加载所有素材 sprite
-            Sprite loomSprite = LoadSprite("3-织机.png");
+            Sprite[] loomStages =
+            {
+                LoadSprite("3-织机-1.png"),
+                LoadSprite("3-织机-2.png"),
+                LoadSprite("3-织机-3.png")
+            };
             Sprite progFrameSprite = LoadSprite("3-进度框.png");
             Sprite progBarSprite = LoadSprite("3-进度条.png");
             Sprite panelSprite = LoadSprite("3-修复面板.png");
@@ -83,7 +88,7 @@ namespace JiangnanDye.LoomRepair.EditorTools
             var loomGo = CreateUI("Loom", canvas.transform);
             PlaceCenter(loomGo, new Vector2(-241f, -2f), new Vector2(loomW, loomH));
             var loomImg = loomGo.AddComponent<Image>();
-            loomImg.sprite = loomSprite;
+            loomImg.sprite = loomStages[0];
             loomImg.preserveAspect = true;
             loomImg.color = Color.white;
             loomImg.raycastTarget = false;
@@ -281,6 +286,7 @@ namespace JiangnanDye.LoomRepair.EditorTools
             ui.continueButton = continueBtn;
             ui.completeText = completeText;
             ui.loomImage = loomImg;
+            ui.loomStages = loomStages;
 
             // === 绑定引用 ===
             mgr.calibrationPanel = calibController;

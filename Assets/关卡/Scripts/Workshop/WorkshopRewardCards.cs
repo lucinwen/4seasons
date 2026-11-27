@@ -42,20 +42,20 @@ internal static class WorkshopRewardCards
             WorkshopItem.DyedCloth, () => WorkshopProgress.HasStep("winter.dyes"), 0),
         new Card("repair", "白露 · 修整织机", "用木槌修整织机，检查工位并备好梭子，再开始织造。", WorkshopSeason.Autumn,
             WorkshopItem.Shuttle, () => WorkshopProgress.HasStep("autumn.loom"), 2),
-        new Card("weave", "白露 · 经纬织造", "用梭子引纬，按行列数字完成织造后收下缬。", WorkshopSeason.Autumn,
-            WorkshopItem.RawSilkCloth, () => WorkshopProgress.HasStep(WorkshopWordRules.Woven), 2),
+        new Card("weave", "白露 · 奇偶推梭", "交替抬起奇偶经线并左右推梭，织满六行后收下生坯绸。", WorkshopSeason.Autumn,
+            WorkshopItem.GreigeCloth, () => WorkshopProgress.HasStep(WorkshopWordRules.Woven), 2),
         new Card("grind", "秋分 · 研磨染料", "将采来的染材研磨成可使用的染料，再把染色工位准备妥当。", WorkshopSeason.Autumn,
             WorkshopItem.DyedCloth, () => WorkshopProgress.HasStep("winter.ground"), 3),
-        new Card("dye", "秋分 · 染绸", "选择研磨好的染料，把缬送入染缸，让整幅布获得同一种颜色。", WorkshopSeason.Autumn,
+        new Card("dye", "秋分 · 染绸", "选择研磨好的染料，把生坯绸送入染缸，染好后收下染布。", WorkshopSeason.Autumn,
             WorkshopItem.DyedCloth, () => WorkshopProgress.Has(WorkshopItem.DyedCloth), 3),
         new Card("ritual", "白露秋分 · 秋社", "备齐供品并完成秋社陈设，以土地公雕像记录这一季的劳作与祈愿。", WorkshopSeason.Autumn,
             WorkshopItem.Statue, () => WorkshopProgress.Has(WorkshopItem.Statue), 2, 3),
-        new Card("pattern", "寒露 · 攀花", "在染好的绸面上完成纹样，让染整后的布进入装饰工序。", WorkshopSeason.Autumn,
+        new Card("pattern", "寒露 · 经纬攀花", "在染好的绸面上按行列数字完成纹样，收下关键道具缬。", WorkshopSeason.Autumn,
             WorkshopItem.RawSilkCloth, () => WorkshopProgress.HasStep(WorkshopWordRules.Patterned), 4),
-        new Card("fit", "小雪 · 排布", "把前片、后片与袖片的衣样排在染布上，避开布疵，给剪帛留好位置。", WorkshopSeason.Winter,
+        new Card("fit", "小雪 · 排布", "把前片、后片、左右袖与领贴的衣样排在染布上，固定方向、避开布疵，刚好排满布面。", WorkshopSeason.Winter,
             WorkshopItem.DyedCloth, () => WorkshopWordRules.HasWinterPreparation, 1),
-        new Card("cut", "立冬小雪 · 剪帛", "排布完成后，沿虚线裁出前衣、后衣与衣袖，收下三块衣片。", WorkshopSeason.Winter,
-            WorkshopItem.CutPieces, () => WorkshopProgress.Has(WorkshopItem.CutPieces), 0, 1),
+        new Card("cut", "立冬 · 剪帛", "排布完成后，沿虚线裁出前衣、后衣与衣袖，收下三块衣片。", WorkshopSeason.Winter,
+            WorkshopItem.CutPieces, () => WorkshopProgress.Has(WorkshopItem.CutPieces), 0),
         new Card("winterEggs", "冬至至大寒 · 卷连保种", "冬季把附有蚕种的蚕连卷起悬挂，妥善保存，留待来年春蚕孵育。", WorkshopSeason.Winter,
             WorkshopItem.SilkwormEggSheet, () => WorkshopProgress.Has(WorkshopItem.SilkwormEggSheet)),
         new Card("sew", "小雪 · 成衣", "交付缝衣针、蚕连和衣片，选定衣形，把衣片缝合成衣裳。", WorkshopSeason.Winter,
@@ -208,10 +208,14 @@ internal static class WorkshopRewardCards
         return false;
     }
 
-    private static bool ShouldPresentTerm(WorkshopSeason season, int term) =>
-        season == WorkshopSeason.Summer && term <= 2
+    private static bool ShouldPresentTerm(WorkshopSeason season, int term)
+    {
+        // 排布、剪帛和成衣已经展示对应工序卡，立冬与小雪节气卡仅收入图鉴，不再自动弹出。
+        if (season == WorkshopSeason.Winter && (term == 0 || term == 1)) return false;
+        return season == WorkshopSeason.Summer && term <= 2
             ? !WorkshopProgress.HasStep(TermReceipt(season, term))
             : !HasTerm(season, term);
+    }
 
     internal static void Synchronize()
     {
@@ -301,7 +305,7 @@ internal static class WorkshopRewardCards
 
     private static bool CanPresent => !IsOpen && !WorkshopQuestGuide.IsOpen &&
         !WorkshopQuestGuide.IsWorldOverlayActive && !WorkshopStorageView.IsOpen &&
-        !WorkshopChapterGuide.IsOpen && !SimplePopup.IsOpen;
+        !WorkshopChapterGuide.IsOpen && !SimplePopup.IsOpen && !MiniGameOverlay.IsActive;
 
     private sealed class Runner : MonoBehaviour
     {

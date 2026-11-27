@@ -16,13 +16,18 @@ public class AutumnLoomTrigger : MonoBehaviour
     private FloatingActionButton _floatBtn;
     private Transform _player;
     private bool _shown;
+    private SpriteRenderer _loomRenderer;
+    private Sprite _repairedLoomSprite;
 
     private void Awake()
     {
+        _loomRenderer = GetComponent<SpriteRenderer>();
+        _repairedLoomSprite = AutumnItemIcons.Load()?.repairedLoom;
+        UpdateLoomAppearance();
         _floatBtn = gameObject.AddComponent<FloatingActionButton>();
         _floatBtn.Configure("修复织机", new Vector3(0f, 2.4f, 0f), OnLoomClicked);
         _floatBtn.SetOpacity(0.9f);
-        WorkshopPickupGlow.Bind(gameObject, () => !WorkshopProgress.Has(WorkshopItem.RawSilkCloth) &&
+        WorkshopPickupGlow.Bind(gameObject, () => !WorkshopProgress.Has(WorkshopItem.GreigeCloth) &&
             (AutumnLevelState.HasLoomRepaired ? AutumnLevelState.HasShuttle : AutumnLevelState.HasHammer), 0.72f);
     }
 
@@ -34,10 +39,11 @@ public class AutumnLoomTrigger : MonoBehaviour
 
     private void Update()
     {
+        UpdateLoomAppearance();
         // 修复完成后按钮文字切换为「开始织造」
         string desired = WorkshopProgress.HasStep(WorkshopWordRules.Patterned) ? "织造攀花已完成" :
             !AutumnLevelState.HasLoomRepaired ? "修复织机" :
-            !WorkshopProgress.Has(WorkshopItem.RawSilkCloth) ? "白露 · 经纬织造" : "寒露 · 攀花";
+            !WorkshopProgress.Has(WorkshopItem.GreigeCloth) ? "白露 · 奇偶推梭" : "寒露 · 经纬攀花";
         if (_floatBtn.buttonText != desired) _floatBtn.SetText(desired);
 
         if (_player == null) return;
@@ -54,7 +60,7 @@ public class AutumnLoomTrigger : MonoBehaviour
     private void OnLoomClicked()
     {
         if (WorkshopQuestGuide.BlocksWorldInput || WorkshopQuestGuide.IsWorldOverlayActive) return;
-        if (AutumnLevelState.HasLoomRepaired && WorkshopProgress.Has(WorkshopItem.RawSilkCloth))
+        if (AutumnLevelState.HasLoomRepaired && WorkshopProgress.Has(WorkshopItem.GreigeCloth))
             OpenLoom();
         else
             AutumnNpcDialogue.IntroduceWeaving(OpenLoom);
@@ -90,14 +96,15 @@ public class AutumnLoomTrigger : MonoBehaviour
 
         _floatBtn.Hide();
         _shown = false;
-        if (!WorkshopProgress.Has(WorkshopItem.RawSilkCloth))
+        if (!WorkshopProgress.Has(WorkshopItem.GreigeCloth))
         {
-            ShowEmbroidery(WorkshopProcessCard.BailuWeaving, EmbroideryPlayMode.Weaving);
+            WorkshopProcessCardView.Show(WorkshopProcessCard.BailuWeaving,
+                () => WorkshopSimpleGames.Show(WorkshopSimpleGame.Weaving));
             return;
         }
         if (!WorkshopWordRules.CanPattern)
         {
-            SimplePopup.Show("先染好布", "已获得缬。先到青染轩研磨染材、选择颜色染布，再带梭子回来攀花。道具不会消耗。", "知道了");
+            SimplePopup.Show("先染好布", "已获得生坯绸。先到青染轩研磨染材、选择颜色染布，再带梭子回来攀花。道具不会消耗。", "知道了");
             return;
         }
         ShowEmbroidery(WorkshopProcessCard.Hanlu, EmbroideryPlayMode.HanluPattern);
@@ -110,6 +117,12 @@ public class AutumnLoomTrigger : MonoBehaviour
             EmbroideryGameManager.SetNextMode(mode);
             MiniGameOverlay.Show("EmbroideryScene");
         });
+    }
+
+    private void UpdateLoomAppearance()
+    {
+        if (!AutumnLevelState.HasLoomRepaired || _loomRenderer == null || _repairedLoomSprite == null) return;
+        if (_loomRenderer.sprite != _repairedLoomSprite) _loomRenderer.sprite = _repairedLoomSprite;
     }
 
     private void OnDestroy()

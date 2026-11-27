@@ -71,17 +71,24 @@ public sealed partial class WorkshopWordPreview
         loom.GetComponent<FloatingActionButton>().onClick.Invoke();
         yield return DismissAutumnDialogue();
         yield return new WaitForSecondsRealtime(1f);
-        var weave = UnityEngine.Object.FindObjectOfType<EmbroideryGameManager>();
-        CheckAutumn(weave != null && !weave.IsHanluPattern, "First loom game must be weaving mode");
+        var weave = UnityEngine.Object.FindObjectOfType<WorkshopSimpleGames>();
+        CheckAutumn(weave != null, "First loom game must be odd-even shuttle weaving");
         yield return Capture("41-autumn-integrated-weaving");
-        yield return SolveAutumnBoard(weave);
+        for (int row = 0; row < WorkshopPlainWeave.Rows; row++)
+        {
+            InvokeWorktableButton("Shed " + row % 2);
+            yield return null;
+            InvokeWorktableButton(row % 2 == 0 ? "Pass Right" : "Pass Left");
+            yield return null;
+        }
         CheckAutumn(SimplePopup.IsOpen, "Weaving reward popup missing");
         UnityEngine.Object.FindObjectOfType<SimplePopup>().OnConfirm();
         yield return DismissAutumnDialogue();
         yield return new WaitForSecondsRealtime(.5f);
-        CheckAutumn(WorkshopProgress.Has(WorkshopItem.RawSilkCloth) && WorkshopProgress.HasStep(WorkshopWordRules.Woven),
-            "Weaving must award permanent greige cloth and save woven step");
-        CheckAutumn(!WorkshopProgress.HasStep(WorkshopWordRules.Patterned), "Weaving must not grant pattern completion");
+        CheckAutumn(WorkshopProgress.Has(WorkshopItem.GreigeCloth) && WorkshopProgress.HasStep(WorkshopWordRules.Woven),
+            "Odd-even weaving must award permanent greige cloth and save woven step");
+        CheckAutumn(!WorkshopProgress.Has(WorkshopItem.RawSilkCloth) && !WorkshopProgress.HasStep(WorkshopWordRules.Patterned),
+            "Weaving must not grant patterned silk or pattern completion");
 
         foreach (var color in DyeColorUtil.AllColors)
         {
@@ -144,9 +151,10 @@ public sealed partial class WorkshopWordPreview
         yield return new WaitForSecondsRealtime(.4f);
         WorkshopProgress.ResetSession();
         WinterLevelState.RestoreWorkshopProgress();
-        CheckAutumn(WorkshopProgress.Has(WorkshopItem.Shuttle) && WorkshopProgress.Has(WorkshopItem.RawSilkCloth) &&
-            WorkshopProgress.Has(WorkshopItem.DyedCloth) && WorkshopProgress.HasStep(WorkshopWordRules.Patterned),
-            "Weaving, dye and pattern must retain inventory after reload");
+        CheckAutumn(WorkshopProgress.Has(WorkshopItem.Shuttle) && WorkshopProgress.Has(WorkshopItem.GreigeCloth) &&
+            WorkshopProgress.Has(WorkshopItem.RawSilkCloth) && WorkshopProgress.Has(WorkshopItem.DyedCloth) &&
+            WorkshopProgress.HasStep(WorkshopWordRules.Patterned),
+            "Weaving, dye and pattern rewards must retain inventory after reload");
         var garden = GameObject.Find("染料园触点");
         player = GameObject.Find("Player");
         player.transform.position = garden.GetComponent<Collider2D>().bounds.center;
@@ -168,7 +176,7 @@ public sealed partial class WorkshopWordPreview
         while (MiniGameOverlay.IsActive && Time.realtimeSinceStartup < gardenDeadline) yield return null;
         CheckAutumn(!MiniGameOverlay.IsActive && SceneManager.GetActiveScene().name == "Level3_Autumn" &&
             player.GetComponent<LevelPlayerController>().enabled, "Garden exit must restore autumn controls");
-        Debug.Log("[AutumnIntegration] PASS: actual scene, both stairways, first-talk cake, independent hammer, legacy hoe, both embroidery modes, user autumn background, one-cloth drag dyeing, wrong drop, cancellation, duplicate prevention, permanent inventory and reload.");
+        Debug.Log("[AutumnIntegration] PASS: actual scene, both stairways, first-talk cake, independent hammer, legacy hoe, odd-even weaving and Hanlu embroidery, user autumn background, one-cloth drag dyeing, wrong drop, cancellation, duplicate prevention, permanent inventory and reload.");
         File.WriteAllText("../WordRevision/autumn-integration-review-complete.txt",
             "Actual Unity 1920x1080 frames. Scene and gameplay callbacks verified with isolated fixtures; original save restored on exit. This is not a complete mouse-and-keyboard playthrough. No player build created.\n");
         UnityEditor.EditorApplication.isPlaying = false;

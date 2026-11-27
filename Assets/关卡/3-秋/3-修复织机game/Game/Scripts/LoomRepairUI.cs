@@ -36,6 +36,9 @@ namespace JiangnanDye.LoomRepair
         [Header("织机引用（可选，用于动画）")]
         public Image loomImage;
 
+        [Tooltip("三阶段样式：3-织机-1、3-织机-2、3-织机-3")]
+        public Sprite[] loomStages = new Sprite[3];
+
         private void Awake()
         {
             StylePresentation();
@@ -89,23 +92,11 @@ namespace JiangnanDye.LoomRepair
         /// <summary>切换织机形态：0=织机-1，1=织机-2，2 及以上=织机-3。</summary>
         public void SetLoomStage(int stage)
         {
-            if (loomImage == null) return;
+            if (loomImage == null || loomStages == null || loomStages.Length == 0) return;
 
-            var sprite = LoadLoomStageSprite(stage);
+            int index = Mathf.Clamp(stage, 0, loomStages.Length - 1);
+            var sprite = loomStages[index];
             if (sprite != null) loomImage.sprite = sprite;
-        }
-
-        private static Sprite LoadLoomStageSprite(int stage)
-        {
-#if UNITY_EDITOR
-            string file = stage <= 0 ? "3-织机-1.png"
-                        : stage == 1 ? "3-织机-2.png"
-                        : "3-织机-3.png";
-            return UnityEditor.AssetDatabase.LoadAssetAtPath<Sprite>(
-                "Assets/关卡/3-秋/3-修复织机game/" + file);
-#else
-            return null;
-#endif
         }
 
         /// <summary>显示开始提示</summary>

@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-/// <summary>将木托盘里的缬拖入染缸。</summary>
+/// <summary>将木托盘里的生坯绸拖入染缸。</summary>
 public class WinterDyeingSilk : MonoBehaviour,
     IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerClickHandler
 {
@@ -25,7 +25,7 @@ public class WinterDyeingSilk : MonoBehaviour,
         if (_overlay == null || !_overlay.CanDragSilk)
         {
             if (_overlay != null && !_overlay.IsDyeing && !_overlay.HasFinishedCloth)
-                _overlay.SetStatus("先点左侧染料，再把缬拖入染缸。");
+                _overlay.SetStatus("先点左侧染料，再把生坯绸拖入染缸。");
             _dragging = false;
             return;
         }
@@ -35,7 +35,7 @@ public class WinterDyeingSilk : MonoBehaviour,
         if (!_dragging) return;
         _pointerOffset = _rt.anchoredPosition - pointer;
         transform.SetAsLastSibling();
-        _overlay.SetStatus("把缬拖到缸口，松手染色。");
+        _overlay.SetStatus("把生坯绸拖到缸口，松手染色。");
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -57,7 +57,7 @@ public class WinterDyeingSilk : MonoBehaviour,
             return;
 
         _rt.anchoredPosition = _homeAnchored;
-        _overlay.SetStatus("缬已放回木托盘。拖到缸口再松手。");
+        _overlay.SetStatus("生坯绸已放回木托盘。拖到缸口再松手。");
     }
 
     public void OnPointerClick(PointerEventData eventData)

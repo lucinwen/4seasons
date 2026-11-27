@@ -35,11 +35,62 @@ namespace JiangnanDye
             MinigameUiPresentation.Action(acceptButton);
             MinigameUiPresentation.Action(discardButton, false);
             MinigameUiPresentation.Label(plantText, MinigameUiPresentation.Pine, 52);
-            MinigameUiPresentation.Label(stateText, MinigameUiPresentation.Paper, 30);
+            MinigameUiPresentation.Label(stateText, MinigameUiPresentation.Pine, 30);
             MinigameUiPresentation.Surface(stateChip, MinigameUiPresentation.Pine);
+            AddContentBackground();
+            ColorButtons();
             HideImmediate();
             if (acceptButton != null) acceptButton.onClick.AddListener(OnAccept);
             if (discardButton != null) discardButton.onClick.AddListener(OnDiscard);
+        }
+
+        private void AddContentBackground()
+        {
+            if (panel == null) return;
+
+            // 在 panel 最底层插入米色背景，覆盖整个弹窗内容区
+            var bg = new GameObject("ContentBackground", typeof(RectTransform), typeof(Image))
+                .GetComponent<Image>();
+            var bgRect = bg.rectTransform;
+            bgRect.SetParent(panel, false);
+            bgRect.SetAsFirstSibling();
+
+            bgRect.anchorMin = Vector2.zero;
+            bgRect.anchorMax = Vector2.one;
+            bgRect.offsetMin = Vector2.zero;
+            bgRect.offsetMax = Vector2.zero;
+
+            bg.raycastTarget = false;
+            bg.color = MinigameUiPresentation.Paper;
+
+            // 文本颜色
+            SetTextBlack(titleText);
+            SetTextBlack(nameText);
+            SetTextBlack(plantText);
+            SetTextBlack(descText);
+            if (stateText != null) stateText.color = Color.white;
+        }
+
+        private static void SetTextBlack(Text text)
+        {
+            if (text != null) text.color = Color.black;
+        }
+
+        private void ColorButtons()
+        {
+            SetButtonColor(acceptButton, MinigameUiPresentation.Pine);
+            SetButtonColor(discardButton, new Color32(136, 69, 49, 255));
+        }
+
+        private static void SetButtonColor(Button button, Color color)
+        {
+            if (button == null) return;
+            var image = button.targetGraphic as Image ?? button.GetComponent<Image>();
+            if (image == null) return;
+            image.color = color;
+            // 让文字可读
+            foreach (var text in button.GetComponentsInChildren<Text>(true))
+                text.color = MinigameUiPresentation.Paper;
         }
 
         private void OnDestroy()

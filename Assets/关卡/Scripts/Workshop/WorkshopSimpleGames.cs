@@ -118,8 +118,8 @@ internal sealed class WorkshopSimpleGames : MonoBehaviour
     private void DrawWeave()
     {
         foreach (Transform child in work) { child.gameObject.SetActive(false); Destroy(child.gameObject); }
-        WorkshopUi.Label(work, "Instructions", new Rect(30, 0, 1480, 75),
-            "奇数经与偶数经轮流抬起，梭子左右交替穿过。织满六行，获得缬。", 30, WorkshopUi.Ink);
+        WorkshopUi.Label(work, "Instructions", new Rect(45, 25, 400, 190),
+            "奇数经与偶数经轮流抬起，\n梭子左右交替穿过。\n织满六行，获得生坯绸。", 28, WorkshopUi.Ink, TextAnchor.MiddleCenter);
         for (int row = 0; row < 6; row++)
             for (int col = 0; col < 6; col++)
                 WorkshopUi.Fill(work, $"Weave {row},{col}", new Rect(565 + col * 62, 110 + row * 62, 58, 58),
@@ -128,7 +128,7 @@ internal sealed class WorkshopSimpleGames : MonoBehaviour
         for (int i = 0; i < 2; i++)
         {
             int shed = i;
-            WorkshopUi.PixelButton(work, "Shed " + i, new Rect(65, 150 + i * 140, 360, 85),
+            WorkshopUi.PixelButton(work, "Shed " + i, new Rect(65, 250 + i * 140, 360, 85),
                 (i == 0 ? "抬起奇数经" : "抬起偶数经") + (weave.SelectedShed == i ? " · 已选" : ""),
                 () => { weave.Select(shed); DrawWeave(); }, weave.SelectedShed == i, 31);
         }
@@ -148,7 +148,7 @@ internal sealed class WorkshopSimpleGames : MonoBehaviour
         if (weave.Complete)
         {
             WorkshopWordRules.CompleteWeaving();
-            Finish("织造完成，获得缬。接下来到青染轩研磨染材、选择喜欢的颜色染布。");
+            Finish("奇偶推梭完成，获得生坯绸。接下来到青染轩研磨染材、选择喜欢的颜色染布。");
         }
     }
 
@@ -168,6 +168,12 @@ internal sealed class WorkshopSimpleGames : MonoBehaviour
             var popup = SimplePopup.Show("谷雨喂蚕完成", "三份桑叶已喂好，小蚕吃饱了。\n获得蚕宝宝，可以带着春季成果回工坊。", "完成并返回", Close);
             // This worktable uses a high overlay order; keep its completion
             // confirmation above the table until the player returns.
+            if (popup != null) popup.GetComponent<Canvas>().sortingOrder = 24100;
+        }
+        else if (game == WorkshopSimpleGame.Weaving)
+        {
+            var popup = SimplePopup.ShowItem(WorkshopItem.GreigeCloth,
+                "奇偶推梭完成，获得生坯绸。接下来去青染轩染色。", Close, fallbackIcon: WorkshopArt.RawSilk);
             if (popup != null) popup.GetComponent<Canvas>().sortingOrder = 24100;
         }
     }

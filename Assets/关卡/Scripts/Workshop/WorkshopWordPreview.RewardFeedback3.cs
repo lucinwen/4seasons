@@ -33,11 +33,8 @@ public sealed partial class WorkshopWordPreview
             InvokeNamedButton("Confirm");
             yield return null;
             if (item == WorkshopItem.Shuttle) WorkshopProgress.MarkStep("autumn.loom");
-            if (item == WorkshopItem.RawSilkCloth)
-            {
-                WorkshopProgress.MarkStep(WorkshopWordRules.Woven);
-                WorkshopProgress.MarkStep(WorkshopWordRules.Patterned);
-            }
+            if (item == WorkshopItem.GreigeCloth) WorkshopProgress.MarkStep(WorkshopWordRules.Woven);
+            if (item == WorkshopItem.RawSilkCloth) WorkshopProgress.MarkStep(WorkshopWordRules.Patterned);
             if (item == WorkshopItem.DyedCloth)
             {
                 WorkshopProgress.MarkStep("winter.dyes");
@@ -108,7 +105,7 @@ public sealed partial class WorkshopWordPreview
         Feedback2Require(!WorkshopRewardCards.IsBusy && !WorkshopRewardCards.HasTerm(WorkshopSeason.Summer, 3),
             "The thread puzzle repeated its material knowledge or added an unrelated Xiazhi card.");
 
-        Feedback2Save("{\"items\":704,\"chapters\":3,\"steps\":[\"quest.guide.Autumn\",\"autumn.loom\",\"autumn.bailu.woven\",\"winter.dyes\",\"winter.ground\"]}");
+        Feedback2Save("{\"items\":4800,\"chapters\":3,\"steps\":[\"quest.guide.Autumn\",\"autumn.loom\",\"autumn.bailu.woven\",\"winter.dyes\",\"winter.ground\"]}");
         yield return SceneManager.LoadSceneAsync("Level3_Autumn");
         yield return new WaitForSecondsRealtime(.4f);
         WorkshopWordRules.CompletePattern();

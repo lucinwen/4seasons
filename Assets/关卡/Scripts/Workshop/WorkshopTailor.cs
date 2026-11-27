@@ -93,7 +93,7 @@ public sealed class WorkshopTailor : MonoBehaviour
         if (active != null) return;
         if (!WorkshopProgress.CanSubmit(WorkshopSeason.Winter))
         {
-            if (SimplePopup.Show("制作成衣", "先在裁衣台排布、剪帛取得衣片，再收好缝衣针，向缝衣师傅领取蚕连。备齐后即可选款缝衣。",
+            if (SimplePopup.Show("制作成衣", "先在裁衣台排布、剪帛取得衣片，再收好缝衣针，向裁衣师傅领取蚕连。备齐后即可选款缝衣。",
                     "返回", back) == null)
                 back?.Invoke();
             return;

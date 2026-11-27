@@ -68,13 +68,13 @@ public static class WinterSceneRestore
         }
 
         var player = new GameObject("Player");
-        player.transform.position = new Vector3(0f, -3.8f, 0f);
+        player.transform.position = new Vector3(-15.414132f, -4.0326476f, 0f);
         player.transform.localScale = Vector3.one;
 
         // Visual 子物体（位置 / 缩放 / 排序同步自场景）
         var visual = new GameObject("Visual");
         visual.transform.SetParent(player.transform, false);
-        visual.transform.localPosition = new Vector3(-0.03f, 0.24f, 0f);
+        visual.transform.localPosition = new Vector3(-0.43f, 1.11f, 0f);
         visual.transform.localScale = new Vector3(0.11f, 0.11f, 0.11f);
 
         var visualSr = visual.AddComponent<SpriteRenderer>();
@@ -130,7 +130,7 @@ public static class WinterSceneRestore
 
         var camGo = new GameObject("Main Camera");
         camGo.tag = "MainCamera";
-        camGo.transform.position = new Vector3(0f, 0f, -10f);
+        camGo.transform.position = new Vector3(-12f, 0f, -10f);
 
         var cam = camGo.AddComponent<Camera>();
         cam.orthographic = true;
@@ -163,8 +163,8 @@ public static class WinterSceneRestore
         }
 
         var bgGo = new GameObject("Background");
-        bgGo.transform.position = new Vector3(0f, 0f, 0f);
-        bgGo.transform.localScale = new Vector3(0.89473814f, 0.89473814f, 0.50503f);
+        bgGo.transform.position = new Vector3(-5.7f, 0f, 0f);
+        bgGo.transform.localScale = new Vector3(1.559466f, 1.534051f, 1.5850071f);
 
         var bgSr = bgGo.AddComponent<SpriteRenderer>();
         bgSr.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(BgPath);
@@ -213,7 +213,7 @@ public static class WinterSceneRestore
     // ==================== NPC ====================
     private static void CreateNpc()
     {
-        const string npcName = "idle_blink_frame_01";
+        const string npcName = "裁衣师傅";
         if (GameObject.Find(npcName) != null)
         {
             Debug.Log("[WinterSceneRestore] NPC 已存在，跳过");
@@ -221,8 +221,8 @@ public static class WinterSceneRestore
         }
 
         var npc = new GameObject(npcName);
-        npc.transform.position = new Vector3(-15.08f, -1.46f, 0f);
-        npc.transform.localScale = new Vector3(0.46378f, 0.46378f, 0.46378f);
+        npc.transform.position = new Vector3(-9.54f, -2.32f, 0f);
+        npc.transform.localScale = new Vector3(-0.4246828f, 0.42825443f, 0.42825443f);
 
         var sr = npc.AddComponent<SpriteRenderer>();
         sr.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(NpcSprite);
@@ -284,48 +284,67 @@ public static class WinterSceneRestore
     private static readonly WinterItem[] WinterItems = new WinterItem[]
     {
         // (名字, 图片路径, 位置, 缩放, Z旋转, sortingOrder, 碰撞盒类型, 碰撞盒尺寸, 碰撞盒偏移)
+        // ↑ 所有 Pos/Scale 均已同步自 Level4_Winter.unity (2026-11-27)
         new WinterItem("4-晾晒架子", ItemDir + "4-晾晒架子.png",
-            new Vector3(-6.68f, -3.19f, 0f), new Vector3(0.16351217f, 0.16351217f, 0.16351217f),
-            0f, 10, WinterColliderKind.None, Vector2.zero, Vector2.zero),
+            new Vector3(-12.72f, -1.97f, 0f), new Vector3(0.1037364f, 0.1037364f, 0.1037364f),
+            0f, 1, WinterColliderKind.None, Vector2.zero, Vector2.zero),
+        new WinterItem("4-晾晒架子 (1)", ItemDir + "4-晾晒架子.png",
+            new Vector3(-11.54f, -3.19f, 0f), new Vector3(0.1407208f, 0.1407208f, 0.1407208f),
+            0f, 20, WinterColliderKind.None, Vector2.zero, Vector2.zero),
         new WinterItem("4-染料蓝布料", ItemDir + "4-染料蓝布料.png",
-            new Vector3(-2.898f, -1.622f, 0f), new Vector3(0.13379f, 0.13379f, 0.13379f),
+            new Vector3(-14.72f, -1.44f, 0f), new Vector3(0.105f, 0.105f, 0.105f),
             0f, 1, WinterColliderKind.None, Vector2.zero, Vector2.zero),
         new WinterItem("4-裁衣工具针", ItemDir + "4-裁衣工具针.png",
-            new Vector3(17.281f, -2.254f, 0f), new Vector3(0.113982692f, 0.113982692f, 0.113982692f),
-            0f, 0, WinterColliderKind.None, Vector2.zero, Vector2.zero),
+            new Vector3(-6.86f, -1.24f, 0f), new Vector3(0.1413585f, 0.1413585f, 0.1413585f),
+            0f, 2, WinterColliderKind.None, Vector2.zero, Vector2.zero),
         new WinterItem("4-裁衣工具尺", ItemDir + "4-裁衣工具尺.png",
-            new Vector3(17.32f, -2.85f, 0f), new Vector3(0.13379f, 0.13379f, 0.13379f),
-            0f, 0, WinterColliderKind.None, Vector2.zero, Vector2.zero),
+            new Vector3(-8.675f, -1.085f, 0f), new Vector3(0.12f, 0.12f, 0.12f),
+            0f, 2, WinterColliderKind.None, Vector2.zero, Vector2.zero),
         new WinterItem("4-裁剪台", ItemDir + "4-裁剪台.png",
-            new Vector3(17.26f, -2.882f, 0f), new Vector3(0.20514001f, 0.2104f, 0.2104f),
-            0f, 0, WinterColliderKind.Solid, new Vector2(15.36f, 10.24f), Vector2.zero),
+            new Vector3(-2.3116517f, -1.965372f, 0f), new Vector3(0.20514f, 0.20514f, 0.20514f),
+            0f, 0, WinterColliderKind.Trigger, new Vector2(15.36f, 10.24f), Vector2.zero),
+        new WinterItem("4-裁剪台 (1)", ItemDir + "4-裁剪台.png",
+            new Vector3(-5.6f, -1.6f, 0f), new Vector3(0.17769219f, 0.17769219f, 0.17769219f),
+            0f, 1, WinterColliderKind.None, Vector2.zero, Vector2.zero),
         new WinterItem("4-石头3", ItemDir + "4-石头3.png",
-            new Vector3(6.77f, -2.7f, 0f), new Vector3(0.27244157f, 0.27244157f, 0.27244157f),
+            new Vector3(3.397286f, -3.9868975f, 0f), new Vector3(0.27244157f, 0.27244157f, 0.27244157f),
             0f, 10, WinterColliderKind.None, Vector2.zero, Vector2.zero),
         new WinterItem("4-石头3 (1)", ItemDir + "4-石头3.png",
-            new Vector3(-7.98f, 0.14f, 0f), new Vector3(0.27244157f, 0.27244157f, 0.27244157f),
+            new Vector3(7.0472627f, -3.9868975f, 0f), new Vector3(0.27244157f, 0.27244157f, 0.27244157f),
             0f, 10, WinterColliderKind.None, Vector2.zero, Vector2.zero),
+        new WinterItem("4-石头3 (2)", ItemDir + "4-石头3.png",
+            new Vector3(2.44f, -3.52f, 0f), new Vector3(0.22218f, 0.22218f, 0.22218f),
+            0f, 20, WinterColliderKind.None, Vector2.zero, Vector2.zero),
+        new WinterItem("4-石头3 (3)", ItemDir + "4-石头3.png",
+            new Vector3(-21.63f, -2.54f, 0f), new Vector3(0.25165f, 0.25165f, 0.25165f),
+            0f, 20, WinterColliderKind.None, Vector2.zero, Vector2.zero),
         new WinterItem("4-染料空", ItemDir + "4-染料钵体.png",
-            new Vector3(14.28f, -1.5f, 0f), new Vector3(0.15102404f, 0.15102404f, 0.15102404f),
+            new Vector3(-8.2826395f, -1.0669162f, 0f), new Vector3(0.11f, 0.11f, 0.11f),
             0f, 0, WinterColliderKind.Trigger, new Vector2(4.51f, 3.52f), Vector2.zero),
         new WinterItem("4-提花机", ItemDir + "4-提花机.png",
-            new Vector3(-1.7f, -1.24f, 0f), new Vector3(0.22166072f, 0.22166072f, 0.22166072f),
+            new Vector3(-14.23f, -1.32f, 0f), new Vector3(0.085f, 0.085f, 0.085f),
             0f, 0, WinterColliderKind.Trigger, new Vector2(17.74f, 8.87f), Vector2.zero),
         new WinterItem("4-研磨棒", ItemDir + "4-研磨棒.png",
-            new Vector3(1.14f, -1.75f, 0f), new Vector3(0.06846758f, 0.06846758f, 0.06846758f),
+            new Vector3(-8.301357f, -0.9171736f, 0f), new Vector3(0.046f, 0.046f, 0.046f),
             0f, 0, WinterColliderKind.None, Vector2.zero, Vector2.zero),
         new WinterItem("4-染料空缸", ItemDir + "4-染料空缸.png",
-            new Vector3(-5.34f, -1.75f, 0f), new Vector3(0.20442495f, 0.20442495f, 0.20442495f),
+            new Vector3(-8.675714f, -1.6471689f, 0f), new Vector3(0.19f, 0.19f, 0.19f),
             0f, 0, WinterColliderKind.None, Vector2.zero, Vector2.zero),
         new WinterItem("4-挖掘染料锄头", ItemDir + "4-挖掘染料锄头.png",
-            new Vector3(13.056f, -1.67f, 0f), new Vector3(0.18664856f, 0.18664856f, 0.18664856f),
+            new Vector3(-13.916706f, -1.534862f, 0f), new Vector3(0.17f, 0.17f, 0.17f),
             -26.587f, 0, WinterColliderKind.Trigger, new Vector2(4.59f, 2.28f), Vector2.zero),
         new WinterItem("4-挖掘染料背篓", ItemDir + "4-挖掘染料背篓.png",
-            new Vector3(-12.59f, -0.52f, 0f), new Vector3(0.110615909f, 0.110615909f, 0.110615909f),
+            new Vector3(-17.67f, -2.04f, 0f), new Vector3(0.08f, 0.08f, 0.08f),
             0f, 0, WinterColliderKind.None, Vector2.zero, Vector2.zero),
+        new WinterItem("蚕连架", ItemDir + "4-蚕连架.png",
+            new Vector3(7.79f, -3.13f, 0f), new Vector3(0.19f, 0.19f, 1f),
+            0f, 20, WinterColliderKind.None, Vector2.zero, Vector2.zero),
+        new WinterItem("蚕连架 (1)", ItemDir + "4-蚕连架.png",
+            new Vector3(5.02f, -3.13f, 0f), new Vector3(0.19f, 0.19f, 1f),
+            0f, 20, WinterColliderKind.None, Vector2.zero, Vector2.zero),
         new WinterItem("染料园触点", null,
-            new Vector3(-11.47f, -1.62f, -5.027085f), Vector3.one,
-            0f, 0, WinterColliderKind.Solid, new Vector2(2.5958767f, 0.84556043f),
+            new Vector3(-13.748245f, -2.3210108f, 0f), Vector3.one,
+            0f, 0, WinterColliderKind.Trigger, new Vector2(2.5958767f, 0.84556043f),
             new Vector2(0.79793835f, -0.35177916f)),
     };
 
@@ -389,17 +408,17 @@ public static class WinterSceneRestore
         }
     }
 
-    // 冬天场景中的「碰撞盒」子物体全部为 Trigger
+    // 冬天场景中的「碰撞盒」子物体全部为实体碰撞（非 Trigger）
     private static readonly WinterSceneCollider[] CollisionBoxes = new WinterSceneCollider[]
     {
-        new WinterSceneCollider("1",     new Vector2(16.384624f, 1.4206238f), new Vector2(4.964632f, -3.1674232f)),
-        new WinterSceneCollider("1 (1)", new Vector2(6.4379444f, 1.0440378f), new Vector2(19.841747f, -3.3557162f)),
-        new WinterSceneCollider("1 (2)", new Vector2(0.20676422f, 5.1014504f), new Vector2(22.957336f, -1.3270099f)),
-        new WinterSceneCollider("1 (3)", new Vector2(10.812014f, 2.1733103f), new Vector2(-8.466838f, -2.79108f)),
-        new WinterSceneCollider("1 (4)", new Vector2(2.6695251f, 0.7537012f), new Vector2(14.162167f, -3.5008845f)),
-        new WinterSceneCollider("1 (5)", new Vector2(0.34608078f, 0.8460908f), new Vector2(15.673508f, -3.4546897f)),
-        new WinterSceneCollider("1 (6)", new Vector2(0.32219696f, 1.0113244f), new Vector2(16.027775f, -3.372073f)),
-        new WinterSceneCollider("1 (7)", new Vector2(0.4400406f, 1.0786877f), new Vector2(16.39746f, -3.3383913f)),
+        new WinterSceneCollider("1",     new Vector2(9.09922f, 1.4407024f), new Vector2(-3.6394398f, -4.5227003f)),
+        new WinterSceneCollider("1 (1)", new Vector2(7.914462f, 1.1999998f), new Vector2(11.541052f, -4.6804867f)),
+        new WinterSceneCollider("1 (2)", new Vector2(0.61795807f, 7f), new Vector2(15.773796f, -1.5f)),
+        new WinterSceneCollider("1 (3)", new Vector2(10.190216f, 1.488843f), new Vector2(-13.284159f, -4.3114505f)),
+        new WinterSceneCollider("1 (4)", new Vector2(1.2408252f, 1.553031f), new Vector2(1.5413711f, -4.16705f)),
+        new WinterSceneCollider("1 (5)", new Vector2(1.583003f, 1.2962809f), new Vector2(3.0656552f, -4.070811f)),
+        new WinterSceneCollider("1 (6)", new Vector2(1.1524076f, 1.1999998f), new Vector2(4.6365657f, -4.100234f)),
+        new WinterSceneCollider("1 (7)", new Vector2(2.2637234f, 1.1999998f), new Vector2(6.5022717f, -4.0627985f)),
     };
 
     private static void CreateCollisionBoxes()
@@ -408,7 +427,7 @@ public static class WinterSceneRestore
         if (parent == null)
         {
             parent = new GameObject("碰撞盒");
-            parent.transform.position = new Vector3(-4.5948462f, -0.6327649f, -5.006914f);
+            parent.transform.position = new Vector3(0f, 0f, 0f);
             parent.transform.localScale = Vector3.one;
         }
         else
@@ -425,7 +444,7 @@ public static class WinterSceneRestore
             child.transform.SetParent(parent.transform, false);
 
             var col = child.AddComponent<BoxCollider2D>();
-            col.isTrigger = true;
+            col.isTrigger = false;
             col.size = box.Size;
             col.offset = box.Offset;
             created++;

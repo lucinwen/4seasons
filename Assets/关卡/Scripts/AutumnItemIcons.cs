@@ -7,6 +7,7 @@ public sealed class AutumnItemIcons : ScriptableObject
     public Sprite cake;
     public Sprite shuttle;
     public Sprite statue;
+    public Sprite repairedLoom;
 
     public static AutumnItemIcons Load()
     {

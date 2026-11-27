@@ -15,6 +15,8 @@ public static class SpringSceneRestore
     private const string BgPath = "Assets/关卡/1-春/第一关-春.png";
     private const string PlayerAnimCtrl = "Assets/animation/player.controller";
     private const string PlayerIdle = "Assets/animation/a-idle/待机_00001.png";
+    private const string NpcSprite = "Assets/关卡/1-春/1-NPC动画关键帧/待机关键帧_01.png";
+    private const string NpcAnimCtrl = "Assets/关卡/1-春/1-NPC动画关键帧/待机关键帧_01.controller";
 
     [MenuItem("Tools/Spring Setup/恢复春天场景 (Level1_Spring)")]
     public static void Restore()
@@ -38,6 +40,9 @@ public static class SpringSceneRestore
 
         // ---- 5. 批量创建春天道具 ----
         CreateSpringItems();
+
+        // ---- 6. NPC ----
+        CreateNpc();
 
         // ---- 7. 台阶碰撞盒 ----
         CreateStepColliders();
@@ -394,6 +399,39 @@ public static class SpringSceneRestore
         new StepCollider("木桩 06", new Vector3(-4.436943f, -1.95286865f, 0f), new Vector2(0.48f, 0.95f), Vector2.zero),
         new StepCollider("木桩 07", new Vector3(-3.486943f, -2.11286865f, 0f), new Vector2(0.49f, 0.65f), Vector2.zero),
     };
+
+    // ==================== NPC ====================
+    private static void CreateNpc()
+    {
+        const string npcName = "蚕桑师傅";
+        if (GameObject.Find(npcName) != null)
+        {
+            Debug.Log("[SpringSceneRestore] NPC 已存在，跳过");
+            return;
+        }
+
+        var npc = new GameObject(npcName);
+        npc.transform.position = new Vector3(17.35f, 1.59f, 0f);
+        npc.transform.localScale = new Vector3(-0.15777245f, 0.17056482f, 0.17056482f);
+
+        var sr = npc.AddComponent<SpriteRenderer>();
+        sr.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(NpcSprite);
+        sr.sortingOrder = 0;
+
+        var anim = npc.AddComponent<Animator>();
+        var animCtrl = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(NpcAnimCtrl);
+        if (animCtrl != null)
+        {
+            anim.runtimeAnimatorController = animCtrl;
+            anim.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+        }
+        else
+        {
+            Debug.LogWarning($"[SpringSceneRestore] 找不到 NPC 动画控制器: {NpcAnimCtrl}");
+        }
+
+        Debug.Log("  ✅ NPC 创建完成");
+    }
 
     private static void CreateStepColliders()
     {

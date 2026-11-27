@@ -133,6 +133,16 @@ namespace Qingming.LevelBackground
 
         private static SimplePopup Create(out RectTransform frame, Action onConfirm, Action onCancel)
         {
+            // 单例：先关闭已有弹窗，避免叠加导致点击被拦截
+            var existing = UnityEngine.Object.FindObjectsOfType<SimplePopup>();
+            foreach (var old in existing)
+            {
+                if (old != null && old.gameObject.activeSelf)
+                {
+                    old.gameObject.SetActive(false);
+                    UnityEngine.Object.Destroy(old.gameObject);
+                }
+            }
             frame = WorkshopUi.NewCanvas("SimplePopupCanvas", 9999);
             WorkshopUi.Block(frame, Dim);
             var popup = frame.parent.gameObject.AddComponent<SimplePopup>();

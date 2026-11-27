@@ -9,7 +9,8 @@ public enum WorkshopSeason { Spring, Summer, Autumn, Winter }
 public enum WorkshopItem
 {
     MulberryLeaf, SilkwormEgg, Silkworm, Salt, Suoxu, Spool,
-    Shuttle, RawSilkCloth, Statue, DyedCloth, CutPieces, Needle, SilkwormEggSheet
+    Shuttle, RawSilkCloth, Statue, DyedCloth, CutPieces, Needle, SilkwormEggSheet,
+    GreigeCloth
 }
 
 public static class WorkshopProgress
@@ -23,7 +24,7 @@ public static class WorkshopProgress
     private static readonly string[] Names =
     {
         "桑叶", "蚕种", "蚕宝宝", "盐", "索绪", "线轴",
-        "梭子", "缬", "土地公雕像", "染布", "衣片", "缝衣针", "蚕连"
+        "梭子", "缬", "土地公雕像", "染布", "衣片", "缝衣针", "蚕连", "生坯绸"
     };
     private static readonly WorkshopItem[][] Recipes =
     {
@@ -82,6 +83,16 @@ public static class WorkshopProgress
             if (save.challengeWorks == null) save.challengeWorks = new List<ChallengeWork>();
             if (save.orderWorks == null) save.orderWorks = new List<ChallengeWork>();
             bool migrated = false;
+            // Older autumn saves already completed weaving; carry their greige cloth into the revised chain.
+            const int greigeClothBit = 1 << (int)WorkshopItem.GreigeCloth;
+            bool hasWovenRecord = save.steps.Contains(WorkshopWordRules.Woven) ||
+                save.steps.Contains(WorkshopWordRules.Patterned) ||
+                (save.chapters & (1 << (int)WorkshopSeason.Autumn)) != 0;
+            if (hasWovenRecord && (save.items & greigeClothBit) == 0)
+            {
+                save.items |= greigeClothBit;
+                migrated = true;
+            }
             // Completed winter chapters retain a full delivery record after the recipe changes.
             const int eggSheetBit = 1 << (int)WorkshopItem.SilkwormEggSheet;
             if ((save.chapters & (1 << (int)WorkshopSeason.Winter)) != 0 && (save.items & eggSheetBit) == 0)
@@ -154,7 +165,8 @@ public static class WorkshopProgress
     public static string SeasonName(WorkshopSeason season) => Seasons[(int)season];
     public static string ProductName(WorkshopSeason season) => Products[(int)season];
     public static string ItemName(WorkshopItem item) => Names[(int)item];
-    internal static WorkshopSeason ItemSeason(WorkshopItem item) => item == WorkshopItem.SilkwormEggSheet
+    internal static WorkshopSeason ItemSeason(WorkshopItem item) => item == WorkshopItem.GreigeCloth
+        ? WorkshopSeason.Autumn : item == WorkshopItem.SilkwormEggSheet
         ? WorkshopSeason.Winter : (WorkshopSeason)((int)item / 3);
     public static WorkshopItem[] Items(WorkshopSeason season) => (WorkshopItem[])Recipes[(int)season].Clone();
 

@@ -48,8 +48,8 @@ internal static class WorkshopWordRules
     internal static bool CanFeed => WorkshopProgress.Has(WorkshopItem.MulberryLeaf) &&
         WorkshopProgress.Has(WorkshopItem.SilkwormEgg);
 
-    internal static bool CanPattern => WorkshopProgress.Has(WorkshopItem.DyedCloth) &&
-        WorkshopProgress.Has(WorkshopItem.Shuttle);
+    internal static bool CanPattern => WorkshopProgress.Has(WorkshopItem.GreigeCloth) &&
+        WorkshopProgress.Has(WorkshopItem.DyedCloth) && WorkshopProgress.Has(WorkshopItem.Shuttle);
 
     internal static void CompleteFeeding()
     {
@@ -63,12 +63,14 @@ internal static class WorkshopWordRules
     {
         if (!AutumnLevelState.HasLoomRepaired || !WorkshopProgress.Has(WorkshopItem.Shuttle)) return;
         WorkshopProgress.MarkStep(Woven);
-        WorkshopProgress.Award(WorkshopItem.RawSilkCloth);
+        WorkshopProgress.Award(WorkshopItem.GreigeCloth);
     }
 
     internal static void CompletePattern()
     {
-        if (CanPattern) WorkshopProgress.MarkStep(Patterned);
+        if (!CanPattern) return;
+        WorkshopProgress.MarkStep(Patterned);
+        WorkshopProgress.Award(WorkshopItem.RawSilkCloth);
     }
 }
 

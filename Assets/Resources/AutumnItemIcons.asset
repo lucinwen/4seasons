@@ -17,3 +17,4 @@ MonoBehaviour:
   cake: {fileID: 21300000, guid: 459119644843c504b8c35d6183a6f003, type: 3}
   shuttle: {fileID: 21300000, guid: 4f58d745d6fc0f0428234cd22644f6d7, type: 3}
   statue: {fileID: 21300000, guid: 3f298f2e8c68f144c8038cc72d8ff97a, type: 3}
+  repairedLoom: {fileID: 21300000, guid: c51950095f2604b47aeea29468ae3f3d, type: 3}

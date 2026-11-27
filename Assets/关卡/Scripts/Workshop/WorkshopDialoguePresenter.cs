@@ -36,8 +36,8 @@ internal sealed class WorkshopDialoguePresenter : MonoBehaviour
     private static readonly Rect[] NpcCrops =
     {
         CropFromTop(176, 243, 590, 590, 941, 1672),
-        CropFromTop(117, 0, 220, 220, 444, 444),
         CropFromTop(108, 110, 710, 710, 941, 1672),
+        CropFromTop(117, 0, 220, 220, 444, 444),
         CropFromTop(102, 0, 225, 225, 443, 443),
     };
 
@@ -224,12 +224,10 @@ internal sealed class WorkshopDialoguePresenter : MonoBehaviour
     {
         switch (name)
         {
-            case "蚕房师傅":
-            case "蚕房掌事": return WorkshopSeason.Spring;
+            case "蚕桑师傅": return WorkshopSeason.Spring;
             case "缫丝师傅": return WorkshopSeason.Summer;
-            case "织造师傅": return WorkshopSeason.Autumn;
-            case "缝衣师傅":
-            case "染整师傅": return WorkshopSeason.Winter;
+            case "织染师傅": return WorkshopSeason.Autumn;
+            case "裁衣师傅": return WorkshopSeason.Winter;
             default: return null;
         }
     }
