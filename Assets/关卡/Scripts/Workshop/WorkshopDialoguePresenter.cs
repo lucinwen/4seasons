@@ -228,6 +228,7 @@ internal sealed class WorkshopDialoguePresenter : MonoBehaviour
             case "蚕房掌事": return WorkshopSeason.Spring;
             case "缫丝师傅": return WorkshopSeason.Summer;
             case "织造师傅": return WorkshopSeason.Autumn;
+            case "缝衣师傅":
             case "染整师傅": return WorkshopSeason.Winter;
             default: return null;
         }

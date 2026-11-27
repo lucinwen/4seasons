@@ -85,7 +85,9 @@ internal sealed partial class WorkshopObservationView
         runResult = null;
         earnedRewardThisRun = false;
         stampCurrentResult = false;
-        if (!readOnly && (IsSeasonGame(id) || IsDirectDyeing))
+        if (IsWinterPreparation)
+            PrepareChallenge(0);
+        else if (!readOnly && (IsSeasonGame(id) || IsDirectDyeing))
             PrepareChallenge((WorkshopProgress.SeasonalOrderEnabled ? HasOrderWork(id) : BestWork(id, 0) != null) ? 1 : 0);
     }
 
@@ -199,7 +201,7 @@ internal sealed partial class WorkshopObservationView
 
     private Button DrawChallengeControls()
     {
-        if (observation == WorkshopObservation.MangzhongCocoon || IsDirectDyeing)
+        if (observation == WorkshopObservation.MangzhongCocoon || IsDirectDyeing || IsWinterPreparation)
             return null;
         int next = 1 - ChallengeVariant;
         bool canSwitch = BestWork(observation, 0) != null;

@@ -115,6 +115,9 @@ internal sealed partial class WorkshopObservationView
     {
         switch (observation)
         {
+            case WorkshopObservation.XiaoxueTailoring:
+                ResetWinterCutting();
+                break;
             case WorkshopObservation.LidongDye:
                 Array.Clear(winterDyeDepth, 0, winterDyeDepth.Length);
                 Array.Clear(winterDyeAccepted, 0, winterDyeAccepted.Length);

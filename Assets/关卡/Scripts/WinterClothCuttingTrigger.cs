@@ -2,7 +2,7 @@ using UnityEngine;
 using Qingming.LevelBackground;
 
 /// <summary>
-/// 冬季裁衣台按当前进度进入剪帛、纸样、缝衣或试衣，已完成工序不必重做。
+/// 冬季裁衣台按当前进度进入晾布排料、剪帛、纸样、缝衣或试衣。
 /// </summary>
 public class WinterClothCuttingTrigger : MonoBehaviour
 {
@@ -21,14 +21,18 @@ public class WinterClothCuttingTrigger : MonoBehaviour
     public string noClothMessage = "请先完成染色，并选好自己喜欢的衣服颜色。";
 
     private FloatingActionButton _floatBtn;
+    private FloatingActionButton _replayButton;
     private Transform _player;
     private bool _shown;
 
     private void Awake()
     {
         _floatBtn = gameObject.AddComponent<FloatingActionButton>();
-        _floatBtn.Configure("立冬小雪 · 剪帛", buttonOffset, OnStartCuttingClicked);
+        _floatBtn.Configure(ActionLabel, buttonOffset, OnStartCuttingClicked);
         _floatBtn.SetOpacity(buttonOpacity);
+        _replayButton = gameObject.AddComponent<FloatingActionButton>();
+        _replayButton.Configure("重玩晾布排料", buttonOffset + Vector3.up * .85f, OnReplayPreparationClicked);
+        _replayButton.SetOpacity(buttonOpacity);
         WorkshopPickupGlow.Bind(gameObject, () => WinterLevelState.HasDyedCloth &&
             WorkshopWordRules.WinterStage != WorkshopWinterStage.Complete);
     }
@@ -44,16 +48,15 @@ public class WinterClothCuttingTrigger : MonoBehaviour
 
         if (WorkshopQuestGuide.BlocksWorldInput || WorkshopQuestGuide.IsWorldOverlayActive)
         {
-            if (_shown)
-            {
-                _shown = false;
-                _floatBtn.Hide();
-            }
+            HideActions();
             return;
         }
 
         _floatBtn.SetText(ActionLabel);
         bool inRange = Vector2.Distance(_player.position, transform.position) <= triggerDistance;
+        bool canReplay = inRange && WorkshopProgress.Has(WorkshopItem.DyedCloth) && WorkshopProgress.Has(WorkshopItem.CutPieces);
+        if (canReplay && !_replayButton.IsVisible) _replayButton.Show();
+        else if (!canReplay && _replayButton.IsVisible) _replayButton.Hide();
         if (inRange == _shown) return;
 
         _shown = inRange;
@@ -70,6 +73,7 @@ public class WinterClothCuttingTrigger : MonoBehaviour
         {
             switch (WorkshopWordRules.WinterStage)
             {
+                case WorkshopWinterStage.Preparing: return "小雪 · 晾布排料";
                 case WorkshopWinterStage.Cutting: return "立冬小雪 · 剪帛";
                 case WorkshopWinterStage.Fitting: return "小雪 · 量体裁衣";
                 case WorkshopWinterStage.Needle: return "缝衣前先取针";
@@ -87,12 +91,14 @@ public class WinterClothCuttingTrigger : MonoBehaviour
             return;
         }
 
-        _floatBtn.Hide();
-        _shown = false;
+        HideActions();
         switch (WorkshopWordRules.WinterStage)
         {
+            case WorkshopWinterStage.Preparing:
+                WinterNpcDialogue.IntroduceTailoring(() => WorkshopObservationView.ShowWinterPreparation(OpenCutting));
+                break;
             case WorkshopWinterStage.Cutting:
-                WinterNpcDialogue.IntroduceTailoring(OpenXiaoxue);
+                OpenCutting();
                 break;
             case WorkshopWinterStage.Fitting:
                 WorkshopSimpleGames.Show(WorkshopSimpleGame.Fitting, ContinueToSewing);
@@ -115,10 +121,24 @@ public class WinterClothCuttingTrigger : MonoBehaviour
             WorkshopTailor.Show(null, null);
     }
 
-    private static void OpenXiaoxue() => MiniGameOverlay.Show("ClothCutting");
+    private static void OpenCutting() => MiniGameOverlay.Show("ClothCutting");
+
+    private void OnReplayPreparationClicked()
+    {
+        HideActions();
+        WorkshopObservationView.ShowWinterPreparation();
+    }
+
+    private void HideActions()
+    {
+        if (_shown) _floatBtn.Hide();
+        if (_replayButton.IsVisible) _replayButton.Hide();
+        _shown = false;
+    }
 
     private void OnDestroy()
     {
         if (_floatBtn != null) _floatBtn.Hide();
+        if (_replayButton != null) _replayButton.Hide();
     }
 }

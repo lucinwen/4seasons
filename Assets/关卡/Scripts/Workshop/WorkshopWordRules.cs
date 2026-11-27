@@ -1,6 +1,6 @@
 using UnityEngine;
 
-internal enum WorkshopWinterStage { Cutting, Fitting, Needle, Sewing, Complete }
+internal enum WorkshopWinterStage { Preparing, Cutting, Fitting, Needle, Sewing, Complete }
 
 /// <summary>The simplified, permanent-inventory chapter flow specified in the Word plan.</summary>
 internal static class WorkshopWordRules
@@ -10,13 +10,18 @@ internal static class WorkshopWordRules
     internal const string Sorted = "summer.cocoon-sorted";
     internal const string Woven = "autumn.bailu.woven";
     internal const string Patterned = "autumn.hanlu.patterned";
+    internal const string WinterPrepared = "winter.xiaoxue.prepared";
     internal const string Fitted = "winter.xiaoxue.fitted";
+
+    internal static bool HasWinterPreparation => WorkshopProgress.HasStep(WinterPrepared) ||
+        WorkshopProgress.Has(WorkshopItem.CutPieces);
 
     internal static WorkshopWinterStage WinterStage
     {
         get
         {
             if (WorkshopProgress.IsComplete(WorkshopSeason.Winter)) return WorkshopWinterStage.Complete;
+            if (!HasWinterPreparation) return WorkshopWinterStage.Preparing;
             if (!WorkshopProgress.Has(WorkshopItem.CutPieces)) return WorkshopWinterStage.Cutting;
             if (!WorkshopProgress.HasStep(Fitted)) return WorkshopWinterStage.Fitting;
             return WorkshopProgress.Has(WorkshopItem.Needle) ? WorkshopWinterStage.Sewing : WorkshopWinterStage.Needle;

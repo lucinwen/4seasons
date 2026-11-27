@@ -41,7 +41,7 @@ public static class WorkshopWordChecks
             Load("{}");
             AutumnLevelState.RestoreProgress();
             WorkshopProgress.StartNewGame();
-            Require(WorkshopWordRules.WinterStage == WorkshopWinterStage.Cutting, "winter starts at cutting");
+            Require(WorkshopWordRules.WinterStage == WorkshopWinterStage.Preparing, "winter starts at cloth preparation");
             SpringSummerNpcDialogue.RecordHarvestedLeaves(false);
             Require(WorkshopProgress.Has(WorkshopItem.MulberryLeaf) && !WorkshopProgress.Has(WorkshopItem.Silkworm), "harvest grants only leaves");
             Require(SpringSummerNpcDialogue.CanWash, "harvest unlocks bath without silkworm circular dependency");
@@ -89,6 +89,10 @@ public static class WorkshopWordChecks
             Require(WorkshopProgress.CanSubmit(WorkshopSeason.Autumn) && WorkshopProgress.Submit(WorkshopSeason.Autumn), "autumn dye-pattern handoff");
             Require(WorkshopProgress.Has(WorkshopItem.RawSilkCloth) && WorkshopProgress.Has(WorkshopItem.Shuttle) && WorkshopProgress.Has(WorkshopItem.DyedCloth), "autumn interactions and handoff preserve cloth and shuttle");
 
+            WorkshopProgress.MarkStep(WorkshopWordRules.WinterPrepared);
+            WorkshopProgress.ResetSession();
+            Require(WorkshopWordRules.WinterStage == WorkshopWinterStage.Cutting && !WorkshopProgress.Has(WorkshopItem.CutPieces),
+                "cloth preparation survives reload and leads to scissors without awarding pieces");
             WorkshopProgress.Award(WorkshopItem.CutPieces);
             Require(WorkshopWordRules.WinterStage == WorkshopWinterStage.Fitting, "cut pieces lead to pattern fitting");
             Require(!WorkshopProgress.CanSubmit(WorkshopSeason.Winter), "fitting required after cutting");
@@ -108,6 +112,9 @@ public static class WorkshopWordChecks
             Require(!WorkshopProgress.Has(WorkshopItem.Silkworm), "old harvest save is not auto-fed");
             Load("{\"items\":7,\"steps\":[\"spring.guyu.batchFed\"]}");
             Require(WorkshopProgress.CanSubmit(WorkshopSeason.Spring), "old real feeding completion remains valid");
+            Load("{\"items\":1536}");
+            Require(WorkshopWordRules.WinterStage == WorkshopWinterStage.Fitting,
+                "legacy cut pieces skip the new preparation requirement");
             Load("{\"items\":4095,\"chapters\":15,\"dyedColor\":\"紫色\"}");
             Require(Enum.GetValues(typeof(WorkshopSeason)).Cast<WorkshopSeason>().All(WorkshopProgress.IsComplete), "completed legacy chapters remain complete");
             Require(WorkshopProgress.Has(WorkshopItem.DyedCloth), "legacy inventory preserved");

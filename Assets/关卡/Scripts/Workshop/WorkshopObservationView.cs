@@ -64,8 +64,8 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         new Definition(WorkshopSeason.Autumn, "winter.lidong", "秋分", "染坊里的色样", "染色", "两阶染色",
             "先采集天然染材并研磨，选好染料，将一块素绸拖入染缸。", "生坯绸 → 研磨与染色 → 寒露攀花",
             "调节染缸浓度，轻蘸或浸染，对上两阶颜色后确认。"),
-        new Definition(WorkshopSeason.Winter, "winter.xiaoxue", "小雪", "从试染到成衣", "看成衣工序", "排料留布",
-            "小雪时冷空气更活跃。逢冷雨先避雨晾布，做夹衣还得留里襟料。", "染绸晾干 → 裁面片与里襟 → 主厅缝衣",
+        new Definition(WorkshopSeason.Winter, "winter.xiaoxue", "小雪", "从试染到成衣", "看成衣工序", "晾布排料",
+            "小雪时冷空气更活跃。逢冷雨先避雨晾布，做夹衣还得留里襟料。", "晾布 → 排料 → 剪帛",
             "先找避雨又通风的晾架。布干后再顺纹摆衣样，给里襟留一块整布。")
     };
 
@@ -98,6 +98,8 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     private RectTransform infoPanel;
     private WorkshopObservation observation;
     private Action onClosed;
+    private Action onWinterPrepared;
+    private bool IsWinterPreparation => !readOnly && observation == WorkshopObservation.XiaoxueTailoring;
     private GameObject priorSelection;
     private float priorTimeScale;
     private bool readOnly;
@@ -110,7 +112,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
     internal static bool IsOpen => current != null;
     internal static bool BlocksWorldInput => IsOpen || lastClosedFrame == Time.frameCount;
     internal static WorkshopObservation? ActiveGame => current != null && !current.readOnly &&
-        IsSeasonGame(current.observation) ? current.observation : (WorkshopObservation?)null;
+        (IsSeasonGame(current.observation) || current.IsWinterPreparation) ? current.observation : (WorkshopObservation?)null;
 
     internal static WorkshopSeason Season(WorkshopObservation id) => Definitions[(int)id].Season;
     internal static string RecordTitle(WorkshopObservation id) => Definitions[(int)id].Title;
@@ -188,7 +190,15 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
             Open(id, onClosed, true);
     }
 
-    private static void Open(WorkshopObservation id, Action onClosed, bool readOnly, Action garmentDelivery = null,
+    internal static void ShowWinterPreparation(Action onPrepared = null)
+    {
+        if (!WorkshopProgress.Has(WorkshopItem.DyedCloth)) return;
+        if (onPrepared != null && WorkshopWordRules.WinterStage != WorkshopWinterStage.Preparing) return;
+        if (onPrepared == null && !WorkshopProgress.Has(WorkshopItem.CutPieces)) return;
+        Open(WorkshopObservation.XiaoxueTailoring, null, false, onPrepared);
+    }
+
+    private static void Open(WorkshopObservation id, Action onClosed, bool readOnly, Action onWinterPrepared = null,
         DyeColor? directColor = null, DyeRun directRun = null)
     {
         if (IsOpen) return;
@@ -200,6 +210,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         current = root.gameObject.AddComponent<WorkshopObservationView>();
         current.frame = root;
         current.onClosed = onClosed;
+        current.onWinterPrepared = onWinterPrepared;
         current.directDyeColor = directColor;
         current.directDyeRun = directRun;
         current.readOnly = readOnly;
@@ -297,7 +308,7 @@ internal sealed partial class WorkshopObservationView : MonoBehaviour
         if (readOnly)
             WorkshopUi.Label(page, "Record Mode", new Rect(1294, 68, 412, 39),
                 IsSeasonGame(observation) ? "已通关 · 残页已收集" : "织录 · 已观察", 31, accent, TextAnchor.MiddleRight);
-        else if (ChallengeIsActive)
+        else if (ChallengeIsActive && !IsWinterPreparation)
             DrawChallengeStatus(accent);
         WorkshopUi.Fill(page, "Heading Rule", new Rect(28, 144, 1688, 2), WorkshopUi.Line);
         if (showBriefing)

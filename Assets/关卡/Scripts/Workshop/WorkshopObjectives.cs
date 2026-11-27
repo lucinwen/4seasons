@@ -17,7 +17,7 @@ internal static class WorkshopObjectives
             case WorkshopSeason.Spring: goal = "清明拿篮采桑，谷雨浴蚕，再拖叶喂蚕。"; break;
             case WorkshopSeason.Summer: goal = "立夏下簇，小满寻线轴并缫丝，芒种夏至接水管备料。"; break;
             case WorkshopSeason.Autumn: goal = "立秋采染材，白露织造，秋分染色与秋社，寒露攀花。"; break;
-            case WorkshopSeason.Winter: goal = "用秋季染布剪帛、量体裁衣，找到针后选款缝衣。"; break;
+            case WorkshopSeason.Winter: goal = "将秋季染布晾干排料，再剪帛、量体裁衣，找到针后选款缝衣。"; break;
             default: goal = "收集本季的三件关键道具。"; break;
         }
 
@@ -59,8 +59,8 @@ internal static class WorkshopObjectives
                 return ("染布", "秋季采染材并研磨，再到染缸选择颜色。",
                     "拾锄头进染料园找染材，回来研磨。选好染料，把一块素绸拖进染缸，染好后带回织机攀花。");
             case WorkshopItem.CutPieces:
-                return ("裁衣", "染好布后，在裁衣台剪出三片衣料。",
-                    "染好布后，走近裁衣台点「开始裁衣」。点击剪刀，沿布上的线拖动，剪出三片衣料。");
+                return ("裁衣", "在裁衣台晾布排料，再剪出三片衣料。",
+                    "带秋季染布到裁衣台。晾干后摆齐前片、后片和袖片，留出整块余布。完成排料后点击剪刀，沿虚线拖动，剪出三片衣料。");
             case WorkshopItem.Needle:
                 return ("领针", "点击场景里的缝衣针并收下。",
                     "找到场景中的缝衣针，点击后选择「收下」。");

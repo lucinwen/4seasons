@@ -386,6 +386,13 @@ public static class SpringSceneRestore
         new StepCollider("1 (18)", new Vector3(-2.27f, -0.94f, 0f),      new Vector2(1.6426249f, 0.093405604f),new Vector2(-11.661526f, -0.055671632f)),
         new StepCollider("1 (19)", new Vector3(-2.27f, -0.94f, 0f),      new Vector2(2.1842537f, 0.17130071f),new Vector2(-11.695606f, -0.18993232f)),
         new StepCollider("1 (20)", new Vector3(-2.27f, -0.94f, 0f),      new Vector2(1.1187763f, 0.13142693f),new Vector2(-11.733344f, 0.026707888f)),
+        new StepCollider("木桩 01", new Vector3(-9.456943f, -1.95286865f, 0f), new Vector2(0.48f, 0.95f), Vector2.zero),
+        new StepCollider("木桩 02", new Vector3(-8.596943f, -2.12786865f, 0f), new Vector2(0.49f, 0.60f), Vector2.zero),
+        new StepCollider("木桩 03", new Vector3(-7.506943f, -2.09286865f, 0f), new Vector2(0.48f, 0.69f), Vector2.zero),
+        new StepCollider("木桩 04", new Vector3(-6.646943f, -1.82786865f, 0f), new Vector2(0.48f, 0.74f), Vector2.zero),
+        new StepCollider("木桩 05", new Vector3(-5.516943f, -2.10786865f, 0f), new Vector2(0.49f, 0.66f), Vector2.zero),
+        new StepCollider("木桩 06", new Vector3(-4.436943f, -1.95286865f, 0f), new Vector2(0.48f, 0.95f), Vector2.zero),
+        new StepCollider("木桩 07", new Vector3(-3.486943f, -2.11286865f, 0f), new Vector2(0.49f, 0.65f), Vector2.zero),
     };
 
     private static void CreateStepColliders()

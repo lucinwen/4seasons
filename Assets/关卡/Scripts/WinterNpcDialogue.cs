@@ -27,7 +27,8 @@ public class WinterNpcDialogue : MonoBehaviour
             return;
         }
 
-        if (WinterLevelState.HasDyedCloth && !WorkshopProgress.Has(WorkshopItem.CutPieces) &&
+        var stage = WorkshopWordRules.WinterStage;
+        if (WinterLevelState.HasDyedCloth && stage == WorkshopWinterStage.Preparing &&
             !WorkshopProgress.HasStep(TailoringIntro))
         {
             IntroduceTailoring();
@@ -35,9 +36,10 @@ public class WinterNpcDialogue : MonoBehaviour
         }
 
         string next;
-        switch (WorkshopWordRules.WinterStage)
+        switch (stage)
         {
-            case WorkshopWinterStage.Cutting: next = "带秋季染布到裁衣台，沿虚线剪出前衣、后衣和衣袖。"; break;
+            case WorkshopWinterStage.Preparing: next = "带秋季染布到裁衣台，先晾干，再摆齐前片、后片和袖片，留一块完整的余布。"; break;
+            case WorkshopWinterStage.Cutting: next = "染布已经晾好、衣样也排齐了。到裁衣台沿虚线剪出前衣、后衣和衣袖。"; break;
             case WorkshopWinterStage.Fitting: next = "衣片已经剪好。再点裁衣台，将三张纸样拖到同名轮廓，确认版型。"; break;
             case WorkshopWinterStage.Needle: next = "版型已经确认。收下缝素堂里发光的缝衣针，回裁衣台选款缝衣。"; break;
             default: next = "材料与版型都备齐了。直接在裁衣台选择喜欢的款式，拼合三块衣片，缝好后去试衣。"; break;

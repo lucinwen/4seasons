@@ -119,8 +119,13 @@ public sealed partial class WorkshopWordPreview
         yield return Capture("55-summer-reeling-immersive");
         var rail=(RectTransform)reel.transform.Find("Guide Rail");
         var pointer=new PointerEventData(EventSystem.current){button=PointerEventData.InputButton.Left};
-        Action<float> place = x => pointer.position=RectTransformUtility.WorldToScreenPoint(null,rail.TransformPoint(new Vector3(21+x*222,-38,0)));
-        place(.02f);reel.OnBeginDrag(pointer);
+        Action<int> place = band =>
+        {
+            var wrap = (RectTransform)reel.transform.Find("Silk Band " + band);
+            var position = rail.InverseTransformPoint(wrap.TransformPoint(wrap.rect.center));
+            pointer.position = RectTransformUtility.WorldToScreenPoint(null, rail.TransformPoint(new Vector3(position.x, -38f, 0f)));
+        };
+        place(0);reel.OnBeginDrag(pointer);
         float initialAngle=reel.WheelAngle;
         yield return new WaitForSecondsRealtime(2.5f);
         RequireImmersive(reel.Progress>0 && reel.Progress<.1f && !reel.Complete,"Stationary guide completed more than one band");
@@ -131,15 +136,24 @@ public sealed partial class WorkshopWordPreview
         RequireImmersive(!WorkshopProgress.HasStep(WorkshopWordRules.Reeled) && Time.timeScale==1,"Cancelled winding granted completion");
         WorkshopSimpleGames.Show(WorkshopSimpleGame.Reeling);yield return null;
         reel=UnityEngine.Object.FindObjectOfType<WorkshopReelingWork>();rail=(RectTransform)reel.transform.Find("Guide Rail");
-        place(.02f);reel.OnBeginDrag(pointer);
-        for(int band=0;band<12;band++)
+        place(11);reel.OnBeginDrag(pointer);
+        int[] windingOrder = { 11, 9, 7, 5, 3, 1, 10, 8, 4, 2, 0 };
+        foreach (int band in windingOrder)
         {
-            place((band+.5f)/12);reel.OnDrag(pointer);
+            place(band);reel.OnDrag(pointer);
             yield return new WaitForSecondsRealtime(1.9f);
-            if(band==5)yield return Capture("57-summer-reeling-half-full");
+            if(band==1)yield return Capture("57-summer-reeling-half-full");
         }
+        RequireImmersive(!reel.Complete && Mathf.Approximately(reel.Progress, 11f / 12f), "Skipped winding band should still need filling");
+        var marker = (RectTransform)rail.Find("Next Winding Band");
+        place(6);
+        RequireImmersive(marker.gameObject.activeInHierarchy &&
+            Mathf.Abs(RectTransformUtility.WorldToScreenPoint(null, marker.TransformPoint(marker.rect.center)).x - pointer.position.x) < 1f,
+            "Winding marker did not point to the skipped band");
+        reel.OnDrag(pointer);
+        yield return new WaitForSecondsRealtime(1.9f);
         reel.OnEndDrag(pointer);
-        RequireImmersive(reel.Complete && WorkshopProgress.HasStep(WorkshopWordRules.Reeled),"Even winding did not complete and save");
+        RequireImmersive(reel.Complete && WorkshopProgress.HasStep(WorkshopWordRules.Reeled),"Out-of-order winding did not complete and save");
         yield return Capture("58-summer-reeling-complete");
         CloseWorktable();yield return null;
         MiniGameOverlay.Show("CocoonMatch");yield return new WaitForSecondsRealtime(1.3f);

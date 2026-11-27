@@ -94,7 +94,7 @@ internal sealed partial class WorkshopObservationView
         winterCutSelected = winterCutTurn = winterCutStains = 0;
         winterCutHover = null;
         winterCutWarning = false;
-        winterCutOrderCloth = CanCutOrderCloth;
+        winterCutOrderCloth = IsWinterPreparation || CanCutOrderCloth;
         winterCutColdRain = winterCutOrderCloth || ChallengeVariant == 0;
         winterCutMoisture = winterCutColdRain ? 2 : 1;
         winterCutFeedback = "染绸还有潮气。先选一处晾架。";
@@ -175,10 +175,11 @@ internal sealed partial class WorkshopObservationView
         }
         else
         {
-            string goal = $"摆齐前片、后片和袖片，给里襟留至少 2×{WinterRemnantLongSide} 的整块净布。";
-            if (PreservesWinterGrain(0)) goal += "前后片须顺着绸面的经纹，只能掉头。";
-            Copy("小雪备衣 · 先排料", "先点一张衣样，再点布面摆下。" + goal + "衣样可以重摆。");
-            Act("Xiaoxue Snip", "确认下剪", CutWinterCloth, true);
+            string goal = $"避开布疵，给里襟留至少 2×{WinterRemnantLongSide} 格整布。";
+            if (PreservesWinterGrain(0)) goal += "前后片只能顺纹掉头。";
+            Copy("小雪备衣 · 先排料", "拖放三片衣样，或选衣样再点格子。" + goal);
+            string confirm = onWinterPrepared != null ? "确认排料，去剪帛" : IsWinterPreparation ? "确认排料" : "确认下剪";
+            Act("Xiaoxue Snip", confirm, CutWinterCloth, true);
             var shears = GameArtSprite("TailorShears");
             if (shears != null)
                 WorkshopUi.Picture(infoPanel.Find("Xiaoxue Snip"), "Tailor Shears", new Rect(21, 7, 76, 47), shears);
@@ -192,28 +193,69 @@ internal sealed partial class WorkshopObservationView
     {
         Sprite rackArt = GameArtSprite("DyeDryRack");
         Sprite cloth = GameArtSprite("CuttingCloth");
+        Color dampTint = Color.Lerp(winterCutClothBase, new Color32(128, 147, 154, 255), winterCutMoisture * .21f);
         string[] names = { "临院透风", "背雨 · 闷角", "背雨 · 通风" };
         string[] conditions = { winterCutColdRain ? "雨能打进来" : "天晴 · 有风", "屋檐遮雨，空气滞留", "远离雨脚，有过风" };
         for (int i = 0; i < names.Length; i++)
         {
             int rack = i;
-            var slot = new Rect(47 + i * 360, 178, 347, 325);
+            var slot = WinterRackBounds(i);
             IllustratedGameCard(art, "Xiaoxue Drying Station " + i, slot, GameArtSprite("WoodDesk"), WinterWorktop);
             WorkshopUi.Picture(art, "Xiaoxue Rack " + i, new Rect(slot.x + 30, slot.y + 31, 285, 144), rackArt);
             GameArtSurface(art, "Xiaoxue Damp Cloth " + i, new Rect(slot.x + 106, slot.y + 85, 134, 93),
-                cloth, Color.Lerp(winterCutClothBase, new Color32(128, 147, 154, 255), winterCutMoisture * .21f));
+                cloth, dampTint);
             Tag("Xiaoxue Rack Conditions " + i, conditions[i], new Rect(slot.x + 12, slot.y + 185, 323, 43),
                 i == 0 && winterCutColdRain);
             WinterControl(art, "Xiaoxue Rack Choice " + i, new Rect(slot.x + 29, slot.y + 248, 288, 51),
                 names[i], () => TryDryWinterCloth(rack));
         }
 
+        DrawWinterRackDrag(cloth, dampTint, names.Length);
         Copy(winterCutColdRain ? "小雪 · 冷雨晾布" : "小雪 · 晴间晾布",
-            (winterCutColdRain
-                ? "这单赶上小雪冷雨。露天会再淋湿，找一处避雨又通风的架子。"
-                : "这单小雪时刚放晴，院边架也能晾。挑空气流动的位置。") +
-            $"\n\n潮气还剩 {winterCutMoisture} 格。\n{winterCutFeedback}", winterCutWarning);
+            (winterCutColdRain ? "冷雨会打湿布，找个避雨通风的架子。" : "小雪刚放晴，挑个通风的架子。") +
+            $"\n把湿布拖上晾架，也可点选。\n潮气 {winterCutMoisture} 格。{winterCutFeedback}", winterCutWarning);
         DrawWinterCutMaterial();
+    }
+
+    private static Rect WinterRackBounds(int rack) => new Rect(47 + rack * 360, 178, 347, 325);
+
+    private void DrawWinterRackDrag(Sprite cloth, Color tint, int rackCount)
+    {
+        var source = GameArtSurface(art, "Xiaoxue Cloth In Hand", new Rect(486, 29, 188, 105), cloth, tint);
+        source.raycastTarget = true;
+        WorkshopUi.Label(source.transform, "Wet Cloth Label", new Rect(0, 0, 188, 105), "湿布", 25,
+            WorkshopUi.Ink, TextAnchor.MiddleCenter);
+        var ghost = GameArtSurface(art, "Moving Wet Cloth", new Rect(0, 0, 130, 84), cloth, tint);
+        ghost.gameObject.SetActive(false);
+        var events = source.gameObject.AddComponent<EventTrigger>();
+
+        void MoveCloth(BaseEventData data)
+        {
+            var pointer = (PointerEventData)data;
+            if (pointer.button != PointerEventData.InputButton.Left || !TryReadWinterCutPointer(pointer, out var position)) return;
+
+            ghost.rectTransform.anchoredPosition = new Vector2(position.x - 65, 42 - position.y);
+            ghost.gameObject.SetActive(true);
+        }
+
+        BindWinterEvent(events, EventTriggerType.BeginDrag, MoveCloth);
+        BindWinterEvent(events, EventTriggerType.Drag, MoveCloth);
+        BindWinterEvent(events, EventTriggerType.EndDrag, data =>
+        {
+            var pointer = (PointerEventData)data;
+            if (pointer.button != PointerEventData.InputButton.Left) return;
+
+            ghost.gameObject.SetActive(false);
+            if (!TryReadWinterCutPointer(pointer, out var position)) return;
+
+            for (int rack = 0; rack < rackCount; rack++)
+            {
+                if (!WinterRackBounds(rack).Contains(position)) continue;
+
+                TryDryWinterCloth(rack);
+                break;
+            }
+        });
     }
 
     private void TryDryWinterCloth(int rack)
@@ -281,6 +323,7 @@ internal sealed partial class WorkshopObservationView
             var button = WorkshopUi.Button(card, "Xiaoxue Piece " + i, new Rect(0, 0, bounds.width, bounds.height), "",
                 () => SelectWinterPattern(piece), Color.clear);
             RegisterButton(button);
+            BindWinterPatternDrag(button.gameObject, piece);
         }
 
         if (!GameComplete)
@@ -344,8 +387,53 @@ internal sealed partial class WorkshopObservationView
     {
         winterCutSelected = piece;
         winterCutTurn = winterCutAngles[piece];
-        SetWinterCutMessage(winterCutMasks[piece] == 0 ? "移动到布上预览，点击落样。" : "原位置仍在，选到可用新位置后再移过去。",
+        SetWinterCutMessage(winterCutMasks[piece] == 0 ? "拖到布面摆放，也可以点一下格子。" : "原位置仍在，选到可用新位置后再移过去。",
             WorkshopAudioFeedback.Click);
+    }
+
+    private void BindWinterPatternDrag(GameObject source, int piece)
+    {
+        var events = source.AddComponent<EventTrigger>();
+        BindWinterEvent(events, EventTriggerType.BeginDrag, data =>
+        {
+            var pointer = (PointerEventData)data;
+            if (pointer.button != PointerEventData.InputButton.Left) return;
+
+            pointer.eligibleForClick = false;
+            if (winterCutSelected != piece) SelectWinterPattern(piece);
+            SetWinterPreview(WinterCutCellAt(pointer));
+        });
+        BindWinterEvent(events, EventTriggerType.Drag, data =>
+        {
+            var pointer = (PointerEventData)data;
+            if (pointer.button == PointerEventData.InputButton.Left)
+                SetWinterPreview(WinterCutCellAt(pointer));
+        });
+        BindWinterEvent(events, EventTriggerType.EndDrag, data =>
+        {
+            var pointer = (PointerEventData)data;
+            if (pointer.button != PointerEventData.InputButton.Left) return;
+
+            Vector2Int? cell = WinterCutCellAt(pointer);
+            SetWinterPreview(cell);
+            if (cell.HasValue) PlaceWinterPattern(cell.Value);
+        });
+    }
+
+    private Vector2Int? WinterCutCellAt(PointerEventData pointer)
+    {
+        if (!TryReadWinterCutPointer(pointer, out var position)) return null;
+
+        Vector2 offset = (position - WinterClothOrigin) / WinterClothTile;
+        var cell = new Vector2Int(Mathf.FloorToInt(offset.x), Mathf.FloorToInt(offset.y));
+        return InsideWinterCloth(cell) ? cell : (Vector2Int?)null;
+    }
+
+    private bool TryReadWinterCutPointer(PointerEventData pointer, out Vector2 position)
+    {
+        bool found = RectTransformUtility.ScreenPointToLocalPointInRectangle(art, pointer.position, pointer.pressEventCamera, out position);
+        position.y = -position.y;
+        return found;
     }
 
     private void RotateWinterPattern()
@@ -425,6 +513,16 @@ internal sealed partial class WorkshopObservationView
         if (usable.width == 0)
         {
             SetWinterCutMessage($"衣片已齐，整布还不到 2×{WinterRemnantLongSide}。试着挪一片留出空位。", WorkshopAudioFeedback.Notice, true);
+            return;
+        }
+
+        if (IsWinterPreparation)
+        {
+            var openCutting = onWinterPrepared;
+            if (openCutting != null) WorkshopProgress.MarkStep(WorkshopWordRules.WinterPrepared);
+            WorkshopAudioFeedback.Confirm();
+            Close();
+            openCutting?.Invoke();
             return;
         }
 

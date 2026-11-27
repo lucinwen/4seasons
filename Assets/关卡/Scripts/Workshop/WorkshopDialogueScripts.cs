@@ -126,8 +126,8 @@ internal static class WorkshopDialogueScripts
     // Winter
     internal static readonly WorkshopDialogueLine[] WinterBriefing =
     {
-        new WorkshopDialogueLine("工坊掌事", "秋季的染布已经备好。冬季在缝素堂学习剪帛、量体裁衣和缝衣。"),
-        new WorkshopDialogueLine("工坊掌事", "先沿虚线剪衣片，再拖纸样确认版型。备好缝衣针后选款缝制，到锦衣堂试衣留念。"),
+        new WorkshopDialogueLine("工坊掌事", "带上秋季的染布，到缝素堂晾干，再把前片、后片和袖片排在布上。"),
+        new WorkshopDialogueLine("工坊掌事", "排好后沿虚线剪帛，再拖纸样确认版型。备好缝衣针后选款缝制，到锦衣堂试衣留念。"),
     };
 
     internal static readonly WorkshopDialogueLine[] WinterDyeMaterialsIntro =
@@ -165,15 +165,14 @@ internal static class WorkshopDialogueScripts
 
     internal static readonly WorkshopDialogueLine[] WinterTailoringIntro =
     {
-        new WorkshopDialogueLine("缝衣师傅", "秋季染布带来了，现在可以剪帛。"),
-        new WorkshopDialogueLine("缝衣师傅", "沿虚线剪出前衣、后衣和衣袖，再回裁衣台把衣样纸拖到布面上。"),
+        new WorkshopDialogueLine("缝衣师傅", "小雪这天有冷雨。把染布晾在避雨又通风的架子上，干了再排衣样。"),
+        new WorkshopDialogueLine("缝衣师傅", "前片、后片和袖片都要摆上布面，避开布疵，并留一整块布做里襟。排好就可以下剪了。"),
     };
 
     internal static readonly WorkshopDialogueLine[] WinterCuttingIntro =
     {
         new WorkshopDialogueLine("玩家", "师傅，这块布应该从哪里开始裁呀？"),
-        new WorkshopDialogueLine("染整师傅", "先仔细看看样板的形状，再对照布料的位置。"),
-        new WorkshopDialogueLine("染整师傅", "裁剪的时候要注意尺寸，尽量减少浪费。"),
+        new WorkshopDialogueLine("缝衣师傅", "衣样已经排好了。点一下剪刀，再沿着虚线拖动，剪出前衣、后衣和衣袖。"),
     };
 
     internal static readonly WorkshopDialogueLine[] WinterCuttingComplete =

@@ -65,7 +65,10 @@ internal static class WorkshopQuests
             Handoff(WorkshopSeason.Autumn, "交付秋季成果", "提交土地公雕像、梭子、生坯绸，获得素绸。染布带入冬章。")
         },
         new[] {
-            Item(WorkshopItem.CutPieces, "立冬小雪剪帛", "缝素堂裁衣台", "带秋季染布，沿虚线剪出前衣、后衣和衣袖。", () => Has(WorkshopItem.DyedCloth)),
+            new Entry("WinterPreparation", "小雪晾布排料", "缝素堂裁衣台", "晾干染布，摆齐前片、后片和袖片，留一块完整的余布。",
+                () => WorkshopWordRules.HasWinterPreparation, () => Has(WorkshopItem.DyedCloth)),
+            Item(WorkshopItem.CutPieces, "立冬小雪剪帛", "缝素堂裁衣台", "排料完成后，沿虚线剪出前衣、后衣和衣袖。",
+                () => Has(WorkshopItem.DyedCloth) && WorkshopWordRules.HasWinterPreparation),
             new Entry("Fitting", "小雪量体裁衣", "剪帛后再点裁衣台", "把三张衣样纸拖到右侧布面的同名轮廓。", () => Step(WorkshopWordRules.Fitted), () => Has(WorkshopItem.CutPieces)),
             Item(WorkshopItem.Needle, "取得缝衣针", "缝素堂", "点击并收下缝衣针。"),
             new Entry("WinterHandoff", "小雪选款缝衣", "缝素堂裁衣台", "版型确认、缝衣针备好后，在裁衣台选款，拼合三块衣片并缝制。道具保留，也可回工坊交件。", () => WorkshopProgress.IsComplete(WorkshopSeason.Winter), () => WorkshopProgress.CanSubmit(WorkshopSeason.Winter)),

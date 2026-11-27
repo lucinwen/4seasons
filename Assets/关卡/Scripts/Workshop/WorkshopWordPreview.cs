@@ -297,6 +297,8 @@ public sealed partial class WorkshopWordPreview : MonoBehaviour
 
     private static IEnumerator CaptureChapters()
     {
+        const string completionPath = "../WordRevision/chapter-guide-review-complete.txt";
+        File.Delete(completionPath);
         PlayerPrefs.SetString("ShiXu.Workshop.v1", "{\"chapters\":7,\"seasonalOrder\":true,\"steps\":[\"quest.guide.Spring\",\"quest.guide.Summer\",\"quest.guide.Autumn\",\"quest.guide.Winter\"]}");
         WorkshopProgress.ResetSession();
         string[] scenes = { "Level1_Spring", "Level2_Summer", "Level3_Autumn", "Level4_Winter" };
@@ -312,16 +314,34 @@ public sealed partial class WorkshopWordPreview : MonoBehaviour
             var guide = Object.FindObjectOfType<WorkshopChapterGuide>();
             if (guide == null || guide.GetComponentsInChildren<Button>().Length != 3)
                 throw new System.InvalidOperationException("Chapter must retain exactly three buttons: " + season);
-            var art = guide.transform.Find("Chapter Guide · " + WorkshopChapterGuide.Titles[index] + "/Seasonal Wood Frame");
+            string title = WorkshopChapterGuide.Titles[index];
+            var page = guide.transform.Find("Chapter Guide · " + title);
+            var art = page?.Find("Seasonal Wood Frame");
             if (art == null || art.GetComponent<Image>().sprite == null)
                 throw new System.InvalidOperationException("Missing seasonal chapter frame: " + season);
-            var labels = guide.GetComponentsInChildren<Text>();
-            if (labels.Length != 3)
-                throw new System.InvalidOperationException("Chapter must preserve exactly three native button labels: " + season);
-            foreach (var label in labels)
-                if (!string.IsNullOrEmpty(label.text))
-                    throw new System.InvalidOperationException("Chapter must be text-free: " + season + " / " + label.name);
-            yield return Capture((24 + index).ToString() + "-chapter-" + season.ToString().ToLowerInvariant() + "-blank");
+
+            var expectedLabels = new (string path, string text)[]
+            {
+                ("Chapter Title", title),
+                ("Chapter Process", null),
+                ("Chapter Tips", null),
+                ("Chapter Delivery", null),
+                ("Chapter Sources/Action/Label", "阅读相关资料"),
+                ("Close Chapter Guide/Action/Label", "返回"),
+                ("Enter Chapter/Action/Label", "进入关卡")
+            };
+            if (page.GetComponentsInChildren<Text>().Length != expectedLabels.Length)
+                throw new System.InvalidOperationException("Unexpected chapter guide label count: " + season);
+            foreach (var expected in expectedLabels)
+            {
+                var label = page.Find(expected.path)?.GetComponent<Text>();
+                if (label == null || !label.isActiveAndEnabled || label.font != WorkshopArt.WorkshopFont || label.color.a <= 0f ||
+                    string.IsNullOrWhiteSpace(label.text) || (expected.text != null && label.text != expected.text) ||
+                    label.preferredWidth > label.rectTransform.rect.width + 1f ||
+                    label.preferredHeight > label.rectTransform.rect.height + 1f)
+                    throw new System.InvalidOperationException("Chapter guide label is missing or does not fit: " + season + " / " + expected.path);
+            }
+            yield return Capture((24 + index).ToString() + "-chapter-" + season.ToString().ToLowerInvariant() + "-guide");
 
             InvokeWorktableButton("Chapter Sources");
             yield return null;
@@ -340,8 +360,8 @@ public sealed partial class WorkshopWordPreview : MonoBehaviour
             if (!entered || WorkshopChapterGuide.IsOpen)
                 throw new System.InvalidOperationException("Chapter entry callback is incorrect: " + season);
         }
-        Debug.Log("[WordRevision] BLANK CHAPTER UI PASS: no chapter text; four seasonal frames rendered; all three button callbacks passed for every season.");
-        File.WriteAllText("../WordRevision/chapter-blank-review-complete.txt", "Actual Unity frames, 1920x1080. No chapter text. Four seasonal frames; sources, return and entry callbacks verified for all four.\n");
+        Debug.Log("[WordRevision] CHAPTER GUIDE UI PASS: all labels use the workshop pixel font and fit; all three button callbacks passed for every season.");
+        File.WriteAllText(completionPath, "Actual Unity frames, 1920x1080. All four guides use the workshop pixel font and fit; sources, return and entry callbacks passed.\n");
         UnityEditor.EditorApplication.isPlaying = false;
     }
 

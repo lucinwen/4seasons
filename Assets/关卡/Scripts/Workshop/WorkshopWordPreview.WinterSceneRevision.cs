@@ -130,7 +130,7 @@ public sealed partial class WorkshopWordPreview
         WinterSceneRequire(body.simulated && body.bodyType == RigidbodyType2D.Dynamic &&
             !WorkshopQuestGuide.BlocksWorldInput && !WorkshopQuestGuide.IsWorldOverlayActive,
             "The winter route did not end in a live, controllable courtyard.");
-        Debug.Log("[WinterSceneRevision] PASS: full cropped background without encoded black bands; grounded nearby guide; artwork-aligned main route; real dynamic walking from spawn through the main workshop and stone crossing to the right storage; guide, tailoring and storehouse actions; storage opens and returns to the same courtyard/player; reachable needle hitbox. No assigned player positions, disabled simulation or injected jump velocity.");
+        Debug.Log("[WinterSceneRevision] PASS: full background without encoded black bands; grounded nearby guide; artwork-aligned main route; real dynamic walking from spawn through the main workshop and stone crossing to the right storage; guide, tailoring and storehouse actions; storage opens and returns to the same courtyard/player; reachable needle hitbox. No assigned player positions, disabled simulation or injected jump velocity.");
     }
 
     private static void WinterSceneBackground(SpriteRenderer renderer)
@@ -161,8 +161,8 @@ public sealed partial class WorkshopWordPreview
         try
         {
             WinterSceneRequire(source.LoadImage(File.ReadAllBytes(path)), "Could not inspect the actual winter bitmap.");
-            WinterSceneRequire(source.width == 2137 && source.height == 572,
-                "The winter replacement should preserve its full width and remove the source screenshot's black bands.");
+            WinterSceneRequire(source.width == 2172 && source.height == 591,
+                "The winter backdrop must retain the source image's full resolution.");
             foreach (int row in new[] { 1, source.height - 2 })
             {
                 int dark = 0, samples = 0;
