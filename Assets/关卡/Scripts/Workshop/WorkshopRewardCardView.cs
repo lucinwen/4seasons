@@ -36,12 +36,23 @@ internal sealed class WorkshopRewardCardView : MonoBehaviour
 
     internal static void ShowReward(WorkshopRewardCards.Card card, Action closed)
     {
-        if (card == null || current != null)
+        if (card == null || !WorkshopRewardCards.AutomaticItemCard(card))
         {
             closed?.Invoke();
             return;
         }
-        if (!WorkshopRewardCards.TryBeginItemCard(card.Item)) { closed?.Invoke(); return; }
+        if (current != null)
+        {
+            if (current.automaticItem == card.Item)
+                WorkshopRewardCards.ContinueAfterItemCard(card.Item, closed);
+            else closed?.Invoke();
+            return;
+        }
+        if (!WorkshopRewardCards.TryBeginItemCard(card.Item))
+        {
+            WorkshopRewardCards.ContinueAfterItemCard(card.Item, closed);
+            return;
+        }
         var view = Open(card.Season, closed);
         view.automaticItem = card.Item;
         view.RenderCard(card, true, view.Close);
@@ -81,6 +92,13 @@ internal sealed class WorkshopRewardCardView : MonoBehaviour
 
     private void RenderCard(WorkshopRewardCards.Card card, bool received, Action goBack)
     {
+        if (!received && (card.Id == "maze" || card.Id == "reeling" || card.Id == "thread"))
+        {
+            // These crafts are represented by their solar craft card. Keep the
+            // collection underneath so closing the detail returns to this page.
+            OpenTerm(WorkshopSeason.Summer, card.Id == "thread" ? 2 : 1);
+            return;
+        }
         StartPage(goBack);
         var art = WorkshopArt.ItemCard(card.Item);
         if (art != null)
@@ -229,9 +247,16 @@ internal sealed class WorkshopRewardCardView : MonoBehaviour
         if (current != this || termOpen) return;
         if (automaticItem.HasValue)
         {
-            WorkshopRewardCards.FinishItemCard(automaticItem.Value);
+            var item = automaticItem.Value;
             automaticItem = null;
+            WorkshopRewardCards.FinishItemCard(item, CloseAccepted);
+            return;
         }
+        CloseAccepted();
+    }
+
+    private void CloseAccepted()
+    {
         current = null;
         closedFrame = Time.frameCount;
         WorkshopUi.CloseCanvas(frame);

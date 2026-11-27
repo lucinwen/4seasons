@@ -20,7 +20,7 @@ namespace Qingming.LevelBackground
         {
             if (!WorkshopRewardCards.TryBeginItemCard(item))
             {
-                onConfirm?.Invoke();
+                WorkshopRewardCards.ContinueAfterItemCard(item, onConfirm);
                 return null;
             }
             var art = WorkshopArt.ItemCard(item);
@@ -39,8 +39,8 @@ namespace Qingming.LevelBackground
             Sprite icon = null, Color? iconColor = null, Material iconMaterial = null)
         {
             if (WorkshopArt.TryIdentifyItemCard(icon, out var item))
-                return ShowCard(item, icon, confirmText, onConfirm,
-                    showCancel, cancelText, onCancel);
+                return ShowItem(item, message, onConfirm, showCancel, cancelText, onCancel,
+                    icon, iconColor, iconMaterial);
             if (HarvestOverlayManager.IsHarvestActive) return null;
             return ShowMessage(title, message, confirmText, onConfirm, showCancel, cancelText,
                 onCancel, icon, iconColor, iconMaterial);
@@ -171,8 +171,10 @@ namespace Qingming.LevelBackground
         {
             if (_rewardItem.HasValue)
             {
-                WorkshopRewardCards.FinishItemCard(_rewardItem.Value);
+                var item = _rewardItem.Value;
                 _rewardItem = null;
+                WorkshopRewardCards.FinishItemCard(item, () => Close(_onConfirm));
+                return;
             }
             Close(_onConfirm);
         }

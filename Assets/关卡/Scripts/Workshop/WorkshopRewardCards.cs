@@ -73,7 +73,9 @@ internal static class WorkshopRewardCards
 
     private static readonly Queue<Reward> pending = new Queue<Reward>();
     private static readonly HashSet<WorkshopItem> presentingItems = new HashSet<WorkshopItem>();
+    private static readonly Dictionary<WorkshopItem, Action> itemContinuations = new Dictionary<WorkshopItem, Action>();
     private static readonly HashSet<string> presentingTerms = new HashSet<string>();
+    private static readonly Dictionary<string, Action> termContinuations = new Dictionary<string, Action>();
     private static bool initialized;
     private static Runner runner;
     private static bool termPresented;
@@ -102,14 +104,37 @@ internal static class WorkshopRewardCards
         return true;
     }
 
-    internal static void FinishItemCard(WorkshopItem item)
+    internal static void ContinueAfterItemCard(WorkshopItem item, Action confirmed)
+    {
+        // A second completion callback must not close the scene containing the
+        // first, still-unaccepted card. Join that presentation instead.
+        if (presentingItems.Contains(item) && !HasReceivedItemCard(item))
+        {
+            itemContinuations.TryGetValue(item, out var waiting);
+            itemContinuations[item] = waiting + confirmed;
+            return;
+        }
+        confirmed?.Invoke();
+    }
+
+    internal static void FinishItemCard(WorkshopItem item, Action confirmed = null)
     {
         presentingItems.Remove(item);
         WorkshopProgress.RecordRewardReceipts(new[] { ItemReceipt(item) });
         RemovePendingItem(item);
+        itemContinuations.TryGetValue(item, out var waiting);
+        itemContinuations.Remove(item);
+        // The owner closes its UI and completes its own pickup before followers
+        // continue; followers may travel or unload the owner's scene.
+        confirmed?.Invoke();
+        waiting?.Invoke();
     }
 
-    internal static void ReleaseItemCard(WorkshopItem item) => presentingItems.Remove(item);
+    internal static void ReleaseItemCard(WorkshopItem item)
+    {
+        presentingItems.Remove(item);
+        itemContinuations.Remove(item);
+    }
 
     private static void RemovePendingItem(WorkshopItem item)
     {
@@ -124,7 +149,7 @@ internal static class WorkshopRewardCards
     internal static void Reset()
     {
         if (runner != null) UnityEngine.Object.Destroy(runner.gameObject);
-        pending.Clear(); presentingItems.Clear(); presentingTerms.Clear();
+        pending.Clear(); presentingItems.Clear(); itemContinuations.Clear(); presentingTerms.Clear(); termContinuations.Clear();
         initialized = false; runner = null; termPresented = false;
     }
 
@@ -165,7 +190,7 @@ internal static class WorkshopRewardCards
         foreach (int term in card.Terms) yield return term;
     }
 
-    private static bool AutomaticItemCard(Card card) => card.Id != "maze" && card.Id != "thread" &&
+    internal static bool AutomaticItemCard(Card card) => card != null && card.Id != "maze" && card.Id != "thread" &&
         card.Id != "pattern" && WorkshopProgress.Has(card.Item);
 
     private static bool ItemAlreadyQueued(WorkshopItem item)
@@ -239,7 +264,13 @@ internal static class WorkshopRewardCards
     internal static void ShowTermReward(WorkshopSeason season, int term, Action closed = null)
     {
         string id = TermReceipt(season, term);
-        if (WorkshopProgress.HasStep(id) || !presentingTerms.Add(id)) { closed?.Invoke(); return; }
+        if (WorkshopProgress.HasStep(id)) { closed?.Invoke(); return; }
+        if (!presentingTerms.Add(id))
+        {
+            termContinuations.TryGetValue(id, out var waiting);
+            termContinuations[id] = waiting + closed;
+            return;
+        }
         for (int remaining = pending.Count; remaining > 0; remaining--)
         {
             var reward = pending.Dequeue();
@@ -252,7 +283,17 @@ internal static class WorkshopRewardCards
             WorkshopProgress.RecordRewardReceipts(new[] { id });
             presentingTerms.Remove(id);
             termPresented = presentingTerms.Count > 0;
+            termContinuations.TryGetValue(id, out var waiting);
+            termContinuations.Remove(id);
             closed?.Invoke();
+            waiting?.Invoke();
+        }, () =>
+        {
+            // Scene teardown cancels the presentation; it is not an acceptance
+            // and must not leave all later rewards blocked by a stale claim.
+            presentingTerms.Remove(id);
+            termContinuations.Remove(id);
+            termPresented = presentingTerms.Count > 0;
         });
     }
 

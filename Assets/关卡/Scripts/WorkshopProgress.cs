@@ -334,9 +334,10 @@ public static class WorkshopProgress
     {
         if (mode != LoadSceneMode.Single) return;
         SceneManager.sceneLoaded -= ShowQueuedCard;
-        if (nextSceneCard.HasValue && TryGetSeason(scene.name, out _))
-            WorkshopKnowledgeView.ShowItem(nextSceneCard.Value);
+        var item = nextSceneCard;
         nextSceneCard = null;
+        if (item.HasValue && Has(item.Value) && TryGetSeason(scene.name, out _))
+            Qingming.LevelBackground.SimplePopup.ShowItem(item.Value, "获得【" + ItemName(item.Value) + "】", null);
     }
 
     private static void Commit()

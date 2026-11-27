@@ -17,6 +17,7 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
     private WorkshopSeason season;
     private Action escape;
     private Action onClose;
+    private Action onDiscarded;
     private WorkshopKnowledgeView previousView;
     private GameObject previousSelection;
     private int sortingOrder;
@@ -44,7 +45,7 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
         view.RenderItems();
     }
 
-    internal static void ShowTerm(WorkshopSeason season, int index, Action onClose = null)
+    internal static void ShowTerm(WorkshopSeason season, int index, Action onClose = null, Action onDiscarded = null)
     {
         var art = WorkshopRewardCards.HasTerm(season, index) ? WorkshopArt.SolarCard(season, index) : null;
         if (art == null)
@@ -55,6 +56,7 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
 
         var view = Open(season, WorkshopCraftRecordView.CanvasOrder + 100, preserveExisting: true);
         view.onClose = onClose;
+        view.onDiscarded = onDiscarded;
         view.RenderSolarDetail(art, season, index, WorkshopArt.SolarNames(season)[index], view.Close);
     }
 
@@ -102,11 +104,15 @@ public sealed partial class WorkshopKnowledgeView : MonoBehaviour
     private void OnDestroy()
     {
         if (current == this) current = null;
+        var discarded = onDiscarded;
+        onDiscarded = null;
+        discarded?.Invoke();
     }
 
     private void Close()
     {
         if (current != this) return;
+        onDiscarded = null;
         closedFrame = Time.frameCount;
         current = previousView;
         if (previousView != null) previousView.resumedFrame = Time.frameCount;

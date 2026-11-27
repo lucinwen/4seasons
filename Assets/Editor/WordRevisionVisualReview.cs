@@ -22,6 +22,7 @@ public static class WordRevisionVisualReview
     private const string CocoonOnly = "WordRevision.VisualReview.CocoonOnly";
     private const string Feedback2 = "WordRevision.VisualReview.Feedback2";
     private const string Feedback3 = "WordRevision.VisualReview.Feedback3";
+    private const string Feedback4 = "WordRevision.VisualReview.Feedback4";
     static WordRevisionVisualReview()
     {
         EditorApplication.playModeStateChanged += OnState;
@@ -172,6 +173,15 @@ public static class WordRevisionVisualReview
         StartReview(true);
     }
 
+    [MenuItem("Tools/Word Revision/Review Summer Reward Callbacks")]
+    public static void StartFeedback4Captures()
+    {
+        File.Delete("../WordRevision/feedback4-review-complete.txt");
+        SessionState.SetBool(Feedback4, true);
+        SessionState.SetBool(Feedback3, false);
+        StartReview(true);
+    }
+
     private static void StartReview(bool feedbackOnly, bool summer = false)
     {
         if (EditorApplication.isPlayingOrWillChangePlaymode) throw new InvalidOperationException("Stop play mode first.");
@@ -197,7 +207,8 @@ public static class WordRevisionVisualReview
         if (!SessionState.GetBool(Active, false)) return;
         if (state == PlayModeStateChange.EnteredPlayMode)
         {
-            if (SessionState.GetBool(Feedback3, false)) WorkshopWordPreview.BeginFeedback3();
+            if (SessionState.GetBool(Feedback4, false)) WorkshopWordPreview.BeginFeedback4();
+            else if (SessionState.GetBool(Feedback3, false)) WorkshopWordPreview.BeginFeedback3();
             else if (SessionState.GetBool(Feedback2, false)) WorkshopWordPreview.BeginFeedback2();
             else if (SessionState.GetBool(CocoonOnly, false)) WorkshopWordPreview.BeginCocoonRelease();
             else if (SessionState.GetBool(Immersive, false)) WorkshopWordPreview.BeginImmersive();
@@ -214,9 +225,11 @@ public static class WordRevisionVisualReview
         PlayerPrefs.Save();
         bool latestFeedback = SessionState.GetBool(Feedback2, false);
         bool summerRewardFeedback = SessionState.GetBool(Feedback3, false);
+        bool summerCallbackFeedback = SessionState.GetBool(Feedback4, false);
         SessionState.SetBool(Active, false);
         SessionState.SetBool(Feedback2, false);
         SessionState.SetBool(Feedback3, false);
+        SessionState.SetBool(Feedback4, false);
         SessionState.SetBool(AutumnIntegration, false);
         SessionState.SetBool(Immersive, false);
         SessionState.SetBool(CocoonOnly, false);
@@ -225,7 +238,8 @@ public static class WordRevisionVisualReview
         Debug.Log("[WordRevision] Visual review finished; original player save restored.");
         if (Array.IndexOf(Environment.GetCommandLineArgs(), "-buildAfterWordReview") >= 0)
         {
-            string marker = summerRewardFeedback ? "../WordRevision/feedback3-review-complete.txt"
+            string marker = summerCallbackFeedback ? "../WordRevision/feedback4-review-complete.txt"
+                : summerRewardFeedback ? "../WordRevision/feedback3-review-complete.txt"
                 : latestFeedback ? "../WordRevision/feedback2-review-complete.txt" : "../WordRevision/immersive-review-complete.txt";
             if (!File.Exists(marker))
             {
